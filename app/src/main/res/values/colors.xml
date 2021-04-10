@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorApp">#D40E0E</color>
+    <color name="colorApp_noEnabled">#D45A5A</color>
+
+    <color name="ic_launcher_background">#FFFFFF</color>
+
+    <color name="bookStatusInProgress">#2287df</color>
+    <color name="bookStatusCompleted">#b62cb6</color>
+
+    <color name="animeEntryStatusWatching_color">#2287df</color>
+    <color name="animeEntryStatusWatchingFinished_color">#13bd28</color>
+    <color name="animeEntryStatusCompleted_color">#b62cb6</color>
+    <color name="animeEntryStatusPlanned_color">#17d6af</color>
+    <color name="animeEntryStatusOnHold_color">#ff7424</color>
+    <color name="animeEntryStatusDropped_color">#ff0000</color>
+
+    <color name="animeEntryEpisodesWatching_color">#2287df</color>
+    <color name="animeEntryEpisodesCompleted_color">#13bd28</color>
+
+    <color name="mangaEntryStatusReading_color">#2287df</color>
+    <color name="mangaEntryStatusReadingFinished_color">#13bd28</color>
+    <color name="mangaEntryStatusCompleted_color">#b62cb6</color>
+    <color name="mangaEntryStatusPlanned_color">#17d6af</color>
+    <color name="mangaEntryStatusOnHold_color">#ff7424</color>
+    <color name="mangaEntryStatusDropped_color">#ff0000</color>
+
+    <color name="follow_color">#49AF12</color>
+
+
+    <color name="white">#FFFFFF</color>
+</resources>

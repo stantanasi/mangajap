@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundSecondaryColor">
+
+    <!-- Mettre un diapo pour expliquer l'app -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="@dimen/register_spacing"
+                android:layout_marginStart="@dimen/register_spacing"
+                android:layout_marginEnd="@dimen/register_spacing"
+                android:text="@string/register"
+                android:textColor="?attr/textPrimaryColor"
+                android:textSize="22sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_marginStart="@dimen/register_spacing"
+                android:layout_marginEnd="@dimen/register_spacing"
+                android:text="@string/registerExplanation"
+                android:textColor="?attr/textSecondaryColor"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
+
+            <com.google.android.material.textfield.TextInputLayout android:id="@+id/til_register_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/register_spacingText"
+                android:layout_marginStart="@dimen/register_spacing"
+                android:layout_marginEnd="@dimen/register_spacing"
+                android:textColorHint="?attr/textSecondaryColor">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email"
+                    android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="16sp"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout android:id="@+id/til_register_pseudo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/register_spacingText"
+                android:layout_marginStart="@dimen/register_spacing"
+                android:layout_marginEnd="@dimen/register_spacing"
+                android:textColorHint="?attr/textSecondaryColor">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/pseudo"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="16sp"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout android:id="@+id/til_register_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/register_spacing"
+                android:layout_marginEnd="@dimen/register_spacing"
+                android:textColorHint="?attr/textSecondaryColor"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="?attr/textPrimaryColor">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="16sp"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
+
+            <TextView android:id="@+id/register"
+                android:layout_marginStart="@dimen/register_spacing"
+                android:layout_marginEnd="@dimen/register_spacing"
+                android:text="@string/register"
+                style="@style/Widget.AppTheme.Button.Login"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <include android:id="@+id/is_updating"
+        layout="@layout/layout_is_updating"/>
+
+</RelativeLayout>

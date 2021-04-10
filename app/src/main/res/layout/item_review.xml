@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?attr/backgroundPrimaryColor"
+    android:layout_marginBottom="@dimen/reviews_spacing"
+    android:orientation="vertical"
+    android:padding="@dimen/reviews_spacing">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/reviews_spacing"
+        android:orientation="horizontal">
+
+        <LinearLayout android:id="@+id/review_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView android:id="@+id/reviewProfilePic_CircleImageView"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="@dimen/reviews_spacing"
+                android:src="#939393"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView android:id="@+id/tv_review_pseudo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textStyle="bold"
+                    tools:text="Pseudo" />
+
+                <TextView android:id="@+id/tv_review_updated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/textSecondaryColor"
+                    tools:text="dd MMMM yyyy" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView android:id="@+id/iv_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/edit"
+            android:paddingStart="@dimen/reviews_spacing"
+            android:paddingEnd="0dp"
+            android:src="@drawable/ic_edit_black_24dp"
+            app:tint="?attr/textSecondaryColor" />
+
+    </LinearLayout>
+
+    <TextView android:id="@+id/tv_review_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/textPrimaryColor"
+        tools:text="Content" />
+
+</LinearLayout>

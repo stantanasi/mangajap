@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout android:id="@+id/ll_manga_all_reviews"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:padding="@dimen/manga_spacing"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/manga_spacing"
+            android:src="@drawable/ic_forum_black_24dp"
+            app:tint="?attr/colorAccent"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/show_all_reviews"
+            android:textAllCaps="true"
+            android:textColor="?attr/textPrimaryColor"/>
+
+        <TextView android:id="@+id/tv_manga_review_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="##"
+            android:textColor="?attr/textPrimaryColor"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/manga_spacing"
+            android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
+            app:tint="?attr/textPrimaryColor"
+            tools:ignore="ContentDescription" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/dividerColor"/>
+
+</LinearLayout>

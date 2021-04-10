@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/manga_spacing"
+        android:layout_marginBottom="@dimen/manga_spacing"
+        android:layout_marginStart="@dimen/manga_spacing"
+        android:layout_marginEnd="@dimen/manga_spacing"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/progression"
+                android:textAppearance="@style/TextAppearance.Media.PartTitle" />
+
+            <TextView android:id="@+id/manga_entry_status_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_mangaentry_status"
+                android:text="@string/status"
+                android:textAllCaps="true"
+                android:textColor="@color/mangaEntryStatusReading_color"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <TextView android:id="@+id/mangaMyDate_TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Date"
+            android:textColor="?attr/textSecondaryColor"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/manga_spacing"
+        android:layout_marginEnd="@dimen/manga_spacing"
+        android:orientation="horizontal">
+
+        <LinearLayout android:id="@+id/mangaVolumesRead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView android:id="@+id/mangaVolumesRead_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="##"
+                android:textColor="?attr/textPrimaryColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <TextView android:id="@+id/mangaVolumes_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/VolumesRead"
+                android:textColor="?attr/textSecondaryColor"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="?attr/dividerColor"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginStart="@dimen/manga_spacing"
+            android:layout_marginEnd="@dimen/manga_spacing"/>
+
+        <LinearLayout android:id="@+id/mangaChaptersRead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView android:id="@+id/mangaChaptersRead_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="##"
+                android:textColor="?attr/textPrimaryColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <TextView android:id="@+id/mangaChapters_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/ChaptersRead"
+                android:textColor="?attr/textSecondaryColor"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/dividerColor"
+        android:layout_margin="@dimen/manga_spacing"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginStart="@dimen/manga_spacing"
+        android:layout_marginEnd="@dimen/manga_spacing"
+        android:orientation="horizontal">
+
+        <TextView android:id="@+id/mangaEntryRating_TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/manga_spacing"
+            android:text="## / ##"
+            android:textColor="?attr/textPrimaryColor"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <ImageView android:id="@+id/mangaEntryRemoveRating_ImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close_24dp"
+            android:tint="?attr/textSecondaryColor"
+            tools:ignore="ContentDescription" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageView android:id="@+id/mangaEntryIsFavorites_ImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:src="@drawable/ic_favorite_border_black_24dp"
+            android:tint="?attr/textSecondaryColor"
+            tools:ignore="ContentDescription" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/dividerColor"
+        android:layout_marginTop="@dimen/manga_spacing"/>
+
+</LinearLayout>

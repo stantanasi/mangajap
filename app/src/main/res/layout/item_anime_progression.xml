@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/anime_spacing"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/progression"
+                android:textAppearance="@style/TextAppearance.Media.PartTitle" />
+
+            <TextView android:id="@+id/animeEntryStatus_TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_animeentry_status"
+                android:text="@string/status"
+                android:textAllCaps="true"
+                android:textColor="@color/animeEntryStatusWatching_color"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <TextView android:id="@+id/animeEntryDate_TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Date"
+            android:textColor="?attr/textSecondaryColor"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/anime_spacing"
+        android:layout_marginStart="@dimen/anime_spacing"
+        android:layout_marginEnd="@dimen/anime_spacing"
+        android:orientation="horizontal">
+
+        <Spinner android:id="@+id/animeSeasons_Spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/anime_spacing"
+            style="@style/Widget.AppTheme.Spinner"/>
+
+        <LinearLayout android:id="@+id/animeEpisodeWatch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView android:id="@+id/animeEpisodeWatch_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="##"
+                android:textColor="?attr/textPrimaryColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <TextView android:id="@+id/animeEpisodeCount_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/EpisodesWatch"
+                android:textColor="?attr/textSecondaryColor"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/dividerColor"
+        android:layout_marginBottom="@dimen/anime_spacing"
+        android:layout_marginStart="@dimen/anime_spacing"
+        android:layout_marginEnd="@dimen/anime_spacing"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginStart="@dimen/anime_spacing"
+        android:layout_marginEnd="@dimen/anime_spacing"
+        android:orientation="horizontal">
+
+        <TextView android:id="@+id/animeEntryRating_TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/anime_spacing"
+            android:text="## / ##"
+            android:textColor="?attr/textPrimaryColor"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <ImageView android:id="@+id/animeEntryRemoveRating_ImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close_24dp"
+            app:tint="?attr/textSecondaryColor"
+            tools:ignore="ContentDescription" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageView android:id="@+id/animeEntryIsFavorites_ImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:src="@drawable/ic_favorite_border_black_24dp"
+            app:tint="?attr/textSecondaryColor"
+            tools:ignore="ContentDescription" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/dividerColor"
+        android:layout_marginTop="@dimen/anime_spacing"/>
+
+</LinearLayout>

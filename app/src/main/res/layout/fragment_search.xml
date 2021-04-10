@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundSecondaryColor"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:minHeight="?attr/actionBarSize"
+            android:background="?attr/backgroundPrimaryColor"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:theme="@style/Widget.AppTheme.Toolbar"
+            app:popupTheme="@style/Widget.AppTheme.Toolbar.Popup">
+
+            <EditText android:id="@+id/search_EditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical"
+                android:hint="@string/search"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="?attr/textPrimaryColor"
+                android:textColorHint="?attr/textColorHint"
+                tools:ignore="Autofill" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <com.google.android.material.tabs.TabLayout android:id="@+id/search_TabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppTheme.TabLayout"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout android:id="@+id/search_FrameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants"/>
+
+        <include android:id="@+id/is_loading"
+            layout="@layout/layout_is_loading"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

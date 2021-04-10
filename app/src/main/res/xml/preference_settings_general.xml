@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/language"
+        android:layout="@layout/item_settings_preference_category">
+
+        <Preference android:title="@string/language"
+            android:layout="@layout/item_settings_preference"
+            android:key="language"
+            android:summary=" "/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/theme"
+        android:layout="@layout/item_settings_preference_category">
+
+        <Preference android:title="@string/theme"
+            android:layout="@layout/item_settings_preference"
+            android:key="theme"
+            android:summary=" "/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/cache"
+        android:layout="@layout/item_settings_preference_category">
+
+        <Preference android:title="@string/clearCache"
+            android:layout="@layout/item_settings_preference"
+            android:key="clearCache"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

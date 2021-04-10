@@ -1,0 +1,15 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundSecondaryColor">
+
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false" />
+
+    <include android:id="@+id/is_loading"
+        layout="@layout/layout_is_loading"/>
+
+</RelativeLayout>

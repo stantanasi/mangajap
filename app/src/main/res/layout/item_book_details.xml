@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/book"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:paddingStart="@dimen/myBooks_spacing"
+    android:paddingEnd="@dimen/myBooks_spacing">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="?attr/backgroundPrimaryColor"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="3dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:clipToPadding="false">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp"
+                app:cardBackgroundColor="#939393">
+                <ImageView
+                    android:id="@+id/bookCover_ImageView"
+                    android:layout_width="100dp"
+                    android:layout_height="140dp"
+                    android:contentDescription="Thumbnail"
+                    android:scaleType="centerCrop"
+                    tools:ignore="HardcodedText" />
+            </androidx.cardview.widget.CardView>
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/bookTitle_TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Title"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
+
+                <TextView android:id="@+id/bookStatus_TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_rounded_corners"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:text="Status"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView android:id="@+id/bookPagesCount_TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="## pages"
+                        android:textColor="?attr/textPrimaryColor"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" - "
+                        android:textColor="?attr/textPrimaryColor"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView android:id="@+id/bookSize_TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="## Mo"
+                        android:textColor="?attr/textPrimaryColor"
+                        tools:ignore="HardcodedText" />
+
+                </LinearLayout>
+
+                <TextView android:id="@+id/bookAbsolutePath_TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Path"
+                    android:textColor="?attr/textSecondaryColor"
+                    android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <CheckBox android:id="@+id/book_CheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/btn_checkbox"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

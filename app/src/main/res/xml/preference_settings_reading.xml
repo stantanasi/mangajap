@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/folderLocations"
+        android:key="folder_locations"
+        android:layout="@layout/item_settings_preference_category">
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/readingDisplay"
+        android:layout="@layout/item_settings_preference_category">
+
+        <SwitchPreference android:title="@string/fullScreen"
+            android:layout="@layout/item_settings_preference"
+            android:key="fullScreen"
+            android:defaultValue="false"/>
+
+        <SwitchPreference android:title="@string/openLastPage"
+            android:layout="@layout/item_settings_preference"
+            android:key="setBookmark"
+            android:defaultValue="true"/>
+
+        <SwitchPreference android:title="@string/reverseReading"
+            android:layout="@layout/item_settings_preference"
+            android:summaryOff="@string/reverseReading_summaryOff"
+            android:summaryOn="@string/reverseReading_summaryOn"
+            android:key="reverseReading"
+            android:defaultValue="false"/>
+
+        <SwitchPreference android:title="@string/verticalReading"
+            android:layout="@layout/item_settings_preference"
+            android:key="verticalReading"
+            android:defaultValue="false"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/files"
+        android:layout="@layout/item_settings_preference_category">
+
+        <Preference android:title="@string/supported_files"
+            android:layout="@layout/item_settings_preference"
+            android:key="supported_files"
+            android:summary=" " />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

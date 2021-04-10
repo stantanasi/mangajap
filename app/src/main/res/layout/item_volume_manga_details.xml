@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/volume"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/backgroundPrimaryColor"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="@dimen/volume_spacing"
+    android:layout_marginStart="3dp"
+    android:layout_marginEnd="3dp"
+    android:padding="@dimen/volume_spacing"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="70dp"
+        android:layout_height="110dp"
+        android:layout_marginEnd="@dimen/volume_spacing">
+
+        <ImageView android:id="@+id/volumeCover_ImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="cover"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView android:id="@+id/volumeNumber_TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/volume"
+            android:textColor="?attr/textPrimaryColor"
+            android:textSize="16sp"/>
+
+        <TextView android:id="@+id/volumeTitle_TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Volume title"
+            android:textColor="?attr/textPrimaryColor"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <TextView android:id="@+id/volumePublished_TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Published"
+            android:textColor="?attr/textSecondaryColor"
+            tools:ignore="HardcodedText" />
+
+        <TextView android:id="@+id/tv_chapters_from_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/chaptersFromTo"
+            android:textColor="?attr/textSecondaryColor"
+            android:textSize="@dimen/font_size_micro"/>
+
+    </LinearLayout>
+
+</LinearLayout>

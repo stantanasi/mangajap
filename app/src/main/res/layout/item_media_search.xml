@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/media"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/search_spacing">
+
+        <RelativeLayout
+            android:layout_width="40dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="@dimen/search_spacing">
+
+            <ImageView android:id="@+id/mediaCover_ImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="cover"
+                android:scaleType="centerCrop"
+                tools:ignore="HardcodedText" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView android:id="@+id/mediaTitle_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:text="Title"
+                android:textColor="?attr/textPrimaryColor"
+                android:textSize="16sp"
+                tools:ignore="HardcodedText" />
+
+            <TextView android:id="@+id/mediaType_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/type"
+                android:textColor="?attr/textSecondaryColor"
+                android:textSize="12sp"/>
+
+            <TextView android:id="@+id/mediaMembers_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/userCount"
+                android:textColor="?attr/textSecondaryColor"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+        <CheckBox android:id="@+id/mediaIsAdd_CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/btn_checkbox"
+            android:layout_marginStart="@dimen/search_spacing"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/dividerColor"/>
+
+</LinearLayout>

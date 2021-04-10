@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:layout="@layout/preference_settings_about_header"/>
+
+    <Preference
+        android:layout="@layout/item_settings_preference"
+        android:summary="@string/aboutDescription"/>
+
+    <Preference android:key="version"
+        android:title="@string/version"
+        android:layout="@layout/item_settings_preference"
+        android:summary=" "/>
+
+    <Preference android:key="privacyPolicy"
+        android:title="@string/privacyPolicy"
+        android:layout="@layout/item_settings_preference"/>
+
+    <Preference android:key="contactUs"
+        android:title="@string/contactUs"
+        android:layout="@layout/item_settings_preference"
+        android:summary="@string/contactUsSummary"/>
+
+    <Preference android:key="rate"
+        android:title="@string/rate"
+        android:layout="@layout/item_settings_preference"
+        android:summary="@string/rateSummary"/>
+
+    <Preference android:key="copyright"
+        android:layout="@layout/item_settings_preference"
+        android:summary="@string/copyright"/>
+
+
+</PreferenceScreen>
