@@ -12,7 +12,7 @@ import java.util.zip.ZipFile
 
 class Book(
         val file: File
-) : MangaJapAdapter.Item() {
+) : MangaJapAdapter.Item {
 
     val name: String = file.name
     val title: String = file.nameWithoutExtension
@@ -93,4 +93,6 @@ class Book(
             }
         }
     }
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 }

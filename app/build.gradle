@@ -63,7 +63,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'com.otaliastudios:zoomlayout:1.7.0'
-    implementation 'de.hdodenhof:circleimageview:3.0.0'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -76,11 +76,13 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation 'com.github.stantanasi:retrofit-jsonapi-converter:1.0.2'
+    implementation 'com.github.stantanasi:retrofit-oauth2-converter:1.0.0'
 
     // Test
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.31"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.32"
 
 }

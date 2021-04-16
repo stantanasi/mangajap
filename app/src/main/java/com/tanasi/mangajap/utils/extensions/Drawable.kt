@@ -11,6 +11,7 @@ fun Drawable.setColorFilter(resId: Int) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         this.colorFilter = BlendModeColorFilter(resId, BlendMode.SRC_ATOP)
     } else {
+        @Suppress("DEPRECATION")
         this.setColorFilter(resId, PorterDuff.Mode.SRC_ATOP)
     }
 }

@@ -8,7 +8,7 @@ import java.io.File
 
 class Folder(
         val file: File
-) : MangaJapAdapter.Item() {
+) : MangaJapAdapter.Item {
 
     var name: String = file.name
     var absolutePath: String = file.absolutePath
@@ -21,4 +21,6 @@ class Folder(
                 ?: listOf()
         return@withContext this@Folder
     }
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 }

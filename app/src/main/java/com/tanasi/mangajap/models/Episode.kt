@@ -1,10 +1,11 @@
 package com.tanasi.mangajap.models
 
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 import org.json.JSONObject
 
-@JsonApi("episodes")
+@JsonApiType("episodes")
 class Episode(
         override var id: String = "",
         var createdAt: String? = null,
@@ -18,7 +19,7 @@ class Episode(
         episodeType: String = "",
 
         var anime: Anime? = null,
-) : JsonApiResource(), Cloneable {
+) : JsonApiResource(), MangaJapAdapter.Item, Cloneable {
 
     val titles: Titles? = Titles.create(titles)
     var episodeType: EpisodeType? = EpisodeType.getByName(episodeType)
@@ -48,6 +49,8 @@ class Episode(
             }
         }
     }
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 
     public override fun clone(): Episode {
         return super.clone() as Episode

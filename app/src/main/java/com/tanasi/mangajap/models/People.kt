@@ -1,10 +1,11 @@
 package com.tanasi.mangajap.models
 
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiRelationships
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiRelationship
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 
-@JsonApi("people")
+@JsonApiType("people")
 class People(
         override var id: String = "",
         var firstName: String? = null,
@@ -13,6 +14,10 @@ class People(
         var image: String? = null,
 
         var staff: List<Staff> = listOf(),
-        @JsonApiRelationships("manga-staff") var mangaStaff: List<Staff> = listOf(),
-        @JsonApiRelationships("anime-staff") var animeStaff: List<Staff> = listOf(),
-) : JsonApiResource()
+        @JsonApiRelationship("manga-staff") var mangaStaff: List<Staff> = listOf(),
+        @JsonApiRelationship("anime-staff") var animeStaff: List<Staff> = listOf(),
+) : JsonApiResource(), MangaJapAdapter.Item {
+
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
+}

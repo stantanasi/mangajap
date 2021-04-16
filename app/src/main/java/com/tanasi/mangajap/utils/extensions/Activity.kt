@@ -17,6 +17,7 @@ fun <F : Fragment> AppCompatActivity.getFragment(fragmentClass: Class<F>): F? {
 
     navHostFragment.childFragmentManager.fragments.forEach {
         if (fragmentClass.isAssignableFrom(it.javaClass)) {
+            @Suppress("UNCHECKED_CAST")
             return it as F
         }
     }

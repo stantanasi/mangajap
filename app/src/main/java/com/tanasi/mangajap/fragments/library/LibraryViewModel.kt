@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tanasi.jsonapi.JsonApiParams
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.services.MangaJapApiService
-import com.tanasi.mangajap.utils.jsonApi.JsonApiParams
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 import kotlinx.coroutines.launch
 
 class LibraryViewModel : ViewModel() {
@@ -25,9 +25,9 @@ class LibraryViewModel : ViewModel() {
         data class SuccessLoading(val itemList: List<MangaJapAdapter.Item>): State()
         data class FailedLoading(val error: JsonApiResponse.Error): State()
 
-        object Updating: State()
-        data class SuccessUpdating(val jsonApiResource: JsonApiResource): State()
-        data class FailedUpdating(val error: JsonApiResponse.Error): State()
+        object Saving: State()
+        data class SuccessSaving(val jsonApiResource: JsonApiResource): State()
+        data class FailedSaving(val error: JsonApiResponse.Error): State()
     }
 
     fun getMangaLibrary(userId: String) = viewModelScope.launch {
@@ -116,7 +116,7 @@ class LibraryViewModel : ViewModel() {
 
 
     fun updateMangaEntry(mangaEntry: MangaEntry) = viewModelScope.launch {
-        _state.value = State.Updating
+        _state.value = State.Saving
 
         val response = mangaJapApiService.updateMangaEntry(
                 mangaEntry.id,
@@ -124,16 +124,16 @@ class LibraryViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessUpdating(response.body.data!!)
-                is JsonApiResponse.Error -> State.FailedUpdating(response)
+                is JsonApiResponse.Success -> State.SuccessSaving(response.body.data!!)
+                is JsonApiResponse.Error -> State.FailedSaving(response)
             }
         } catch (e: Exception) {
-            State.FailedUpdating(JsonApiResponse.Error.UnknownError(e))
+            State.FailedSaving(JsonApiResponse.Error.UnknownError(e))
         }
     }
 
     fun updateAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
-        _state.value = State.Updating
+        _state.value = State.Saving
 
         val response = mangaJapApiService.updateAnimeEntry(
                 animeEntry.id,
@@ -141,11 +141,11 @@ class LibraryViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessUpdating(response.body.data!!)
-                is JsonApiResponse.Error -> State.FailedUpdating(response)
+                is JsonApiResponse.Success -> State.SuccessSaving(response.body.data!!)
+                is JsonApiResponse.Error -> State.FailedSaving(response)
             }
         } catch (e: Exception) {
-            State.FailedUpdating(JsonApiResponse.Error.UnknownError(e))
+            State.FailedSaving(JsonApiResponse.Error.UnknownError(e))
         }
     }
 }

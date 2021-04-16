@@ -10,6 +10,8 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.tanasi.jsonapi.JsonApiParams
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.ActivityMainBinding
 import com.tanasi.mangajap.fragments.settingsPreference.SettingsPreferenceFragment
@@ -17,8 +19,6 @@ import com.tanasi.mangajap.models.Request
 import com.tanasi.mangajap.services.MangaJapApiService
 import com.tanasi.mangajap.utils.extensions.getActualTheme
 import com.tanasi.mangajap.utils.extensions.setLocale
-import com.tanasi.mangajap.utils.jsonApi.JsonApiParams
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
 import com.tanasi.mangajap.utils.preferences.UserPreference
 import kotlinx.coroutines.launch

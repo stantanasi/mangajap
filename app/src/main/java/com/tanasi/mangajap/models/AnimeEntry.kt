@@ -1,13 +1,14 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.toCalendar
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
 import java.util.*
 
-@JsonApi("animeEntries")
+@JsonApiType("animeEntries")
 class AnimeEntry(
         override var id: String = "",
         createdAt: String? = null,
@@ -23,7 +24,7 @@ class AnimeEntry(
 
         var user: User? = null,
         var anime: Anime? = null,
-) : JsonApiResource() {
+) : JsonApiResource(), MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
@@ -81,4 +82,7 @@ class AnimeEntry(
     fun putUser(user: User) = putRelationship("user", user)
 
     fun putAnime(anime: Anime) = putRelationship("anime", anime)
+
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 }

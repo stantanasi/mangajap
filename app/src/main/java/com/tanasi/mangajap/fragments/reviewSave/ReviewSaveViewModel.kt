@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.models.Review
 import com.tanasi.mangajap.services.MangaJapApiService
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 import kotlinx.coroutines.launch
 
 class ReviewSaveViewModel : ViewModel() {

@@ -94,6 +94,7 @@ fun Context.getAppVersionCode(): Int {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             this.packageManager.getPackageInfo(this.packageName, 0).longVersionCode.toInt()
         } else {
+            @Suppress("DEPRECATION")
             this.packageManager.getPackageInfo(this.packageName, 0).versionCode
         }
     } catch (e: PackageManager.NameNotFoundException) {

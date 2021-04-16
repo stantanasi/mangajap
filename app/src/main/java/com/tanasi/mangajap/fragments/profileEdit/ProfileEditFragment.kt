@@ -21,11 +21,11 @@ import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.FragmentProfileEditBinding
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.utils.extensions.*
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 import java.util.*
 
 
@@ -46,7 +46,10 @@ class ProfileEditFragment : Fragment() {
             result.data?.data?.let { uri ->
                 val bitmap = when {
                     Build.VERSION.SDK_INT >= 29 -> ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireActivity().contentResolver, uri))
-                    else -> MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
+                    else -> {
+                        @Suppress("DEPRECATION")
+                        MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
+                    }
                 }
                 binding.profilePicCircleImageView.setImageBitmap(bitmap)
                 user.putAvatar(bitmap.toBase64())

@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.services.MangaJapApiService
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
-import com.tanasi.mangajap.utils.oauth2.OAuth2Response
+import com.tanasi.oauth2.OAuth2Response
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {

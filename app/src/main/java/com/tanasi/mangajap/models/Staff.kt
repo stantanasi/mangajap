@@ -1,10 +1,11 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 
-@JsonApi("staff")
+@JsonApiType("staff")
 class Staff(
         override var id: String = "",
         var createdAt: String? = null,
@@ -14,7 +15,7 @@ class Staff(
         var people: People? = null,
         var manga: Manga? = null,
         var anime: Anime? = null,
-) : JsonApiResource() {
+) : JsonApiResource(), MangaJapAdapter.Item {
 
     var role: Role? = Role.getByName(role)
     
@@ -35,4 +36,6 @@ class Staff(
             }
         }
     }
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 }

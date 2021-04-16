@@ -10,13 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentDiscoverBinding
 import com.tanasi.mangajap.models.Ad
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.Manga
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 
 class DiscoverFragment : Fragment() {
 

@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.adapters.MangaJapAdapter
@@ -20,13 +21,12 @@ import com.tanasi.mangajap.databinding.FragmentSearchBinding
 import com.tanasi.mangajap.fragments.profile.ProfileFragment
 import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
 import com.tanasi.mangajap.models.Ad
-import com.tanasi.mangajap.models.LoadMore
 import com.tanasi.mangajap.models.Anime
+import com.tanasi.mangajap.models.LoadMore
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.utils.extensions.add
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.extensions.runOnUiThread
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
 import java.util.*
 
@@ -204,14 +204,17 @@ class SearchFragment : Fragment() {
                     is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
                 }
 
-                SearchViewModel.State.Updating -> {
+                SearchViewModel.State.Saving -> {
                 }
-                is SearchViewModel.State.SuccessUpdating -> actualTab.fragment.mangaJapAdapter?.notifyDataSetChanged()
-                is SearchViewModel.State.FailedUpdating -> when (state.error) {
+                is SearchViewModel.State.SuccessSaving -> actualTab.fragment.mangaJapAdapter?.notifyDataSetChanged()
+                is SearchViewModel.State.FailedSaving -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
                     is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
                     is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
                 }
+
+                is SearchViewModel.State.SuccessRequest -> Toast.makeText(requireContext(), getString(R.string.media_will_be_added, state.request.data), Toast.LENGTH_SHORT).show()
+                is SearchViewModel.State.FailedRequest -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
             }
         }
 

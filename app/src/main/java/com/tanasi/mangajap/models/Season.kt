@@ -6,7 +6,7 @@ import kotlin.math.max
 
 class Season(
         val episodes: List<Episode>
-) : MangaJapAdapter.Item() {
+) : MangaJapAdapter.Item {
 
     var isLast = false
 

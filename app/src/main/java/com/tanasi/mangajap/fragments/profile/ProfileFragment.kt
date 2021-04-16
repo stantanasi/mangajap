@@ -21,6 +21,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.LauncherActivity
 import com.tanasi.mangajap.activities.MainActivity
@@ -28,13 +29,8 @@ import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentProfileBinding
 import com.tanasi.mangajap.fragments.follow.FollowFragment
 import com.tanasi.mangajap.fragments.library.LibraryFragment
-import com.tanasi.mangajap.models.UserStats
-import com.tanasi.mangajap.models.AnimeEntry
-import com.tanasi.mangajap.models.Follow
-import com.tanasi.mangajap.models.MangaEntry
-import com.tanasi.mangajap.models.User
+import com.tanasi.mangajap.models.*
 import com.tanasi.mangajap.utils.extensions.contains
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
 import com.tanasi.mangajap.utils.preferences.UserPreference
 

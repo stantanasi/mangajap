@@ -9,12 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentFollowBinding
 import com.tanasi.mangajap.models.LoadMore
 import com.tanasi.mangajap.utils.extensions.setToolbar
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class FollowFragment : Fragment() {

@@ -1,11 +1,11 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
 
-@JsonApi("franchises")
+@JsonApiType("franchises")
 class Franchise(
         override var id: String = "",
         var createdAt: String? = null,
@@ -14,9 +14,12 @@ class Franchise(
 
         var source: MangaJapAdapter.Item? = null,
         var destination: MangaJapAdapter.Item? = null,
-) : JsonApiResource() {
+) : JsonApiResource(), MangaJapAdapter.Item {
 
     var role: Role? = Role.getByName(role)
+
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 
     
     enum class Role(val stringId: Int) {

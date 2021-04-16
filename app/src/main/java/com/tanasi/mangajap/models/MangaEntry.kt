@@ -1,14 +1,15 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.toCalendar
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
 import java.util.*
 import kotlin.math.max
 
-@JsonApi("mangaEntries")
+@JsonApiType("mangaEntries")
 class MangaEntry(
         override var id: String = "",
         createdAt: String? = null,
@@ -26,7 +27,7 @@ class MangaEntry(
 
         var user: User? = null,
         var manga: Manga? = null,
-) : JsonApiResource() {
+) : JsonApiResource(), MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
@@ -97,4 +98,7 @@ class MangaEntry(
     fun putUser(user: User) = putRelationship("user", user)
 
     fun putManga(manga: Manga) = putRelationship("manga", manga)
+
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 }

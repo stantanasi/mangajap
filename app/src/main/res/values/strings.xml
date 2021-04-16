@@ -268,5 +268,6 @@
     <string name="propose_anime">Add anime</string>
     <string name="anime_title">Anime title</string>
     <string name="manga_title">Manga title</string>
+    <string name="webtoon">Webtoon</string>
 
 </resources>

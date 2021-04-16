@@ -1,16 +1,17 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiAttribute
+import com.tanasi.jsonapi.JsonApiRelationship
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.toCalendar
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiAttribute
-import com.tanasi.mangajap.utils.jsonApi.JsonApiRelationships
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
 import org.json.JSONObject
 import java.util.*
 
-@JsonApi("users")
+@JsonApiType("users")
 class User(
         override var id: String = "",
         var createdAt: String? = null,
@@ -38,13 +39,13 @@ class User(
 
         var followers: List<Follow> = listOf(),
         var following: List<Follow> = listOf(),
-        @JsonApiRelationships("manga-library") var mangaLibrary: List<MangaEntry> = listOf(),
-        @JsonApiRelationships("anime-library") var animeLibrary: List<AnimeEntry> = listOf(),
-        @JsonApiRelationships("manga-favorites") var mangaFavorites: List<MangaEntry> = listOf(),
-        @JsonApiRelationships("anime-favorites") var animeFavorites: List<AnimeEntry> = listOf(),
+        @JsonApiRelationship("manga-library") var mangaLibrary: List<MangaEntry> = listOf(),
+        @JsonApiRelationship("anime-library") var animeLibrary: List<AnimeEntry> = listOf(),
+        @JsonApiRelationship("manga-favorites") var mangaFavorites: List<MangaEntry> = listOf(),
+        @JsonApiRelationship("anime-favorites") var animeFavorites: List<AnimeEntry> = listOf(),
         var reviews: List<Review> = listOf(),
         var requests: List<Request> = listOf(),
-) : JsonApiResource() {
+) : JsonApiResource(), MangaJapAdapter.Item {
 
     val birthday: Calendar? = birthday?.toCalendar("yyyy-MM-dd")
     var gender: Gender? = Gender.getByName(gender)
@@ -104,4 +105,6 @@ class User(
     fun putEmail(email: String?) = putAttribute("email", email)
 
     fun putPassword(password: String?) = putAttribute("password", password)
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 }

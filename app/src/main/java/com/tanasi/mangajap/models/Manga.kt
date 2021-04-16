@@ -1,14 +1,15 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiRelationship
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.toCalendar
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiRelationships
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
 import org.json.JSONObject
 import java.util.*
 
-@JsonApi("manga")
+@JsonApiType("manga")
 class Manga(
         override var id: String = "",
         createdAt: String? = null,
@@ -37,9 +38,9 @@ class Manga(
         var themes: List<Theme> = listOf(),
         var staff: List<Staff> = listOf(),
         var reviews: List<Review> = listOf(),
-        @JsonApiRelationships("franchise") var franchise: List<Franchise> = listOf(),
-        @JsonApiRelationships("manga-entry") var mangaEntry: MangaEntry? = null,
-) : JsonApiResource(), Cloneable {
+        @JsonApiRelationship("franchise") var franchise: List<Franchise> = listOf(),
+        @JsonApiRelationship("manga-entry") var mangaEntry: MangaEntry? = null,
+) : JsonApiResource(), MangaJapAdapter.Item, Cloneable {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
@@ -97,7 +98,8 @@ class Manga(
         shonen(R.string.mangaTypeShonen),
         doujin(R.string.mangaTypeDoujin),
         novel(R.string.mangaTypeNovel),
-        oneshot(R.string.mangaTypeOneshot);
+        oneshot(R.string.mangaTypeOneshot),
+        webtoon(R.string.webtoon);
 
         companion object {
             fun getByName(name: String): MangaType? = try {
@@ -107,6 +109,8 @@ class Manga(
             }
         }
     }
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 
     public override fun clone(): Manga {
         return super.clone() as Manga

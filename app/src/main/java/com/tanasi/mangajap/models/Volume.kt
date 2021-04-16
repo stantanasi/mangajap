@@ -1,12 +1,13 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.toCalendar
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
 import org.json.JSONObject
 import java.util.*
 
-@JsonApi("volumes")
+@JsonApiType("volumes")
 class Volume(
         override var id: String = "",
         createdAt: String? = null,
@@ -19,7 +20,7 @@ class Volume(
         val coverImage: String? = null,
 
         val manga: Manga? = null,
-) : JsonApiResource(), Cloneable {
+) : JsonApiResource(), MangaJapAdapter.Item, Cloneable {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
@@ -43,6 +44,8 @@ class Volume(
             }
         }
     }
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 
     public override fun clone(): Volume {
         return super.clone() as Volume

@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tanasi.jsonapi.JsonApiParams
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.models.*
 import com.tanasi.mangajap.services.MangaJapApiService
-import com.tanasi.mangajap.utils.jsonApi.JsonApiParams
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 

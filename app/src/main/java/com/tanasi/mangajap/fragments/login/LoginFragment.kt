@@ -8,16 +8,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.databinding.FragmentLoginBinding
 import com.tanasi.mangajap.ui.dialog.ChangePasswordDialog
 import com.tanasi.mangajap.ui.dialog.ForgotPasswordDialog
 import com.tanasi.mangajap.utils.extensions.isPasswordValid
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
-import com.tanasi.mangajap.utils.oauth2.OAuth2ErrorBody
-import com.tanasi.mangajap.utils.oauth2.OAuth2Response
 import com.tanasi.mangajap.utils.preferences.UserPreference
+import com.tanasi.oauth2.OAuth2ErrorBody
+import com.tanasi.oauth2.OAuth2Response
 
 class LoginFragment : Fragment() {
     

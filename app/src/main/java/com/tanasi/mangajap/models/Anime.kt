@@ -1,14 +1,15 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiRelationship
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.toCalendar
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiRelationships
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
 import org.json.JSONObject
 import java.util.*
 
-@JsonApi("anime")
+@JsonApiType("anime")
 class Anime(
         override var id: String = "",
         createdAt: String? = null,
@@ -41,8 +42,8 @@ class Anime(
         var staff: List<Staff> = listOf(),
         var reviews: List<Review> = listOf(),
         var franchises: List<Franchise> = listOf(),
-        @JsonApiRelationships("anime-entry") var animeEntry: AnimeEntry? = null,
-) : JsonApiResource(), Cloneable {
+        @JsonApiRelationship("anime-entry") var animeEntry: AnimeEntry? = null,
+) : JsonApiResource(), MangaJapAdapter.Item, Cloneable {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
@@ -119,6 +120,8 @@ class Anime(
             }
         }
     }
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 
     public override fun clone(): Anime {
         return super.clone() as Anime

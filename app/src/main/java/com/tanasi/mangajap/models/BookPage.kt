@@ -11,7 +11,7 @@ import java.util.zip.ZipFile
 class BookPage(
         val zipFile: ZipFile,
         val entry: ZipEntry
-) : MangaJapAdapter.Item() {
+) : MangaJapAdapter.Item {
 
     var name: String = entry.name
     var image: Bitmap? = null

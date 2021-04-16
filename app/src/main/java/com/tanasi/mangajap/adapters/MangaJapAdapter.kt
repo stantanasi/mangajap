@@ -3,16 +3,16 @@ package com.tanasi.mangajap.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tanasi.mangajap.adapters.viewHolders.*
 import com.tanasi.mangajap.databinding.*
 import com.tanasi.mangajap.models.*
-import com.tanasi.mangajap.adapters.viewHolders.*
 
 class MangaJapAdapter(
         private val items: List<Item>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    abstract class Item {
-        open lateinit var typeLayout: Type
+    interface Item {
+        var typeLayout: Type
     }
 
     enum class Type {
@@ -148,7 +148,7 @@ class MangaJapAdapter(
         onLoadMoreListener?.let { onLoadMoreListener ->
             when (val loadMore = items.last()) {
                 is LoadMore -> {
-                    if (position >= itemCount-3 && !loadMore.isLoading && loadMore.isMoreDataAvailable) {
+                    if (position >= itemCount - 3 && !loadMore.isLoading && loadMore.isMoreDataAvailable) {
                         onLoadMoreListener()
                         loadMore.isLoading = true
                     }
@@ -182,7 +182,6 @@ class MangaJapAdapter(
     override fun getItemCount(): Int = items.size
 
     override fun getItemViewType(position: Int): Int = items[position].typeLayout.ordinal
-
 
 
     fun setOnLoadMoreListener(onLoadMoreListener: () -> Unit) {

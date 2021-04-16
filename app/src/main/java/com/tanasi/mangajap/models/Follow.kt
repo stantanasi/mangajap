@@ -1,9 +1,10 @@
 package com.tanasi.mangajap.models
 
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 
-@JsonApi("follows")
+@JsonApiType("follows")
 class Follow(
         override var id: String ="",
         var createdAt: String? = null,
@@ -11,9 +12,11 @@ class Follow(
 
         var follower: User? = null,
         var followed: User? = null,
-) : JsonApiResource() {
+) : JsonApiResource(), MangaJapAdapter.Item {
 
     fun putFollower(follower: User) = putRelationship("follower", follower)
 
     fun putFollowed(followed: User) = putRelationship("followed", followed)
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 }

@@ -1,10 +1,11 @@
 package com.tanasi.mangajap.models
 
-import com.tanasi.mangajap.utils.jsonApi.JsonApi
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 import org.json.JSONObject
 
-@JsonApi("themes")
+@JsonApiType("themes")
 class Theme(
         override var id: String = "",
         var createdAt: String? = null,
@@ -14,7 +15,7 @@ class Theme(
 
         var manga: List<Manga> = listOf(),
         var anime: List<Anime> = listOf(),
-) : JsonApiResource() {
+) : JsonApiResource(), MangaJapAdapter.Item {
 
     val titles: Titles? = Titles.create(titles)
 
@@ -29,4 +30,6 @@ class Theme(
             }
         }
     }
+
+    override lateinit var typeLayout: MangaJapAdapter.Type
 }

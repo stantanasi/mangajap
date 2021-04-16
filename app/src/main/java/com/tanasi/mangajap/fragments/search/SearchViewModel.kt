@@ -1,17 +1,14 @@
 package com.tanasi.mangajap.fragments.search
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tanasi.mangajap.MangaJapApplication
-import com.tanasi.mangajap.R
+import com.tanasi.jsonapi.JsonApiParams
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.models.*
 import com.tanasi.mangajap.services.MangaJapApiService
-import com.tanasi.mangajap.utils.jsonApi.JsonApiParams
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 import kotlinx.coroutines.launch
 
 class SearchViewModel : ViewModel() {
@@ -34,9 +31,12 @@ class SearchViewModel : ViewModel() {
         data class SuccessLoadingMoreUsers(val userList: List<User>, val nextLink: String) : State()
         data class FailedLoadingMore(val error: JsonApiResponse.Error) : State()
 
-        object Updating : State()
-        data class SuccessUpdating(val succeed: Boolean) : State()
-        data class FailedUpdating(val error: JsonApiResponse.Error) : State()
+        object Saving : State()
+        data class SuccessSaving(val succeed: Boolean) : State()
+        data class FailedSaving(val error: JsonApiResponse.Error) : State()
+
+        data class SuccessRequest(val request: Request): State()
+        data class FailedRequest(val error: JsonApiResponse.Error): State()
     }
 
 
@@ -84,7 +84,7 @@ class SearchViewModel : ViewModel() {
     }
 
     fun createMangaEntry(manga: Manga, mangaEntry: MangaEntry) = viewModelScope.launch {
-        _state.value = State.Updating
+        _state.value = State.Saving
 
         val response = mangaJapApiService.createMangaEntry(
                 mangaEntry
@@ -93,17 +93,17 @@ class SearchViewModel : ViewModel() {
             when (response) {
                 is JsonApiResponse.Success -> {
                     manga.mangaEntry = response.body.data!!
-                    State.SuccessUpdating(true)
+                    State.SuccessSaving(true)
                 }
-                is JsonApiResponse.Error -> State.FailedUpdating(response)
+                is JsonApiResponse.Error -> State.FailedSaving(response)
             }
         } catch (e: Exception) {
-            State.FailedUpdating(JsonApiResponse.Error.UnknownError(e))
+            State.FailedSaving(JsonApiResponse.Error.UnknownError(e))
         }
     }
 
     fun updateMangaEntry(manga: Manga, mangaEntry: MangaEntry) = viewModelScope.launch {
-        _state.value = State.Updating
+        _state.value = State.Saving
 
         val response = mangaJapApiService.updateMangaEntry(
                 mangaEntry.id,
@@ -113,12 +113,12 @@ class SearchViewModel : ViewModel() {
             when (response) {
                 is JsonApiResponse.Success -> {
                     manga.mangaEntry = response.body.data!!
-                    State.SuccessUpdating(true)
+                    State.SuccessSaving(true)
                 }
-                is JsonApiResponse.Error -> State.FailedUpdating(response)
+                is JsonApiResponse.Error -> State.FailedSaving(response)
             }
         } catch (e: Exception) {
-            State.FailedUpdating(JsonApiResponse.Error.UnknownError(e))
+            State.FailedSaving(JsonApiResponse.Error.UnknownError(e))
         }
     }
 
@@ -167,7 +167,7 @@ class SearchViewModel : ViewModel() {
     }
 
     fun createAnimeEntry(anime: Anime, animeEntry: AnimeEntry) = viewModelScope.launch {
-        _state.value = State.Updating
+        _state.value = State.Saving
 
         val response = mangaJapApiService.createAnimeEntry(
                 animeEntry
@@ -176,17 +176,17 @@ class SearchViewModel : ViewModel() {
             when (response) {
                 is JsonApiResponse.Success -> {
                     anime.animeEntry = response.body.data!!
-                    State.SuccessUpdating(true)
+                    State.SuccessSaving(true)
                 }
-                is JsonApiResponse.Error -> State.FailedUpdating(response)
+                is JsonApiResponse.Error -> State.FailedSaving(response)
             }
         } catch (e: Exception) {
-            State.FailedUpdating(JsonApiResponse.Error.UnknownError(e))
+            State.FailedSaving(JsonApiResponse.Error.UnknownError(e))
         }
     }
 
     fun updateAnimeEntry(anime: Anime, animeEntry: AnimeEntry) = viewModelScope.launch {
-        _state.value = State.Updating
+        _state.value = State.Saving
 
         val response = mangaJapApiService.updateAnimeEntry(
                 animeEntry.id,
@@ -196,12 +196,12 @@ class SearchViewModel : ViewModel() {
             when (response) {
                 is JsonApiResponse.Success -> {
                     anime.animeEntry = response.body.data!!
-                    State.SuccessUpdating(true)
+                    State.SuccessSaving(true)
                 }
-                is JsonApiResponse.Error -> State.FailedUpdating(response)
+                is JsonApiResponse.Error -> State.FailedSaving(response)
             }
         } catch (e: Exception) {
-            State.FailedUpdating(JsonApiResponse.Error.UnknownError(e))
+            State.FailedSaving(JsonApiResponse.Error.UnknownError(e))
         }
     }
 
@@ -251,18 +251,13 @@ class SearchViewModel : ViewModel() {
 
     fun createRequest(request: Request) = viewModelScope.launch {
         val response = mangaJapApiService.createRequest(request)
-        try {
+        _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> Toast.makeText(
-                        MangaJapApplication.context,
-                        MangaJapApplication.context.getString(R.string.media_will_be_added, response.body.data?.data ?: ""),
-                        Toast.LENGTH_SHORT).show()
-                is JsonApiResponse.Error -> Toast.makeText(
-                        MangaJapApplication.context,
-                        MangaJapApplication.context.getString(R.string.error),
-                        Toast.LENGTH_SHORT).show()
+                is JsonApiResponse.Success -> State.SuccessRequest(response.body.data!!)
+                is JsonApiResponse.Error -> State.FailedRequest(response)
             }
         } catch (e: Exception) {
+            State.FailedRequest(JsonApiResponse.Error.UnknownError(e))
         }
     }
 }

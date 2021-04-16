@@ -257,5 +257,6 @@
     <string name="propose_anime">Proposer un animé à ajouter</string>
     <string name="anime_title">Titre de l\'animé</string>
     <string name="manga_title">Titre du manga</string>
+    <string name="webtoon">Webtoon</string>
 
 </resources>

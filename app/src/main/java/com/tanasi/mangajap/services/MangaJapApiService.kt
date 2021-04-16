@@ -1,15 +1,15 @@
 package com.tanasi.mangajap.services
 
+import com.tanasi.jsonapi.JsonApiParams
+import com.tanasi.jsonapi.JsonApiResponse
+import com.tanasi.jsonapi.adapter.JsonApiCallAdapterFactory
+import com.tanasi.jsonapi.converter.JsonApiConverterFactory
 import com.tanasi.mangajap.MangaJapApplication
 import com.tanasi.mangajap.models.*
-import com.tanasi.mangajap.utils.jsonApi.JsonApiParams
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
-import com.tanasi.mangajap.utils.jsonApi.adapter.JsonApiCallAdapterFactory
-import com.tanasi.mangajap.utils.jsonApi.converter.JsonApiConverterFactory
-import com.tanasi.mangajap.utils.oauth2.OAuth2Response
-import com.tanasi.mangajap.utils.oauth2.adapter.OAuth2CallAdapterFactory
-import com.tanasi.mangajap.utils.oauth2.converter.OAuth2ConverterFactory
 import com.tanasi.mangajap.utils.preferences.UserPreference
+import com.tanasi.oauth2.OAuth2Response
+import com.tanasi.oauth2.adapter.OAuth2CallAdapterFactory
+import com.tanasi.oauth2.converter.OAuth2ConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Retrofit

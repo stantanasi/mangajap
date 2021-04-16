@@ -9,8 +9,8 @@ import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.databinding.ItemSeasonAnimeBinding
 import com.tanasi.mangajap.fragments.anime.AnimeFragment
-import com.tanasi.mangajap.models.Season
 import com.tanasi.mangajap.models.AnimeEntry
+import com.tanasi.mangajap.models.Season
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
 
 class VhSeason(

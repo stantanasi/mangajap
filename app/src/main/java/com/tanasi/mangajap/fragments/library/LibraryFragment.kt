@@ -12,16 +12,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentLibraryBinding
-import com.tanasi.mangajap.models.Header
 import com.tanasi.mangajap.models.AnimeEntry
+import com.tanasi.mangajap.models.Header
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.getAttrColor
 import com.tanasi.mangajap.utils.extensions.setToolbar
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 import com.tanasi.mangajap.utils.preferences.LibraryPreference
 import com.tanasi.mangajap.utils.preferences.UserPreference
 
@@ -122,8 +122,8 @@ class LibraryFragment : Fragment() {
                     is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
                 }
 
-                LibraryViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
-                is LibraryViewModel.State.SuccessUpdating -> {
+                LibraryViewModel.State.Saving -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
+                is LibraryViewModel.State.SuccessSaving -> {
                     itemList
                             .find {
                                 when (it) {
@@ -132,12 +132,14 @@ class LibraryFragment : Fragment() {
                                 }
                             }
                             ?.let {
-                                itemList[itemList.indexOf(it)] = state.jsonApiResource
+                                when (state.jsonApiResource) {
+                                    is MangaJapAdapter.Item -> itemList[itemList.indexOf(it)] = state.jsonApiResource
+                                }
                             }
                     mangaJapAdapter.notifyDataSetChanged()
                     binding.isUpdating.cslIsUpdating.visibility = View.GONE
                 }
-                is LibraryViewModel.State.FailedUpdating -> when (state.error) {
+                is LibraryViewModel.State.FailedSaving -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
                     is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
                     is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()

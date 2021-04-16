@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.FragmentReviewSaveBinding
 import com.tanasi.mangajap.models.Anime
@@ -16,7 +17,6 @@ import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.Review
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.utils.extensions.setToolbar
-import com.tanasi.mangajap.utils.jsonApi.JsonApiResponse
 import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class ReviewSaveFragment : Fragment() {
