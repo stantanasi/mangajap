@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
+import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentAnimeBinding
 import com.tanasi.mangajap.databinding.PopupAnimeBinding
@@ -143,6 +144,11 @@ class AnimeFragment : Fragment() {
 
 
     fun displayAnime() {
+        if (_binding == null) {
+            (requireActivity() as MainActivity).reloadActivity()
+            return
+        }
+
         activity?.invalidateOptionsMenu()
 
         binding.animeEntryProgressProgressBar.apply {

@@ -141,7 +141,7 @@
             android:layout_marginStart="@dimen/manga_spacing"
             android:layout_marginEnd="@dimen/manga_spacing"
             android:src="@drawable/ic_trending_up_black_24dp"
-            android:tint="?attr/colorAccent"
+            app:tint="?attr/colorAccent"
             tools:ignore="ContentDescription" />
 
         <TextView android:id="@+id/animeRanked_TextView"
@@ -181,7 +181,7 @@
             android:layout_marginStart="@dimen/manga_spacing"
             android:layout_marginEnd="@dimen/manga_spacing"
             android:src="@drawable/ic_tv_black_24dp"
-            android:tint="?attr/colorAccent"
+            app:tint="?attr/colorAccent"
             tools:ignore="ContentDescription" />
 
         <TextView android:id="@+id/animeEpisodeCount_TextView"
@@ -209,7 +209,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/manga_spacing"
             android:src="@drawable/ic_group_black_24dp"
-            android:tint="?attr/colorAccent"
+            app:tint="?attr/colorAccent"
             tools:ignore="ContentDescription" />
 
         <TextView android:id="@+id/animeUserCount_TextView"

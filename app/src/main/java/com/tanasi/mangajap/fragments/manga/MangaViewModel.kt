@@ -6,14 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
-import com.tanasi.mangajap.MangaJapApplication
-import com.tanasi.mangajap.models.Book
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.services.MangaJapApiService
-import com.tanasi.mangajap.utils.preferences.MangaPreference
 import kotlinx.coroutines.launch
-import java.io.File
 
 class MangaViewModel : ViewModel() {
 
@@ -47,7 +43,6 @@ class MangaViewModel : ViewModel() {
             when (response) {
                 is JsonApiResponse.Success -> {
                     val manga = response.body.data!!
-                    manga.books = MangaPreference(MangaJapApplication.context, manga).books.map { Book(File(it)).loadCover() }
                     State.SuccessLoading(manga)
                 }
                 is JsonApiResponse.Error -> State.FailedLoading(response)

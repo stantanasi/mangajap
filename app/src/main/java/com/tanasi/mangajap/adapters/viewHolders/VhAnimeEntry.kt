@@ -49,15 +49,15 @@ class VhAnimeEntry(
         binding.media.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     ProfileFragmentDirections.actionProfileToAnime(
-                            animeEntry.anime!!.id,
-                            animeEntry.anime!!.canonicalTitle
+                            animeEntry.anime?.id ?: "",
+                            animeEntry.anime?.canonicalTitle ?: ""
                     )
             )
         }
 
         binding.mediaCoverImageView.apply {
             Picasso.get()
-                    .load(animeEntry.anime!!.coverImage)
+                    .load(animeEntry.anime?.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
                     .into(this)
@@ -74,8 +74,8 @@ class VhAnimeEntry(
         }
 
         binding.mediaProgressProgressBar.apply {
-            progress = animeEntry.getProgress(animeEntry.anime!!)
-            progressTintList = ContextCompat.getColorStateList(context, animeEntry.getProgressColor(animeEntry.anime!!))
+            progress = animeEntry.anime?.let { animeEntry.getProgress(it) } ?: 0
+            progressTintList = ContextCompat.getColorStateList(context, animeEntry.anime?.let { animeEntry.getProgressColor(it) } ?: AnimeEntry.Status.watching.colorId)
         }
     }
 
@@ -83,21 +83,21 @@ class VhAnimeEntry(
         binding.media.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     LibraryFragmentDirections.actionLibraryToAnime(
-                            animeEntry.anime!!.id,
-                            animeEntry.anime!!.canonicalTitle
+                            animeEntry.anime?.id ?: "",
+                            animeEntry.anime?.canonicalTitle ?: ""
                     )
             )
         }
 
         binding.mediaCoverImageView.apply {
             Picasso.get()
-                    .load(animeEntry.anime!!.coverImage)
+                    .load(animeEntry.anime?.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
                     .into(this)
         }
 
-        binding.mediaTitleTextView.text = animeEntry.anime!!.canonicalTitle
+        binding.mediaTitleTextView.text = animeEntry.anime?.canonicalTitle ?: ""
 
         binding.mediaIsAddCheckBox.apply {
             visibility = if (animeEntry.isAdd) View.GONE else View.VISIBLE
@@ -110,8 +110,8 @@ class VhAnimeEntry(
         }
 
         binding.mediaProgressProgressBar.apply {
-            progress = animeEntry.getProgress(animeEntry.anime!!)
-            progressTintList = ContextCompat.getColorStateList(context, animeEntry.getProgressColor(animeEntry.anime!!))
+            progress = animeEntry.anime?.let { animeEntry.getProgress(it) } ?: 0
+            progressTintList = ContextCompat.getColorStateList(context, animeEntry.anime?.let { animeEntry.getProgressColor(it) } ?: AnimeEntry.Status.watching.colorId)
         }
     }
 
@@ -119,21 +119,21 @@ class VhAnimeEntry(
         binding.anime.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     AgendaFragmentDirections.actionAgendaToAnime(
-                            animeEntry.anime!!.id,
-                            animeEntry.anime!!.canonicalTitle
+                            animeEntry.anime?.id ?: "",
+                            animeEntry.anime?.canonicalTitle ?: ""
                     )
             )
         }
 
         binding.ivAnimeCover.apply {
             Picasso.get()
-                    .load(animeEntry.anime!!.coverImage)
+                    .load(animeEntry.anime?.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
                     .into(this)
         }
 
-        binding.tvAnimeTitle.text = animeEntry.anime!!.canonicalTitle
+        binding.tvAnimeTitle.text = animeEntry.anime?.canonicalTitle ?: ""
 
         binding.tvEpisodeToWatch.apply {
             text = context.getString(R.string.episode_number, animeEntry.episodesWatch + 1)

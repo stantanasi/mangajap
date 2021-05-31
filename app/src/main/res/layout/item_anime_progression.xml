@@ -26,14 +26,11 @@
                 android:text="@string/progression"
                 android:textAppearance="@style/TextAppearance.Media.PartTitle" />
 
-            <TextView android:id="@+id/animeEntryStatus_TextView"
+            <Spinner android:id="@+id/spinner_anime_entry_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_animeentry_status"
-                android:text="@string/status"
-                android:textAllCaps="true"
-                android:textColor="@color/animeEntryStatusWatching_color"
-                android:textStyle="bold"/>
+                android:background="@drawable/bg_media_entry_status"
+                android:popupBackground="?attr/backgroundPrimaryColor" />
 
         </LinearLayout>
 

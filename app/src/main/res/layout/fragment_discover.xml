@@ -171,6 +171,102 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/discover_spacing"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/recent_manga"
+                            android:textColor="?attr/textPrimaryColor"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/discover_spacing"
+                            android:visibility="gone"
+                            style="@style/Widget.AppTheme.Button.SeeAll"/>
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_recent_manga"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingBottom="13dp"
+                        android:paddingStart="13dp"
+                        android:paddingEnd="13dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?attr/dividerColor"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/discover_spacing"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/recent_anime"
+                            android:textColor="?attr/textPrimaryColor"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/discover_spacing"
+                            android:visibility="gone"
+                            style="@style/Widget.AppTheme.Button.SeeAll"/>
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_recent_anime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingBottom="13dp"
+                        android:paddingStart="13dp"
+                        android:paddingEnd="13dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?attr/dividerColor"/>
+
+                </LinearLayout>
+
+
             </LinearLayout>
 
             <include android:id="@+id/is_loading"

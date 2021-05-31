@@ -23,15 +23,9 @@
     <string name="emailInvalid">Le format de votre adresse email n\'est pas valide</string>
     <string name="pseudoInvalid">Votre pseudo doit contenir entre 3 et 60 caractères, et n\'être composé que de lettres (sans accent), de chiffres et d\'underscores _</string>
     <string name="passwordInvalid">Votre mot de passe doit contenir au minimum 8 caractères et n\'être composé que de lettres (sans accent), de chiffres, d\'underscores _ et de caractères spéciaux (@$!%*#?&amp;)</string>
-    <string name="eBooks">Mes eBooks</string>
     <string name="discover">Découvrir</string>
     <string name="profile">Profil</string>
-    <string name="anyEBooksIn">Aucun eBook dans les dossiers :\n %s</string>
-    <string name="pages">%d pages</string>
-    <string name="actual_page">%d sur %d pages</string>
     <string name="userCount">%d membres</string>
-    <string name="folderCount">%d dossiers</string>
-    <string name="folderLocations">Emplacements</string>
     <string name="search">Rechercher</string>
     <string name="users">Utilisateurs</string>
     <string name="profilePicture">Photo de profil</string>
@@ -82,7 +76,6 @@
     <string name="shareManga">%s sur MangaJap\nhttps://play.google.com/store/apps/details?id=com.tanasi.mangajap</string>
     <string name="doYouOwnThisBook">Vous possédez ce livre ?</string>
     <string name="synopsis">Synopsis</string>
-    <string name="status">Statut</string>
     <string name="type">Type</string>
     <string name="progression">Progression</string>
     <string name="volumesRead">Tomes lus</string>
@@ -104,13 +97,6 @@
     <string name="defineATheme">Définir un thème</string>
     <string name="themeClassic">Classique</string>
     <string name="themeDark">Sombre</string>
-    <string name="reading">Lecture</string>
-    <string name="fullScreen">Plein écran</string>
-    <string name="openLastPage">Réouvrir à la dernière page</string>
-    <string name="reverseReading">Sens de lecture inversé</string>
-    <string name="reverseReading_summaryOff">Gauche à droite / Haut en bas</string>
-    <string name="reverseReading_summaryOn">Droite à gauche / Bas en haut</string>
-    <string name="verticalReading">Lecture verticale</string>
     <string name="about">À propos</string>
     <string name="logout">Se déconnecter</string>
     <string name="logoutConfirmation">Êtes-vous sûr de vouloir vous déconnecter ?</string>
@@ -171,8 +157,6 @@
     <string name="mangaStatusFinished">Terminé</string>
     <string name="mangaStatusUpcoming">À venir</string>
     <string name="animeStatusUpcoming">À venir</string>
-    <string name="bookStatusCompleted">Terminé</string>
-    <string name="bookStatusOngoing">En cours</string>
     <string name="staffRoleAuthor">Auteur</string>
     <string name="staffRoleIllustrator">Illustrateur</string>
     <string name="staffRoleProducer">Producteur</string>
@@ -224,7 +208,6 @@
     <string name="languageEn">Anglais</string>
     <string name="cache">Cache</string>
     <string name="clearCache">Vider le cache</string>
-    <string name="readingDisplay">Affichage</string>
     <string name="approximatelyEpisodeCount">~%d épisodes</string>
     <string name="approximatelySeasonCount">~%d saisons</string>
     <string name="approximatelyVolumeCount">~%d volumes</string>
@@ -247,16 +230,15 @@
     <string name="manga_metadata">%s - %s • %s</string>
     <string name="anime_rating"># %s</string>
     <string name="manga_rating"># %s</string>
-    <string name="book_size_mo">%d Mo.</string>
     <string name="season_episodes_progress">%d / %d</string>
     <string name="agenda">Agenda</string>
-    <string name="supported_files">Fichiers supportés</string>
-    <string name="files">Fichiers</string>
     <string name="episode_number">E%d</string>
     <string name="media_will_be_added">%s sera ajouté dans les plus brefs délais</string>
     <string name="propose_anime">Proposer un animé à ajouter</string>
     <string name="anime_title">Titre de l\'animé</string>
     <string name="manga_title">Titre du manga</string>
     <string name="webtoon">Webtoon</string>
+    <string name="recent_manga">Derniers mangas ajoutés</string>
+    <string name="recent_anime">Derniers animes ajoutés</string>
 
 </resources>

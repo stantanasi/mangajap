@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="@dimen/popup_spacing"
+        android:visibility="gone"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -50,7 +51,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?attr/dividerColor"/>
+        android:background="?attr/dividerColor"
+        android:visibility="gone"/>
 
     <LinearLayout android:id="@+id/deleteManga"
         android:layout_width="match_parent"

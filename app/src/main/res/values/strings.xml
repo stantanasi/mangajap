@@ -23,14 +23,8 @@
     <string name="emailInvalid">Email invalid</string>
     <string name="pseudoInvalid">Pseudo must only contain letters, numbers and underscore and must be between 3 to 60 characters long</string>
     <string name="passwordInvalid">Password must contain minimum 8 characters and must only contain letters, numbers and special characters (_@$!%*#?&amp;)</string>
-    <string name="eBooks">My eBooks</string>
     <string name="discover">Discover</string>
     <string name="profile">Profile</string>
-    <string name="anyEBooksIn">Any eBook in :\n %s</string>
-    <string name="pages">%d pages</string>
-    <string name="actual_page">%d on %d pages</string>
-    <string name="folderCount">%d folder</string>
-    <string name="folderLocations">Locations</string>
     <string name="search">Search</string>
     <string name="users">Users</string>
     <string name="userCount">%d members</string>
@@ -76,7 +70,6 @@
     <string name="shareManga">%s on MangaJap\nhttps://play.google.com/store/apps/details?id=com.tanasi.mangajap</string>
     <string name="doYouOwnThisBook">Do you own this book ?</string>
     <string name="synopsis">Synopsis</string>
-    <string name="status">Status</string>
     <string name="type">Type</string>
     <string name="progression">Progression</string>
     <string name="volumesRead">Volumes read</string>
@@ -96,13 +89,6 @@
     <string name="defineALanguage">Define a language</string>
     <string name="theme">Theme</string>
     <string name="defineATheme">Define a theme</string>
-    <string name="reading">Reading</string>
-    <string name="fullScreen">Full screen</string>
-    <string name="openLastPage">Open at last page</string>
-    <string name="reverseReading">Reverse reading</string>
-    <string name="reverseReading_summaryOff">Left to right / Top to bottom</string>
-    <string name="reverseReading_summaryOn">Right to left / Bottom to top</string>
-    <string name="verticalReading">Vertical reading</string>
     <string name="about">About</string>
     <string name="logout">Logout</string>
     <string name="logoutConfirmation">Are you sure you want to logout ?</string>
@@ -153,8 +139,6 @@
     <string name="trendingManga">Trending manga</string>
     <string name="trendingAnime">Trending anime</string>
     <string name="watchTrailer">Watch trailer</string>
-    <string name="bookStatusOngoing">Ongoing</string>
-    <string name="bookStatusCompleted">Completed</string>
 
     <string name="oauthErrorInvalidGrant">Your username or password is incorrect</string>
 
@@ -240,7 +224,6 @@
     <string name="languageEn">English</string>
     <string name="cache">Cache</string>
     <string name="clearCache">Clear cache</string>
-    <string name="readingDisplay">Display</string>
     <string name="ad">Ad</string>
     <string name="now">Now</string>
     <string name="later">Later</string>
@@ -258,16 +241,15 @@
     <string name="manga_metadata">%s - %s • %s</string>
     <string name="anime_rating"># %s</string>
     <string name="manga_rating"># %s</string>
-    <string name="book_size_mo">%d Mo.</string>
     <string name="season_episodes_progress">%d / %d</string>
     <string name="agenda">Agenda</string>
-    <string name="supported_files">Supported files</string>
-    <string name="files">Files</string>
     <string name="episode_number">E%d</string>
     <string name="media_will_be_added">%s will be added as soon as possible</string>
     <string name="propose_anime">Add anime</string>
     <string name="anime_title">Anime title</string>
     <string name="manga_title">Manga title</string>
     <string name="webtoon">Webtoon</string>
+    <string name="recent_manga">Recent manga</string>
+    <string name="recent_anime">Recent anime</string>
 
 </resources>

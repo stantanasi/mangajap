@@ -25,7 +25,7 @@ class LauncherActivity : AppCompatActivity() {
 
         val userManager = UserPreference(this)
 
-        if (userManager.accessToken != null) {
+        userManager.accessToken?.let {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }

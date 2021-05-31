@@ -13,6 +13,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.tanasi.mangajap.BuildConfig
 import com.tanasi.mangajap.databinding.ItemAdDiscoverBinding
+import com.tanasi.mangajap.databinding.ItemAdProfileBinding
 import com.tanasi.mangajap.databinding.ItemAdSearchBinding
 import com.tanasi.mangajap.models.Ad
 
@@ -37,6 +38,7 @@ class VhAd(
                 .forNativeAd {  nativeAd ->
                     when (_binding) {
                         is ItemAdDiscoverBinding -> displayDiscover(_binding, nativeAd)
+                        is ItemAdProfileBinding -> displayProfile(_binding, nativeAd)
                         is ItemAdSearchBinding -> displaySearch(_binding, nativeAd)
                     }
                 }
@@ -68,6 +70,30 @@ class VhAd(
         binding.tvAdBody.let {
             binding.adView.bodyView = it
             it.text = nativeAd.body
+        }
+
+        binding.adMediaView.let {
+            binding.adView.mediaView = it
+            it.setImageScaleType(ImageView.ScaleType.CENTER_CROP)
+        }
+
+        binding.adView.setNativeAd(nativeAd)
+    }
+
+    private fun displayProfile(binding: ItemAdProfileBinding, nativeAd: NativeAd) {
+        binding.ivAdIcon.let {
+            binding.adView.iconView = it
+            nativeAd.icon?.drawable?.let { drawable ->
+                it.visibility = View.VISIBLE
+                it.setImageDrawable(drawable)
+            } ?: {
+                it.visibility = View.GONE
+            }
+        }
+
+        binding.tvAdHeadline.let {
+            binding.adView.headlineView = it
+            it.text = nativeAd.headline
         }
 
         binding.adMediaView.let {

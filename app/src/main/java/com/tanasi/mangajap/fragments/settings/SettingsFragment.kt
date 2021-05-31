@@ -30,7 +30,7 @@ class SettingsFragment : Fragment() {
 
         setToolbar(resources.getString(R.string.settings), "").setNavigationOnClickListener { findNavController().navigateUp() }
 
-        showFragment("main", false)
+        showFragment(SettingsPreferenceFragment.Settings.main, false)
     }
 
     override fun onDestroyView() {
@@ -40,12 +40,12 @@ class SettingsFragment : Fragment() {
 
 
 
-    fun showFragment(settings: String, back_stack: Boolean) {
+    fun showFragment(settings: SettingsPreferenceFragment.Settings, back_stack: Boolean) {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
         val settingsPreferenceFragment = SettingsPreferenceFragment()
         settingsPreferenceFragment.settingsFragment = this
         val args = Bundle()
-        args.putString("settings", settings)
+        args.putString("settings", settings.name)
         settingsPreferenceFragment.arguments = args
         ft.replace(R.id.settings_FrameLayout, settingsPreferenceFragment)
         if (back_stack) ft.addToBackStack(null)

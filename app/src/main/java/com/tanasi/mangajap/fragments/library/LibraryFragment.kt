@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.SpinnerAdapter
 import com.tanasi.mangajap.databinding.FragmentLibraryBinding
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Header
@@ -153,22 +153,12 @@ class LibraryFragment : Fragment() {
         _binding = null
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (resultCode == Activity.RESULT_OK && data != null) {
-//            when (requestCode) {
-//                MangaEntry.REQUEST_CODE -> libraryViewModel.getMangaEntry(data.getStringExtra(MangaEntry.KEY_ID) ?: "")
-//                AnimeEntry.REQUEST_CODE -> libraryViewModel.getAnimeEntry(data.getStringExtra(AnimeEntry.KEY_ID) ?: "")
-//            }
-//        }
-//    }
-
 
     private fun displayLibrary() {
         binding.sortBySpinner.apply {
             var isFirstLaunch = true
 
-            adapter = ArrayAdapter(context, R.layout.item_spinner, SortBy.values().map { getString(it.stringId) })
+            adapter = SpinnerAdapter(context, SortBy.values().map { getString(it.stringId) })
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     // OnItemSelected se lance au demarrage donc verifier si lancement ou pas
@@ -276,8 +266,8 @@ class LibraryFragment : Fragment() {
             SortBy.Progression -> {
                 itemList.sortByDescending { item ->
                     when (item) {
-                        is MangaEntry -> item.getProgress(item.manga!!)
-                        is AnimeEntry -> item.getProgress(item.anime!!)
+                        is MangaEntry -> item.manga?.let { item.getProgress(it) } ?: 0
+                        is AnimeEntry -> item.anime?.let { item.getProgress(it) } ?: 0
                         else -> 0
                     }
                 }

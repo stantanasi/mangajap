@@ -25,9 +25,9 @@ class ImageViewModel : ViewModel() {
 
         Picasso.get().load(url).into(object : com.squareup.picasso.Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                if (bitmap != null) {
-                    _state.value = State.SuccessLoading(bitmap)
-                } else {
+                bitmap?.let {
+                    _state.value = State.SuccessLoading(it)
+                } ?: let {
                     _state.value = State.FailedLoading(Exception("Bitmap is null"))
                 }
             }

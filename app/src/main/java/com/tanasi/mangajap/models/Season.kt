@@ -31,7 +31,7 @@ class Season(
         }
 
     val isWatched: Boolean
-        get() = episodes[0].anime!!.animeEntry!!.episodesWatch >= episodes.last().number
+        get() = (episodes[0].anime?.animeEntry?.episodesWatch ?: 0) >= (episodes.lastOrNull()?.number ?: 0)
 
     val progress: Int
         get() = ((episodeWatched.toDouble() / episodeCount) * 100).toInt()

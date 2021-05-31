@@ -5,12 +5,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
-import android.os.Environment
 import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.tanasi.mangajap.utils.preferences.SettingsPreference
-import java.io.File
 import java.util.*
 
 fun AppCompatActivity.getActualTheme(): Int = SettingsPreference(this).theme.styleId
@@ -32,24 +30,6 @@ fun Context.isStoragePermissionGranted(): Boolean {
     } else { //permission is automatically granted on sdk<23 upon installation
         true
     }
-}
-
-// TODO: ne fonctionne pas sur mon samsung (carte sd et stockage interne)
-fun Context.getInternalStorageDirectory(): File {
-    return Environment.getExternalStorageDirectory()
-}
-
-fun Context.getExternalStorageDirectory(): File {
-    val fileList = File("/storage/").listFiles() ?: return File("/storage/")
-    for (file in fileList) {
-        if (!file.absolutePath.equals(this.getInternalStorageDirectory().absolutePath, true)
-                && !file.name.equals("self", true)
-                && file.isDirectory
-                && file.canRead()) {
-            return file
-        }
-    }
-    return File("/storage/")
 }
 
 fun Context.getAttrColor(resId: Int): Int {

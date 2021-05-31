@@ -35,7 +35,7 @@ class VhFollow(
                     setOnClickListener {
                         Navigation.findNavController(binding.root).navigate(
                                 FollowFragmentDirections.actionFollowToProfile(
-                                        follow.follower!!.id
+                                        follow.follower?.id ?: ""
                                 )
                         )
                     }
@@ -44,7 +44,7 @@ class VhFollow(
                     setOnClickListener {
                         Navigation.findNavController(binding.root).navigate(
                                 FollowFragmentDirections.actionFollowToProfile(
-                                        follow.followed!!.id
+                                        follow.followed?.id ?: ""
                                 )
                         )
                     }
@@ -79,8 +79,8 @@ class VhFollow(
 
         binding.userPseudoTextView.apply {
             text = when (follow.typeLayout) {
-                MangaJapAdapter.Type.FOLLOWERS -> follow.follower!!.pseudo
-                MangaJapAdapter.Type.FOLLOWING -> follow.followed!!.pseudo
+                MangaJapAdapter.Type.FOLLOWERS -> follow.follower?.pseudo ?: ""
+                MangaJapAdapter.Type.FOLLOWING -> follow.followed?.pseudo ?: ""
                 else -> ""
             }
         }

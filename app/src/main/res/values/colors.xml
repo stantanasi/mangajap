@@ -5,9 +5,6 @@
 
     <color name="ic_launcher_background">#FFFFFF</color>
 
-    <color name="bookStatusInProgress">#2287df</color>
-    <color name="bookStatusCompleted">#b62cb6</color>
-
     <color name="animeEntryStatusWatching_color">#2287df</color>
     <color name="animeEntryStatusWatchingFinished_color">#13bd28</color>
     <color name="animeEntryStatusCompleted_color">#b62cb6</color>

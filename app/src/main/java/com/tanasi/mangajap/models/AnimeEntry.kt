@@ -32,12 +32,12 @@ class AnimeEntry(
     val startedAt: Calendar? = startedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
     val finishedAt: Calendar? = finishedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
 
-    enum class Status(val stringId: Int) {
-        watching(R.string.animeEntryStatusWatching),
-        completed(R.string.animeEntryStatusCompleted),
-        planned(R.string.animeEntryStatusPlanned),
-        on_hold(R.string.animeEntryStatusOnHold),
-        dropped(R.string.animeEntryStatusDropped);
+    enum class Status(val stringId: Int, val colorId: Int) {
+        watching(R.string.animeEntryStatusWatching, R.color.animeEntryStatusWatching_color),
+        completed(R.string.animeEntryStatusCompleted, R.color.animeEntryStatusCompleted_color),
+        planned(R.string.animeEntryStatusPlanned, R.color.animeEntryStatusPlanned_color),
+        on_hold(R.string.animeEntryStatusOnHold, R.color.animeEntryStatusOnHold_color),
+        dropped(R.string.animeEntryStatusDropped, R.color.animeEntryStatusDropped_color);
 
         companion object {
             fun getByName(name: String): Status = try {

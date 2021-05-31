@@ -9,10 +9,6 @@
         android:key="account"
         android:layout="@layout/item_settings_preference" />
 
-    <Preference android:title="@string/reading"
-        android:key="reading"
-        android:layout="@layout/item_settings_preference" />
-
     <Preference android:title="@string/about"
         android:key="about"
         android:layout="@layout/item_settings_preference" />

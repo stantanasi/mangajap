@@ -12,7 +12,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -23,6 +22,7 @@ import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
+import com.tanasi.mangajap.adapters.SpinnerAdapter
 import com.tanasi.mangajap.databinding.FragmentProfileEditBinding
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.utils.extensions.*
@@ -208,7 +208,7 @@ class ProfileEditFragment : Fragment() {
         }
 
         binding.genderSpinner.apply {
-            adapter = ArrayAdapter(context, R.layout.item_spinner, User.Gender.values().map { getString(it.stringId) })
+            adapter = SpinnerAdapter(context, User.Gender.values().map { getString(it.stringId) })
             setSelection(user.gender?.ordinal ?: 0)
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
@@ -235,7 +235,7 @@ class ProfileEditFragment : Fragment() {
                         countriesCode.add(code)
                     }
 
-            adapter = ArrayAdapter(context, R.layout.item_spinner, countries)
+            adapter = SpinnerAdapter(context, countries)
             setSelection(countriesCode.indexOf(user.country))
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {

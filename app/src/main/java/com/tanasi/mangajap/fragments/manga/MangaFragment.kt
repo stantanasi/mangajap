@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
+import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentMangaBinding
 import com.tanasi.mangajap.databinding.PopupMangaBinding
@@ -27,6 +28,7 @@ import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.models.Volume
+import com.tanasi.mangajap.utils.extensions.addOrLast
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.extensions.setToolbar
 import com.tanasi.mangajap.utils.extensions.shareText
@@ -160,6 +162,11 @@ class MangaFragment : Fragment() {
 
 
     fun displayManga() {
+        if (_binding == null) {
+            (requireActivity() as MainActivity).reloadActivity()
+            return
+        }
+
         activity?.invalidateOptionsMenu()
 
         binding.mangaProgressProgressBar.apply {
@@ -202,7 +209,6 @@ class MangaFragment : Fragment() {
 
         setMangaAboutFragment()
         setMangaVolumeFragment()
-        setMyBooksFragment()
 
         binding.mangaTabLayout.apply {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -241,30 +247,18 @@ class MangaFragment : Fragment() {
             addAll(manga.volumes.map { volume ->
                 volume.apply { typeLayout  = MangaJapAdapter.Type.VOLUME_MANGA }
             })
-            if (showDetailsVolume != null) {
-                var index: Int = (MANGA_VOLUME_SPAN_COUNT - mangaVolumeList.indexOf(showDetailsVolume!!) % MANGA_VOLUME_SPAN_COUNT) + mangaVolumeList.indexOf(showDetailsVolume!!)
-                if (index > mangaVolumeList.size) index = mangaVolumeList.size
-                mangaVolumeList.add(index, showDetailsVolume!!.clone().apply { typeLayout = MangaJapAdapter.Type.VOLUME_MANGA_DETAILS })
+
+            showDetailsVolume?.let {
+                mangaVolumeList.addOrLast(
+                    (MANGA_VOLUME_SPAN_COUNT - mangaVolumeList.indexOf(it) % MANGA_VOLUME_SPAN_COUNT) + mangaVolumeList.indexOf(it),
+                    it.clone().apply { typeLayout = MangaJapAdapter.Type.VOLUME_MANGA_DETAILS }
+                )
             }
         }
 
         if (mangaVolumeList.isNotEmpty()) {
             if (mangaVolumeFragment.isAdded) mangaVolumeFragment.mangaJapAdapter?.notifyDataSetChanged()
             addFragment(mangaVolumeFragment, getString(R.string.volumes))
-        }
-    }
-
-    private fun setMyBooksFragment() {
-        mangaMyBookList.apply {
-            clear()
-            addAll(manga.books.map { book ->
-                book.apply { typeLayout = MangaJapAdapter.Type.BOOK }
-            })
-        }
-
-        if (mangaMyBookList.isNotEmpty()) {
-            if (mangaBooksFragment.isAdded) mangaBooksFragment.mangaJapAdapter?.notifyDataSetChanged()
-            addFragment(mangaBooksFragment, getString(R.string.eBooks))
         }
     }
 
@@ -312,7 +306,7 @@ class MangaFragment : Fragment() {
         }
 
 
-        popupMangaBinding.mangaEntryStatusTextView.text = getString(manga.mangaEntry!!.status.stringId)
+        popupMangaBinding.mangaEntryStatusTextView.text = getString(manga.mangaEntry?.status?.stringId ?: MangaEntry.Status.reading.stringId)
 
         popupMangaBinding.mangaAddMyBooks.setOnClickListener {
             findNavController().navigate(

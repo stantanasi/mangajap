@@ -23,12 +23,6 @@
         <action
             android:id="@+id/action_manga_to_image"
             app:destination="@id/image" />
-        <action
-            android:id="@+id/action_manga_to_ebooks"
-            app:destination="@id/ebooks" />
-        <action
-            android:id="@+id/action_manga_to_reading"
-            app:destination="@id/reading" />
     </fragment>
     <fragment
         android:id="@+id/discover"
@@ -78,27 +72,6 @@
         <action
             android:id="@+id/action_profile_to_settings"
             app:destination="@id/settings" />
-    </fragment>
-    <fragment
-        android:id="@+id/ebooks"
-        android:name="com.tanasi.mangajap.fragments.books.BooksFragment"
-        android:label="fragment_my_books"
-        tools:layout="@layout/fragment_books" >
-        <action
-            android:id="@+id/action_ebooks_to_reading"
-            app:destination="@id/reading" />
-        <action
-            android:id="@+id/action_ebooks_to_browse"
-            app:destination="@id/browse" />
-        <argument
-            android:name="mangaId"
-            app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
-        <argument
-            android:name="mangaTitle"
-            app:argType="string"
-            android:defaultValue="" />
     </fragment>
     <fragment
         android:id="@+id/anime"
@@ -190,17 +163,6 @@
             app:destination="@id/profile" />
     </fragment>
     <fragment
-        android:id="@+id/reading"
-        android:name="com.tanasi.mangajap.fragments.reading.ReadingFragment"
-        android:label="ReadingFragment" >
-        <argument
-            android:name="bookTitle"
-            app:argType="string" />
-        <argument
-            android:name="bookPath"
-            app:argType="string" />
-    </fragment>
-    <fragment
         android:id="@+id/reviews"
         android:name="com.tanasi.mangajap.fragments.reviews.ReviewsFragment"
         android:label="ReviewsFragment" >
@@ -227,17 +189,6 @@
         <argument
             android:name="imagePath"
             app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/browse"
-        android:name="com.tanasi.mangajap.fragments.browse.BrowseFragment"
-        android:label="BrowseFragment" >
-        <argument
-            android:name="folderPath"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_browse_to_reading"
-            app:destination="@id/reading" />
     </fragment>
     <fragment
         android:id="@+id/settings"

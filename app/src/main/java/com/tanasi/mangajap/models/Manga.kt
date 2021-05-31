@@ -51,8 +51,6 @@ class Manga(
     var status: Status = Status.getByName(status)
     var mangaType: MangaType? = MangaType.getByName(mangaType)
 
-    var books: List<Book> = listOf()
-
 
     data class Titles(
             val fr: String,

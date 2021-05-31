@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.tanasi.mangajap.MangaJapApplication
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
-import com.tanasi.mangajap.fragments.profile.ProfileFragment
 
 class GeneralPreference(
         context: Context
@@ -17,7 +15,7 @@ class GeneralPreference(
         private const val START_DESTINATION = "start_destination_id"
         private const val PROFILE_TAB = "profile_tab"
         private const val LAUNCH_COUNT = "launch_count"
-        private const val BOOK_LAYOUT_TYPE = "book_layout_type"
+        private const val DISPLAY_FIRST = "display_first"
     }
 
     private val prefs: SharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -36,13 +34,22 @@ class GeneralPreference(
             editor.commit()
         }
 
-    var savedProfileTab: ProfileFragment.TabType
-        get() {
-            val position = prefs.getInt(PROFILE_TAB, ProfileFragment.TabType.Manga.ordinal)
-            return ProfileFragment.TabType.values()[position]
+    enum class DisplayFirst(val stringId: Int) {
+        Manga(R.string.manga),
+        Anime(R.string.anime);
+
+        companion object {
+            fun getByName(name: String?): DisplayFirst = try {
+                valueOf(name!!)
+            } catch (e: Exception) {
+                Manga
+            }
         }
+    }
+    var displayFirst: DisplayFirst
+        get() = DisplayFirst.getByName(prefs.getString(DISPLAY_FIRST, null))
         set(value) {
-            editor.putInt(PROFILE_TAB, value.ordinal)
+            editor.putString(DISPLAY_FIRST, value.name)
             editor.commit()
         }
 
@@ -50,19 +57,6 @@ class GeneralPreference(
         get() = prefs.getInt(LAUNCH_COUNT, 0)
         set(value) {
             editor.putInt(LAUNCH_COUNT, value)
-            editor.commit()
-        }
-
-
-
-    var savedBookLayoutType: MangaJapAdapter.Type
-        get() = when (val type = MangaJapAdapter.Type.values()[prefs.getInt(BOOK_LAYOUT_TYPE, MangaJapAdapter.Type.BOOK_DETAILS.ordinal)]) {
-                MangaJapAdapter.Type.BOOK,
-                MangaJapAdapter.Type.BOOK_DETAILS -> type
-                else -> MangaJapAdapter.Type.BOOK_DETAILS
-            }
-        set(value) {
-            editor.putInt(BOOK_LAYOUT_TYPE, value.ordinal)
             editor.commit()
         }
 }

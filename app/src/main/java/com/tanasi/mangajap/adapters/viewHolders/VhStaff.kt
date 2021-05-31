@@ -81,6 +81,6 @@ class VhStaff(
             }
         }
 
-        binding.staffRoleTextView.text = context.getString(staff.role!!.stringId)
+        binding.staffRoleTextView.text = context.getString(staff.role?.stringId ?: Staff.Role.story_and_art.stringId)
     }
 }

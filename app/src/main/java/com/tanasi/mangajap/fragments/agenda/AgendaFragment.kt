@@ -14,7 +14,6 @@ import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentAgendaBinding
-import com.tanasi.mangajap.fragments.profile.ProfileFragment
 import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
 import com.tanasi.mangajap.models.Header
 import com.tanasi.mangajap.utils.extensions.add
@@ -66,12 +65,18 @@ class AgendaFragment : Fragment() {
                     AgendaTab.ReadList.list.apply {
                         clear()
                         add(Header(getString(R.string.read_list)).also { it.typeLayout = MangaJapAdapter.Type.HEADER_AGENDA })
-                        addAll(state.readingManga.filter { it.getProgress(it.manga!!) < 100 })
+                        addAll(state.readingManga.filter { mangaEntry ->
+                            mangaEntry.manga?.let { manga -> mangaEntry.getProgress(manga) < 100 }
+                                ?: false
+                        })
                     }
                     AgendaTab.WatchList.list.apply {
                         clear()
                         add(Header(getString(R.string.watch_list)).also { it.typeLayout = MangaJapAdapter.Type.HEADER_AGENDA })
-                        addAll(state.watchingAnime.filter { it.getProgress(it.anime!!) < 100 })
+                        addAll(state.watchingAnime.filter { animeEntry ->
+                            animeEntry.anime?.let { anime -> animeEntry.getProgress(anime) < 100 }
+                                ?: false
+                        })
                     }
                     AgendaTab.values().map { it.fragment.mangaJapAdapter?.notifyDataSetChanged() }
                     binding.isLoading.cslIsLoading.visibility = View.GONE
@@ -87,9 +92,9 @@ class AgendaFragment : Fragment() {
         viewModel.getAgenda(userPreference.selfId)
 
         if (!this::actualTab.isInitialized) {
-            actualTab = when (generalPreference.savedProfileTab) {
-                ProfileFragment.TabType.Manga -> AgendaTab.ReadList
-                ProfileFragment.TabType.Anime -> AgendaTab.WatchList
+            actualTab = when (generalPreference.displayFirst) {
+                GeneralPreference.DisplayFirst.Manga -> AgendaTab.ReadList
+                GeneralPreference.DisplayFirst.Anime -> AgendaTab.WatchList
             }
         }
 
@@ -102,9 +107,9 @@ class AgendaFragment : Fragment() {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     actualTab = AgendaTab.values()[tab.position]
-                    generalPreference.savedProfileTab = when (actualTab) {
-                        AgendaTab.ReadList -> ProfileFragment.TabType.Manga
-                        AgendaTab.WatchList -> ProfileFragment.TabType.Anime
+                    generalPreference.displayFirst = when (actualTab) {
+                        AgendaTab.ReadList -> GeneralPreference.DisplayFirst.Manga
+                        AgendaTab.WatchList -> GeneralPreference.DisplayFirst.Anime
                     }
                     showTab(actualTab)
                 }

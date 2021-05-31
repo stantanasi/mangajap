@@ -1,26 +1,21 @@
 package com.tanasi.mangajap.fragments.settingsPreference
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.LauncherActivity
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.fragments.settings.SettingsFragment
-import com.tanasi.mangajap.models.Book
-import com.tanasi.mangajap.models.Folder
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.ui.dialog.ChangePasswordDialog
 import com.tanasi.mangajap.ui.dialog.EditTextDialog
@@ -28,28 +23,29 @@ import com.tanasi.mangajap.ui.dialog.RadioGroupDialog
 import com.tanasi.mangajap.utils.extensions.*
 import com.tanasi.mangajap.utils.preferences.SettingsPreference
 import com.tanasi.mangajap.utils.preferences.UserPreference
-import java.io.File
 import java.util.*
-
-
+// TODO: faire comme dans Steams, bouton "ANNOUNCEMENTS = annonces" dans les paramètres qui affiche toutes les nouveautés, notes...
 class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
     private lateinit var settingsPreference: SettingsPreference
     private lateinit var userPreference: UserPreference
-    private var settings = ""
+    private var settings: Settings? = null
 
     lateinit var settingsFragment: SettingsFragment
 
     private val viewModel: SettingsPreferenceViewModel by viewModels()
 
-    private val pickFolder = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.data?.let { uri ->
-                // TODO: erreur uri (exemple: content://com.android.externalstorage.documents/tree/)
-//                settingsPreference.booksFolder = settingsPreference.booksFolder.toMutableList().also {
-////                    it.add(File(path).absolutePath)
-//                }
-//                displayReading()
+    enum class Settings {
+        main,
+        general,
+        account,
+        about;
+
+        companion object {
+            fun getByName(name: String): Settings? = try {
+                valueOf(name)
+            } catch (e: Exception) {
+                null
             }
         }
     }
@@ -60,14 +56,13 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        settings = arguments?.getString("settings", "") ?: ""
+        settings = Settings.getByName(arguments?.getString("settings", "") ?: "")
         when (settings) {
-            "main" -> addPreferencesFromResource(R.xml.preference_settings_main)
-            "general" -> addPreferencesFromResource(R.xml.preference_settings_general)
-            "account" -> addPreferencesFromResource(R.xml.preference_settings_account)
-            "reading" -> addPreferencesFromResource(R.xml.preference_settings_reading)
-            "about" -> addPreferencesFromResource(R.xml.preference_settings_about)
-            else -> Toast.makeText(requireContext(), requireContext().resources.getString(R.string.error), Toast.LENGTH_SHORT).show()
+            Settings.main -> addPreferencesFromResource(R.xml.preference_settings_main)
+            Settings.general -> addPreferencesFromResource(R.xml.preference_settings_general)
+            Settings.account -> addPreferencesFromResource(R.xml.preference_settings_account)
+            Settings.about -> addPreferencesFromResource(R.xml.preference_settings_about)
+            null -> Toast.makeText(requireContext(), requireContext().resources.getString(R.string.error), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -82,11 +77,11 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
         onBackPressed {
             when (settings) {
-                "main" -> findNavController().navigateUp()
-                "general",
-                "account",
-                "reading",
-                "about" -> parentFragmentManager.popBackStack()
+                Settings.main -> findNavController().navigateUp()
+
+                Settings.general,
+                Settings.account,
+                Settings.about -> parentFragmentManager.popBackStack()
             }
         }
 
@@ -122,14 +117,13 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         }
 
         when (settings) {
-            "main" -> displayMain()
-            "general" -> displayGeneral()
-            "account" -> {
+            Settings.main -> displayMain()
+            Settings.general -> displayGeneral()
+            Settings.account -> {
                 viewModel.getSelfUser()
                 displayAccount()
             }
-            "reading" -> displayReading()
-            "about" -> displayAbout()
+            Settings.about -> displayAbout()
         }
     }
 
@@ -139,22 +133,17 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         settingsFragment.setToolbar(getString(R.string.settings), "").setNavigationOnClickListener { findNavController().navigateUp() }
 
         findPreference<Preference>("general")?.setOnPreferenceClickListener {
-            settingsFragment.showFragment("general", true)
+            settingsFragment.showFragment(Settings.general, true)
             false
         }
 
         findPreference<Preference>("account")?.setOnPreferenceClickListener {
-            settingsFragment.showFragment("account", true)
-            false
-        }
-
-        findPreference<Preference>("reading")?.setOnPreferenceClickListener {
-            settingsFragment.showFragment("reading", true)
+            settingsFragment.showFragment(Settings.account, true)
             false
         }
 
         findPreference<Preference>("about")?.setOnPreferenceClickListener {
-            settingsFragment.showFragment("about", true)
+            settingsFragment.showFragment(Settings.about, true)
             false
         }
     }
@@ -296,46 +285,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 }.show()
                 false
             }
-        }
-    }
-
-    private fun displayReading() {
-        settingsFragment.setToolbar(getString(R.string.reading), "").setNavigationOnClickListener { parentFragmentManager.popBackStack() }
-
-        findPreference<PreferenceCategory>("folder_locations")?.apply {
-            removeAll()
-
-            settingsPreference.booksFolder
-                    .map { Folder(File(it)) }
-                    .sortedBy { it.name.toLowerCase(requireContext().locale()) }
-                    .map { folder ->
-                        addPreference(Preference(requireContext()).also { preference ->
-                            preference.title = folder.name
-                            preference.summary = folder.absolutePath
-                            preference.layoutResource = R.layout.item_settings_preference
-                            preference.setOnPreferenceClickListener {
-                                // TODO: popup menu pour supprimer les dossiers
-                                false
-                            }
-                        })
-                    }
-
-            // TODO: Ajouter des dossiers pour fichiers cbz, cbr
-//            addPreference(Preference(requireContext()).also { preference ->
-//                preference.title = "Ajouter un dossier"
-//                preference.layoutResource = R.layout.item_settings_preference
-//                preference.setOnPreferenceClickListener {
-//                    val i = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-//                    i.addCategory(Intent.CATEGORY_DEFAULT)
-//                    pickFolder.launch(Intent.createChooser(i, "Choose directory"))
-//
-//                    false
-//                }
-//            })
-        }
-
-        findPreference<Preference>("supported_files")?.apply {
-            summary = Book.Extension.values().joinToString(", ") { it.name }
         }
     }
 

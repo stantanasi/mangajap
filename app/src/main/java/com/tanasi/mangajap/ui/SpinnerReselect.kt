@@ -7,14 +7,14 @@ import androidx.appcompat.widget.AppCompatSpinner
 class SpinnerReselect : AppCompatSpinner {
     private var listener: OnItemSelectedListener? = null
 
-    constructor(context: Context?) : super(context!!)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context!!, attrs, defStyle)
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
 
     override fun setSelection(position: Int) {
         super.setSelection(position)
         if (position == selectedItemPosition) {
-            listener!!.onItemSelected(null, null, position, 0)
+            listener?.onItemSelected(null, null, position, 0)
         }
     }
 

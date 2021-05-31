@@ -17,6 +17,7 @@ import com.tanasi.mangajap.databinding.FragmentDiscoverBinding
 import com.tanasi.mangajap.models.Ad
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.Manga
+import com.tanasi.mangajap.utils.extensions.addOrLast
 
 class DiscoverFragment : Fragment() {
 
@@ -28,10 +29,14 @@ class DiscoverFragment : Fragment() {
     private val peopleList: MutableList<MangaJapAdapter.Item> = mutableListOf()
     private val mangaList: MutableList<Manga> = mutableListOf()
     private val animeList: MutableList<Anime> = mutableListOf()
+    private val mangaRecentList: MutableList<Manga> = mutableListOf()
+    private val animeRecentList: MutableList<Anime> = mutableListOf()
 
     private val peopleAdapter: MangaJapAdapter = MangaJapAdapter(peopleList)
     private val mangaAdapter: MangaJapAdapter = MangaJapAdapter(mangaList)
     private val animeAdapter: MangaJapAdapter = MangaJapAdapter(animeList)
+    private val mangaRecentAdapter: MangaJapAdapter = MangaJapAdapter(mangaRecentList)
+    private val animeRecentAdapter: MangaJapAdapter = MangaJapAdapter(animeRecentList)
 
     private val snapHelper: LinearSnapHelper = LinearSnapHelper()
 
@@ -58,7 +63,7 @@ class DiscoverFragment : Fragment() {
                     peopleList.apply {
                         clear()
                         addAll(state.peopleList)
-                        add(1, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_DISCOVER })
+                        addOrLast(1, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_DISCOVER })
                     }
                     mangaList.apply {
                         clear()
@@ -67,6 +72,14 @@ class DiscoverFragment : Fragment() {
                     animeList.apply {
                         clear()
                         addAll(state.animeList)
+                    }
+                    mangaRecentList.apply {
+                        clear()
+                        addAll(state.mangaRecentList)
+                    }
+                    animeRecentList.apply {
+                        clear()
+                        addAll(state.animeRecentList)
                     }
 
                     displayDiscover()
@@ -91,34 +104,6 @@ class DiscoverFragment : Fragment() {
                 }
             }
         }
-
-//        val adLoader = AdLoader.Builder(requireContext(), "ca-app-pub-3940256099942544/2247696110")
-//                .forUnifiedNativeAd { unifiedNativeAd ->
-//                    val adView = layoutInflater.inflate(R.layout.item_ad_discover, null) as UnifiedNativeAdView
-//
-//                    val headlineView = adView.findViewById<TextView>(R.id.tv_ad_headline)
-//                    headlineView.text = unifiedNativeAd.headline
-//                    adView.headlineView = headlineView
-//
-//                    val mediaView = adView.findViewById<MediaView>(R.id.ad_media_view)
-//                    adView.mediaView = mediaView
-//
-//                    adView.setNativeAd(unifiedNativeAd)
-//
-//                    binding.adFrame.removeAllViews()
-//                    binding.adFrame.addView(adView)
-//                }
-//                .withAdListener(object : AdListener() {
-//                    override fun onAdFailedToLoad(adError: LoadAdError) {
-//                        // Handle the failure by logging, altering the UI, and so on.
-//                    }
-//                })
-//                .withNativeAdOptions(NativeAdOptions.Builder()
-//                        // Methods in the NativeAdOptions.Builder class can be
-//                        // used here to specify individual options settings.
-//                        .build())
-//                .build()
-//        adLoader.loadAd(AdRequest.Builder().build())
     }
 
     override fun onDestroyView() {
@@ -142,6 +127,16 @@ class DiscoverFragment : Fragment() {
         binding.trendingAnimeRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = animeAdapter
+        }
+
+        binding.rvRecentManga.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = mangaRecentAdapter
+        }
+
+        binding.rvRecentAnime.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = animeRecentAdapter
         }
     }
 }

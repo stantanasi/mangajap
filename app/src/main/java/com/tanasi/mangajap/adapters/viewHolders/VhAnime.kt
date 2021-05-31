@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +17,7 @@ import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
+import com.tanasi.mangajap.adapters.SpinnerAdapter
 import com.tanasi.mangajap.databinding.*
 import com.tanasi.mangajap.fragments.anime.AnimeFragment
 import com.tanasi.mangajap.fragments.anime.AnimeFragmentDirections
@@ -29,7 +30,10 @@ import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Request
 import com.tanasi.mangajap.models.User
-import com.tanasi.mangajap.ui.dialog.*
+import com.tanasi.mangajap.ui.dialog.EditTextDialog
+import com.tanasi.mangajap.ui.dialog.MediaEntryDateDialog
+import com.tanasi.mangajap.ui.dialog.MediaEntryProgressionDialog
+import com.tanasi.mangajap.ui.dialog.NumberPickerDialog
 import com.tanasi.mangajap.utils.extensions.dpToPx
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
@@ -214,7 +218,7 @@ class VhAnime(
             setOnClickListener {
                 Navigation.findNavController(binding.root).navigate(
                         AnimeFragmentDirections.actionAnimeToImage(
-                                anime.bannerImage ?: anime.coverImage!!
+                                anime.bannerImage ?: anime.coverImage ?: ""
                         )
                 )
             }
@@ -225,7 +229,7 @@ class VhAnime(
             setOnClickListener {
                 Navigation.findNavController(binding.root).navigate(
                         AnimeFragmentDirections.actionAnimeToImage(
-                                anime.coverImage!!
+                                anime.coverImage ?: ""
                         )
                 )
             }
@@ -290,43 +294,59 @@ class VhAnime(
     }
 
     private fun displayProgression(binding: ItemAnimeProgressionBinding) {
-        // TODO: faire du bouton status un spinner
-        binding.animeEntryStatusTextView.apply {
-            (background as GradientDrawable).setStroke(context.dpToPx(1), ContextCompat.getColor(context, anime.animeEntry!!.getProgressColor(anime)))
-            setTextColor(ContextCompat.getColor(context, anime.animeEntry!!.getProgressColor(anime)))
-            text = context.resources.getString(anime.animeEntry!!.status.stringId)
-            setOnClickListener {
-                RadioGroupDialog(
-                        context,
-                        context.getString(R.string.status),
-                        context.getString(anime.animeEntry!!.status.stringId),
-                        AnimeEntry.Status.values().map { context.getString(it.stringId) }
-                ) { position ->
-                    anime.animeEntry?.let { animeEntry ->
-                        updateAnimeEntry(animeEntry.apply {
-                            putStatus(AnimeEntry.Status.values()[position])
-                            when (AnimeEntry.Status.values()[position]) {
-                                AnimeEntry.Status.watching -> if (animeEntry.startedAt == null) putStartedAt(Calendar.getInstance())
-                                AnimeEntry.Status.completed,
-                                AnimeEntry.Status.on_hold,
-                                AnimeEntry.Status.dropped -> if (animeEntry.finishedAt == null) putFinishedAt(Calendar.getInstance())
-                                else -> {}
-                            }
-                        })
-                    }
-                }.show()
+        binding.spinnerAnimeEntryStatus.apply {
+            (background as GradientDrawable).setStroke(context.dpToPx(1), ContextCompat.getColor(context, anime.animeEntry?.getProgressColor(anime) ?: AnimeEntry.Status.watching.colorId))
+
+            adapter = SpinnerAdapter(
+                context,
+                AnimeEntry.Status.values().asList(),
+            ).apply {
+                onView = { position, context, parent ->
+                    ItemSpinnerMediaStatusBinding.inflate(LayoutInflater.from(context), parent, false).also {
+                        it.root.text = context.getString(AnimeEntry.Status.values()[position].stringId)
+                        it.root.setTextColor(ContextCompat.getColor(context, anime.animeEntry?.getProgressColor(anime) ?: AnimeEntry.Status.watching.colorId))
+                    }.root
+                }
+                onBind = { position, context, parent ->
+                    ItemSpinnerDropdownMediaStatusBinding.inflate(LayoutInflater.from(context), parent, false).also {
+                        it.root.text = context.getString(AnimeEntry.Status.values()[position].stringId)
+                        it.root.setTextColor(ContextCompat.getColor(context, AnimeEntry.Status.values()[position].colorId))
+                    }.root
+                }
             }
+
+            onItemSelectedListener = object : OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+                    anime.animeEntry?.let { animeEntry ->
+                        if (AnimeEntry.Status.values()[position] != animeEntry.status) {
+                            updateAnimeEntry(animeEntry.apply {
+                                putStatus(AnimeEntry.Status.values()[position])
+                                when (AnimeEntry.Status.values()[position]) {
+                                    AnimeEntry.Status.watching -> if (animeEntry.startedAt == null) putStartedAt(Calendar.getInstance())
+                                    AnimeEntry.Status.completed,
+                                    AnimeEntry.Status.on_hold,
+                                    AnimeEntry.Status.dropped -> if (animeEntry.finishedAt == null) putFinishedAt(Calendar.getInstance())
+                                    else -> {}
+                                }
+                            })
+                        }
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+            setSelection(anime.animeEntry?.status?.ordinal ?: 0)
         }
 
         binding.animeEntryDateTextView.apply {
             val startedAt = anime.animeEntry?.startedAt?.format("dd MMMM yyyy") ?: "-"
             val finishedAt = anime.animeEntry?.finishedAt?.format("dd MMMM yyyy") ?: "-"
 
-            visibility = when (anime.animeEntry!!.status) {
+            visibility = when (anime.animeEntry?.status) {
                 AnimeEntry.Status.planned -> View.GONE
                 else -> View.VISIBLE
             }
-            text = when (anime.animeEntry!!.status) {
+            text = when (anime.animeEntry?.status) {
                 AnimeEntry.Status.watching -> context.resources.getString(R.string.SinceThe, startedAt)
                 AnimeEntry.Status.completed -> context.resources.getString(R.string.CompletedSinceThe, finishedAt)
                 AnimeEntry.Status.on_hold -> context.resources.getString(R.string.OnHoldSinceThe, finishedAt)
@@ -340,16 +360,17 @@ class VhAnime(
                         anime.animeEntry?.startedAt,
                         anime.animeEntry?.finishedAt
                 ) { startedAt, finishedAt ->
-                    updateAnimeEntry(anime.animeEntry!!.also {
+                    anime.animeEntry?.let {
                         it.putStartedAt(startedAt)
                         it.putFinishedAt(finishedAt)
-                    })
+                        updateAnimeEntry(it)
+                    }
                 }.show()
             }
         }
 
         binding.animeSeasonsSpinner.apply {
-            adapter = ArrayAdapter(context, R.layout.item_spinner, anime.seasons.map { context.getString(R.string.seasonNumber, it.seasonNumber) })
+            adapter = SpinnerAdapter(context, anime.seasons.map { context.getString(R.string.seasonNumber, it.seasonNumber) })
             onItemSelectedListener = object : OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
                     val season = anime.seasons[position]
@@ -361,9 +382,10 @@ class VhAnime(
                                 context.getString(R.string.episodes_watched),
                                 season.episodeWatched
                         ) { value ->
-                            updateAnimeEntry(anime.animeEntry!!.also { animeEntry ->
-                                animeEntry.putEpisodesWatch(value + anime.seasons.map { if (it.seasonNumber < season.seasonNumber) it.episodeCount else 0 }.sum())
-                            })
+                            anime.animeEntry?.let {
+                                it.putEpisodesWatch(value + anime.seasons.map { if (it.seasonNumber < season.seasonNumber) it.episodeCount else 0 }.sum())
+                                updateAnimeEntry(it)
+                            }
                         }.show()
                     }
                 }
@@ -383,28 +405,31 @@ class VhAnime(
                         context.getString(R.string.score),
                         0,
                         20,
-                        anime.animeEntry!!.rating
+                        anime.animeEntry?.rating
                 ) { value ->
-                    updateAnimeEntry(anime.animeEntry!!.also {
+                    anime.animeEntry?.let {
                         it.putRating(value)
-                    })
+                        updateAnimeEntry(it)
+                    }
                 }.show()
             }
         }
 
         binding.animeEntryRemoveRatingImageView.setOnClickListener {
-            updateAnimeEntry(anime.animeEntry!!.also {
+            anime.animeEntry?.let {
                 it.putRating(null)
-            })
+                updateAnimeEntry(it)
+            }
         }
 
         binding.animeEntryIsFavoritesImageView.apply {
-            if (anime.animeEntry!!.isFavorites) setImageResource(R.drawable.ic_favorite_black_24dp)
+            if (anime.animeEntry?.isFavorites == true) setImageResource(R.drawable.ic_favorite_black_24dp)
             else setImageResource(R.drawable.ic_favorite_border_black_24dp)
             setOnClickListener {
-                updateAnimeEntry(anime.animeEntry!!.also {
-                    it.putFavorites(!anime.animeEntry!!.isFavorites)
-                })
+                anime.animeEntry?.let {
+                    it.putFavorites(!it.isFavorites)
+                    updateAnimeEntry(it)
+                }
             }
         }
     }

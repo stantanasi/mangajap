@@ -49,15 +49,15 @@ class VhMangaEntry(
         binding.media.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     ProfileFragmentDirections.actionProfileToManga(
-                            mangaEntry.manga!!.id,
-                            mangaEntry.manga!!.canonicalTitle
+                            mangaEntry.manga?.id ?: "",
+                            mangaEntry.manga?.canonicalTitle ?: ""
                     )
             )
         }
 
         binding.mediaCoverImageView.apply {
             Picasso.get()
-                    .load(mangaEntry.manga!!.coverImage)
+                    .load(mangaEntry.manga?.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
                     .into(this)
@@ -74,8 +74,8 @@ class VhMangaEntry(
         }
 
         binding.mediaProgressProgressBar.apply {
-            progress = mangaEntry.getProgress(mangaEntry.manga!!)
-            progressTintList = ContextCompat.getColorStateList(context, mangaEntry.getProgressColor(mangaEntry.manga!!))
+            progress = mangaEntry.manga?.let { mangaEntry.getProgress(it) } ?: 0
+            progressTintList = ContextCompat.getColorStateList(context, mangaEntry.manga?.let { mangaEntry.getProgressColor(it) } ?: MangaEntry.Status.reading.colorId)
         }
     }
 
@@ -83,15 +83,15 @@ class VhMangaEntry(
         binding.media.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     LibraryFragmentDirections.actionLibraryToManga(
-                            mangaEntry.manga!!.id,
-                            mangaEntry.manga!!.canonicalTitle
+                            mangaEntry.manga?.id ?: "",
+                            mangaEntry.manga?.canonicalTitle ?: ""
                     )
             )
         }
 
         binding.mediaCoverImageView.apply {
             Picasso.get()
-                    .load(mangaEntry.manga!!.coverImage)
+                    .load(mangaEntry.manga?.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
                     .into(this)
@@ -108,32 +108,32 @@ class VhMangaEntry(
         }
 
         binding.mediaProgressProgressBar.apply {
-            progress = mangaEntry.getProgress(mangaEntry.manga!!)
-            progressTintList = ContextCompat.getColorStateList(context, mangaEntry.getProgressColor(mangaEntry.manga!!))
+            progress = mangaEntry.manga?.let { mangaEntry.getProgress(it) } ?: 0
+            progressTintList = ContextCompat.getColorStateList(context, mangaEntry.manga?.let { mangaEntry.getProgressColor(it) } ?: MangaEntry.Status.reading.colorId)
         }
 
-        binding.mediaTitleTextView.text = mangaEntry.manga!!.canonicalTitle
+        binding.mediaTitleTextView.text = mangaEntry.manga?.canonicalTitle ?: ""
     }
 
     private fun displayToRead(binding: ItemMangaToReadBinding) {
         binding.manga.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     AgendaFragmentDirections.actionAgendaToManga(
-                            mangaEntry.manga!!.id,
-                            mangaEntry.manga!!.canonicalTitle
+                            mangaEntry.manga?.id ?: "",
+                            mangaEntry.manga?.canonicalTitle ?: ""
                     )
             )
         }
 
         binding.ivMangaCover.apply {
             Picasso.get()
-                    .load(mangaEntry.manga!!.coverImage)
+                    .load(mangaEntry.manga?.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
                     .into(this)
         }
 
-        binding.tvMangaTitle.text = mangaEntry.manga!!.canonicalTitle
+        binding.tvMangaTitle.text = mangaEntry.manga?.canonicalTitle ?: ""
 
         binding.tvVolumesToRead.apply {
             if (mangaEntry.volumesRead < mangaEntry.manga?.volumeCount ?: 0) {

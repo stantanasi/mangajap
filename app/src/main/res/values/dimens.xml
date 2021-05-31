@@ -5,7 +5,6 @@
     <dimen name="login_spacingText">5dp</dimen>
     <dimen name="register_spacing">20dp</dimen>
     <dimen name="register_spacingText">5dp</dimen>
-    <dimen name="myBooks_spacing">10dp</dimen>
     <dimen name="profile_spacing">10dp</dimen>
     <dimen name="editProfile_spacing">12dp</dimen>
     <dimen name="manga_spacing">16dp</dimen>
@@ -29,7 +28,6 @@
     <dimen name="statsPreview_height">93dp</dimen>
 
     <!-- Ratio -->
-    <string name="book_ratio" translatable="false">3:4</string>
     <string name="media_ratio" translatable="false">160:250</string>
     <string name="banner_ratio" translatable="false">8:3</string>
     <string name="volume_ratio" translatable="false">160:250</string>

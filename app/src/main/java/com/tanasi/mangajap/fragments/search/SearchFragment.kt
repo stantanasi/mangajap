@@ -18,13 +18,13 @@ import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentSearchBinding
-import com.tanasi.mangajap.fragments.profile.ProfileFragment
 import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
 import com.tanasi.mangajap.models.Ad
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.LoadMore
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.utils.extensions.add
+import com.tanasi.mangajap.utils.extensions.addOrLast
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.extensions.runOnUiThread
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
@@ -89,7 +89,7 @@ class SearchFragment : Fragment() {
                         clear()
                         addAll(state.mangaList)
                         if (size < 15) add(Manga().also { it.typeLayout = MangaJapAdapter.Type.MANGA_SEARCH_ADD })
-                        add(if (size < 3) size else 3, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_SEARCH })
+                        addOrLast(3, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_SEARCH })
                         add(mangaLoadMore)
                     }
                     mangaNextLink = state.nextLink
@@ -110,7 +110,7 @@ class SearchFragment : Fragment() {
                         clear()
                         addAll(state.animeList)
                         if (size < 15) add(Anime().also { it.typeLayout = MangaJapAdapter.Type.ANIME_SEARCH_ADD })
-                        add(if (size < 3) size else 3, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_SEARCH })
+                        addOrLast(3, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_SEARCH })
                         add(animeLoadMore)
                     }
                     animeNextLink = state.nextLink
@@ -130,7 +130,7 @@ class SearchFragment : Fragment() {
                     SearchTab.Users.list.apply {
                         clear()
                         addAll(state.userList)
-                        add(if (size < 3) size else 3, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_SEARCH })
+                        addOrLast(3, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_SEARCH })
                         add(userLoadMore)
                     }
                     userNextLink = state.nextLink
@@ -219,9 +219,9 @@ class SearchFragment : Fragment() {
         }
 
         if (!this::actualTab.isInitialized) {
-            actualTab = when (generalPreference.savedProfileTab) {
-                ProfileFragment.TabType.Manga -> SearchTab.Manga
-                ProfileFragment.TabType.Anime -> SearchTab.Anime
+            actualTab = when (generalPreference.displayFirst) {
+                GeneralPreference.DisplayFirst.Manga -> SearchTab.Manga
+                GeneralPreference.DisplayFirst.Anime -> SearchTab.Anime
             }
         }
 

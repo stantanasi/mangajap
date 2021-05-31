@@ -30,13 +30,14 @@ import com.tanasi.mangajap.databinding.FragmentProfileBinding
 import com.tanasi.mangajap.fragments.follow.FollowFragment
 import com.tanasi.mangajap.fragments.library.LibraryFragment
 import com.tanasi.mangajap.models.*
+import com.tanasi.mangajap.utils.extensions.addOrLast
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
 import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class ProfileFragment : Fragment() {
 
-    enum class TabType(
+    private enum class TabType(
             val stringId: Int,
             val statsList: MutableList<UserStats> = mutableListOf(),
             val libraryList: MutableList<MangaJapAdapter.Item> = mutableListOf(),
@@ -77,15 +78,16 @@ class ProfileFragment : Fragment() {
         generalPreference = GeneralPreference(requireContext())
         userPreference = UserPreference(requireContext())
 
-        actualTab = generalPreference.savedProfileTab
+        actualTab = when (generalPreference.displayFirst) {
+            GeneralPreference.DisplayFirst.Manga -> TabType.Manga
+            GeneralPreference.DisplayFirst.Anime -> TabType.Anime
+        }
 
         binding.navigation.apply {
-            visibility = if (userId != null) {
+            visibility = userId?.let {
                 setOnClickListener { findNavController().navigateUp() }
                 View.VISIBLE
-            } else {
-                View.GONE
-            }
+            } ?: View.GONE
         }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
@@ -230,7 +232,10 @@ class ProfileFragment : Fragment() {
             addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     actualTab = TabType.values()[tab.position]
-                    generalPreference.savedProfileTab = actualTab
+                    generalPreference.displayFirst = when (actualTab) {
+                        TabType.Manga -> GeneralPreference.DisplayFirst.Manga
+                        TabType.Anime -> GeneralPreference.DisplayFirst.Anime
+                    }
                     displayList()
                 }
 
@@ -342,6 +347,7 @@ class ProfileFragment : Fragment() {
                 tab.libraryList.apply {
                     clear()
                     addAll(user.mangaLibrary)
+                    addOrLast(2, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_PROFILE })
                 }
                 tab.favoritesList.apply {
                     clear()
@@ -358,6 +364,7 @@ class ProfileFragment : Fragment() {
                 tab.libraryList.apply {
                     clear()
                     addAll(user.animeLibrary)
+                    addOrLast(2, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_PROFILE })
                 }
                 tab.favoritesList.apply {
                     clear()
