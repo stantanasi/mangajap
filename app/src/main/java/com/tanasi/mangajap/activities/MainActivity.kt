@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.messaging.FirebaseMessaging
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.ActivityMainBinding
 import com.tanasi.mangajap.fragments.settingsPreference.SettingsPreferenceFragment
@@ -30,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val generalPreference = GeneralPreference(this)
+
+        FirebaseMessaging.getInstance().subscribeToTopic("all");
 
         val navController = findNavController(R.id.nav_main_fragment)
 

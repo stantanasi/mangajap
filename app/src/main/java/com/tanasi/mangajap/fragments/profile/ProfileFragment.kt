@@ -98,7 +98,7 @@ class ProfileFragment : Fragment() {
                     followed = state.followed
                     follower = state.follower
 
-                    setProfile()
+                    displayProfile()
                     binding.isLoading.cslIsLoading.visibility = View.GONE
                 }
                 is ProfileViewModel.State.FailedLoading -> when (state.error) {
@@ -141,7 +141,7 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun setProfile() {
+    private fun displayProfile() {
         binding.settings.apply {
             if (userId == null || userId == userPreference.selfId) {
                 visibility = View.VISIBLE

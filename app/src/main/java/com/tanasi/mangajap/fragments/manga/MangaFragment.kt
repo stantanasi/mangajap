@@ -308,16 +308,6 @@ class MangaFragment : Fragment() {
 
         popupMangaBinding.mangaEntryStatusTextView.text = getString(manga.mangaEntry?.status?.stringId ?: MangaEntry.Status.reading.stringId)
 
-        popupMangaBinding.mangaAddMyBooks.setOnClickListener {
-            findNavController().navigate(
-                    MangaFragmentDirections.actionMangaToEbooks(
-                            manga.id,
-                            manga.canonicalTitle
-                    )
-            )
-            popupWindow.dismiss()
-        }
-
         popupMangaBinding.deleteManga.setOnClickListener {
             manga.mangaEntry?.let { mangaEntry ->
                 viewModel.updateMangaEntry(mangaEntry.apply {
