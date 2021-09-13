@@ -11,79 +11,78 @@ import java.util.*
 
 @JsonApiType("anime")
 class Anime(
-        override var id: String = "",
-        createdAt: String? = null,
-        updatedAt: String? = null,
-        var canonicalTitle: String = "",
-        titles: JSONObject? = null,
-        var synopsis: String? = null,
-        startDate: String? = null,
-        endDate: String? = null,
-        origin: String? = null,
-        status: String = "",
-        animeType: String = "",
-        var seasonCount: Int? = null,
-        var episodeCount: Int? = null,
-        var episodeLength: Int? = null,
-        var totalLength: Int? = null,
-        var averageRating: Double? = null,
-        var ratingRank: Int? = null,
-        var popularity: Int? = null,
-        var userCount: Int? = null,
-        var favoritesCount: Int? = null,
-        var reviewCount: Int? = null,
-        var coverImage: String? = null,
-        var bannerImage: String? = null,
-        var youtubeVideoId: String? = null,
+    override var id: String = "",
+    createdAt: String? = null,
+    updatedAt: String? = null,
+    val title: String = "",
+    titles: JSONObject? = null,
+    val synopsis: String? = null,
+    startDate: String? = null,
+    endDate: String? = null,
+    origin: String? = null,
+    status: String = "",
+    animeType: String = "",
+    val seasonCount: Int? = null,
+    val episodeCount: Int? = null,
+    val episodeLength: Int? = null,
+    val totalLength: Int? = null,
+    val averageRating: Double? = null,
+    val ratingRank: Int? = null,
+    val popularity: Int? = null,
+    val userCount: Int? = null,
+    val favoritesCount: Int? = null,
+    val reviewCount: Int? = null,
+    val coverImage: String? = null,
+    val bannerImage: String? = null,
+    val youtubeVideoId: String? = null,
 
-        var episodes: List<Episode> = listOf(),
-        var genres: List<Genre> = listOf(),
-        var themes: List<Theme> = listOf(),
-        var staff: List<Staff> = listOf(),
-        var reviews: List<Review> = listOf(),
-        var franchises: List<Franchise> = listOf(),
-        @JsonApiRelationship("anime-entry") var animeEntry: AnimeEntry? = null,
+    episodes: List<Episode> = listOf(),
+    val genres: List<Genre> = listOf(),
+    val themes: List<Theme> = listOf(),
+    val staff: List<Staff> = listOf(),
+    val reviews: List<Review> = listOf(),
+    val franchises: List<Franchise> = listOf(),
+    @JsonApiRelationship("anime-entry") var animeEntry: AnimeEntry? = null,
 ) : JsonApiResource(), MangaJapAdapter.Item, Cloneable {
 
-    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
-    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
-    val titles: Titles? = Titles.create(titles)
+    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val titles: Titles = Titles.create(titles)
     val startDate: Calendar? = startDate?.toCalendar("yyyy-MM-dd")
     val endDate: Calendar? = endDate?.toCalendar("yyyy-MM-dd")
     val origin: Locale? = origin?.let { Locale("", it) }
     var status: Status = Status.getByName(status)
     var animeType: AnimeType? = AnimeType.getByName(animeType)
-    
-    val seasons: List<Season>
-        get() {
-            return episodes
-                    .groupBy {
-                        it.seasonNumber
-                    }
-                    .map { (_, episodes) ->
-                        Season(
-                                episodes.map {
-                                    it.anime = this
-                                    it
-                                }
-                        )
-                    }
+
+    val seasons: List<Season> = episodes
+        .groupBy { it.seasonNumber }
+        .map { (_, episodes) ->
+            Season(
+                number = episodes.firstOrNull()?.seasonNumber ?: 0,
+                episodeCount = episodes.size,
+
+                anime = this,
+                episodes = episodes.map {
+                    it.anime = this
+                    it
+                }
+            )
         }
 
 
     data class Titles(
-            val fr: String,
-            val en: String,
-            val en_jp: String,
-            val ja_jp: String,
+        val fr: String,
+        val en: String,
+        val en_jp: String,
+        val ja_jp: String,
     ) {
         companion object {
-            fun create(json: JSONObject?): Titles? {
-                return if (json == null) null else Titles(
-                        json.optString("fr") ?: "",
-                        json.optString("en") ?: "",
-                        json.optString("en_jp") ?: "",
-                        json.optString("ja_jp") ?: ""
+            fun create(json: JSONObject?): Titles {
+                return Titles(
+                    json?.optString("fr") ?: "",
+                    json?.optString("en") ?: "",
+                    json?.optString("en_jp") ?: "",
+                    json?.optString("ja_jp") ?: ""
                 )
             }
         }
@@ -120,6 +119,7 @@ class Anime(
             }
         }
     }
+
 
     override lateinit var typeLayout: MangaJapAdapter.Type
 

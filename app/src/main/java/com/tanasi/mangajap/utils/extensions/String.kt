@@ -10,7 +10,13 @@ fun String.toCalendar(pattern: String): Calendar? {
             it.time = SimpleDateFormat(pattern, MangaJapApplication.context.locale()).parse(this)!!
         }
     } catch (e: Exception) {
-        null
+        try {
+            Calendar.getInstance().also {
+                it.time = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", MangaJapApplication.context.locale()).parse(this)!!
+            }
+        } catch (e1: Exception) {
+            null
+        }
     }
 }
 

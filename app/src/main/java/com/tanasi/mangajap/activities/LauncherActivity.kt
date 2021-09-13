@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.MobileAds
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.tanasi.mangajap.databinding.ActivityLauncherBinding
 import com.tanasi.mangajap.utils.extensions.getActualTheme
 import com.tanasi.mangajap.utils.extensions.setLocale
@@ -23,9 +25,7 @@ class LauncherActivity : AppCompatActivity() {
 
         MobileAds.initialize(this) {}
 
-        val userManager = UserPreference(this)
-
-        userManager.accessToken?.let {
+        Firebase.auth.currentUser?.let {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }

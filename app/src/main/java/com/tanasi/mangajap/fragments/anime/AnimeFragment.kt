@@ -24,6 +24,7 @@ import com.tanasi.mangajap.databinding.PopupAnimeBinding
 import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
+import com.tanasi.mangajap.models.Season
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.extensions.setToolbar
@@ -135,7 +136,7 @@ class AnimeFragment : Fragment() {
                 return true
             }
             R.id.share -> {
-                shareText(getString(R.string.shareAnime, anime.canonicalTitle))
+                shareText(getString(R.string.shareAnime, anime.title))
                 return true
             }
         }
@@ -222,19 +223,16 @@ class AnimeFragment : Fragment() {
     }
 
     private fun setAnimeEpisodesFragment() {
-        anime.episodes.map {
-            it.anime = anime
-        }
-
         animeEpisodesList.apply {
             clear()
-            if (anime.episodes.isNotEmpty())
-                add(anime.episodes.last().clone().apply { typeLayout = MangaJapAdapter.Type.EPISODE_ANIME_HEADER })
+            add(Season().apply { typeLayout = MangaJapAdapter.Type.SEASON_ANIME_HEADER })
         }
         for (season in anime.seasons) {
             animeEpisodesList.add(season)
-            if (showSeason.contains(season.seasonNumber)) {
-                for (episode in season.episodes) animeEpisodesList.add(episode.apply { typeLayout = MangaJapAdapter.Type.EPISODE_ANIME })
+            if (showSeason.contains(season.number)) {
+                animeEpisodesList.addAll(season.episodes.map { episode ->
+                    episode.apply { typeLayout = MangaJapAdapter.Type.EPISODE_ANIME }
+                })
             }
         }
 
@@ -296,7 +294,7 @@ class AnimeFragment : Fragment() {
             popupWindow.dismiss()
         }
 
-        popupAnimeBinding.shareAnime.setOnClickListener { shareText(getString(R.string.shareAnime, anime.canonicalTitle)) }
+        popupAnimeBinding.shareAnime.setOnClickListener { shareText(getString(R.string.shareAnime, anime.title)) }
     }
 
 

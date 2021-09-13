@@ -3,33 +3,24 @@ package com.tanasi.mangajap.models
 import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.utils.extensions.toCalendar
 import org.json.JSONObject
+import java.util.*
 
 @JsonApiType("genres")
 class Genre(
-        override var id: String = "",
-        var createdAt: String? = null,
-        var updatedAt: String? = null,
-        titles: JSONObject? = null,
-        var description: String? = null,
+    override var id: String = "",
+    createdAt: String? = null,
+    updatedAt: String? = null,
+    val title: String = "",
+    val description: String = "",
 
-        var manga: List<Manga> = listOf(),
-        var anime: List<Anime> = listOf(),
+    var manga: List<Manga> = listOf(),
+    var anime: List<Anime> = listOf(),
 ) : JsonApiResource(), MangaJapAdapter.Item {
 
-    val titles: Titles? = Titles.create(titles)
-
-    data class Titles(
-            val fr: String,
-    ) {
-        companion object {
-            fun create(json: JSONObject?): Titles? {
-                return if (json == null) null else Titles(
-                        json.optString("fr") ?: ""
-                )
-            }
-        }
-    }
+    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
 
     override lateinit var typeLayout: MangaJapAdapter.Type

@@ -29,10 +29,6 @@ class RegisterFragment : Fragment() {
 
     private val viewModel: RegisterViewModel by viewModels()
 
-    private lateinit var userPreference: UserPreference
-
-    val user: User = User()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         return binding.root
@@ -41,17 +37,14 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        userPreference = UserPreference(requireContext())
-
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 RegisterViewModel.State.Loading -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
 
                 is RegisterViewModel.State.RegisterSucceed -> {
-                    viewModel.login(
-                            binding.tilRegisterPseudo.editText?.text.toString().trim { it <= ' ' },
-                            binding.tilRegisterPassword.editText?.text.toString().trim { it <= ' ' }
-                    )
+                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
+                    startActivity(Intent(requireContext(), MainActivity::class.java))
+                    requireActivity().finish()
                 }
                 is RegisterViewModel.State.RegisterFailed -> {
                     when (state.error) {
@@ -60,33 +53,11 @@ class RegisterFragment : Fragment() {
                             state.error.body.errors.map { error ->
                                 when (error.source?.pointer) {
                                     "/data/attributes/pseudo" -> binding.tilRegisterPseudo.editText?.error = error.title
-                                    "/data/attributes/email" -> binding.tilRegisterEmail.editText?.error = error.title
-                                    "/data/attributes/password" -> binding.tilRegisterPassword.editText?.error = error.title
                                 }
                             }
                         }
                         is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                        is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
-                    }
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
-                }
-
-                is RegisterViewModel.State.LoginSucceed -> {
-                    userPreference.login(state.accessToken, state.userId)
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
-                    startActivity(Intent(requireContext(), MainActivity::class.java))
-                    requireActivity().finish()
-                }
-                is RegisterViewModel.State.LoginFailed -> {
-                    when (state.error) {
-                        is OAuth2Response.Error.ServerError -> {
-                            when (state.error.body) {
-                                is OAuth2ErrorBody.InvalidGrant -> Toast.makeText(requireContext(), getString(R.string.account_created_but_login_error), Toast.LENGTH_SHORT).show()
-                                else -> Toast.makeText(requireContext(), state.error.body.description, Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        is OAuth2Response.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                        is OAuth2Response.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                        is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), state.error.error.message, Toast.LENGTH_SHORT).show()
                     }
                     binding.isUpdating.cslIsUpdating.visibility = View.GONE
                 }
@@ -131,37 +102,11 @@ class RegisterFragment : Fragment() {
                 }
             }
 
-            if (isValid) viewModel.register(user)
-        }
-
-        binding.tilRegisterPseudo.apply {
-            editText?.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable) {
-                    user.putPseudo(s.toString().trim { it <= ' ' })
-                }
-            })
-        }
-
-        binding.tilRegisterEmail.apply {
-            editText?.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable) {
-                    user.putEmail(s.toString().trim { it <= ' ' })
-                }
-            })
-        }
-
-        binding.tilRegisterPassword.apply {
-            editText?.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable) {
-                    user.putPassword(s.toString().trim { it <= ' ' })
-                }
-            })
+            if (isValid) viewModel.register(
+                binding.tilRegisterPseudo.editText?.text.toString(),
+                binding.tilRegisterEmail.editText?.text.toString(),
+                binding.tilRegisterPassword.editText?.text.toString()
+            )
         }
     }
 }

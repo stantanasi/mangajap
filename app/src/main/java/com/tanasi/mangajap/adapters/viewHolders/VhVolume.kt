@@ -44,7 +44,13 @@ class VhVolume(
             }
         }
 
-        binding.volumeNumberTextView.text = context.resources.getString(R.string.volume, volume.number)
+        binding.volumeNumberTextView.run {
+            text = volume.number.toString()
+            visibility = when (volume.coverImage) {
+                null -> View.VISIBLE
+                else -> View.GONE
+            }
+        }
 
         binding.volumeCoverImageView.apply {
             Picasso.get()
@@ -55,9 +61,9 @@ class VhVolume(
         }
 
         binding.volumeTitleTextView.apply {
-            text = when (volume.titles?.fr) {
-                null, "" -> context.resources.getString(R.string.volume, volume.number)
-                else -> volume.titles?.fr
+            text = when (volume.titles.fr) {
+                "" -> context.resources.getString(R.string.volume, volume.number)
+                else -> volume.titles.fr
             }
         }
 
@@ -76,8 +82,8 @@ class VhVolume(
         }
 
         binding.volumeNumberTextView.apply {
-            when (volume.titles?.fr) {
-                null, "" -> visibility = View.GONE
+            when (volume.titles.fr) {
+                "" -> visibility = View.GONE
                 else -> {
                     visibility = View.VISIBLE
                     text = context.resources.getString(R.string.volume, volume.number)
@@ -86,9 +92,9 @@ class VhVolume(
         }
 
         binding.volumeTitleTextView.apply {
-            text = when (volume.titles?.fr) {
-                null, "" -> context.resources.getString(R.string.volume, volume.number)
-                else -> volume.titles?.fr
+            text = when (volume.titles.fr) {
+                "" -> context.resources.getString(R.string.volume, volume.number)
+                else -> volume.titles.fr
             }
         }
 

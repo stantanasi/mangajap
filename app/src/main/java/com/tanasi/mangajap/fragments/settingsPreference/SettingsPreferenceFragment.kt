@@ -11,6 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.LauncherActivity
@@ -20,11 +23,15 @@ import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.ui.dialog.ChangePasswordDialog
 import com.tanasi.mangajap.ui.dialog.EditTextDialog
 import com.tanasi.mangajap.ui.dialog.RadioGroupDialog
+import com.tanasi.mangajap.ui.dialog.VerifyPasswordDialog
 import com.tanasi.mangajap.utils.extensions.*
 import com.tanasi.mangajap.utils.preferences.SettingsPreference
 import com.tanasi.mangajap.utils.preferences.UserPreference
 import java.util.*
+
 // TODO: faire comme dans Steams, bouton "ANNOUNCEMENTS = annonces" dans les paramètres qui affiche toutes les nouveautés, notes...
+// TODO: faire une préférence pour les titres (pas compliqué fait vraiment !!!!!)
+// TODO: systeme de dons pour que je gagne de l'argent
 class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
     private lateinit var settingsPreference: SettingsPreference
@@ -202,87 +209,136 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
     private fun displayAccount(user: User? = null) {
         settingsFragment.setToolbar(getString(R.string.account), "").setNavigationOnClickListener { parentFragmentManager.popBackStack() }
 
+        val firebaseUser = Firebase.auth.currentUser!!
+
+        user?.let { user1 ->
+            findPreference<Preference>("pseudo")?.apply {
+                summary = user1.pseudo
+                setOnPreferenceClickListener {
+                    EditTextDialog(
+                        requireContext(),
+                        getString(R.string.changePseudo),
+                        getString(R.string.pseudo),
+                        user1.pseudo
+                    ) { dialog, textInputLayout, text ->
+                        if (text.isPseudoValid()) {
+                            user1.putPseudo(text)
+                            viewModel.updateUser(user1)
+                            dialog.dismiss()
+                        } else {
+                            textInputLayout.error = getString(R.string.pseudoInvalid)
+                        }
+                    }.show()
+                    false
+                }
+            }
+
+            findPreference<Preference>("email")?.apply {
+                summary = firebaseUser.email
+                setOnPreferenceClickListener {
+                    VerifyPasswordDialog(
+                        requireContext()
+                    ) { dialog, etPassword, password ->
+                        try {
+                            val credential = EmailAuthProvider
+                                .getCredential(firebaseUser.email!!, password)
+                            firebaseUser
+                                .reauthenticate(credential)
+                                .addOnCompleteListener {
+                                    if (it.isSuccessful) {
+
+                                        EditTextDialog(
+                                            requireContext(),
+                                            getString(R.string.changeEmail),
+                                            getString(R.string.email),
+                                            firebaseUser.email
+                                        ) { dialog, textInputLayout, email ->
+
+                                            if (email.isEmailValid()) {
+                                                firebaseUser.updateEmail(email)
+                                                    .addOnCompleteListener { task ->
+                                                        if (task.isSuccessful) {
+                                                            dialog.dismiss()
+                                                        }
+                                                    }
+                                            } else {
+                                                textInputLayout.error = requireContext().resources.getString(R.string.emailInvalid)
+                                            }
+
+                                        }.show()
+
+                                        dialog.dismiss()
+                                    } else {
+                                        etPassword.error = getString(R.string.passwordIncorrect)
+                                    }
+                                }
+                        } catch (e: Exception) {
+                            Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }.show()
+
+                    false
+                }
+            }
+
+
+            findPreference<Preference>("userId")?.summary = user1.id
+
+            findPreference<Preference>("changePassword")?.apply {
+                setOnPreferenceClickListener {
+                    ChangePasswordDialog(
+                        requireContext()
+                    ) { dialog, etCurrentPassword, etNewPassword, currentPassword, newPassword, confirmPassword ->
+                        try {
+                            if (newPassword.isPasswordValid()) {
+                                if (newPassword == confirmPassword) {
+                                    val credential = EmailAuthProvider
+                                        .getCredential(firebaseUser.email!!, currentPassword)
+                                    firebaseUser
+                                        .reauthenticate(credential)
+                                        .addOnCompleteListener {
+
+                                            if (it.isSuccessful) {
+                                                firebaseUser.updatePassword(newPassword)
+                                                    .addOnCompleteListener { task ->
+                                                        if (task.isSuccessful) {
+                                                            dialog.dismiss()
+                                                        }
+                                                    }
+                                            } else {
+                                                etCurrentPassword.error = getString(R.string.passwordIncorrect)
+                                            }
+                                        }
+
+                                } else {
+                                    etNewPassword.error = getString(R.string.passwordDontMatch)
+                                }
+                            } else {
+                                etNewPassword.error = getString(R.string.passwordInvalid)
+                            }
+
+                        } catch (e: Exception) {
+                            Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }.show()
+                    false
+                }
+            }
+        }
+
         findPreference<Preference>("logout")?.apply {
             setOnPreferenceClickListener {
                 AlertDialog.Builder(ContextThemeWrapper(context, R.style.Widget_AppTheme_Dialog_Alert))
                         .setTitle(getString(R.string.logout))
                         .setMessage(getString(R.string.logoutConfirmation))
                         .setPositiveButton(getString(R.string.confirm)) { _, _ ->
-                            userPreference.logout()
+                            Firebase.auth.signOut()
 
                             startActivity(Intent(activity, LauncherActivity::class.java))
                             requireActivity().finish()
                         }
                         .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
                         .show()
-                false
-            }
-        }
-
-        if (user == null) return
-
-        findPreference<Preference>("pseudo")?.apply {
-            summary = user.pseudo
-            setOnPreferenceClickListener {
-                EditTextDialog(
-                        requireContext(),
-                        getString(R.string.changePseudo),
-                        getString(R.string.pseudo),
-                        user.pseudo
-                ) { dialog, textInputLayout, text ->
-                    if (text.isPseudoValid()) {
-                        user.putPseudo(text)
-                        viewModel.updateUser(user)
-                        dialog.dismiss()
-                    } else {
-                        textInputLayout.error = getString(R.string.pseudoInvalid)
-                    }
-                }.show()
-                false
-            }
-        }
-
-        findPreference<Preference>("email")?.apply {
-            summary = user.email
-            setOnPreferenceClickListener {
-                EditTextDialog(
-                        requireContext(),
-                        getString(R.string.changeEmail),
-                        getString(R.string.email),
-                        user.email
-                ) { dialog, textInputLayout, text ->
-                    if (text.isEmailValid()) {
-                        user.putEmail(text)
-                        viewModel.updateUser(user)
-                        dialog.dismiss()
-                    } else {
-                        textInputLayout.error = requireContext().resources.getString(R.string.emailInvalid)
-                    }
-                }.show()
-                false
-            }
-        }
-
-
-        findPreference<Preference>("userId")?.summary = user.id
-
-        findPreference<Preference>("changePassword")?.apply {
-            setOnPreferenceClickListener {
-                ChangePasswordDialog(
-                        requireContext()
-                ) { dialog, etPassword, password, etPasswordConfirmation, passwordConfirmation ->
-                    if (password.isPasswordValid()) {
-                        if (password == passwordConfirmation) {
-                            user.putPassword(password)
-                            viewModel.updateUser(user)
-                            dialog.dismiss()
-                        } else {
-                            etPasswordConfirmation.error = getString(R.string.passwordDontMatch)
-                        }
-                    } else {
-                        etPassword.error = getString(R.string.passwordInvalid)
-                    }
-                }.show()
                 false
             }
         }
@@ -300,7 +356,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             startActivity(intent)
             false
         }
-        
+
         findPreference<Preference>("contactUs")?.setOnPreferenceClickListener {
             Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
@@ -311,7 +367,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             }
             false
         }
-        
+
         findPreference<Preference>("rate")?.setOnPreferenceClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAY_STORE))
             startActivity(intent)

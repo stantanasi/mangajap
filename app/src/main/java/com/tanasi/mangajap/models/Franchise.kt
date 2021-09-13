@@ -4,24 +4,28 @@ import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.utils.extensions.toCalendar
+import java.util.*
 
 @JsonApiType("franchises")
 class Franchise(
-        override var id: String = "",
-        var createdAt: String? = null,
-        var updatedAt: String? = null,
-        role: String = "",
+    override var id: String = "",
+    createdAt: String? = null,
+    updatedAt: String? = null,
+    role: String = "",
 
-        var source: MangaJapAdapter.Item? = null,
-        var destination: MangaJapAdapter.Item? = null,
+    var source: MangaJapAdapter.Item? = null,
+    var destination: MangaJapAdapter.Item? = null,
 ) : JsonApiResource(), MangaJapAdapter.Item {
 
-    var role: Role? = Role.getByName(role)
+    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    var role: Role = Role.getByName(role)
 
 
     override lateinit var typeLayout: MangaJapAdapter.Type
 
-    
+
     enum class Role(val stringId: Int) {
         adaptation(R.string.franchiseRoleAdaptation),
         alternative_setting(R.string.franchiseRoleAlternativeSetting),
@@ -38,10 +42,10 @@ class Franchise(
         summary(R.string.franchiseRoleSummary);
 
         companion object {
-            fun getByName(name: String): Role? = try {
+            fun getByName(name: String): Role = try {
                 valueOf(name)
             } catch (e: Exception) {
-                null
+                adaptation
             }
         }
     }

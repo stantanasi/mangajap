@@ -38,10 +38,10 @@ import com.tanasi.mangajap.utils.preferences.UserPreference
 class ProfileFragment : Fragment() {
 
     private enum class TabType(
-            val stringId: Int,
-            val statsList: MutableList<UserStats> = mutableListOf(),
-            val libraryList: MutableList<MangaJapAdapter.Item> = mutableListOf(),
-            val favoritesList: MutableList<MangaJapAdapter.Item> = mutableListOf()
+        val stringId: Int,
+        val statsList: MutableList<User.Stats> = mutableListOf(),
+        val libraryList: MutableList<MangaJapAdapter.Item> = mutableListOf(),
+        val favoritesList: MutableList<MangaJapAdapter.Item> = mutableListOf()
     ) {
         Manga(R.string.manga),
         Anime(R.string.anime);
@@ -340,9 +340,9 @@ class ProfileFragment : Fragment() {
             TabType.Manga -> TabType.Manga.let { tab ->
                 tab.statsList.apply {
                     clear()
-                    add(UserStats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_MANGA_FOLLOWED })
-                    add(UserStats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_MANGA_VOLUMES })
-                    add(UserStats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_MANGA_CHAPTERS })
+                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_MANGA_FOLLOWED })
+                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_MANGA_VOLUMES })
+                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_MANGA_CHAPTERS })
                 }
                 tab.libraryList.apply {
                     clear()
@@ -357,9 +357,9 @@ class ProfileFragment : Fragment() {
             TabType.Anime -> TabType.Anime.let { tab ->
                 tab.statsList.apply {
                     clear()
-                    add(UserStats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_ANIME_FOLLOWED })
-                    add(UserStats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT })
-                    add(UserStats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_ANIME_EPISODES })
+                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_ANIME_FOLLOWED })
+                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT })
+                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_ANIME_EPISODES })
                 }
                 tab.libraryList.apply {
                     clear()

@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp" />
 
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/til_login_pseudo"
+            <com.google.android.material.textfield.TextInputLayout android:id="@+id/til_login_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/login_spacingText"
@@ -52,7 +52,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/pseudoOrEmail"
+                    android:hint="@string/email"
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"

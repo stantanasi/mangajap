@@ -120,7 +120,7 @@ class LibraryViewModel : ViewModel() {
 
         val response = mangaJapApiService.updateMangaEntry(
                 mangaEntry.id,
-                mangaEntry.updateJson()
+                mangaEntry
         )
         _state.value = try {
             when (response) {
@@ -137,7 +137,7 @@ class LibraryViewModel : ViewModel() {
 
         val response = mangaJapApiService.updateAnimeEntry(
                 animeEntry.id,
-                animeEntry.updateJson()
+                animeEntry
         )
         _state.value = try {
             when (response) {

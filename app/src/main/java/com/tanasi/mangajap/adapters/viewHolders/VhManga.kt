@@ -95,7 +95,7 @@ class VhManga(
             Navigation.findNavController(binding.root).navigate(
                     SearchFragmentDirections.actionSearchToManga(
                             manga.id,
-                            manga.canonicalTitle
+                            manga.title
                     )
             )
         }
@@ -108,7 +108,7 @@ class VhManga(
                     .into(this)
         }
 
-        binding.mediaTitleTextView.text = manga.canonicalTitle
+        binding.mediaTitleTextView.text = manga.title
 
         binding.mediaTypeTextView.text = manga.mangaType?.stringId?.let { context.resources.getString(it) }
 
@@ -161,11 +161,12 @@ class VhManga(
     }
 
     private fun displayTrending(binding: ItemMediaTrendingBinding) {
+        // TODO: si l'image est nulle alors afficher le titre du manga
         binding.media.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     DiscoverFragmentDirections.actionDiscoverToManga(
                             manga.id,
-                            manga.canonicalTitle
+                            manga.title
                     )
             )
         }
@@ -233,7 +234,7 @@ class VhManga(
             }
         }
 
-        binding.mangaTitleTextView.text = manga.canonicalTitle
+        binding.mangaTitleTextView.text = manga.title
 
         binding.mangaStaff.apply {
             if (manga.staff.isEmpty()) {
@@ -464,7 +465,7 @@ class VhManga(
                     MangaFragmentDirections.actionMangaToReviews(
                             ReviewsFragment.ReviewsType.Manga,
                             manga.id,
-                            manga.canonicalTitle
+                            manga.title
                     )
             )
         }

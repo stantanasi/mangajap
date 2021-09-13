@@ -7,7 +7,6 @@ import androidx.viewbinding.ViewBinding
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.databinding.ItemEpisodeAnimeBinding
-import com.tanasi.mangajap.databinding.ItemEpisodeAnimeHeaderBinding
 import com.tanasi.mangajap.fragments.anime.AnimeFragment
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Episode
@@ -25,10 +24,10 @@ class VhEpisode(
     fun setVhEpisode(episode: Episode) {
         this.episode = episode
         when (_binding) {
-            is ItemEpisodeAnimeHeaderBinding -> displayHeader(_binding)
             is ItemEpisodeAnimeBinding -> displayEpisode(_binding)
         }
     }
+
 
     private fun updateAnimeEntry(animeEntry: AnimeEntry) {
         if (context is MainActivity) {
@@ -38,7 +37,6 @@ class VhEpisode(
         }
     }
 
-    private fun displayHeader(binding: ItemEpisodeAnimeHeaderBinding) {}
 
     private fun displayEpisode(binding: ItemEpisodeAnimeBinding) {
         binding.episodeNumberTextView.text = episode.relativeNumber.toString()

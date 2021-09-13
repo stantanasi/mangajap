@@ -7,7 +7,7 @@ import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.ItemStatsPreviewBinding
 import com.tanasi.mangajap.databinding.ItemStatsTimeSpentPreviewBinding
-import com.tanasi.mangajap.models.UserStats
+import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.utils.extensions.withSuffix
 
 class VhUserStats(
@@ -16,9 +16,9 @@ class VhUserStats(
         _binding.root
 ) {
 
-    private lateinit var userStats: UserStats
+    private lateinit var userStats: User.Stats
 
-    fun setVhUserStats(userStats: UserStats) {
+    fun setVhUserStats(userStats: User.Stats) {
         this.userStats = userStats
         when (_binding) {
             is ItemStatsPreviewBinding -> displayPreview(_binding)

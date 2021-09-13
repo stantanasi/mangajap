@@ -10,8 +10,15 @@ import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.DialogChangePasswordBinding
 
 class ChangePasswordDialog(
-        context: Context,
-        private val callable: (dialog: Dialog, etPassword: EditText, password: String, etPasswordConfirmation: EditText, passwordConfirmation: String) -> Unit
+    context: Context,
+    private val callable: (
+        dialog: Dialog,
+        etCurrentPassword: EditText,
+        etNewPassword: EditText,
+        currentPassword: String,
+        newPassword: String,
+        confirmPassword: String
+    ) -> Unit
 ) : AlertDialog.Builder(ContextThemeWrapper(context, R.style.Widget_AppTheme_Dialog_Alert)) {
 
     private val binding: DialogChangePasswordBinding = DialogChangePasswordBinding.inflate(LayoutInflater.from(context))
@@ -30,11 +37,12 @@ class ChangePasswordDialog(
         val alertDialog = super.show()
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             callable(
-                    alertDialog,
-                    binding.newPasswordEditText,
-                    binding.newPasswordEditText.text.toString().trim { it <= ' ' },
-                    binding.newPasswordConfirmEditText,
-                    binding.newPasswordConfirmEditText.text.toString().trim { it <= ' ' }
+                alertDialog,
+                binding.etCurrentPassword,
+                binding.etNewPassword,
+                binding.etCurrentPassword.text.toString().trim { it <= ' ' },
+                binding.etNewPassword.text.toString().trim { it <= ' ' },
+                binding.etConfirmPassword.text.toString().trim { it <= ' ' }
             )
         }
         return alertDialog

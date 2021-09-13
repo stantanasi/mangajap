@@ -27,14 +27,10 @@ class DiscoverFragment : Fragment() {
     val viewModel: DiscoverViewModel by viewModels()
 
     private val peopleList: MutableList<MangaJapAdapter.Item> = mutableListOf()
-    private val mangaList: MutableList<Manga> = mutableListOf()
-    private val animeList: MutableList<Anime> = mutableListOf()
     private val mangaRecentList: MutableList<Manga> = mutableListOf()
     private val animeRecentList: MutableList<Anime> = mutableListOf()
 
     private val peopleAdapter: MangaJapAdapter = MangaJapAdapter(peopleList)
-    private val mangaAdapter: MangaJapAdapter = MangaJapAdapter(mangaList)
-    private val animeAdapter: MangaJapAdapter = MangaJapAdapter(animeList)
     private val mangaRecentAdapter: MangaJapAdapter = MangaJapAdapter(mangaRecentList)
     private val animeRecentAdapter: MangaJapAdapter = MangaJapAdapter(animeRecentList)
 
@@ -65,14 +61,6 @@ class DiscoverFragment : Fragment() {
                         addAll(state.peopleList)
                         addOrLast(1, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_DISCOVER })
                     }
-                    mangaList.apply {
-                        clear()
-                        addAll(state.mangaList)
-                    }
-                    animeList.apply {
-                        clear()
-                        addAll(state.animeList)
-                    }
                     mangaRecentList.apply {
                         clear()
                         addAll(state.mangaRecentList)
@@ -93,8 +81,8 @@ class DiscoverFragment : Fragment() {
 
                 DiscoverViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
                 is DiscoverViewModel.State.SuccessUpdating -> {
-                    mangaAdapter.notifyDataSetChanged()
-                    animeAdapter.notifyDataSetChanged()
+                    mangaRecentAdapter.notifyDataSetChanged()
+                    animeRecentAdapter.notifyDataSetChanged()
                     binding.isUpdating.cslIsUpdating.visibility = View.GONE
                 }
                 is DiscoverViewModel.State.FailedUpdating -> when (state.error) {
@@ -117,16 +105,6 @@ class DiscoverFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = peopleAdapter
             snapHelper.attachToRecyclerView(this)
-        }
-
-        binding.trendingMangaRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = mangaAdapter
-        }
-
-        binding.trendingAnimeRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = animeAdapter
         }
 
         binding.rvRecentManga.apply {

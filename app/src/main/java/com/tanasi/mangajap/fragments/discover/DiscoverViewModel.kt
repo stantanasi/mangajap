@@ -21,11 +21,12 @@ class DiscoverViewModel : ViewModel() {
 
     sealed class State {
         object Loading : State()
-        data class SuccessLoading(val peopleList: List<People>,
-                                  val mangaList: List<Manga>,
-                                  val animeList: List<Anime>,
-                                  val mangaRecentList: List<Manga>,
-                                  val animeRecentList: List<Anime>) : State()
+        data class SuccessLoading(
+            val peopleList: List<People>,
+            val mangaRecentList: List<Manga>,
+            val animeRecentList: List<Anime>
+        ) : State()
+
         data class FailedLoading(val error: JsonApiResponse.Error) : State()
 
         object Updating : State()
@@ -38,77 +39,70 @@ class DiscoverViewModel : ViewModel() {
 
         val peopleResponseDeferred = async {
             mangaJapApiService.getPeoples(
-                    JsonApiParams(
-                            include = listOf("staff.manga", "staff.anime"),
-                            fields = mapOf(
-                                    "manga" to listOf("coverImage", "canonicalTitle"),
-                                    "anime" to listOf("coverImage", "canonicalTitle")),
-                            sort = listOf("random"),
-                            limit = 10
-                    )
-            )
-        }
-        val mangaResponseDeferred = async {
-            mangaJapApiService.getTrendingManga(
-                    JsonApiParams(
-                            include = listOf("manga-entry"),
-                            limit = 10
-                    )
-            )
-        }
-        val animeResponseDeferred = async {
-            mangaJapApiService.getTrendingAnime(
-                    JsonApiParams(
-                            include = listOf("anime-entry"),
-                            limit = 10
-                    )
+                JsonApiParams(
+                    include = listOf("staff.manga", "staff.anime"),
+                    fields = mapOf(
+                        "manga" to listOf("coverImage", "canonicalTitle"),
+                        "anime" to listOf("coverImage", "canonicalTitle")
+                    ),
+                    sort = listOf("random"),
+                    limit = 10
+                )
             )
         }
         val mangaRecentResponseDeferred = async {
             mangaJapApiService.getManga(
-                    JsonApiParams(
-                            include = listOf("manga-entry"),
-                            sort = listOf("-createdAt"),
-                            limit = 15
-                    )
+                JsonApiParams(
+                    include = listOf("manga-entry"),
+                    sort = listOf("-createdAt"),
+                    limit = 15
+                )
             )
         }
         val animeRecentResponseDeferred = async {
             mangaJapApiService.getAnime(
-                    JsonApiParams(
-                            include = listOf("anime-entry"),
-                            sort = listOf("-createdAt"),
-                            limit = 15
-                    )
+                JsonApiParams(
+                    include = listOf("anime-entry"),
+                    sort = listOf("-createdAt"),
+                    limit = 15
+                )
             )
         }
 
         val peopleResponse = peopleResponseDeferred.await()
-        val mangaResponse = mangaResponseDeferred.await()
-        val animeResponse = animeResponseDeferred.await()
         val mangaRecentResponse = mangaRecentResponseDeferred.await()
         val animeRecentResponse = animeRecentResponseDeferred.await()
 
         _state.value = try {
             when {
                 peopleResponse is JsonApiResponse.Success &&
-                        mangaResponse is JsonApiResponse.Success &&
-                        animeResponse is JsonApiResponse.Success &&
                         mangaRecentResponse is JsonApiResponse.Success &&
                         animeRecentResponse is JsonApiResponse.Success ->
                     State.SuccessLoading(
-                            peopleResponse.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.PEOPLE_DISCOVER } },
-                            mangaResponse.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.MANGA_DISCOVER } },
-                            animeResponse.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.ANIME_DISCOVER } },
-                            mangaRecentResponse.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.MANGA_DISCOVER } },
-                            animeRecentResponse.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.ANIME_DISCOVER } }
+                        peopleResponse.body.data!!.map {
+                            it.apply {
+                                typeLayout = MangaJapAdapter.Type.PEOPLE_DISCOVER
+                            }
+                        },
+                        mangaRecentResponse.body.data!!.map {
+                            it.apply {
+                                typeLayout = MangaJapAdapter.Type.MANGA_DISCOVER
+                            }
+                        },
+                        animeRecentResponse.body.data!!.map {
+                            it.apply {
+                                typeLayout = MangaJapAdapter.Type.ANIME_DISCOVER
+                            }
+                        }
                     )
 
                 peopleResponse is JsonApiResponse.Error -> State.FailedLoading(peopleResponse)
-                mangaResponse is JsonApiResponse.Error -> State.FailedLoading(mangaResponse)
-                animeResponse is JsonApiResponse.Error -> State.FailedLoading(animeResponse)
-                mangaRecentResponse is JsonApiResponse.Error -> State.FailedLoading(mangaRecentResponse)
-                animeRecentResponse is JsonApiResponse.Error -> State.FailedLoading(animeRecentResponse)
+                mangaRecentResponse is JsonApiResponse.Error -> State.FailedLoading(
+                    mangaRecentResponse
+                )
+                animeRecentResponse is JsonApiResponse.Error -> State.FailedLoading(
+                    animeRecentResponse
+                )
 
                 else -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Throwable("Impossible to load data")))
             }
@@ -122,7 +116,7 @@ class DiscoverViewModel : ViewModel() {
         _state.value = State.Updating
 
         val response = mangaJapApiService.createMangaEntry(
-                mangaEntry
+            mangaEntry
         )
         _state.value = try {
             when (response) {
@@ -141,8 +135,8 @@ class DiscoverViewModel : ViewModel() {
         _state.value = State.Updating
 
         val response = mangaJapApiService.updateMangaEntry(
-                mangaEntry.id,
-                mangaEntry.updateJson()
+            mangaEntry.id,
+            mangaEntry
         )
         _state.value = try {
             when (response) {
@@ -162,7 +156,7 @@ class DiscoverViewModel : ViewModel() {
         _state.value = State.Updating
 
         val response = mangaJapApiService.createAnimeEntry(
-                animeEntry
+            animeEntry
         )
         _state.value = try {
             when (response) {
@@ -181,8 +175,8 @@ class DiscoverViewModel : ViewModel() {
         _state.value = State.Updating
 
         val response = mangaJapApiService.updateAnimeEntry(
-                animeEntry.id,
-                animeEntry.updateJson()
+            animeEntry.id,
+            animeEntry
         )
         _state.value = try {
             when (response) {

@@ -33,7 +33,7 @@ class VhStaff(
                     Navigation.findNavController(binding.root).navigate(
                             PeopleFragmentDirections.actionPeopleToManga(
                                     manga.id,
-                                    manga.canonicalTitle
+                                    manga.title
                             )
                     )
                 }
@@ -42,7 +42,7 @@ class VhStaff(
                     Navigation.findNavController(binding.root).navigate(
                             PeopleFragmentDirections.actionPeopleToAnime(
                                     anime.id,
-                                    anime.canonicalTitle
+                                    anime.title
                             )
                     )
                 }
@@ -67,9 +67,9 @@ class VhStaff(
 
         binding.mediaTitleTextView.apply {
             staff.manga?.let {manga ->
-                text = manga.canonicalTitle
+                text = manga.title
             } ?: staff.anime?.let { anime ->
-                text = anime.canonicalTitle
+                text = anime.title
             }
         }
 

@@ -51,7 +51,7 @@ class MangaJapAdapter(
 
         EPISODE_ANIME,
         SEASON_ANIME,
-        EPISODE_ANIME_HEADER,
+        SEASON_ANIME_HEADER,
         USER,
         FOLLOWERS,
         FOLLOWING,
@@ -90,7 +90,8 @@ class MangaJapAdapter(
         Type.ANIME_ENTRY_LIBRARY -> VhAnimeEntry(ItemMediaLibraryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.ANIME_ENTRY_PREVIEW -> VhAnimeEntry(ItemMediaPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.EPISODE_ANIME_HEADER -> VhEpisode(ItemEpisodeAnimeHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        Type.SEASON_ANIME_HEADER -> VhSeason(ItemSeasonAnimeHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        Type.SEASON_ANIME -> VhSeason(ItemSeasonAnimeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.EPISODE_ANIME -> VhEpisode(ItemEpisodeAnimeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
         Type.MANGA_SEARCH -> VhManga(ItemMediaSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -106,7 +107,6 @@ class MangaJapAdapter(
         Type.REVIEW_HEADER -> VhReview(ItemReviewHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.REVIEW -> VhReview(ItemReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.SEASON_ANIME -> VhSeason(ItemSeasonAnimeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
         Type.STATS_PREVIEW_MANGA_FOLLOWED,
         Type.STATS_PREVIEW_MANGA_VOLUMES,
@@ -120,8 +120,8 @@ class MangaJapAdapter(
 
         Type.USER -> VhUser(ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.FOLLOWERS -> VhFollow(ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.FOLLOWING -> VhFollow(ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        Type.FOLLOWERS -> VhFollow(ItemFollowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        Type.FOLLOWING -> VhFollow(ItemFollowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
         Type.PEOPLE_DISCOVER -> VhPeople(ItemPeopleDiscoverBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
@@ -163,7 +163,7 @@ class MangaJapAdapter(
             is VhStaff -> holder.setVhStaff(items[position] as Staff)
             is VhHeader -> holder.setVhStatusHeader(items[position] as Header)
             is VhUser -> holder.setVhUser(items[position] as User)
-            is VhUserStats -> holder.setVhUserStats(items[position] as UserStats)
+            is VhUserStats -> holder.setVhUserStats(items[position] as User.Stats)
             is VhVolume -> holder.setVhVolume(items[position] as Volume)
         }
     }

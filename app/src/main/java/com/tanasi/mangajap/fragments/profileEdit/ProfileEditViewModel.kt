@@ -50,7 +50,7 @@ class ProfileEditViewModel : ViewModel() {
 
         val response = mangaJapApiService.updateUser(
                 user.id,
-                user.updateJson()
+                user
         )
         _state.value = try {
             when (response) {

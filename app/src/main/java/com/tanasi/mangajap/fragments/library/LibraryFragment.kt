@@ -239,8 +239,8 @@ class LibraryFragment : Fragment() {
             SortBy.Title -> {
                 itemList.sortBy { item ->
                     when (item) {
-                        is MangaEntry -> item.manga?.canonicalTitle ?: ""
-                        is AnimeEntry -> item.anime?.canonicalTitle ?: ""
+                        is MangaEntry -> item.manga?.title ?: ""
+                        is AnimeEntry -> item.anime?.title ?: ""
                         else -> ""
                     }
                 }

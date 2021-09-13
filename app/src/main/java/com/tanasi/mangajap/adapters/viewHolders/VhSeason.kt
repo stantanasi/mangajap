@@ -8,6 +8,7 @@ import androidx.viewbinding.ViewBinding
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.databinding.ItemSeasonAnimeBinding
+import com.tanasi.mangajap.databinding.ItemSeasonAnimeHeaderBinding
 import com.tanasi.mangajap.fragments.anime.AnimeFragment
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Season
@@ -22,6 +23,15 @@ class VhSeason(
     private val context: Context = itemView.context
     private lateinit var season: Season
 
+    fun setVhSeason(season: Season) {
+        this.season = season
+        when (_binding) {
+            is ItemSeasonAnimeHeaderBinding -> displaySeasonHeader(_binding)
+            is ItemSeasonAnimeBinding -> displaySeasonAnime(_binding)
+        }
+    }
+
+
     private fun updateAnimeEntry(animeEntry: AnimeEntry) {
         if (context is MainActivity) {
             when (val fragment = context.getCurrentFragment()) {
@@ -30,12 +40,8 @@ class VhSeason(
         }
     }
 
-    fun setVhSeason(season: Season) {
-        this.season = season
-        when (_binding) {
-            is ItemSeasonAnimeBinding -> displaySeasonAnime(_binding)
-        }
-    }
+
+    private fun displaySeasonHeader(binding: ItemSeasonAnimeHeaderBinding) {}
 
     private fun displaySeasonAnime(binding: ItemSeasonAnimeBinding) {
         binding.season.also {
@@ -43,10 +49,10 @@ class VhSeason(
                 if (context is MainActivity) {
                     when (val fragment = context.getCurrentFragment()) {
                         is AnimeFragment -> {
-                            if (fragment.showSeason.contains(season.seasonNumber)) {
-                                fragment.showSeason.remove(season.seasonNumber)
+                            if (fragment.showSeason.contains(season.number)) {
+                                fragment.showSeason.remove(season.number)
                             } else {
-                                fragment.showSeason.add(season.seasonNumber)
+                                fragment.showSeason.add(season.number)
                             }
                             fragment.displayAnime()
                         }
@@ -55,13 +61,13 @@ class VhSeason(
             }
         }
 
-        binding.seasonNumberTextView.text = context.resources.getString(R.string.seasonNumber, season.seasonNumber)
+        binding.seasonNumberTextView.text = context.resources.getString(R.string.seasonNumber, season.number)
 
         binding.seasonEpisodesIsVisibleImageView.also {
             if (context is MainActivity) {
                 when (val fragment = context.getCurrentFragment()) {
                     is AnimeFragment -> {
-                        if (fragment.showSeason.contains(season.seasonNumber)) {
+                        if (fragment.showSeason.contains(season.number)) {
                             it.setImageResource(R.drawable.ic_arrow_drop_down_24dp)
                         } else {
                             it.setImageResource(R.drawable.ic_arrow_drop_up_24dp)
@@ -80,7 +86,7 @@ class VhSeason(
         }
 
         binding.seasonIsWatchCheckBox.apply {
-            season.episodes[0].anime?.animeEntry?.let { animeEntry ->
+            season.episodes.firstOrNull()?.anime?.animeEntry?.let { animeEntry ->
                 visibility = View.VISIBLE
                 isChecked = season.isWatched
                 setOnClickListener {
@@ -93,7 +99,7 @@ class VhSeason(
         }
 
         binding.pbSeasonProgress.apply {
-            season.episodes[0].anime?.animeEntry?.let {
+            season.episodes.firstOrNull()?.anime?.animeEntry?.let {
                 visibility = View.VISIBLE
                 progress = season.progress
                 progressTintList = ContextCompat.getColorStateList(context, season.progressColor)

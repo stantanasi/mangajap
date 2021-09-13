@@ -45,9 +45,9 @@
     <string name="settings">Paramètres</string>
     <string name="editProfile">Éditer le profil</string>
     <string name="account">Compte</string>
-    <string name="changePassword">Changer mon mot de passe</string>
+    <string name="changePassword">Changer votre mot de passe</string>
     <string name="newPassword">Nouveau mot de passe</string>
-    <string name="confirmPassword">Confirmer mot de passe</string>
+    <string name="confirmPassword">Confirmer le mot de passe</string>
     <string name="passwordDontMatch">Mot de passe ne correspond pas</string>
     <string name="personalInformation">Informations personnelles</string>
     <string name="birthday">Naissance</string>
@@ -240,5 +240,10 @@
     <string name="webtoon">Webtoon</string>
     <string name="recent_manga">Derniers mangas ajoutés</string>
     <string name="recent_anime">Derniers animes ajoutés</string>
+    <string name="passwordResetInstructions">Saississez votre adresse e-mail pour recevoir les instructions de réinitialisation du mot de passe.</string>
+    <string name="currentPassword">Mot de passe actuel</string>
+    <string name="passwordIncorrect">Le mot de passe entré est incorrect</string>
+    <string name="verifyPassword">Vérifiez votre mot de passe</string>
+    <string name="verifyPasswordMessage">Saisissez à nouveau votre mot de passe MangaJap pour continuer.</string>
 
 </resources>

@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -153,7 +152,7 @@ class MangaFragment : Fragment() {
                 return true
             }
             R.id.share -> {
-                shareText(getString(R.string.shareManga, manga.canonicalTitle))
+                shareText(getString(R.string.shareManga, manga.title))
                 return true
             }
         }
@@ -318,7 +317,7 @@ class MangaFragment : Fragment() {
         }
 
         popupMangaBinding.shareManga.setOnClickListener {
-            shareText(getString(R.string.shareManga, manga.canonicalTitle))
+            shareText(getString(R.string.shareManga, manga.title))
         }
     }
 

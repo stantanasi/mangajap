@@ -11,60 +11,60 @@ import java.util.*
 
 @JsonApiType("manga")
 class Manga(
-        override var id: String = "",
-        createdAt: String? = null,
-        updatedAt: String? = null,
-        var canonicalTitle: String = "",
-        titles: JSONObject? = null,
-        var synopsis: String? = null,
-        startDate: String? = null,
-        endDate: String? = null,
-        origin: String? = null,
-        status: String = "",
-        mangaType: String = "",
-        var volumeCount: Int? = 0,
-        var chapterCount: Int? = 0,
-        var averageRating: Double? = null,
-        var ratingRank: Int? = null,
-        var popularity: Int? = null,
-        var userCount: Int = 0,
-        var favoritesCount: Int? = null,
-        var reviewCount: Int? = null,
-        var coverImage: String? = null,
-        var bannerImage: String? = null,
+    override var id: String = "",
+    createdAt: String? = null,
+    updatedAt: String? = null,
+    val title: String = "",
+    titles: JSONObject? = null,
+    val synopsis: String? = null,
+    startDate: String? = null,
+    endDate: String? = null,
+    origin: String? = null,
+    status: String = "",
+    mangaType: String = "",
+    val volumeCount: Int = 0,
+    val chapterCount: Int = 0,
+    val averageRating: Double? = null,
+    val ratingRank: Int? = null,
+    val popularity: Int? = null,
+    val userCount: Int = 0,
+    val favoritesCount: Int = 0,
+    val reviewCount: Int = 0,
+    val coverImage: String? = null,
+    val bannerImage: String? = null,
 
-        var volumes: List<Volume> = listOf(),
-        var genres: List<Genre> = listOf(),
-        var themes: List<Theme> = listOf(),
-        var staff: List<Staff> = listOf(),
-        var reviews: List<Review> = listOf(),
-        @JsonApiRelationship("franchise") var franchise: List<Franchise> = listOf(),
-        @JsonApiRelationship("manga-entry") var mangaEntry: MangaEntry? = null,
+    var volumes: List<Volume> = listOf(),
+    var genres: List<Genre> = listOf(),
+    var themes: List<Theme> = listOf(),
+    var staff: List<Staff> = listOf(),
+    var reviews: List<Review> = listOf(),
+    @JsonApiRelationship("franchise") var franchise: List<Franchise> = listOf(),
+    @JsonApiRelationship("manga-entry") var mangaEntry: MangaEntry? = null,
 ) : JsonApiResource(), MangaJapAdapter.Item, Cloneable {
 
-    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
-    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
+    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val titles: Titles? = Titles.create(titles)
     val startDate: Calendar? = startDate?.toCalendar("yyyy-MM-dd")
     val endDate: Calendar? = endDate?.toCalendar("yyyy-MM-dd")
     val origin: Locale? = origin?.let { Locale("", it) }
-    var status: Status = Status.getByName(status)
-    var mangaType: MangaType? = MangaType.getByName(mangaType)
+    val status: Status = Status.getByName(status)
+    val mangaType: MangaType = MangaType.getByName(mangaType)
 
 
     data class Titles(
-            val fr: String,
-            val en: String,
-            val en_jp: String,
-            val ja_jp: String,
+        val fr: String,
+        val en: String,
+        val en_jp: String,
+        val ja_jp: String,
     ) {
         companion object {
             fun create(json: JSONObject?): Titles? {
                 return if (json == null) null else Titles(
-                        json.optString("fr") ?: "",
-                        json.optString("en") ?: "",
-                        json.optString("en_jp") ?: "",
-                        json.optString("ja_jp") ?: ""
+                    json.optString("fr") ?: "",
+                    json.optString("en") ?: "",
+                    json.optString("en_jp") ?: "",
+                    json.optString("ja_jp") ?: ""
                 )
             }
         }
@@ -100,10 +100,10 @@ class Manga(
         webtoon(R.string.webtoon);
 
         companion object {
-            fun getByName(name: String): MangaType? = try {
+            fun getByName(name: String): MangaType = try {
                 valueOf(name)
             } catch (e: Exception) {
-                null
+                shonen
             }
         }
     }

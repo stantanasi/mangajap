@@ -11,29 +11,29 @@ import kotlin.math.max
 
 @JsonApiType("mangaEntries")
 class MangaEntry(
-        override var id: String = "",
-        createdAt: String? = null,
-        updatedAt: String? = null,
-        var isAdd: Boolean = false,
-        var isFavorites: Boolean = false,
-        var isPrivate: Boolean = false,
-        status: String = "",
-        var volumesRead: Int = 0,
-        var chaptersRead: Int = 0,
-        startedAt: String? = null,
-        finishedAt: String? = null,
-        var rating: Int? = null,
-        var rereadCount: Int = 0,
+    override var id: String = "",
+    createdAt: String? = null,
+    updatedAt: String? = null,
+    var isAdd: Boolean = false,
+    var isFavorites: Boolean = false,
+    var isPrivate: Boolean = false,
+    status: String = "",
+    var volumesRead: Int = 0,
+    var chaptersRead: Int = 0,
+    startedAt: String? = null,
+    finishedAt: String? = null,
+    var rating: Int? = null,
+    var rereadCount: Int = 0,
 
-        var user: User? = null,
-        var manga: Manga? = null,
+    var user: User? = null,
+    var manga: Manga? = null,
 ) : JsonApiResource(), MangaJapAdapter.Item {
 
-    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
-    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
+    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val status: Status = Status.getByName(status)
-    val startedAt: Calendar? = startedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
-    val finishedAt: Calendar? = finishedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
+    val startedAt: Calendar? = startedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val finishedAt: Calendar? = finishedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
     enum class Status(val stringId: Int, val colorId: Int) {
         reading(R.string.mangaEntryStatusReading, R.color.mangaEntryStatusReading_color),
@@ -57,23 +57,23 @@ class MangaEntry(
         val chaptersProgress = ((chaptersRead.toDouble() / (manga.chapterCount ?: 1)) * 100).toInt()
 
         return when {
-            volumesProgress-chaptersProgress in 1..5 -> chaptersProgress
-            chaptersProgress-volumesProgress in 1..5 -> volumesProgress
+            volumesProgress - chaptersProgress in 1..5 -> chaptersProgress
+            chaptersProgress - volumesProgress in 1..5 -> volumesProgress
             else -> max(volumesProgress, chaptersProgress)
         }
     }
 
     fun getProgressColor(manga: Manga): Int =
-            when (status) {
-                Status.reading -> {
-                    if (getProgress(manga) < 100) R.color.mangaEntryStatusReading_color
-                    else R.color.mangaEntryStatusReadingFinished_color
-                }
-                Status.completed -> R.color.mangaEntryStatusCompleted_color
-                Status.planned -> R.color.mangaEntryStatusPlanned_color
-                Status.on_hold -> R.color.mangaEntryStatusOnHold_color
-                Status.dropped -> R.color.mangaEntryStatusDropped_color
+        when (status) {
+            Status.reading -> {
+                if (getProgress(manga) < 100) R.color.mangaEntryStatusReading_color
+                else R.color.mangaEntryStatusReadingFinished_color
             }
+            Status.completed -> R.color.mangaEntryStatusCompleted_color
+            Status.planned -> R.color.mangaEntryStatusPlanned_color
+            Status.on_hold -> R.color.mangaEntryStatusOnHold_color
+            Status.dropped -> R.color.mangaEntryStatusDropped_color
+        }
 
     fun putAdd(isAdd: Boolean) = putAttribute("isAdd", isAdd)
 
@@ -81,9 +81,11 @@ class MangaEntry(
 
     fun putPrivate(isPrivate: Boolean) = putAttribute("isPrivate", isPrivate)
 
-    fun putStartedAt(startedAt: Calendar?) = putAttribute("startedAt", startedAt?.format("yyyy-MM-dd HH:mm:ss"))
+    fun putStartedAt(startedAt: Calendar?) =
+        putAttribute("startedAt", startedAt?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
 
-    fun putFinishedAt(finishedAt: Calendar?) = putAttribute("finishedAt", finishedAt?.format("yyyy-MM-dd HH:mm:ss"))
+    fun putFinishedAt(finishedAt: Calendar?) =
+        putAttribute("finishedAt", finishedAt?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
 
     fun putStatus(status: Status) = putAttribute("status", status.name)
 

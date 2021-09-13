@@ -8,18 +8,18 @@ import java.util.*
 
 @JsonApiType("reviews")
 class Review(
-        override var id: String = "",
-        createdAt: String? = null,
-        updatedAt: String? = null,
-        var content: String = "",
+    override var id: String = "",
+    createdAt: String? = null,
+    updatedAt: String? = null,
+    var content: String = "",
 
-        var user: User? = null,
-        var manga: Manga? = null,
-        var anime: Anime? = null,
+    var user: User? = null,
+    var manga: Manga? = null,
+    var anime: Anime? = null,
 ) : JsonApiResource(), MangaJapAdapter.Item {
 
-    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
-    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
+    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
 
     fun putContent(content: String) = putAttribute("content", content)

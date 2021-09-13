@@ -42,7 +42,7 @@ class VhPeople(
                 Navigation.findNavController(binding.root).navigate(
                         DiscoverFragmentDirections.actionDiscoverToManga(
                                 manga.id,
-                                manga.canonicalTitle
+                                manga.title
                         )
                 )
             }
@@ -58,7 +58,7 @@ class VhPeople(
                 Navigation.findNavController(binding.root).navigate(
                         DiscoverFragmentDirections.actionDiscoverToAnime(
                                 anime.id,
-                                anime.canonicalTitle
+                                anime.title
                         )
                 )
             }

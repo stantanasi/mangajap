@@ -50,7 +50,7 @@ class VhAnimeEntry(
             Navigation.findNavController(binding.root).navigate(
                     ProfileFragmentDirections.actionProfileToAnime(
                             animeEntry.anime?.id ?: "",
-                            animeEntry.anime?.canonicalTitle ?: ""
+                            animeEntry.anime?.title ?: ""
                     )
             )
         }
@@ -84,7 +84,7 @@ class VhAnimeEntry(
             Navigation.findNavController(binding.root).navigate(
                     LibraryFragmentDirections.actionLibraryToAnime(
                             animeEntry.anime?.id ?: "",
-                            animeEntry.anime?.canonicalTitle ?: ""
+                            animeEntry.anime?.title ?: ""
                     )
             )
         }
@@ -97,7 +97,7 @@ class VhAnimeEntry(
                     .into(this)
         }
 
-        binding.mediaTitleTextView.text = animeEntry.anime?.canonicalTitle ?: ""
+        binding.mediaTitleTextView.text = animeEntry.anime?.title ?: ""
 
         binding.mediaIsAddCheckBox.apply {
             visibility = if (animeEntry.isAdd) View.GONE else View.VISIBLE
@@ -120,7 +120,7 @@ class VhAnimeEntry(
             Navigation.findNavController(binding.root).navigate(
                     AgendaFragmentDirections.actionAgendaToAnime(
                             animeEntry.anime?.id ?: "",
-                            animeEntry.anime?.canonicalTitle ?: ""
+                            animeEntry.anime?.title ?: ""
                     )
             )
         }
@@ -133,7 +133,7 @@ class VhAnimeEntry(
                     .into(this)
         }
 
-        binding.tvAnimeTitle.text = animeEntry.anime?.canonicalTitle ?: ""
+        binding.tvAnimeTitle.text = animeEntry.anime?.title ?: ""
 
         binding.tvEpisodeToWatch.apply {
             text = context.getString(R.string.episode_number, animeEntry.episodesWatch + 1)

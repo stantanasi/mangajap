@@ -50,7 +50,7 @@ class VhMangaEntry(
             Navigation.findNavController(binding.root).navigate(
                     ProfileFragmentDirections.actionProfileToManga(
                             mangaEntry.manga?.id ?: "",
-                            mangaEntry.manga?.canonicalTitle ?: ""
+                            mangaEntry.manga?.title ?: ""
                     )
             )
         }
@@ -84,7 +84,7 @@ class VhMangaEntry(
             Navigation.findNavController(binding.root).navigate(
                     LibraryFragmentDirections.actionLibraryToManga(
                             mangaEntry.manga?.id ?: "",
-                            mangaEntry.manga?.canonicalTitle ?: ""
+                            mangaEntry.manga?.title ?: ""
                     )
             )
         }
@@ -112,7 +112,7 @@ class VhMangaEntry(
             progressTintList = ContextCompat.getColorStateList(context, mangaEntry.manga?.let { mangaEntry.getProgressColor(it) } ?: MangaEntry.Status.reading.colorId)
         }
 
-        binding.mediaTitleTextView.text = mangaEntry.manga?.canonicalTitle ?: ""
+        binding.mediaTitleTextView.text = mangaEntry.manga?.title ?: ""
     }
 
     private fun displayToRead(binding: ItemMangaToReadBinding) {
@@ -120,7 +120,7 @@ class VhMangaEntry(
             Navigation.findNavController(binding.root).navigate(
                     AgendaFragmentDirections.actionAgendaToManga(
                             mangaEntry.manga?.id ?: "",
-                            mangaEntry.manga?.canonicalTitle ?: ""
+                            mangaEntry.manga?.title ?: ""
                     )
             )
         }
@@ -133,7 +133,7 @@ class VhMangaEntry(
                     .into(this)
         }
 
-        binding.tvMangaTitle.text = mangaEntry.manga?.canonicalTitle ?: ""
+        binding.tvMangaTitle.text = mangaEntry.manga?.title ?: ""
 
         binding.tvVolumesToRead.apply {
             if (mangaEntry.volumesRead < mangaEntry.manga?.volumeCount ?: 0) {

@@ -9,19 +9,19 @@ import java.util.*
 
 @JsonApiType("request")
 class Request(
-        override var id: String = "",
-        createdAt: String? = null,
-        updatedAt: String? = null,
-        requestType: String = "",
-        var data: String = "",
-        var isDone: Boolean = false,
-        var userHasRead: Boolean = false,
+    override var id: String = "",
+    createdAt: String? = null,
+    updatedAt: String? = null,
+    requestType: String = "",
+    var data: String = "",
+    var isDone: Boolean = false,
+    var userHasRead: Boolean = false,
 
-        var user: User? = null,
+    var user: User? = null,
 ) : JsonApiResource(), MangaJapAdapter.Item {
 
-    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
-    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd HH:mm:ss")
+    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     var requestType: RequestType? = RequestType.getByName(requestType)
 
     enum class RequestType(val stringId: Int) {

@@ -97,7 +97,7 @@ class VhAnime(
             Navigation.findNavController(binding.root).navigate(
                     SearchFragmentDirections.actionSearchToAnime(
                             anime.id,
-                            anime.canonicalTitle
+                            anime.title
                     )
             )
         }
@@ -110,7 +110,7 @@ class VhAnime(
                     .into(this)
         }
 
-        binding.mediaTitleTextView.text = anime.canonicalTitle
+        binding.mediaTitleTextView.text = anime.title
 
         binding.mediaTypeTextView.text = anime.animeType?.stringId?.let { context.resources.getString(it) }
 
@@ -167,7 +167,7 @@ class VhAnime(
             Navigation.findNavController(binding.root).navigate(
                     DiscoverFragmentDirections.actionDiscoverToAnime(
                             anime.id,
-                            anime.canonicalTitle
+                            anime.title
                     )
             )
         }
@@ -235,7 +235,7 @@ class VhAnime(
             }
         }
 
-        binding.animeTitleTextView.text = anime.canonicalTitle
+        binding.animeTitleTextView.text = anime.title
 
         binding.animeReleaseDateTextView.text = anime.startDate?.format("dd MMMM yyyy") ?: "-"
 
@@ -370,7 +370,7 @@ class VhAnime(
         }
 
         binding.animeSeasonsSpinner.apply {
-            adapter = SpinnerAdapter(context, anime.seasons.map { context.getString(R.string.seasonNumber, it.seasonNumber) })
+            adapter = SpinnerAdapter(context, anime.seasons.map { context.getString(R.string.seasonNumber, it.number) })
             onItemSelectedListener = object : OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
                     val season = anime.seasons[position]
@@ -383,7 +383,7 @@ class VhAnime(
                                 season.episodeWatched
                         ) { value ->
                             anime.animeEntry?.let {
-                                it.putEpisodesWatch(value + anime.seasons.map { if (it.seasonNumber < season.seasonNumber) it.episodeCount else 0 }.sum())
+                                it.putEpisodesWatch(value + anime.seasons.map { if (it.number < season.number) it.episodeCount else 0 }.sum())
                                 updateAnimeEntry(it)
                             }
                         }.show()
@@ -440,7 +440,7 @@ class VhAnime(
                     AnimeFragmentDirections.actionAnimeToReviews(
                             ReviewsFragment.ReviewsType.Anime,
                             anime.id,
-                            anime.canonicalTitle
+                            anime.title
                     )
             )
         }

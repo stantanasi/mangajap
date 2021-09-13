@@ -67,7 +67,7 @@ class ReviewSaveViewModel : ViewModel() {
 
         val response = mangaJapApiService.updateReview(
                 review.id,
-                review.updateJson()
+                review
         )
         _state.value = try {
             when (response) {

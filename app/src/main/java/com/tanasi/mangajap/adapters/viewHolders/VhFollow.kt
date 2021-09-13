@@ -9,6 +9,7 @@ import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.databinding.ItemFollowBinding
 import com.tanasi.mangajap.databinding.ItemUserBinding
 import com.tanasi.mangajap.fragments.follow.FollowFragmentDirections
 import com.tanasi.mangajap.models.Follow
@@ -24,11 +25,11 @@ class VhFollow(
     fun setVhFollow(follow: Follow) {
         this.follow = follow
         when (_binding) {
-            is ItemUserBinding -> displayFollow(_binding)
+            is ItemFollowBinding -> displayFollow(_binding)
         }
     }
 
-    private fun displayFollow(binding: ItemUserBinding) {
+    private fun displayFollow(binding: ItemFollowBinding) {
         binding.user.apply {
             when (follow.typeLayout) {
                 MangaJapAdapter.Type.FOLLOWERS -> {
