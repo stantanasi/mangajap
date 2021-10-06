@@ -36,7 +36,7 @@ class Anime(
     val bannerImage: String? = null,
     val youtubeVideoId: String? = null,
 
-    episodes: List<Episode> = listOf(),
+    val seasons: List<Season> = listOf(),
     val genres: List<Genre> = listOf(),
     val themes: List<Theme> = listOf(),
     val staff: List<Staff> = listOf(),
@@ -53,21 +53,6 @@ class Anime(
     val origin: Locale? = origin?.let { Locale("", it) }
     var status: Status = Status.getByName(status)
     var animeType: AnimeType? = AnimeType.getByName(animeType)
-
-    val seasons: List<Season> = episodes
-        .groupBy { it.seasonNumber }
-        .map { (_, episodes) ->
-            Season(
-                number = episodes.firstOrNull()?.seasonNumber ?: 0,
-                episodeCount = episodes.size,
-
-                anime = this,
-                episodes = episodes.map {
-                    it.anime = this
-                    it
-                }
-            )
-        }
 
 
     data class Titles(

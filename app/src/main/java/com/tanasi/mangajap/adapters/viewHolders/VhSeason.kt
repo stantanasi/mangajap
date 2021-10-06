@@ -40,24 +40,29 @@ class VhSeason(
         }
     }
 
+    private fun showEpisodes() {
+        if (context is MainActivity) {
+            when (val fragment = context.getCurrentFragment()) {
+                is AnimeFragment -> {
+                    fragment.viewModel.getSeasonEpisodes(season)
+                    if (fragment.showSeason.contains(season.number)) {
+                        fragment.showSeason.remove(season.number)
+                    } else {
+                        fragment.showSeason.add(season.number)
+                    }
+                    fragment.displayAnime()
+                }
+            }
+        }
+    }
+
 
     private fun displaySeasonHeader(binding: ItemSeasonAnimeHeaderBinding) {}
 
     private fun displaySeasonAnime(binding: ItemSeasonAnimeBinding) {
         binding.season.also {
             it.setOnClickListener {
-                if (context is MainActivity) {
-                    when (val fragment = context.getCurrentFragment()) {
-                        is AnimeFragment -> {
-                            if (fragment.showSeason.contains(season.number)) {
-                                fragment.showSeason.remove(season.number)
-                            } else {
-                                fragment.showSeason.add(season.number)
-                            }
-                            fragment.displayAnime()
-                        }
-                    }
-                }
+                showEpisodes()
             }
         }
 
@@ -78,7 +83,7 @@ class VhSeason(
         }
 
         binding.seasonProgressTextView.apply {
-            season.episodes.firstOrNull()?.anime?.animeEntry?.let {
+            season.anime?.animeEntry?.let {
                 text = context.getString(R.string.season_episodes_progress, season.episodeWatched, season.episodeCount)
             } ?: let {
                 text =context.getString(R.string.season_episodes_progress, 0, season.episodeCount)
@@ -86,7 +91,7 @@ class VhSeason(
         }
 
         binding.seasonIsWatchCheckBox.apply {
-            season.episodes.firstOrNull()?.anime?.animeEntry?.let { animeEntry ->
+            season.anime?.animeEntry?.let { animeEntry ->
                 visibility = View.VISIBLE
                 isChecked = season.isWatched
                 setOnClickListener {
@@ -99,7 +104,7 @@ class VhSeason(
         }
 
         binding.pbSeasonProgress.apply {
-            season.episodes.firstOrNull()?.anime?.animeEntry?.let {
+            season.anime?.animeEntry?.let {
                 visibility = View.VISIBLE
                 progress = season.progress
                 progressTintList = ContextCompat.getColorStateList(context, season.progressColor)

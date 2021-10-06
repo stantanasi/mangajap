@@ -8,6 +8,7 @@ import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
+import com.tanasi.mangajap.models.Season
 import com.tanasi.mangajap.services.MangaJapApiService
 import kotlinx.coroutines.launch
 
@@ -19,29 +20,43 @@ class AnimeViewModel : ViewModel() {
     val state: LiveData<State> = _state
 
     sealed class State {
-        object Loading: State()
-        data class SuccessLoading(val anime: Anime): State()
-        data class FailedLoading(val error: JsonApiResponse.Error): State()
+        object Loading : State()
+        data class SuccessLoading(val anime: Anime) : State()
+        data class FailedLoading(val error: JsonApiResponse.Error) : State()
 
-        object Updating: State()
-        data class SuccessUpdating(val animeEntry: AnimeEntry): State()
-        object UpdatingForAdding: State()
-        data class SuccessUpdatingForAdding(val animeEntry: AnimeEntry): State()
-        data class FailedUpdating(val error: JsonApiResponse.Error): State()
+        object LoadingEpisodes : State()
+        data class SuccessLoadingEpisodes(val season: Season) : State()
+        data class FailedLoadingEpisodes(val error: JsonApiResponse.Error) : State()
+
+        object Updating : State()
+        data class SuccessUpdating(val animeEntry: AnimeEntry) : State()
+        object UpdatingForAdding : State()
+        data class SuccessUpdatingForAdding(val animeEntry: AnimeEntry) : State()
+        data class FailedUpdating(val error: JsonApiResponse.Error) : State()
     }
+
 
     fun getAnime(id: String) = viewModelScope.launch {
         _state.value = State.Loading
 
-        val response = mangaJapApiService.getAnime(
+        _state.value = try {
+            val response = mangaJapApiService.getAnime(
                 id,
                 JsonApiParams(
-                        include = listOf("anime-entry", "episodes")
+                    include = listOf("anime-entry", "seasons")
                 )
-        )
-        _state.value = try {
+            )
+
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!)
+                is JsonApiResponse.Success -> {
+                    val anime = response.body.data!!
+
+                    anime.seasons.map { season ->
+                        season.anime = anime
+                    }
+
+                    State.SuccessLoading(anime)
+                }
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {
@@ -49,11 +64,40 @@ class AnimeViewModel : ViewModel() {
         }
     }
 
+    fun getSeasonEpisodes(season: Season) = viewModelScope.launch {
+        _state.value = State.LoadingEpisodes
+
+        _state.value = try {
+            if (season.episodes.isEmpty()) {
+                val response = mangaJapApiService.getSeasonEpisodes(
+                    season.id
+                )
+
+                when (response) {
+                    is JsonApiResponse.Success -> {
+                        season.episodes.addAll(response.body.data!!)
+                        season.episodes.map { episode ->
+                            episode.season = season
+                        }
+
+                        State.SuccessLoadingEpisodes(season)
+                    }
+                    is JsonApiResponse.Error -> State.FailedLoadingEpisodes(response)
+                }
+            } else {
+                State.SuccessLoadingEpisodes(season)
+            }
+        } catch (e: Exception) {
+            State.FailedLoadingEpisodes(JsonApiResponse.Error.UnknownError(e))
+        }
+    }
+
+
     fun createAddAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
         _state.value = State.UpdatingForAdding
 
         val response = mangaJapApiService.createAnimeEntry(
-                animeEntry
+            animeEntry
         )
         _state.value = try {
             when (response) {
@@ -69,8 +113,8 @@ class AnimeViewModel : ViewModel() {
         _state.value = State.UpdatingForAdding
 
         val response = mangaJapApiService.updateAnimeEntry(
-                animeEntry.id,
-                animeEntry
+            animeEntry.id,
+            animeEntry
         )
         _state.value = try {
             when (response) {
@@ -86,8 +130,8 @@ class AnimeViewModel : ViewModel() {
         _state.value = State.Updating
 
         val response = mangaJapApiService.updateAnimeEntry(
-                animeEntry.id,
-                animeEntry
+            animeEntry.id,
+            animeEntry
         )
         _state.value = try {
             when (response) {

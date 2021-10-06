@@ -80,6 +80,16 @@ class AnimeFragment : Fragment() {
                     is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
                 }
 
+                AnimeViewModel.State.LoadingEpisodes -> {}
+                is AnimeViewModel.State.SuccessLoadingEpisodes -> {
+                    displayAnime()
+                }
+                is AnimeViewModel.State.FailedLoadingEpisodes -> when (state.error) {
+                    is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                }
+
                 AnimeViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
                 is AnimeViewModel.State.SuccessUpdating -> {
                     anime.animeEntry = state.animeEntry

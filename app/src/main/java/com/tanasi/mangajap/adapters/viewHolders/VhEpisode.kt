@@ -58,7 +58,7 @@ class VhEpisode(
         }
 
         binding.episodeIsWatchCheckBox.apply {
-            episode.anime?.animeEntry?.let { animeEntry ->
+            episode.season?.anime?.animeEntry?.let { animeEntry ->
                 visibility = View.VISIBLE
                 isChecked = animeEntry.episodesWatch >= episode.number
                 setOnClickListener {

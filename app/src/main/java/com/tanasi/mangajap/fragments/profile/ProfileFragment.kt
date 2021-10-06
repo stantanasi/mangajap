@@ -102,6 +102,7 @@ class ProfileFragment : Fragment() {
                     binding.isLoading.cslIsLoading.visibility = View.GONE
                 }
                 is ProfileViewModel.State.FailedLoading -> when (state.error) {
+                    // TODO: Si on recoit un code HTTP 503 -> Serveur en maintenance
                     is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
                     is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
                     is JsonApiResponse.Error.UnknownError -> if (userId == null) {

@@ -196,12 +196,6 @@ interface MangaJapApiService {
         @Body request: com.tanasi.mangajap.models.Request
     ): JsonApiResponse<com.tanasi.mangajap.models.Request>
 
-    @PATCH("requests/{id}")
-    suspend fun updateRequest(
-        @Path("id") id: String,
-        @Body request: Request,
-    ): JsonApiResponse<com.tanasi.mangajap.models.Request>
-
 
     /**
      * Review
@@ -223,6 +217,16 @@ interface MangaJapApiService {
         @Path("id") id: String,
         @Body review: Review,
     ): JsonApiResponse<Review>
+
+    /**
+     * Season
+     * */
+
+    @GET("seasons/{id}/episodes")
+    suspend fun getSeasonEpisodes(
+        @Path("id") seasonId: String,
+        @QueryMap params: JsonApiParams = JsonApiParams()
+    ): JsonApiResponse<List<Episode>>
 
 
     /**
@@ -288,11 +292,4 @@ interface MangaJapApiService {
         @Path("id") userId: String,
         @QueryMap params: JsonApiParams = JsonApiParams()
     ): JsonApiResponse<List<AnimeEntry>>
-
-    @GET("users/{id}/requests")
-    suspend fun getUserRequests(
-        @Path("id") userId: String,
-        @QueryMap params: JsonApiParams = JsonApiParams()
-    ): JsonApiResponse<List<com.tanasi.mangajap.models.Request>>
-
 }

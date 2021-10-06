@@ -1,35 +1,37 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiResource
+import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import org.json.JSONObject
 import kotlin.math.max
+import kotlin.math.min
 
+@JsonApiType("seasons")
 class Season(
-    val id: String = "",
+    override var id: String = "",
     titles: JSONObject? = null,
     val number: Int = 0,
     val episodeCount: Int = 0,
 
-    val anime: Anime? = null,
-    val episodes: List<Episode> = listOf(),
-) : MangaJapAdapter.Item {
+    var anime: Anime? = null,
+    val episodes: MutableList<Episode> = mutableListOf(),
+) : JsonApiResource(), MangaJapAdapter.Item {
 
     val titles: Titles = Titles.from(titles)
     val episodeWatched: Int
         get() {
-            var episodeWatched = 0
-            var episodesWatch = anime?.animeEntry?.episodesWatch ?: 0
-            anime?.seasons?.forEach { season ->
-                episodesWatch -= season.episodeCount
-                if (season.number == number) {
-                    when {
-                        episodesWatch > 0 -> episodeWatched = season.episodeCount
-                        episodesWatch < 0 -> episodeWatched = max(episodesWatch + episodeCount, 0)
-                    }
-                }
-            }
-            return episodeWatched
+            return max(
+                min(
+                    (anime?.animeEntry?.episodesWatch ?: 0) - (anime?.seasons
+                        ?.filter { it.number < number }
+                        ?.map { it.episodeCount }
+                        ?.sum() ?: 0),
+                    episodeCount
+                ),
+                0
+            )
         }
     val isWatched: Boolean
         get() = episodeWatched >= episodeCount
