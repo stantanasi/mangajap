@@ -32,6 +32,7 @@ open class RecyclerViewFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // TODO: use ViewModel
 //        viewModel.state.observe(viewLifecycleOwner) { state ->
 //            when (state) {
 //                RecyclerViewViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE

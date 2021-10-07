@@ -77,21 +77,42 @@ class ProfileEditFragment : Fragment() {
                 is ProfileEditViewModel.State.SuccessLoading -> {
                     user = state.user
                     requireActivity().invalidateOptionsMenu()
+
                     displayProfile()
                     binding.isLoading.cslIsLoading.visibility = View.GONE
                 }
                 is ProfileEditViewModel.State.FailedLoading -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 ProfileEditViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
                 is ProfileEditViewModel.State.SuccessUpdating -> findNavController().navigateUp()
                 is ProfileEditViewModel.State.FailedUpdating -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }

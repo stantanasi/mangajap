@@ -147,9 +147,19 @@ class SearchFragment : Fragment() {
                     binding.isLoading.cslIsLoading.visibility = View.GONE
                 }
                 is SearchViewModel.State.FailedLoading -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 SearchViewModel.State.LoadingMore -> {
@@ -199,18 +209,38 @@ class SearchFragment : Fragment() {
                     }
                 }
                 is SearchViewModel.State.FailedLoadingMore -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 SearchViewModel.State.Saving -> {
                 }
                 is SearchViewModel.State.SuccessSaving -> actualTab.fragment.mangaJapAdapter?.notifyDataSetChanged()
                 is SearchViewModel.State.FailedSaving -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 is SearchViewModel.State.SuccessRequest -> Toast.makeText(requireContext(), getString(R.string.media_will_be_added, state.request.data), Toast.LENGTH_SHORT).show()

@@ -63,17 +63,37 @@ class ReviewSaveFragment : Fragment() {
                     binding.isLoading.cslIsLoading.visibility = View.GONE
                 }
                 is ReviewSaveViewModel.State.FailedLoading -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 ReviewSaveViewModel.State.Saving -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
                 is ReviewSaveViewModel.State.SuccessSaving -> findNavController().navigateUp()
                 is ReviewSaveViewModel.State.FailedSaving -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }

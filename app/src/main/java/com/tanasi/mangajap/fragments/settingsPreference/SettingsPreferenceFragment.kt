@@ -98,27 +98,38 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 }
                 is SettingsPreferenceViewModel.State.SuccessLoading -> displayAccount(state.user)
                 is SettingsPreferenceViewModel.State.FailedLoading -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 SettingsPreferenceViewModel.State.Updating -> {
                 }
                 is SettingsPreferenceViewModel.State.SuccessUpdating -> displayAccount(state.user)
                 is SettingsPreferenceViewModel.State.FailedUpdating -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> {
-                        Toast.makeText(requireContext(), getString(R.string.dataNotSave), Toast.LENGTH_SHORT).show()
-                        state.error.body.errors.map { error ->
-                            when (error.source?.pointer) {
-                                "/data/attributes/pseudo" -> Toast.makeText(requireContext(), error.title, Toast.LENGTH_SHORT).show()
-                                "/data/attributes/email" -> Toast.makeText(requireContext(), error.title, Toast.LENGTH_SHORT).show()
-                                "/data/attributes/password" -> Toast.makeText(requireContext(), error.title, Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
                     }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }

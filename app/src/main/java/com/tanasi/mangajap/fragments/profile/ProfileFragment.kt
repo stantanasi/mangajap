@@ -1,14 +1,11 @@
 package com.tanasi.mangajap.fragments.profile
 
-import android.app.AlertDialog
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,7 +20,6 @@ import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.LauncherActivity
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentProfileBinding
@@ -37,7 +33,7 @@ import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class ProfileFragment : Fragment() {
 
-    private enum class TabType(
+    private enum class ProfileTab(
         val stringId: Int,
         val statsList: MutableList<User.Stats> = mutableListOf(),
         val libraryList: MutableList<MangaJapAdapter.Item> = mutableListOf(),
@@ -58,7 +54,7 @@ class ProfileFragment : Fragment() {
     private lateinit var userPreference: UserPreference
 
     private var userId: String? = null
-    private var actualTab: TabType = TabType.values()[0]
+    private var actualTab: ProfileTab = ProfileTab.values()[0]
 
     private lateinit var user: User
     private var followed: Follow? = null
@@ -79,15 +75,16 @@ class ProfileFragment : Fragment() {
         userPreference = UserPreference(requireContext())
 
         actualTab = when (generalPreference.displayFirst) {
-            GeneralPreference.DisplayFirst.Manga -> TabType.Manga
-            GeneralPreference.DisplayFirst.Anime -> TabType.Anime
+            GeneralPreference.DisplayFirst.Manga -> ProfileTab.Manga
+            GeneralPreference.DisplayFirst.Anime -> ProfileTab.Anime
         }
 
         binding.navigation.apply {
-            visibility = userId?.let {
-                setOnClickListener { findNavController().navigateUp() }
-                View.VISIBLE
-            } ?: View.GONE
+            setOnClickListener { findNavController().navigateUp() }
+            visibility = when (userId) {
+                null -> View.GONE
+                else -> View.VISIBLE
+            }
         }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
@@ -102,21 +99,19 @@ class ProfileFragment : Fragment() {
                     binding.isLoading.cslIsLoading.visibility = View.GONE
                 }
                 is ProfileViewModel.State.FailedLoading -> when (state.error) {
-                    // TODO: Si on recoit un code HTTP 503 -> Serveur en maintenance
-                    is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.UnknownError -> if (userId == null) {
-                        AlertDialog.Builder(ContextThemeWrapper(context, R.style.Widget_AppTheme_Dialog_Alert))
-                                .setTitle(getString(R.string.error))
-                                .setMessage(getString(R.string.error_occurs_logout))
-                                .setPositiveButton(getString(R.string.confirm)) { _, _ ->
-                                    userPreference.logout()
-                                    startActivity(Intent(requireContext(), LauncherActivity::class.java))
-                                    requireActivity().finish()
-                                }
-                                .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
-                                .show()
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
                     }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 ProfileViewModel.State.UpdatingFollowed -> {
@@ -128,9 +123,19 @@ class ProfileFragment : Fragment() {
                     displayFollow()
                 }
                 is ProfileViewModel.State.FailedUpdatingFollowed -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(requireContext(), getString(R.string.serverError), Toast.LENGTH_SHORT).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(requireContext(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -144,15 +149,14 @@ class ProfileFragment : Fragment() {
 
     private fun displayProfile() {
         binding.settings.apply {
-            if (userId == null || userId == userPreference.selfId) {
-                visibility = View.VISIBLE
-                setOnClickListener {
-                    findNavController().navigate(
-                            ProfileFragmentDirections.actionProfileToSettings()
-                    )
-                }
-            } else {
-                visibility = View.GONE
+            setOnClickListener {
+                findNavController().navigate(
+                    ProfileFragmentDirections.actionProfileToSettings()
+                )
+            }
+            visibility = when (userId) {
+                null, userPreference.selfId -> View.VISIBLE
+                else -> View.GONE
             }
         }
 
@@ -227,15 +231,15 @@ class ProfileFragment : Fragment() {
 
 
         binding.profileTabLayout.apply {
-            TabType.values().map {
+            ProfileTab.values().map {
                 if (!contains(getString(it.stringId))) addTab(newTab().setText(getString(it.stringId)))
             }
             addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    actualTab = TabType.values()[tab.position]
+                    actualTab = ProfileTab.values()[tab.position]
                     generalPreference.displayFirst = when (actualTab) {
-                        TabType.Manga -> GeneralPreference.DisplayFirst.Manga
-                        TabType.Anime -> GeneralPreference.DisplayFirst.Anime
+                        ProfileTab.Manga -> GeneralPreference.DisplayFirst.Manga
+                        ProfileTab.Anime -> GeneralPreference.DisplayFirst.Anime
                     }
                     displayList()
                 }
@@ -310,35 +314,35 @@ class ProfileFragment : Fragment() {
     private fun displayList() {
         binding.mediaFollowedTextView.apply {
             text = when (actualTab) {
-                TabType.Manga -> getString(R.string.manga)
-                TabType.Anime -> getString(R.string.anime)
+                ProfileTab.Manga -> getString(R.string.manga)
+                ProfileTab.Anime -> getString(R.string.anime)
             }
         }
 
         binding.mediaFollowedCountTextView.apply {
             text = when (actualTab) {
-                TabType.Manga -> user.followedMangaCount.toString()
-                TabType.Anime -> user.followedAnimeCount.toString()
+                ProfileTab.Manga -> user.followedMangaCount.toString()
+                ProfileTab.Anime -> user.followedAnimeCount.toString()
             }
         }
 
         binding.previewLibraryTextView.apply {
             text = when (actualTab) {
-                TabType.Manga -> getString(R.string.mangaList)
-                TabType.Anime -> getString(R.string.animeList)
+                ProfileTab.Manga -> getString(R.string.mangaList)
+                ProfileTab.Anime -> getString(R.string.animeList)
             }
         }
 
         binding.previewFavoritesTextView.apply {
             text = when (actualTab) {
-                TabType.Manga -> getString(R.string.favoritesManga)
-                TabType.Anime -> getString(R.string.favoritesAnime)
+                ProfileTab.Manga -> getString(R.string.favoritesManga)
+                ProfileTab.Anime -> getString(R.string.favoritesAnime)
             }
         }
 
 
         when (actualTab) {
-            TabType.Manga -> TabType.Manga.let { tab ->
+            ProfileTab.Manga -> ProfileTab.Manga.let { tab ->
                 tab.statsList.apply {
                     clear()
                     add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_MANGA_FOLLOWED })
@@ -355,7 +359,7 @@ class ProfileFragment : Fragment() {
                     addAll(user.mangaFavorites)
                 }
             }
-            TabType.Anime -> TabType.Anime.let { tab ->
+            ProfileTab.Anime -> ProfileTab.Anime.let { tab ->
                 tab.statsList.apply {
                     clear()
                     add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_ANIME_FOLLOWED })
@@ -389,8 +393,8 @@ class ProfileFragment : Fragment() {
                             user.id,
                             user.pseudo,
                             when (actualTab) {
-                                TabType.Manga -> LibraryFragment.LibraryType.MangaList
-                                TabType.Anime -> LibraryFragment.LibraryType.AnimeList
+                                ProfileTab.Manga -> LibraryFragment.LibraryType.MangaList
+                                ProfileTab.Anime -> LibraryFragment.LibraryType.AnimeList
                             }
                     )
             )
@@ -431,8 +435,8 @@ class ProfileFragment : Fragment() {
                             user.id,
                             user.pseudo,
                             when (actualTab) {
-                                TabType.Manga -> LibraryFragment.LibraryType.MangaFavoritesList
-                                TabType.Anime -> LibraryFragment.LibraryType.AnimeFavoritesList
+                                ProfileTab.Manga -> LibraryFragment.LibraryType.MangaFavoritesList
+                                ProfileTab.Anime -> LibraryFragment.LibraryType.AnimeFavoritesList
                             }
                     )
             )
