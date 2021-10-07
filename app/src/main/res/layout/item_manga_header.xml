@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:text="Type"
                     android:textColor="?attr/textSecondaryColor"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/font_size_micro"
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>

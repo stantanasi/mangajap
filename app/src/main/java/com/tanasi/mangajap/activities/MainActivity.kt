@@ -17,7 +17,6 @@ import com.tanasi.mangajap.utils.extensions.getActualTheme
 import com.tanasi.mangajap.utils.extensions.setLocale
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
 
-// TODO: remplacer les textsize ..sp par @dimen/font_size_.... dans les xml
 class MainActivity : AppCompatActivity() {
 
     private var _binding: ActivityMainBinding? = null

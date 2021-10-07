@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:text="#.# / 5"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="15sp"
+            android:textSize="@dimen/font_size_small"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
@@ -110,7 +110,7 @@
             android:layout_height="wrap_content"
             android:text="@string/watchTrailer"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="16sp"/>
+            android:textSize="@dimen/font_size_medium"/>
 
     </LinearLayout>
 
@@ -150,7 +150,7 @@
             android:layout_weight="1"
             android:text="##"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="16sp"
+            android:textSize="@dimen/font_size_medium"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
@@ -172,7 +172,7 @@
             android:gravity="end"
             android:text="@string/seasonCount"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="16sp"
+            android:textSize="@dimen/font_size_medium"
             android:textStyle="bold" />
 
         <ImageView
@@ -190,7 +190,7 @@
             android:layout_weight="1"
             android:text="@string/episodeCount"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="16sp"
+            android:textSize="@dimen/font_size_medium"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -217,7 +217,7 @@
             android:layout_height="wrap_content"
             android:text="@string/animeUserCount"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="16sp"/>
+            android:textSize="@dimen/font_size_medium"/>
 
     </LinearLayout>
     

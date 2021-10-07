@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/search"
                     android:textColor="?attr/textPrimaryColor"
-                    android:textSize="16sp"/>
+                    android:textSize="@dimen/font_size_medium"/>
 
             </LinearLayout>
 
@@ -96,7 +96,7 @@
                             android:layout_weight="1"
                             android:text="@string/recent_manga"
                             android:textColor="?attr/textPrimaryColor"
-                            android:textSize="18sp"
+                            android:textSize="@dimen/font_size_medium_large"
                             android:textStyle="bold"/>
 
                         <TextView
@@ -144,7 +144,7 @@
                             android:layout_weight="1"
                             android:text="@string/recent_anime"
                             android:textColor="?attr/textPrimaryColor"
-                            android:textSize="18sp"
+                            android:textSize="@dimen/font_size_medium_large"
                             android:textStyle="bold"/>
 
                         <TextView

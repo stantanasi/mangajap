@@ -44,7 +44,7 @@
                 android:maxLines="2"
                 android:text="Title"
                 android:textColor="?attr/textPrimaryColor"
-                android:textSize="16sp"
+                android:textSize="@dimen/font_size_medium"
                 tools:ignore="HardcodedText" />
 
             <TextView android:id="@+id/mediaType_TextView"
@@ -53,7 +53,7 @@
                 android:maxLines="1"
                 android:text="@string/type"
                 android:textColor="?attr/textSecondaryColor"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/font_size_micro"/>
 
             <TextView android:id="@+id/mediaMembers_TextView"
                 android:layout_width="match_parent"
@@ -61,7 +61,7 @@
                 android:maxLines="1"
                 android:text="@string/userCount"
                 android:textColor="?attr/textSecondaryColor"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/font_size_micro"/>
 
         </LinearLayout>
 

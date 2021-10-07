@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:text="#.# / 5"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="15sp"
+            android:textSize="@dimen/font_size_small"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
@@ -114,7 +114,7 @@
             android:layout_weight="1"
             android:text="##"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="16sp"
+            android:textSize="@dimen/font_size_medium"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
@@ -136,7 +136,7 @@
             android:gravity="end"
             android:text="@string/volumeCount"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="16sp"
+            android:textSize="@dimen/font_size_medium"
             android:textStyle="bold" />
 
         <ImageView
@@ -154,7 +154,7 @@
             android:layout_weight="1"
             android:text="@string/chapterCount"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="16sp"
+            android:textSize="@dimen/font_size_medium"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -181,7 +181,7 @@
             android:layout_height="wrap_content"
             android:text="@string/mangaUserCount"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="16sp"/>
+            android:textSize="@dimen/font_size_medium"/>
 
     </LinearLayout>
 

@@ -33,7 +33,7 @@
             android:fadingEdge="horizontal"
             android:text="Title"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="14sp"
+            android:textSize="@dimen/font_size_small"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
@@ -45,7 +45,7 @@
             android:maxLines="4"
             android:text="Summary"
             android:textColor="?attr/textSecondaryColor"
-            android:textSize="14sp"
+            android:textSize="@dimen/font_size_small"
             tools:ignore="HardcodedText" />
 
     </RelativeLayout>

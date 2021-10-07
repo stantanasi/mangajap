@@ -26,7 +26,7 @@
             android:maxLines="2"
             android:text="Title"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="20sp"
+            android:textSize="@dimen/font_size_large"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 

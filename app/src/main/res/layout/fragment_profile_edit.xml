@@ -43,7 +43,7 @@
                         <TextView
                             android:text="@string/profilePicture"
                             android:textColor="?attr/textPrimaryColor"
-                            android:textSize="16sp"/>
+                            android:textSize="@dimen/font_size_medium"/>
 
                         <ImageView android:id="@+id/removeProfilePic"
                             android:focusable="true"
@@ -69,7 +69,7 @@
                     android:padding="@dimen/editProfile_spacing"
                     android:textColor="?attr/textPrimaryColor"
                     android:textColorHint="?attr/textColorHint"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/font_size_small"
                     tools:ignore="Autofill" />
 
                 <TextView
@@ -82,7 +82,7 @@
                     android:text="@string/personalInformation"
                     android:textAllCaps="true"
                     android:textColor="?attr/textSecondaryColor"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/font_size_micro"
                     android:textStyle="bold"/>
 
                 <TableLayout
@@ -112,7 +112,7 @@
                             android:maxLines="1"
                             android:textColor="?attr/textPrimaryColor"
                             android:textColorHint="?attr/textColorHint"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/font_size_small"
                             android:textStyle="bold"
                             tools:ignore="Autofill,LabelFor" />
 
@@ -140,7 +140,7 @@
                             android:maxLines="1"
                             android:textColor="?attr/textPrimaryColor"
                             android:textColorHint="?attr/textColorHint"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/font_size_small"
                             android:textStyle="bold"
                             tools:ignore="Autofill,LabelFor" />
 
@@ -165,7 +165,7 @@
                             android:maxLines="1"
                             android:textColor="?attr/textPrimaryColor"
                             android:textColorHint="?attr/textColorHint"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/font_size_small"
                             android:textStyle="bold"/>
 
                         <ImageView android:id="@+id/removeBirthday"

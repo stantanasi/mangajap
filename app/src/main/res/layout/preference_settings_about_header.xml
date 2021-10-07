@@ -26,6 +26,6 @@
         android:layout_marginEnd="@dimen/settings_spacing"
         android:text="@string/app_name"
         android:textColor="?attr/textPrimaryColor"
-        android:textSize="22sp"/>
+        android:textSize="@dimen/font_size_extra_large"/>
 
 </LinearLayout>

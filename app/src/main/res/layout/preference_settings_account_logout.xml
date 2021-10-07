@@ -8,5 +8,5 @@
     android:text="@string/logout"
     android:gravity="center"
     android:textColor="#D30002"
-    android:textSize="16sp"
+    android:textSize="@dimen/font_size_medium"
     android:textStyle="bold"/>

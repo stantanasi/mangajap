@@ -86,7 +86,7 @@
                     android:layout_marginBottom="4dp"
                     android:text="Release Date"
                     android:textColor="?attr/textSecondaryColor"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/font_size_micro"
                     tools:ignore="HardcodedText" />
 
                 <TextView android:id="@+id/animeType_TextView"
@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:text="Type"
                     android:textColor="?attr/textSecondaryColor"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/font_size_micro"
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>

@@ -26,7 +26,7 @@
                 android:padding="@dimen/reviews_spacing"
                 android:textColor="?attr/textPrimaryColor"
                 android:textColorHint="?attr/textColorHint"
-                android:textSize="14sp"
+                android:textSize="@dimen/font_size_small"
                 tools:ignore="Autofill" />
 
             <LinearLayout
@@ -52,7 +52,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/doNotSpoil"
                         android:textColor="?attr/textColorHint"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/font_size_medium"
                         android:textStyle="bold"/>
 
                     <TextView

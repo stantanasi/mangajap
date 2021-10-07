@@ -33,7 +33,7 @@
             android:text="@string/app_name"
             android:textAllCaps="true"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="20sp"
+            android:textSize="@dimen/font_size_large"
             android:textStyle="bold"/>
 
     </LinearLayout>
@@ -59,7 +59,7 @@
             android:text="@string/registration"
             android:textAllCaps="true"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="20sp"
+            android:textSize="@dimen/font_size_large"
             android:textStyle="bold"/>
 
         <View
@@ -77,7 +77,7 @@
             android:text="@string/connection"
             android:textAllCaps="true"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="20sp"
+            android:textSize="@dimen/font_size_large"
             android:textStyle="bold"/>
 
     </LinearLayout>
@@ -90,6 +90,6 @@
         android:layout_marginEnd="8dp"
         android:text="@string/version"
         android:textColor="?attr/dividerColor"
-        android:textSize="13sp"/>
+        android:textSize="@dimen/font_size_micro"/>
 
 </LinearLayout>

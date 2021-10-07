@@ -10,7 +10,7 @@
     android:paddingEnd="@dimen/settings_spacing"
     android:text="Title"
     android:textColor="?attr/colorAccent"
-    android:textSize="14sp"
+    android:textSize="@dimen/font_size_small"
     android:textStyle="bold"
     tools:ignore="HardcodedText">
 

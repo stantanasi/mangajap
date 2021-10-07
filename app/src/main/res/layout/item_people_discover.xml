@@ -30,7 +30,7 @@
                 android:padding="6dp"
                 android:text="People name"
                 android:textColor="?attr/textPrimaryColor"
-                android:textSize="16sp"
+                android:textSize="@dimen/font_size_medium"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -135,7 +135,7 @@
             android:padding="6dp"
             android:text="@string/seeAll"
             android:textColor="?attr/colorAccent"
-            android:textSize="16sp"
+            android:textSize="@dimen/font_size_medium"
             android:textStyle="bold"/>
 
     </LinearLayout>

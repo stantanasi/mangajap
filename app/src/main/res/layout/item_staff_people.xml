@@ -39,7 +39,7 @@
                 android:maxLines="2"
                 android:text="Title"
                 android:textColor="?attr/textPrimaryColor"
-                android:textSize="16sp"
+                android:textSize="@dimen/font_size_medium"
                 tools:ignore="HardcodedText" />
 
             <TextView android:id="@+id/mediaStartDate_TextView"
@@ -48,7 +48,7 @@
                 android:maxLines="1"
                 android:text="Year"
                 android:textColor="?attr/textSecondaryColor"
-                android:textSize="12sp"
+                android:textSize="@dimen/font_size_micro"
                 tools:ignore="HardcodedText" />
 
         </LinearLayout>

@@ -37,14 +37,14 @@
             android:layout_height="wrap_content"
             android:text="@string/volume"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="16sp"/>
+            android:textSize="@dimen/font_size_medium"/>
 
         <TextView android:id="@+id/volumeTitle_TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Volume title"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="18sp"
+            android:textSize="@dimen/font_size_medium_large"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 

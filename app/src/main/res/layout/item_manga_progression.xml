@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:text="##"
                 android:textColor="?attr/textPrimaryColor"
-                android:textSize="16sp"
+                android:textSize="@dimen/font_size_medium"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:text="##"
                 android:textColor="?attr/textPrimaryColor"
-                android:textSize="16sp"
+                android:textSize="@dimen/font_size_medium"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -131,7 +131,7 @@
             android:layout_marginEnd="@dimen/manga_spacing"
             android:text="## / ##"
             android:textColor="?attr/textPrimaryColor"
-            android:textSize="17sp"
+            android:textSize="@dimen/font_size_medium"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 

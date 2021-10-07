@@ -75,7 +75,7 @@
         android:layout_gravity="center"
         android:text="@string/listEmpty"
         android:textColor="?attr/textPrimaryColor"
-        android:textSize="18sp"
+        android:textSize="@dimen/font_size_medium_large"
         android:textStyle="bold"
         android:visibility="gone" />
 

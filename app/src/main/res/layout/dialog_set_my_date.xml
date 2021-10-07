@@ -37,7 +37,7 @@
             android:paddingEnd="12dp"
             android:textColor="?attr/textPrimaryColor"
             android:textColorHint="?attr/textColorHint"
-            android:textSize="16sp"
+            android:textSize="@dimen/font_size_medium"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
@@ -79,7 +79,7 @@
             android:paddingEnd="12dp"
             android:textColor="?attr/textPrimaryColor"
             android:textColorHint="?attr/textColorHint"
-            android:textSize="16sp"
+            android:textSize="@dimen/font_size_medium"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 

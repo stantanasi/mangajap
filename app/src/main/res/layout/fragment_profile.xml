@@ -78,7 +78,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:textColor="?attr/textPrimaryColor"
-                        android:textSize="25sp"
+                        android:textSize="@dimen/font_size_extra_extra_extra_large"
                         android:textStyle="bold"
                         tools:text="Pseudo" />
 
@@ -104,7 +104,7 @@
                             android:text="@string/edit"
                             android:textAllCaps="true"
                             android:textColor="?attr/textPrimaryColor"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/font_size_micro"
                             android:textStyle="bold"/>
 
                         <LinearLayout android:id="@+id/follow"
@@ -125,7 +125,7 @@
                                 android:text="@string/follow"
                                 android:textAllCaps="true"
                                 android:textColor="@color/follow_color"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/font_size_micro"
                                 android:textStyle="bold"/>
 
                         </LinearLayout>
@@ -167,7 +167,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="##"
                                 android:textColor="?attr/textPrimaryColor"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/font_size_medium"
                                 android:textStyle="bold"
                                 tools:ignore="HardcodedText" />
 
@@ -192,7 +192,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="##"
                                 android:textColor="?attr/textPrimaryColor"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/font_size_medium"
                                 android:textStyle="bold"
                                 tools:ignore="HardcodedText" />
 
@@ -217,7 +217,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="##"
                                 android:textColor="?attr/textPrimaryColor"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/font_size_medium"
                                 android:textStyle="bold"
                                 tools:ignore="HardcodedText" />
 
@@ -278,7 +278,7 @@
                         android:layout_weight="1"
                         android:text="@string/mangaList"
                         android:textColor="?attr/textPrimaryColor"
-                        android:textSize="22sp"
+                        android:textSize="@dimen/font_size_extra_large"
                         android:textStyle="bold"/>
 
                     <TextView
@@ -319,7 +319,7 @@
                         android:layout_weight="1"
                         android:text="@string/favoritesManga"
                         android:textColor="?attr/textPrimaryColor"
-                        android:textSize="18sp"/>
+                        android:textSize="@dimen/font_size_medium_large"/>
 
                     <TextView
                         android:layout_width="wrap_content"
