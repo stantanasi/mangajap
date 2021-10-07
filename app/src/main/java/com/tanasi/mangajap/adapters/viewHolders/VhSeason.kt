@@ -60,15 +60,22 @@ class VhSeason(
     private fun displaySeasonHeader(binding: ItemSeasonAnimeHeaderBinding) {}
 
     private fun displaySeasonAnime(binding: ItemSeasonAnimeBinding) {
-        binding.season.also {
-            it.setOnClickListener {
-                showEpisodes()
+        binding.season.setOnClickListener {
+            showEpisodes()
+        }
+
+        binding.tvSeasonNumber.text = context.resources.getString(R.string.seasonNumber, season.number)
+
+        binding.tvSeasonTitle.run {
+            text = season.title
+            visibility = when (season.title) {
+                "" -> View.GONE
+                else -> View.VISIBLE
             }
         }
 
-        binding.seasonNumberTextView.text = context.resources.getString(R.string.seasonNumber, season.number)
-
         binding.seasonEpisodesIsVisibleImageView.also {
+            // TODO: utiliser une variable dans Season au lieu d'aller récupérer sur AnimeFragment
             if (context is MainActivity) {
                 when (val fragment = context.getCurrentFragment()) {
                     is AnimeFragment -> {

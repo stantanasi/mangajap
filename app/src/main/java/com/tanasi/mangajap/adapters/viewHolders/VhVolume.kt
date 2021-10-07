@@ -79,19 +79,17 @@ class VhVolume(
         }
 
         binding.volumeNumberTextView.apply {
-            when (volume.titles.fr) {
-                "" -> visibility = View.GONE
-                else -> {
-                    visibility = View.VISIBLE
-                    text = context.resources.getString(R.string.volume, volume.number)
-                }
+            text = context.resources.getString(R.string.volume, volume.number)
+            visibility = when (volume.title) {
+                "" -> View.GONE
+                else -> View.VISIBLE
             }
         }
 
         binding.volumeTitleTextView.apply {
-            text = when (volume.titles.fr) {
+            text = when (volume.title) {
                 "" -> context.resources.getString(R.string.volume, volume.number)
-                else -> volume.titles.fr
+                else -> volume.title
             }
         }
 

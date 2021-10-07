@@ -50,11 +50,11 @@ class VhEpisode(
         }
 
         binding.episodeTitleTextView.apply {
-            visibility = when (episode.titles?.fr) {
-                null, "" -> View.GONE
+            text = episode.title
+            visibility = when (episode.title) {
+                "" -> View.GONE
                 else -> View.VISIBLE
             }
-            text = episode.titles?.fr
         }
 
         binding.episodeIsWatchCheckBox.apply {

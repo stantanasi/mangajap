@@ -26,18 +26,34 @@ class Episode(
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    val titles: Titles? = Titles.create(titles)
+    val titles: Titles = Titles.create(titles)
     val airDate: Calendar? = airDate?.toCalendar("yyyy-MM-dd")
     val episodeType: EpisodeType? = EpisodeType.getByName(episodeType)
 
 
+    val title: String
+        get() = when {
+            titles.fr != "" -> titles.fr
+            titles.en != "" -> titles.en
+            titles.en_jp != "" -> titles.en_jp
+            titles.ja_jp != "" -> titles.ja_jp
+            else -> ""
+        }
+
+
     data class Titles(
         val fr: String,
+        val en: String,
+        val en_jp: String,
+        val ja_jp: String,
     ) {
         companion object {
-            fun create(json: JSONObject?): Titles? {
-                return if (json == null) null else Titles(
-                    json.optString("fr") ?: ""
+            fun create(json: JSONObject?): Titles {
+                return Titles(
+                    json?.optString("fr") ?: "",
+                    json?.optString("en") ?: "",
+                    json?.optString("en_jp") ?: "",
+                    json?.optString("ja_jp") ?: "",
                 )
             }
         }

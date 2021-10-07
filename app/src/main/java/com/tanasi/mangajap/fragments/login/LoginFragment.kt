@@ -12,6 +12,7 @@ import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.databinding.FragmentLoginBinding
 import com.tanasi.mangajap.ui.dialog.ResetPasswordDialog
+import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class LoginFragment : Fragment() {
     
@@ -33,6 +34,7 @@ class LoginFragment : Fragment() {
                 LoginViewModel.State.Loading -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
 
                 is LoginViewModel.State.LoginSucceed -> {
+                    UserPreference(requireContext()).selfId = state.userId
                     binding.isUpdating.cslIsUpdating.visibility = View.GONE
                     startActivity(Intent(requireContext(), MainActivity::class.java))
                     requireActivity().finish()

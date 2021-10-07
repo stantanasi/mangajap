@@ -1,3 +1,10 @@
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# IntelliJ
 *.iml
 .gradle
 .idea

@@ -27,6 +27,17 @@ class Volume(
     val titles: Titles = Titles.create(titles)
     val published: Calendar? = published?.toCalendar("yyyy-MM-dd")
 
+
+    val title: String
+        get() = when {
+            titles.fr != "" -> titles.fr
+            titles.en != "" -> titles.en
+            titles.en_jp != "" -> titles.en_jp
+            titles.ja_jp != "" -> titles.ja_jp
+            else -> ""
+        }
+
+
     data class Titles(
         val fr: String,
         val en: String,
@@ -44,6 +55,7 @@ class Volume(
             }
         }
     }
+
 
     override lateinit var typeLayout: MangaJapAdapter.Type
 

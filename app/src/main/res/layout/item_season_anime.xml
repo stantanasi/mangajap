@@ -34,24 +34,38 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    tools:ignore="UseCompoundDrawables">
+                    android:orientation="vertical">
 
-                    <TextView android:id="@+id/seasonNumber_TextView"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/anime_spacing"
-                        android:text="@string/seasonNumber"
-                        android:textColor="?attr/textPrimaryColor"
-                        android:textSize="@dimen/font_size_large"
-                        android:textStyle="bold"/>
+                        android:orientation="horizontal"
+                        tools:ignore="UseCompoundDrawables">
 
-                    <ImageView android:id="@+id/seasonEpisodesIsVisible_ImageView"
+                        <TextView android:id="@+id/tv_season_number"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/anime_spacing"
+                            android:text="@string/seasonNumber"
+                            android:textColor="?attr/textPrimaryColor"
+                            android:textSize="@dimen/font_size_large"
+                            android:textStyle="bold"/>
+
+                        <ImageView android:id="@+id/seasonEpisodesIsVisible_ImageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_arrow_drop_down_24dp"
+                            app:tint="?attr/textSecondaryColor"
+                            tools:ignore="ContentDescription" />
+
+                    </LinearLayout>
+
+                    <TextView android:id="@+id/tv_season_title"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_arrow_drop_down_24dp"
-                        app:tint="?attr/textSecondaryColor"
-                        tools:ignore="ContentDescription" />
+                        android:layout_height="wrap_content"
+                        android:text="Title"
+                        android:textColor="?attr/textSecondaryColor"
+                        tools:ignore="HardcodedText" />
 
                 </LinearLayout>
 

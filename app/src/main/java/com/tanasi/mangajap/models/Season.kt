@@ -20,6 +20,15 @@ class Season(
 ) : JsonApiResource(), MangaJapAdapter.Item {
 
     val titles: Titles = Titles.from(titles)
+
+    val title: String
+        get() = when {
+            titles.fr != "" -> titles.fr
+            titles.en != "" -> titles.en
+            titles.en_jp != "" -> titles.en_jp
+            titles.ja_jp != "" -> titles.ja_jp
+            else -> ""
+        }
     val episodeWatched: Int
         get() {
             return max(

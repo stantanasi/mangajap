@@ -13,7 +13,6 @@ class GeneralPreference(
         private const val PREF_NAME = "${MangaJapApplication.PACKAGE_NAME}.general_preferences"
 
         private const val START_DESTINATION = "start_destination_id"
-        private const val PROFILE_TAB = "profile_tab"
         private const val LAUNCH_COUNT = "launch_count"
         private const val DISPLAY_FIRST = "display_first"
     }
