@@ -245,5 +245,6 @@
     <string name="passwordIncorrect">Le mot de passe entré est incorrect</string>
     <string name="verifyPassword">Vérifiez votre mot de passe</string>
     <string name="verifyPasswordMessage">Saisissez à nouveau votre mot de passe MangaJap pour continuer.</string>
+    <string name="password_reset_email_sent">E-mail de réinitialisation du mot de passe envoyé !</string>
 
 </resources>

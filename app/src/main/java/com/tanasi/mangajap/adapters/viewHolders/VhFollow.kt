@@ -10,7 +10,6 @@ import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.ItemFollowBinding
-import com.tanasi.mangajap.databinding.ItemUserBinding
 import com.tanasi.mangajap.fragments.follow.FollowFragmentDirections
 import com.tanasi.mangajap.models.Follow
 

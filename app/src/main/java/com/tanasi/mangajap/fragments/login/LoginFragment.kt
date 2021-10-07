@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.databinding.FragmentLoginBinding
 import com.tanasi.mangajap.ui.dialog.ResetPasswordDialog
@@ -41,14 +42,16 @@ class LoginFragment : Fragment() {
                     binding.isUpdating.cslIsUpdating.visibility = View.GONE
                 }
 
-                is LoginViewModel.State.PasswordResetEmailSuccess -> {
-                    // TODO: string resource
-                    Toast.makeText(requireContext(), "Password reset email sent!", Toast.LENGTH_SHORT).show()
-
-                }
-                is LoginViewModel.State.PasswordResetEmailFailed -> {
-                    Toast.makeText(requireContext(), state.error.message, Toast.LENGTH_SHORT).show()
-                }
+                is LoginViewModel.State.PasswordResetEmailSuccess -> Toast.makeText(
+                    requireContext(),
+                    getString(R.string.password_reset_email_sent),
+                    Toast.LENGTH_SHORT
+                ).show()
+                is LoginViewModel.State.PasswordResetEmailFailed -> Toast.makeText(
+                    requireContext(),
+                    state.error.message,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 

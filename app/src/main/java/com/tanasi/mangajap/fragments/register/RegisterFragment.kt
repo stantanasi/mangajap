@@ -2,8 +2,6 @@ package com.tanasi.mangajap.fragments.register
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +12,9 @@ import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.databinding.FragmentRegisterBinding
-import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.utils.extensions.isEmailValid
 import com.tanasi.mangajap.utils.extensions.isPasswordValid
 import com.tanasi.mangajap.utils.extensions.isPseudoValid
-import com.tanasi.mangajap.utils.preferences.UserPreference
-import com.tanasi.oauth2.OAuth2ErrorBody
-import com.tanasi.oauth2.OAuth2Response
 
 class RegisterFragment : Fragment() {
 

@@ -9,7 +9,6 @@ import com.google.firebase.ktx.Firebase
 import com.tanasi.mangajap.databinding.ActivityLauncherBinding
 import com.tanasi.mangajap.utils.extensions.getActualTheme
 import com.tanasi.mangajap.utils.extensions.setLocale
-import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class LauncherActivity : AppCompatActivity() {
 

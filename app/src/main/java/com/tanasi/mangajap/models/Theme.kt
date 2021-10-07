@@ -4,7 +4,6 @@ import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.toCalendar
-import org.json.JSONObject
 import java.util.*
 
 @JsonApiType("themes")
