@@ -59,8 +59,8 @@ class ProfileViewModel : ViewModel() {
                         JsonApiParams(
                                 include = listOf("manga-library.manga", "anime-library.anime", "manga-favorites.manga", "anime-favorites.anime"),
                                 fields = mapOf(
-                                        "manga" to listOf( "canonicalTitle", "coverImage", "volumeCount", "chapterCount"),
-                                        "anime" to listOf("canonicalTitle", "coverImage", "episodeCount")
+                                        "manga" to listOf( "title", "coverImage", "volumeCount", "chapterCount"),
+                                        "anime" to listOf("title", "coverImage", "episodeCount")
                                 )
                         )
                 ) }

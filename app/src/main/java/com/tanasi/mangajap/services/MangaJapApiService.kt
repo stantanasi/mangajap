@@ -11,7 +11,6 @@ import com.tanasi.oauth2.adapter.OAuth2CallAdapterFactory
 import com.tanasi.oauth2.converter.OAuth2ConverterFactory
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.RequestBody
 import okio.Buffer
 import org.json.JSONObject
@@ -193,8 +192,8 @@ interface MangaJapApiService {
      */
     @POST("requests")
     suspend fun createRequest(
-        @Body request: com.tanasi.mangajap.models.Request
-    ): JsonApiResponse<com.tanasi.mangajap.models.Request>
+        @Body request: Request
+    ): JsonApiResponse<Request>
 
 
     /**

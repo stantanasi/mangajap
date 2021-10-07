@@ -61,10 +61,7 @@ class VhVolume(
         }
 
         binding.volumeTitleTextView.apply {
-            text = when (volume.titles.fr) {
-                "" -> context.resources.getString(R.string.volume, volume.number)
-                else -> volume.titles.fr
-            }
+            text = context.resources.getString(R.string.volume, volume.number)
         }
 
         binding.volumePublishedTextView.apply {
