@@ -14,7 +14,6 @@ class Episode(
     createdAt: String? = null,
     updatedAt: String? = null,
     titles: JSONObject? = null,
-    val seasonNumber: Int = 0,
     val relativeNumber: Int = 0,
     val number: Int = 0,
     airDate: String? = null,

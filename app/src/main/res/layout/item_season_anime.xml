@@ -34,13 +34,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:ignore="UseCompoundDrawables">
+                        android:orientation="vertical">
 
                         <TextView android:id="@+id/tv_season_number"
                             android:layout_width="wrap_content"
@@ -51,25 +51,36 @@
                             android:textSize="@dimen/font_size_large"
                             android:textStyle="bold"/>
 
-                        <ImageView android:id="@+id/seasonEpisodesIsVisible_ImageView"
+                        <TextView android:id="@+id/tv_season_title"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="?attr/textSecondaryColor"
+                            tools:text="Title"/>
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical">
+
+                        <ImageView android:id="@+id/iv_season_is_showing_episodes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:src="@drawable/ic_arrow_drop_down_24dp"
                             app:tint="?attr/textSecondaryColor"
                             tools:ignore="ContentDescription" />
 
-                    </LinearLayout>
+                        <ProgressBar android:id="@+id/pb_season_is_loading_episodes"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:indeterminateTint="?attr/textSecondaryColor"/>
 
-                    <TextView android:id="@+id/tv_season_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Title"
-                        android:textColor="?attr/textSecondaryColor"
-                        tools:ignore="HardcodedText" />
+                    </RelativeLayout>
 
                 </LinearLayout>
 
-                <TextView android:id="@+id/seasonProgress_TextView"
+                <TextView android:id="@+id/tv_season_progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/anime_spacing"
@@ -77,13 +88,13 @@
                     android:textColor="?attr/textSecondaryColor"
                     tools:ignore="HardcodedText" />
 
-                <CheckBox android:id="@+id/seasonIsWatch_CheckBox"
+                <CheckBox android:id="@+id/cb_season_is_watch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
 
-            <ProgressBar android:id="@+id/pbSeasonProgress"
+            <ProgressBar android:id="@+id/pb_season_progress"
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:progressDrawable="@drawable/progress_bar_drawable"

@@ -53,6 +53,10 @@ class Season(
         }
 
 
+    var isLoadingEpisodes = false
+    var isShowingEpisodes = false
+
+
     data class Titles(
         val fr: String,
         val en: String,

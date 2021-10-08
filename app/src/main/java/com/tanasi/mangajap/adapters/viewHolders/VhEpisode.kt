@@ -41,15 +41,15 @@ class VhEpisode(
     private fun displayEpisode(binding: ItemEpisodeAnimeBinding) {
         binding.episodeNumberTextView.text = episode.relativeNumber.toString()
 
-        binding.txEpisodeNumber.apply {
-            val seasonNumber = episode.seasonNumber.toString().padStart(2, '0')
+        binding.tvEpisodeInfo.apply {
+            val seasonNumber = episode.season?.number?.toString()?.padStart(2, '0') ?: "0"
             val episodeRelativeNumber = episode.relativeNumber.toString().padStart(2, '0')
             val episodeNumber = episode.number.toString().padStart(2, '0')
 
             text = context.getString(R.string.episode_info, seasonNumber, episodeRelativeNumber, episodeNumber)
         }
 
-        binding.episodeTitleTextView.apply {
+        binding.tvEpisodeTitle.apply {
             text = episode.title
             visibility = when (episode.title) {
                 "" -> View.GONE

@@ -41,7 +41,6 @@ class AnimeFragment : Fragment() {
     private val args: AnimeFragmentArgs by navArgs()
 
     private lateinit var anime: Anime
-    var showSeason: MutableList<Int> = mutableListOf()
 
     private var animeAboutList: MutableList<MangaJapAdapter.Item> = mutableListOf()
     private var animeEpisodesList: MutableList<MangaJapAdapter.Item> = mutableListOf()
@@ -90,9 +89,12 @@ class AnimeFragment : Fragment() {
                     ).show()
                 }
 
-                AnimeViewModel.State.LoadingEpisodes -> {}
+                is AnimeViewModel.State.LoadingEpisodes -> {
+                    state.season.isLoadingEpisodes = true
+                }
                 is AnimeViewModel.State.SuccessLoadingEpisodes -> {
                     displayAnime()
+                    state.season.isLoadingEpisodes = false
                 }
                 is AnimeViewModel.State.FailedLoadingEpisodes -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -269,7 +271,7 @@ class AnimeFragment : Fragment() {
         }
         for (season in anime.seasons) {
             animeEpisodesList.add(season)
-            if (showSeason.contains(season.number)) {
+            if (season.isShowingEpisodes) {
                 animeEpisodesList.addAll(season.episodes.map { episode ->
                     episode.apply { typeLayout = MangaJapAdapter.Type.EPISODE_ANIME }
                 })

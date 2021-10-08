@@ -16,6 +16,7 @@ class SettingsPreference(
 
         private const val THEME = "theme"
         private const val LANGUAGE = "language"
+        private const val PREFERRED_LANGUAGE_TITLE = "preferred_language_title"
     }
 
     private val prefs: SharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -40,6 +41,30 @@ class SettingsPreference(
             editor.putString(LANGUAGE, value.name)
             editor.commit()
             context.setLocale(value.name)
+        }
+
+
+    // TODO : PreferredLanguageTitle
+    enum class PreferredLanguageTitle(val stringId: Int) {
+        default(1),
+        fr(1),
+        en(1),
+        en_jp(1),
+        ja_jp(1);
+
+        companion object {
+            fun getByName(name: String?): PreferredLanguageTitle = try {
+                valueOf(name!!)
+            } catch (e: Exception) {
+                default
+            }
+        }
+    }
+    var preferredLanguageTitle: PreferredLanguageTitle
+        get() = PreferredLanguageTitle.getByName(prefs.getString(PREFERRED_LANGUAGE_TITLE, null))
+        set(value) {
+            editor.putString(PREFERRED_LANGUAGE_TITLE, value.name)
+            editor.commit()
         }
 
 

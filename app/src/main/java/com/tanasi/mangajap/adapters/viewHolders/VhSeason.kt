@@ -45,11 +45,6 @@ class VhSeason(
             when (val fragment = context.getCurrentFragment()) {
                 is AnimeFragment -> {
                     fragment.viewModel.getSeasonEpisodes(season)
-                    if (fragment.showSeason.contains(season.number)) {
-                        fragment.showSeason.remove(season.number)
-                    } else {
-                        fragment.showSeason.add(season.number)
-                    }
                     fragment.displayAnime()
                 }
             }
@@ -61,6 +56,7 @@ class VhSeason(
 
     private fun displaySeasonAnime(binding: ItemSeasonAnimeBinding) {
         binding.season.setOnClickListener {
+            season.isShowingEpisodes = !season.isShowingEpisodes
             showEpisodes()
         }
 
@@ -74,22 +70,27 @@ class VhSeason(
             }
         }
 
-        binding.seasonEpisodesIsVisibleImageView.also {
-            // TODO: utiliser une variable dans Season au lieu d'aller récupérer sur AnimeFragment
-            if (context is MainActivity) {
-                when (val fragment = context.getCurrentFragment()) {
-                    is AnimeFragment -> {
-                        if (fragment.showSeason.contains(season.number)) {
-                            it.setImageResource(R.drawable.ic_arrow_drop_down_24dp)
-                        } else {
-                            it.setImageResource(R.drawable.ic_arrow_drop_up_24dp)
-                        }
-                    }
-                }
+        binding.ivSeasonIsShowingEpisodes.run {
+            if (season.isShowingEpisodes) {
+                setImageResource(R.drawable.ic_arrow_drop_down_24dp)
+            } else {
+                setImageResource(R.drawable.ic_arrow_drop_up_24dp)
             }
         }
 
-        binding.seasonProgressTextView.apply {
+        binding.pbSeasonIsLoadingEpisodes.run {
+            visibility = when (season.isLoadingEpisodes) {
+                true -> View.VISIBLE
+                false -> View.GONE
+            }
+
+            binding.ivSeasonIsShowingEpisodes.visibility = when (season.isLoadingEpisodes) {
+                true -> View.GONE
+                false -> View.VISIBLE
+            }
+        }
+
+        binding.tvSeasonProgress.apply {
             season.anime?.animeEntry?.let {
                 text = context.getString(R.string.season_episodes_progress, season.episodeWatched, season.episodeCount)
             } ?: let {
@@ -97,7 +98,7 @@ class VhSeason(
             }
         }
 
-        binding.seasonIsWatchCheckBox.apply {
+        binding.cbSeasonIsWatch.apply {
             season.anime?.animeEntry?.let { animeEntry ->
                 visibility = View.VISIBLE
                 isChecked = season.isWatched

@@ -24,7 +24,7 @@ class AnimeViewModel : ViewModel() {
         data class SuccessLoading(val anime: Anime) : State()
         data class FailedLoading(val error: JsonApiResponse.Error) : State()
 
-        object LoadingEpisodes : State()
+        data class LoadingEpisodes(val season: Season) : State()
         data class SuccessLoadingEpisodes(val season: Season) : State()
         data class FailedLoadingEpisodes(val error: JsonApiResponse.Error) : State()
 
@@ -65,7 +65,7 @@ class AnimeViewModel : ViewModel() {
     }
 
     fun getSeasonEpisodes(season: Season) = viewModelScope.launch {
-        _state.value = State.LoadingEpisodes
+        _state.value = State.LoadingEpisodes(season)
 
         _state.value = try {
             if (season.episodes.isEmpty()) {
