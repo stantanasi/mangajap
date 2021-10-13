@@ -34,7 +34,7 @@ class VhFollow(
             Navigation.findNavController(binding.root).navigate(
                 FollowFragmentDirections.actionFollowToProfile(
                     userId = when (follow.typeLayout) {
-                        MangaJapAdapter.Type.FOLLOWERS -> follow.followed?.id ?: ""
+                        MangaJapAdapter.Type.FOLLOWERS -> follow.follower?.id ?: ""
                         MangaJapAdapter.Type.FOLLOWING -> follow.followed?.id ?: ""
                         else -> ""
                     }

@@ -34,7 +34,9 @@
         app:layout_constraintStart_toEndOf="@android:id/icon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="Title" />
+        app:layout_goneMarginBottom="10dp"
+        tools:text="Title"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@android:id/summary"
@@ -52,7 +54,9 @@
         app:layout_constraintEnd_toStartOf="@android:id/widget_frame"
         app:layout_constraintStart_toEndOf="@android:id/icon"
         app:layout_constraintTop_toBottomOf="@android:id/title"
-        tools:text="Summary" />
+        app:layout_goneMarginTop="10dp"
+        tools:text="Summary"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@android:id/widget_frame"

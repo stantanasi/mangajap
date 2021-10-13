@@ -31,7 +31,7 @@ class SettingsPreference(
             fun getByName(name: String?): Language = try {
                 valueOf(name!!)
             } catch (e: Exception) {
-                en
+                fr
             }
         }
     }

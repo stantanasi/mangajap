@@ -84,12 +84,6 @@ class ImageFragment : Fragment() {
         _binding = null
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (this::image.isInitialized) {
             inflater.inflate(R.menu.menu_image_activity, menu)
@@ -107,9 +101,6 @@ class ImageFragment : Fragment() {
 
 
     private fun fullscreen(isFullScreen: Boolean) {
-        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-
         if (isFullScreen) {
             (requireActivity() as MainActivity).supportActionBar?.hide()
             binding.vImageGradient.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out))
@@ -120,7 +111,9 @@ class ImageFragment : Fragment() {
             binding.vImageGradient.visibility = View.VISIBLE
         }
 
-        binding.ivImage.setOnClickListener { fullscreen(!isFullScreen) }
+        binding.ivImage.setOnClickListener {
+            fullscreen(!isFullScreen)
+        }
     }
 
     private fun displayImage() {

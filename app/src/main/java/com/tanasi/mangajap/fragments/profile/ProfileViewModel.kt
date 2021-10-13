@@ -48,7 +48,11 @@ class ProfileViewModel : ViewModel() {
                         )
                 )
                 when (response) {
-                    is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.first(), null, null)
+                    is JsonApiResponse.Success -> {
+                        val user = response.body.data!!.first()
+                        UserPreference(MangaJapApplication.context).selfId = user.id
+                        State.SuccessLoading(user, null, null)
+                    }
                     is JsonApiResponse.Error -> State.FailedLoading(response)
                 }
             } else {

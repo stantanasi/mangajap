@@ -39,7 +39,6 @@ class SettingsFragment : Fragment() {
     }
 
 
-
     fun showFragment(settings: SettingsPreferenceFragment.Settings, back_stack: Boolean) {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
         val settingsPreferenceFragment = SettingsPreferenceFragment()
@@ -47,7 +46,6 @@ class SettingsFragment : Fragment() {
         val args = Bundle()
         args.putString("settings", settings.name)
         settingsPreferenceFragment.arguments = args
-        // TODO: check ?
         ft.replace(binding.flSettings.id, settingsPreferenceFragment)
         if (back_stack) ft.addToBackStack(null)
         ft.commit()

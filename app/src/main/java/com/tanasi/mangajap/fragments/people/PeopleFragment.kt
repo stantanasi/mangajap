@@ -69,12 +69,12 @@ class PeopleFragment : Fragment() {
                     }
                     is JsonApiResponse.Error.NetworkError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                     is JsonApiResponse.Error.UnknownError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

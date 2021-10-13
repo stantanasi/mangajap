@@ -104,12 +104,12 @@ class ProfileFragment : Fragment() {
                     }
                     is JsonApiResponse.Error.NetworkError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                     is JsonApiResponse.Error.UnknownError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -128,12 +128,12 @@ class ProfileFragment : Fragment() {
                     }
                     is JsonApiResponse.Error.NetworkError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                     is JsonApiResponse.Error.UnknownError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -205,32 +205,29 @@ class ProfileFragment : Fragment() {
 
         displayFollow()
 
-        binding.tvProfileFollowersCount.run {
-            text = user.followersCount.toString()
-            setOnClickListener {
-                findNavController().navigate(
-                    ProfileFragmentDirections.actionProfileToFollow(
-                        user.id,
-                        user.pseudo,
-                        FollowFragment.FollowType.Followers
-                    )
+        binding.vProfileFollowers.setOnClickListener {
+            findNavController().navigate(
+                ProfileFragmentDirections.actionProfileToFollow(
+                    user.id,
+                    user.pseudo,
+                    FollowFragment.FollowType.Followers
                 )
-            }
+            )
         }
 
-        binding.tvProfileFollowingCount.run {
-            text = user.followingCount.toString()
-            setOnClickListener {
-                findNavController().navigate(
-                    ProfileFragmentDirections.actionProfileToFollow(
-                        user.id,
-                        user.pseudo,
-                        FollowFragment.FollowType.Following
-                    )
+        binding.tvProfileFollowersCount.text = user.followersCount.toString()
+
+        binding.vProfileFollowing.setOnClickListener {
+            findNavController().navigate(
+                ProfileFragmentDirections.actionProfileToFollow(
+                    user.id,
+                    user.pseudo,
+                    FollowFragment.FollowType.Following
                 )
-            }
+            )
         }
 
+        binding.tvProfileFollowingCount.text = user.followingCount.toString()
 
         binding.tbProfile.apply {
             ProfileTab.values().map {

@@ -75,6 +75,18 @@ class SearchFragment : Fragment() {
 
         generalPreference = GeneralPreference(requireContext())
 
+        if (!this::actualTab.isInitialized) {
+            actualTab = when (generalPreference.displayFirst) {
+                GeneralPreference.DisplayFirst.Manga -> SearchTab.Manga
+                GeneralPreference.DisplayFirst.Anime -> SearchTab.Anime
+            }
+        }
+        when (actualTab) {
+            SearchTab.Manga -> viewModel.getMangas(query)
+            SearchTab.Anime -> viewModel.getAnimes(query)
+            SearchTab.Users -> viewModel.getUsers(query)
+        }
+
         binding.toolbar.also {
             (requireActivity() as MainActivity).setSupportActionBar(it)
             it.setNavigationOnClickListener { findNavController().navigateUp() }
@@ -151,12 +163,12 @@ class SearchFragment : Fragment() {
                     }
                     is JsonApiResponse.Error.NetworkError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                     is JsonApiResponse.Error.UnknownError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -213,12 +225,12 @@ class SearchFragment : Fragment() {
                     }
                     is JsonApiResponse.Error.NetworkError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                     is JsonApiResponse.Error.UnknownError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -232,12 +244,12 @@ class SearchFragment : Fragment() {
                     }
                     is JsonApiResponse.Error.NetworkError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                     is JsonApiResponse.Error.UnknownError -> Toast.makeText(
                         requireContext(),
-                        state.error.error.message,
+                        state.error.error.message ?: "",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -247,29 +259,11 @@ class SearchFragment : Fragment() {
             }
         }
 
-        if (!this::actualTab.isInitialized) {
-            actualTab = when (generalPreference.displayFirst) {
-                GeneralPreference.DisplayFirst.Manga -> SearchTab.Manga
-                GeneralPreference.DisplayFirst.Anime -> SearchTab.Anime
-            }
-        }
-
-        when (actualTab) {
-            SearchTab.Manga -> viewModel.getMangas(query)
-            SearchTab.Anime -> viewModel.getAnimes(query)
-            SearchTab.Users -> viewModel.getUsers(query)
-        }
-
         displaySearch()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-
-    private fun displaySearch() {
+    override fun onResume() {
+        super.onResume()
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             private var timer: Timer = Timer()
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -279,24 +273,30 @@ class SearchFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                if (query != s.toString().trim { it <= ' ' }) {
-                    query = s.toString().trim { it <= ' ' }
-                    timer = Timer()
-                    timer.schedule(object : TimerTask() {
-                        override fun run() {
-                            this@SearchFragment.runOnUiThread {
-                                when (actualTab) {
-                                    SearchTab.Manga -> viewModel.getMangas(query)
-                                    SearchTab.Anime -> viewModel.getAnimes(query)
-                                    SearchTab.Users -> viewModel.getUsers(query)
-                                }
+                query = s.toString().trim { it <= ' ' }
+                timer = Timer()
+                timer.schedule(object : TimerTask() {
+                    override fun run() {
+                        this@SearchFragment.runOnUiThread {
+                            when (actualTab) {
+                                SearchTab.Manga -> viewModel.getMangas(query)
+                                SearchTab.Anime -> viewModel.getAnimes(query)
+                                SearchTab.Users -> viewModel.getUsers(query)
                             }
                         }
-                    }, 1 * 1000)
-                }
+                    }
+                }, 1000)
             }
         })
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+
+    private fun displaySearch() {
         binding.tbSearch.apply {
             getTabAt(actualTab.ordinal)?.apply {
                 select()
