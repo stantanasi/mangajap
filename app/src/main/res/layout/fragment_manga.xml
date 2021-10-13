@@ -1,87 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundSecondaryColor">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_toolbar" />
+
+        <ProgressBar
+            android:id="@+id/pb_manga_progression_progress"
+            style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:progressDrawable="@drawable/progress_bar_drawable"
+            tools:progress="80" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tb_manga"
+            style="@style/Widget.AppTheme.TabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_manga"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:descendantFocusability="blocksDescendants"
+        app:layout_constraintBottom_toTopOf="@id/cl_manga_progression_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_manga_progression_add"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/color_app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible">
+
+        <RelativeLayout
+            android:id="@+id/rl_manga_progression_add"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_manga_progression_add"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_manga_progression_add"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/add_manga_to_library"
+                android:src="@drawable/ic_add_black_24dp"
+                app:tint="#FFFFFF" />
+
+            <ProgressBar
+                android:id="@+id/pb_manga_progression_add"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:indeterminateTint="#FFFFFF" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_manga_progression_add"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/backgroundPrimaryColor"
-            android:orientation="vertical">
+            android:layout_marginStart="@dimen/manga_spacing"
+            android:text="@string/add_manga_to_library"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/font_size_medium"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rl_manga_progression_add"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
-            <include layout="@layout/view_toolbar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ProgressBar android:id="@+id/mangaProgress_ProgressBar"
-                android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:progress="0"
-                android:progressDrawable="@drawable/progress_bar_drawable"
-                style="@android:style/Widget.ProgressBar.Horizontal"/>
+    <include
+        android:id="@+id/is_loading"
+        layout="@layout/layout_is_loading" />
 
-            <com.google.android.material.tabs.TabLayout android:id="@+id/manga_TabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Widget.AppTheme.TabLayout" />
+    <include
+        android:id="@+id/is_updating"
+        layout="@layout/layout_is_updating" />
 
-        </LinearLayout>
-
-        <FrameLayout android:id="@+id/manga_FrameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:descendantFocusability="blocksDescendants"/>
-
-        <LinearLayout android:id="@+id/addManga"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorAccent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/manga_spacing">
-
-                <ImageView android:id="@+id/addManga_ImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/add_manga_to_library"
-                    android:src="@drawable/ic_add_black_24dp"
-                    app:tint="#FFFFFF" />
-
-                <ProgressBar android:id="@+id/addManga_ProgressBar"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:indeterminateTint="#FFFFFF"/>
-
-            </RelativeLayout>
-
-            <TextView android:id="@+id/addManga_TextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/add_manga_to_library"
-                android:textAllCaps="true"
-                android:textColor="#FFFFFF"
-                android:textSize="@dimen/font_size_medium"
-                android:textStyle="bold"
-                android:visibility="visible"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <include android:id="@+id/is_loading"
-        layout="@layout/layout_is_loading"/>
-    <include android:id="@+id/is_updating"
-        layout="@layout/layout_is_updating"/>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

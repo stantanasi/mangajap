@@ -60,19 +60,11 @@ class ReviewsFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 ReviewsViewModel.State.Loading -> {
-                    if (binding.swipeRefreshLayout.isRefreshing) {
-                        binding.swipeRefreshLayout.isRefreshing = true
-                    } else {
-                        binding.isLoading.cslIsLoading.visibility = View.VISIBLE
-                    }
+                    binding.isLoading.cslIsLoading.visibility = View.VISIBLE
                 }
                 is ReviewsViewModel.State.SuccessLoading -> {
                     displayReviews(state.reviews)
-                    if (binding.swipeRefreshLayout.isRefreshing) {
-                        binding.swipeRefreshLayout.isRefreshing = false
-                    } else {
-                        binding.isLoading.cslIsLoading.visibility = View.GONE
-                    }
+                    binding.isLoading.cslIsLoading.visibility = View.GONE
                 }
                 is ReviewsViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -100,17 +92,6 @@ class ReviewsFragment : Fragment() {
 
 
     private fun displayReviews(reviews: List<Review>) {
-        binding.swipeRefreshLayout.apply {
-            setProgressBackgroundColorSchemeColor(requireContext().getAttrColor(R.attr.backgroundPrimaryColor))
-            setColorSchemeColors(requireContext().getAttrColor(R.attr.colorAccent))
-            setOnRefreshListener {
-                when (mediaType) {
-                    ReviewsType.Manga -> viewModel.getMangaReviews(mediaId)
-                    ReviewsType.Anime -> viewModel.getAnimeReviews(mediaId)
-                }
-            }
-        }
-
         when (mediaType) {
             ReviewsType.Manga -> {
                 reviewsList.apply {
@@ -134,7 +115,7 @@ class ReviewsFragment : Fragment() {
             }
         }
 
-        binding.reviewsRecyclerView.apply {
+        binding.rvReviews.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = MangaJapAdapter(reviewsList)
         }

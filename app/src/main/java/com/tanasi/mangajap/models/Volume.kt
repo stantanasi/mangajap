@@ -13,7 +13,7 @@ class Volume(
     createdAt: String? = null,
     updatedAt: String? = null,
     titles: JSONObject? = null,
-    val number: Int? = null,
+    val number: Int = 0,
     val startChapter: Int? = null,
     val endChapter: Int? = null,
     published: String? = null,

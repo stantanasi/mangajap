@@ -1,108 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:background="?attr/backgroundSecondaryColor">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="@string/banner_ratio"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView android:id="@+id/mangaBanner_ImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="170dp"
-                    android:scaleType="centerCrop"
-                    android:transitionName="imageView"
-                    tools:ignore="ContentDescription" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_gradient_secondary"/>
-
-            </RelativeLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:gravity="center_vertical"
-            android:layout_marginTop="-20dp"
-            android:layout_marginBottom="@dimen/manga_spacing"
-            android:layout_marginStart="@dimen/manga_spacing"
-            android:layout_marginEnd="@dimen/manga_spacing"
-            android:orientation="horizontal">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/manga_spacing"
-                app:cardCornerRadius="5dp">
-                <ImageView android:id="@+id/mangaCover_ImageView"
-                    android:layout_width="110dp"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="cover"
-                    android:layout_gravity="center_horizontal"
-                    android:scaleType="centerCrop"
-                    android:transitionName="imageView"
-                    tools:ignore="HardcodedText" />
-            </androidx.cardview.widget.CardView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView android:id="@+id/mangaTitle_TextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:text="Title"
-                    android:textAppearance="@style/TextAppearance.Media.Title"
-                    tools:ignore="HardcodedText" />
-
-                <LinearLayout
-                    android:id="@+id/mangaStaff"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
-                    android:orientation="vertical" />
-
-                <TextView android:id="@+id/mangaType_TextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Type"
-                    android:textColor="?attr/textSecondaryColor"
-                    android:textSize="@dimen/font_size_micro"
-                    tools:ignore="HardcodedText" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/iv_manga_banner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="@string/banner_ratio"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/placeholder" />
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?attr/dividerColor"/>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_gradient_secondary"
+        app:layout_constraintBottom_toBottomOf="@id/iv_manga_banner"
+        app:layout_constraintEnd_toEndOf="@id/iv_manga_banner"
+        app:layout_constraintStart_toStartOf="@id/iv_manga_banner"
+        app:layout_constraintTop_toTopOf="@id/iv_manga_banner" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_manga_cover"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/manga_spacing"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:transitionName="imageView"
+        android:translationY="-20dp"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_manga_banner"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/placeholder" />
+
+    <TextView
+        android:id="@+id/tv_manga_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/manga_spacing"
+        android:layout_marginTop="-20dp"
+        android:layout_marginEnd="@dimen/manga_spacing"
+        android:textAppearance="@style/TextAppearance.Media.Title"
+        app:layout_constraintBottom_toTopOf="@id/ll_manga_staff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_manga_cover"
+        app:layout_constraintTop_toBottomOf="@id/iv_manga_banner"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Title" />
+
+    <LinearLayout
+        android:id="@+id/ll_manga_staff"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/manga_spacing"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="@dimen/manga_spacing"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_manga_cover"
+        app:layout_constraintTop_toBottomOf="@id/tv_manga_title" />
+
+    <TextView
+        android:id="@+id/tv_manga_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/manga_spacing"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="@dimen/manga_spacing"
+        android:layout_marginBottom="@dimen/manga_spacing"
+        android:textColor="?attr/textSecondaryColor"
+        android:textSize="@dimen/font_size_micro"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_manga_cover"
+        app:layout_constraintTop_toBottomOf="@id/ll_manga_staff"
+        tools:text="Type" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?attr/dividerColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

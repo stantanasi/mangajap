@@ -27,7 +27,7 @@ class VhStaff(
     }
 
     private fun displayStaffPeople(binding: ItemStaffPeopleBinding) {
-        binding.media.apply {
+        binding.root.apply {
             staff.manga?.let {manga ->
                 setOnClickListener {
                     Navigation.findNavController(binding.root).navigate(
@@ -49,7 +49,7 @@ class VhStaff(
             }
         }
 
-        binding.mediaCoverImageView.apply {
+        binding.ivStaffMediaCover.apply {
             staff.manga?.let {manga ->
                 Picasso.get()
                         .load(manga.coverImage)
@@ -65,7 +65,7 @@ class VhStaff(
             }
         }
 
-        binding.mediaTitleTextView.apply {
+        binding.tvStaffMediaTitle.apply {
             staff.manga?.let {manga ->
                 text = manga.title
             } ?: staff.anime?.let { anime ->
@@ -73,7 +73,7 @@ class VhStaff(
             }
         }
 
-        binding.mediaStartDateTextView.apply {
+        binding.tvStaffMediaStartDate.apply {
             staff.manga?.let {manga ->
                 text = manga.startDate?.format("YYYY")
             } ?: staff.anime?.let { anime ->
@@ -81,6 +81,6 @@ class VhStaff(
             }
         }
 
-        binding.staffRoleTextView.text = context.getString(staff.role?.stringId ?: Staff.Role.story_and_art.stringId)
+        binding.tvStaffRole.text = context.getString(staff.role?.stringId ?: Staff.Role.story_and_art.stringId)
     }
 }

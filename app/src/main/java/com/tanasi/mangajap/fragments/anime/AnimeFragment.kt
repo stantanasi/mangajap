@@ -8,6 +8,7 @@ import android.view.*
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -32,6 +33,8 @@ import com.tanasi.mangajap.utils.extensions.shareText
 import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class AnimeFragment : Fragment() {
+
+    // TODO: create enum Tab ?
 
     private var _binding: FragmentAnimeBinding? = null
     private val binding: FragmentAnimeBinding get() = _binding!!
@@ -119,17 +122,17 @@ class AnimeFragment : Fragment() {
                     binding.isUpdating.cslIsUpdating.visibility = View.GONE
                 }
                 AnimeViewModel.State.UpdatingForAdding -> {
-                    binding.addAnime.setOnClickListener(null)
-                    binding.addAnimeImageView.visibility = View.GONE
-                    binding.addAnimeProgressBar.visibility = View.VISIBLE
+                    binding.clAnimeProgressionAdd.setOnClickListener(null)
+                    binding.ivAnimeProgressionAdd.visibility = View.GONE
+                    binding.pbAnimeProgressionAdd.visibility = View.VISIBLE
                 }
                 is AnimeViewModel.State.SuccessUpdatingForAdding -> {
-                    binding.addAnimeImageView.apply {
+                    binding.ivAnimeProgressionAdd.apply {
                         visibility = View.VISIBLE
                         setImageResource(R.drawable.ic_check_black_24dp)
                     }
-                    binding.addAnimeProgressBar.visibility = View.GONE
-                    binding.addAnimeTextView.text = getString(R.string.added_to_library)
+                    binding.pbAnimeProgressionAdd.visibility = View.GONE
+                    binding.tvAnimeProgressionAdd.text = getString(R.string.added_to_library)
                     anime.animeEntry = state.animeEntry
                     Handler(Looper.getMainLooper()).postDelayed({
                         displayAnime()
@@ -194,14 +197,14 @@ class AnimeFragment : Fragment() {
 
         activity?.invalidateOptionsMenu()
 
-        binding.animeEntryProgressProgressBar.apply {
+        binding.pbAnimeProgressionProgress.apply {
             anime.animeEntry?.let { animeEntry ->
                 progress = animeEntry.getProgress(anime)
                 progressTintList = ContextCompat.getColorStateList(requireContext(), animeEntry.getProgressColor(anime))
             }
         }
 
-        binding.addAnime.apply {
+        binding.clAnimeProgressionAdd.apply {
             anime.animeEntry?.let { animeEntry ->
                 if (animeEntry.isAdd) {
                     visibility =  View.GONE
@@ -226,16 +229,16 @@ class AnimeFragment : Fragment() {
             }
         }
 
-        binding.addAnimeImageView.setImageResource(R.drawable.ic_add_black_24dp)
+        binding.ivAnimeProgressionAdd.setImageResource(R.drawable.ic_add_black_24dp)
 
-        binding.addAnimeProgressBar.visibility = View.GONE
+        binding.pbAnimeProgressionAdd.visibility = View.GONE
 
-        binding.addAnimeTextView.text = getString(R.string.add_anime_to_library)
+        binding.tvAnimeProgressionAdd.text = getString(R.string.add_anime_to_library)
 
         setAnimeAboutFragment()
         setAnimeEpisodesFragment()
 
-        binding.animeTabLayout.apply {
+        binding.tbAnime.apply {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     showFragment(fragmentList[tab.position])
@@ -289,13 +292,13 @@ class AnimeFragment : Fragment() {
 
         if (!fragmentList.contains(fragment)) {
             fragmentList.add(fragment)
-            binding.animeTabLayout.addTab(binding.animeTabLayout.newTab().setText(title))
+            binding.tbAnime.addTab(binding.tbAnime.newTab().setText(title))
             if (!fragment.isAdded) {
-                ft.add(binding.animeFrameLayout.id, fragment)
+                ft.add(binding.flAnime.id, fragment)
             }
         } else {
-            if (!binding.animeTabLayout.contains(title)) {
-                binding.animeTabLayout.addTab(binding.animeTabLayout.newTab().setText(title))
+            if (!binding.tbAnime.contains(title)) {
+                binding.tbAnime.addTab(binding.tbAnime.newTab().setText(title))
                 if (fragment.isAdded) {
                     ft.detach(fragment)
                     ft.attach(fragment)
@@ -322,21 +325,30 @@ class AnimeFragment : Fragment() {
         val layoutInflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupAnimeBinding = PopupAnimeBinding.inflate(layoutInflater)
 
-        val popupWindow = PopupWindow(popupAnimeBinding.root, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true).apply {
+        val popupWindow = PopupWindow(
+            popupAnimeBinding.root,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        ).apply {
             elevation = 25f
-            showAtLocation(popupAnimeBinding.root, Gravity.TOP, 0, 140)
+            showAtLocation(popupAnimeBinding.root, Gravity.TOP or Gravity.END, 100, 200)
         }
 
-        popupAnimeBinding.animeEntryStatusTextView.text = getString(anime.animeEntry!!.status.stringId)
+        popupAnimeBinding.tvPopupAnimeStatus.text = getString(anime.animeEntry?.status?.stringId ?: AnimeEntry.Status.watching.stringId)
 
-        popupAnimeBinding.deleteAnime.setOnClickListener {
-            viewModel.updateAnimeEntry(anime.animeEntry!!.apply {
-                putAdd(false)
-            })
+        popupAnimeBinding.vPopupAnimeDelete.setOnClickListener {
+            anime.animeEntry?.let { animeEntry ->
+                viewModel.updateAnimeEntry(animeEntry.apply {
+                    putAdd(false)
+                })
+            }
             popupWindow.dismiss()
         }
 
-        popupAnimeBinding.shareAnime.setOnClickListener { shareText(getString(R.string.shareAnime, anime.title)) }
+        popupAnimeBinding.vPopupAnimeShare.setOnClickListener {
+            shareText(getString(R.string.shareAnime, anime.title))
+        }
     }
 
 

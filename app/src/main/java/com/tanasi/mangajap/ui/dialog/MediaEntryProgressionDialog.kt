@@ -21,27 +21,27 @@ class MediaEntryProgressionDialog(
 
         setView(binding.root)
 
-        binding.numberPickerEditTex.setText(value.toString())
+        binding.etNumberPicker.setText(value.toString())
 
-        binding.decrement.setOnClickListener {
-            binding.numberPickerEditTex.setText(
-                    (binding.numberPickerEditTex.text.toString().trim { it <= ' ' }.toIntOrNull() ?: 0)
+        binding.ivDecrement.setOnClickListener {
+            binding.etNumberPicker.setText(
+                    (binding.etNumberPicker.text.toString().trim { it <= ' ' }.toIntOrNull() ?: 0)
                             .dec()
                             .coerceAtLeast(0)
                             .toString()
             )
         }
 
-        binding.increment.setOnClickListener {
-            binding.numberPickerEditTex.setText(
-                    (binding.numberPickerEditTex.text.toString().trim { it <= ' ' }.toIntOrNull() ?: 0)
+        binding.ivIncrement.setOnClickListener {
+            binding.etNumberPicker.setText(
+                    (binding.etNumberPicker.text.toString().trim { it <= ' ' }.toIntOrNull() ?: 0)
                             .inc()
                             .toString()
             )
         }
 
         setPositiveButton(context.getString(R.string.confirm)) { _, _ ->
-            callable(binding.numberPickerEditTex.text.toString().trim { it <= ' ' }.toIntOrNull() ?: 0)
+            callable(binding.etNumberPicker.text.toString().trim { it <= ' ' }.toIntOrNull() ?: 0)
         }
 
         setNegativeButton(context.getString(R.string.cancel), null)

@@ -67,8 +67,7 @@ class ImageFragment : Fragment() {
                     image = state.image
                     requireActivity().invalidateOptionsMenu()
                     state.image.getAverageColor().let { averageColor ->
-                        binding.layout.setBackgroundColor(averageColor)
-//                        val transparent = Color.argb(200, Color.red(averageColor), Color.green(averageColor), Color.blue(averageColor))
+                        binding.root.setBackgroundColor(averageColor)
                     }
                     binding.isLoading.cslIsLoading.visibility = View.GONE
                 }
@@ -113,15 +112,15 @@ class ImageFragment : Fragment() {
 
         if (isFullScreen) {
             (requireActivity() as MainActivity).supportActionBar?.hide()
-            binding.gradientView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out))
-            binding.gradientView.visibility = View.GONE
+            binding.vImageGradient.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out))
+            binding.vImageGradient.visibility = View.GONE
         } else {
             (requireActivity() as MainActivity).supportActionBar?.show()
-            binding.gradientView.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in))
-            binding.gradientView.visibility = View.VISIBLE
+            binding.vImageGradient.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in))
+            binding.vImageGradient.visibility = View.VISIBLE
         }
 
-        binding.imageView.setOnClickListener { fullscreen(!isFullScreen) }
+        binding.ivImage.setOnClickListener { fullscreen(!isFullScreen) }
     }
 
     private fun displayImage() {
@@ -131,7 +130,7 @@ class ImageFragment : Fragment() {
                 .error(R.drawable.placeholder)
                 .networkPolicy(NetworkPolicy.NO_CACHE)
                 .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .into(binding.imageView)
+                .into(binding.ivImage)
     }
 
     private fun saveImage() {

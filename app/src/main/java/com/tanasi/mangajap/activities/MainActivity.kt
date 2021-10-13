@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         val generalPreference = GeneralPreference(this)
 
-        FirebaseMessaging.getInstance().subscribeToTopic("all");
+        FirebaseMessaging.getInstance().subscribeToTopic("all")
 
         val navController = findNavController(R.id.nav_main_fragment)
 

@@ -8,12 +8,7 @@
     <attr name="textColorLink" />
 
     <attr name="textPrimaryColor"/>
-    <attr name="textPrimarySize" />
-    <attr name="textPrimaryStyle" />
-
     <attr name="textSecondaryColor" />
-    <attr name="textSecondarySize" />
-    <attr name="textSecondaryStyle" />
 
     <attr name="backgroundPrimaryColor" />
     <attr name="backgroundSecondaryColor" />

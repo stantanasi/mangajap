@@ -72,7 +72,7 @@ class RegisterFragment : Fragment() {
 
 
     private fun displayRegister() {
-        binding.register.setOnClickListener {
+        binding.btnRegister.setOnClickListener {
             var isValid = true
             binding.tilRegisterPseudo.apply {
                 if (editText?.text.toString().trim { char -> char <= ' ' }.isPseudoValid())

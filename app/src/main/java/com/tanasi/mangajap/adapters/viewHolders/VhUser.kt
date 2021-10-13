@@ -28,7 +28,7 @@ class VhUser(
     }
 
     private fun displayUser(binding: ItemUserBinding) {
-        binding.user.setOnClickListener {
+        binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     SearchFragmentDirections.actionSearchToProfile(
                             user.id
@@ -36,7 +36,7 @@ class VhUser(
             )
         }
 
-        binding.userProfilePicCircleImageView.apply {
+        binding.civUserProfilePic.apply {
             Picasso.get()
                     .load(user.avatar?.tiny)
                     .placeholder(R.drawable.default_user_avatar)
@@ -46,7 +46,7 @@ class VhUser(
                     .into(this)
         }
 
-        binding.userPseudoTextView.text = user.pseudo
+        binding.tvUserPseudo.text = user.pseudo
     }
 
 }

@@ -1,55 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundSecondaryColor">
 
-    <!-- Mettre un diapo pour expliquer l'app -->
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/tv_register_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="@dimen/register_spacing"
                 android:layout_marginStart="@dimen/register_spacing"
+                android:layout_marginTop="@dimen/register_spacing"
                 android:layout_marginEnd="@dimen/register_spacing"
+                android:gravity="center"
                 android:text="@string/register"
                 android:textColor="?attr/textPrimaryColor"
                 android:textSize="@dimen/font_size_extra_large"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/tv_register_subtitle"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:layout_marginStart="@dimen/register_spacing"
                 android:layout_marginEnd="@dimen/register_spacing"
+                android:gravity="center"
                 android:text="@string/registerExplanation"
-                android:textColor="?attr/textSecondaryColor"/>
+                android:textColor="?attr/textSecondaryColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_register_title" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="40dp" />
-
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/til_register_email"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_register_email"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/register_spacingText"
                 android:layout_marginStart="@dimen/register_spacing"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="@dimen/register_spacing"
-                android:textColorHint="?attr/textSecondaryColor">
+                android:textColorHint="?attr/textSecondaryColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_register_subtitle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -59,17 +62,21 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:textColor="?attr/textPrimaryColor"
-                    android:textSize="@dimen/font_size_medium"/>
+                    android:textSize="@dimen/font_size_medium" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/til_register_pseudo"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_register_pseudo"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/register_spacingText"
                 android:layout_marginStart="@dimen/register_spacing"
+                android:layout_marginTop="@dimen/register_spacingText"
                 android:layout_marginEnd="@dimen/register_spacing"
-                android:textColorHint="?attr/textSecondaryColor">
+                android:textColorHint="?attr/textSecondaryColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_register_email">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -79,16 +86,21 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:textColor="?attr/textPrimaryColor"
-                    android:textSize="@dimen/font_size_medium"/>
+                    android:textSize="@dimen/font_size_medium" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout android:id="@+id/til_register_password"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_register_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/register_spacing"
+                android:layout_marginTop="@dimen/register_spacingText"
                 android:layout_marginEnd="@dimen/register_spacing"
                 android:textColorHint="?attr/textSecondaryColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_register_pseudo"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="?attr/textPrimaryColor">
 
@@ -100,25 +112,29 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:textColor="?attr/textPrimaryColor"
-                    android:textSize="@dimen/font_size_medium"/>
+                    android:textSize="@dimen/font_size_medium" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="40dp" />
-
-            <TextView android:id="@+id/register"
+            <TextView
+                android:id="@+id/btn_register"
+                style="@style/Widget.AppTheme.Button.Login"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/register_spacing"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="@dimen/register_spacing"
                 android:text="@string/register"
-                style="@style/Widget.AppTheme.Button.Login"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_register_password" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 
-    <include android:id="@+id/is_updating"
-        layout="@layout/layout_is_updating"/>
+    <include
+        android:id="@+id/is_updating"
+        layout="@layout/layout_is_updating" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,9 +13,9 @@ import com.tanasi.mangajap.models.Episode
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
 
 class VhEpisode(
-        private val _binding: ViewBinding
+    private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
-        _binding.root
+    _binding.root
 ) {
 
     private val context: Context = itemView.context
@@ -39,17 +39,22 @@ class VhEpisode(
 
 
     private fun displayEpisode(binding: ItemEpisodeAnimeBinding) {
-        binding.episodeNumberTextView.text = episode.relativeNumber.toString()
+        binding.tvEpisodeNumber.text = episode.relativeNumber.toString()
 
-        binding.tvEpisodeInfo.apply {
+        binding.tvEpisodeInfo.run {
             val seasonNumber = episode.season?.number?.toString()?.padStart(2, '0') ?: "0"
             val episodeRelativeNumber = episode.relativeNumber.toString().padStart(2, '0')
             val episodeNumber = episode.number.toString().padStart(2, '0')
 
-            text = context.getString(R.string.episode_info, seasonNumber, episodeRelativeNumber, episodeNumber)
+            text = context.getString(
+                R.string.episode_info,
+                seasonNumber,
+                episodeRelativeNumber,
+                episodeNumber
+            )
         }
 
-        binding.tvEpisodeTitle.apply {
+        binding.tvEpisodeTitle.run {
             text = episode.title
             visibility = when (episode.title) {
                 "" -> View.GONE
@@ -57,7 +62,7 @@ class VhEpisode(
             }
         }
 
-        binding.episodeIsWatchCheckBox.apply {
+        binding.cbEpisodeIsWatch.run {
             episode.season?.anime?.animeEntry?.let { animeEntry ->
                 visibility = View.VISIBLE
                 isChecked = animeEntry.episodesWatch >= episode.number

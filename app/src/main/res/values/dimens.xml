@@ -18,6 +18,7 @@
     <dimen name="library_spacing">10dp</dimen>
     <dimen name="volume_spacing">10dp</dimen>
     <dimen name="agenda_spacing">10dp</dimen>
+    <dimen name="people_spacing">6dp</dimen>
 
     <dimen name="dialog_spacing">16dp</dimen>
 
@@ -35,6 +36,7 @@
     <!-- Font sizes -->
     <dimen name="font_size_micro">12sp</dimen>
     <dimen name="font_size_small">14sp</dimen>
+    <dimen name="font_size_small_medium">15sp</dimen>
     <dimen name="font_size_medium">16sp</dimen>
     <dimen name="font_size_medium_large">18sp</dimen>
     <dimen name="font_size_large">20sp</dimen>

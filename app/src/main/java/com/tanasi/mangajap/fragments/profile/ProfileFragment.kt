@@ -1,5 +1,6 @@
 package com.tanasi.mangajap.fragments.profile
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -79,7 +80,7 @@ class ProfileFragment : Fragment() {
             GeneralPreference.DisplayFirst.Anime -> ProfileTab.Anime
         }
 
-        binding.navigation.apply {
+        binding.ivProfileNavigationIcon.apply {
             setOnClickListener { findNavController().navigateUp() }
             visibility = when (userId) {
                 null -> View.GONE
@@ -115,8 +116,8 @@ class ProfileFragment : Fragment() {
                 }
 
                 ProfileViewModel.State.UpdatingFollowed -> {
-                    binding.follow.setOnClickListener(null)
-                    binding.pbIsFollowing.visibility = View.VISIBLE
+                    binding.llProfileFollow.setOnClickListener(null)
+                    binding.pbProfileIsFollowing.visibility = View.VISIBLE
                 }
                 is ProfileViewModel.State.SuccessUpdatingFollowed -> {
                     followed = state.followed
@@ -148,7 +149,7 @@ class ProfileFragment : Fragment() {
 
 
     private fun displayProfile() {
-        binding.settings.apply {
+        binding.ivProfileSettings.apply {
             setOnClickListener {
                 findNavController().navigate(
                     ProfileFragmentDirections.actionProfileToSettings()
@@ -160,7 +161,7 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        binding.profilePicCircleImageView.apply {
+        binding.civProfileUserPic.apply {
             Picasso.get()
                     .load(user.avatar?.medium)
                     .placeholder(R.drawable.default_user_avatar)
@@ -179,9 +180,9 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        binding.pseudoTextView.text = user.pseudo
+        binding.tvProfileUserPseudo.text = user.pseudo
 
-        binding.aboutTextView.apply {
+        binding.tvProfileUserAbout.apply {
             if (user.about == "") {
                 visibility = View.GONE
             } else {
@@ -190,7 +191,7 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        binding.editProfileTextView.apply {
+        binding.tvProfileUserEdit.apply {
             if (userId == null || userId == userPreference.selfId) {
                 visibility = View.VISIBLE
                 setOnClickListener {
@@ -205,32 +206,34 @@ class ProfileFragment : Fragment() {
 
         displayFollow()
 
-        binding.followers.setOnClickListener {
-            findNavController().navigate(
+        binding.tvProfileFollowersCount.run {
+            text = user.followersCount.toString()
+            setOnClickListener {
+                findNavController().navigate(
                     ProfileFragmentDirections.actionProfileToFollow(
-                            user.id,
-                            user.pseudo,
-                            FollowFragment.FollowType.Followers
+                        user.id,
+                        user.pseudo,
+                        FollowFragment.FollowType.Followers
                     )
-            )
+                )
+            }
         }
 
-        binding.followersCountTextView.text = user.followersCount.toString()
-
-        binding.following.setOnClickListener {
-            findNavController().navigate(
+        binding.tvProfileFollowingCount.run {
+            text = user.followingCount.toString()
+            setOnClickListener {
+                findNavController().navigate(
                     ProfileFragmentDirections.actionProfileToFollow(
-                            user.id,
-                            user.pseudo,
-                            FollowFragment.FollowType.Following
+                        user.id,
+                        user.pseudo,
+                        FollowFragment.FollowType.Following
                     )
-            )
+                )
+            }
         }
 
-        binding.followingCountTextView.text = user.followingCount.toString()
 
-
-        binding.profileTabLayout.apply {
+        binding.tbProfile.apply {
             ProfileTab.values().map {
                 if (!contains(getString(it.stringId))) addTab(newTab().setText(getString(it.stringId)))
             }
@@ -253,7 +256,7 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        binding.previewStatsRecyclerView.apply {
+        binding.rvProfileUserStats.apply {
             val pagerSnapHelper = PagerSnapHelper()
             pagerSnapHelper.attachToRecyclerView(this)
         }
@@ -262,20 +265,20 @@ class ProfileFragment : Fragment() {
 
     private fun displayFollow() {
         if (userId == null || userId == userPreference.selfId) {
-            binding.follow.visibility = View.GONE
-            binding.followsYouTextView.visibility = View.GONE
+            binding.llProfileFollow.visibility = View.GONE
+            binding.tvProfileUserIsFollowingYou.visibility = View.GONE
             return
         }
 
-        binding.follow.apply {
+        binding.llProfileFollow.apply {
             visibility = View.VISIBLE
             followed?.let { followed ->
-                setBackgroundResource(R.drawable.bg_follow_btn)
+                setBackgroundResource(R.drawable.bg_btn_follow)
                 setOnClickListener {
                     viewModel.deleteFollow(followed)
                 }
             } ?: let {
-                setBackgroundResource(R.drawable.bg_follow_no_btn)
+                setBackgroundResource(R.drawable.bg_btn_unfollow)
                 setOnClickListener {
                     viewModel.follow(Follow().also {
                         it.putFollower(User().apply { id = UserPreference(requireContext()).selfId })
@@ -285,55 +288,55 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        binding.pbIsFollowing.apply {
+        binding.pbProfileIsFollowing.apply {
             visibility = View.GONE
             followed?.let {
-                indeterminateTintList = ContextCompat.getColorStateList(context, R.color.white)
+                indeterminateTintList = ColorStateList.valueOf(Color.WHITE)
             } ?: let {
-                indeterminateTintList = ContextCompat.getColorStateList(context, R.color.follow_color)
+                indeterminateTintList = ContextCompat.getColorStateList(context, R.color.color_app)
             }
         }
 
-        binding.followBtnTextView.apply {
+        binding.tvProfileYouFollowUser.apply {
             followed?.let {
                 text = requireContext().resources.getString(R.string.following)
                 setTextColor(Color.WHITE)
             } ?: let {
                 text = requireContext().resources.getString(R.string.follow)
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.follow_color))
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.color_app))
             }
         }
 
         if (follower == null) {
-            binding.followsYouTextView.visibility = View.GONE
+            binding.tvProfileUserIsFollowingYou.visibility = View.GONE
         } else {
-            binding.followsYouTextView.visibility = View.VISIBLE
+            binding.tvProfileUserIsFollowingYou.visibility = View.VISIBLE
         }
     }
 
     private fun displayList() {
-        binding.mediaFollowedTextView.apply {
+        binding.tvProfileMediaFollowed.apply {
             text = when (actualTab) {
                 ProfileTab.Manga -> getString(R.string.manga)
                 ProfileTab.Anime -> getString(R.string.anime)
             }
         }
 
-        binding.mediaFollowedCountTextView.apply {
+        binding.tvProfileMediaFollowedCount.apply {
             text = when (actualTab) {
                 ProfileTab.Manga -> user.followedMangaCount.toString()
                 ProfileTab.Anime -> user.followedAnimeCount.toString()
             }
         }
 
-        binding.previewLibraryTextView.apply {
+        binding.tvProfileUserLibrary.apply {
             text = when (actualTab) {
                 ProfileTab.Manga -> getString(R.string.mangaList)
                 ProfileTab.Anime -> getString(R.string.animeList)
             }
         }
 
-        binding.previewFavoritesTextView.apply {
+        binding.tvProfileUserLibraryFavorites.apply {
             text = when (actualTab) {
                 ProfileTab.Manga -> getString(R.string.favoritesManga)
                 ProfileTab.Anime -> getString(R.string.favoritesAnime)
@@ -380,14 +383,14 @@ class ProfileFragment : Fragment() {
 
 
 
-        binding.previewStatsRecyclerView.apply {
+        binding.rvProfileUserStats.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = MangaJapAdapter(actualTab.statsList)
         }
 
 
 
-        binding.previewListTitle.setOnClickListener {
+        binding.llProfileUserLibrary.setOnClickListener {
             findNavController().navigate(
                     ProfileFragmentDirections.actionProfileToLibrary(
                             user.id,
@@ -400,7 +403,7 @@ class ProfileFragment : Fragment() {
             )
         }
 
-        binding.previewLibraryRecyclerView.apply {
+        binding.rvProfileUserLibrary.apply {
             if (actualTab.libraryList.isEmpty()) {
                 visibility = View.GONE
             } else {
@@ -421,15 +424,12 @@ class ProfileFragment : Fragment() {
 
 
 
-        binding.previewFavorites.apply {
-            visibility = if (actualTab.favoritesList.isEmpty()) {
-                View.GONE
-            } else {
-                View.VISIBLE
-            }
+        binding.groupProfileUserLibraryFavorites.visibility = when {
+            actualTab.favoritesList.isEmpty() -> View.GONE
+            else -> View.VISIBLE
         }
 
-        binding.previewFavoritesTitle.setOnClickListener {
+        binding.llProfileUserLibraryFavorites.setOnClickListener {
             findNavController().navigate(
                     ProfileFragmentDirections.actionProfileToLibrary(
                             user.id,
@@ -442,7 +442,7 @@ class ProfileFragment : Fragment() {
             )
         }
 
-        binding.previewFavoritesRecyclerView.apply {
+        binding.rvProfileUserLibraryFavorites.apply {
             if (actualTab.favoritesList.isEmpty()) {
                 visibility = View.GONE
             } else {

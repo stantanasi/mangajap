@@ -1,42 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/media"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    android:clipToPadding="false"
-    android:orientation="vertical">
+    android:clipToPadding="false">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_search_add_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/search_spacing"
+        android:layout_marginTop="@dimen/search_spacing"
+        android:layout_marginEnd="@dimen/search_spacing"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:textColor="?attr/textPrimaryColor"
+        android:textSize="@dimen/font_size_large"
+        app:layout_constraintBottom_toTopOf="@id/tv_search_add_subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Title" />
+
+    <TextView
+        android:id="@+id/tv_search_add_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:padding="@dimen/search_spacing">
-
-        <TextView android:id="@+id/tv_media_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:maxLines="2"
-            android:textColor="?attr/textPrimaryColor"
-            android:textSize="@dimen/font_size_large"
-            tools:text="Title" />
-
-        <TextView android:id="@+id/tv_media_subtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="?attr/textSecondaryColor"
-            android:textSize="@dimen/font_size_small"
-            tools:text="Subtitle" />
-
-    </LinearLayout>
+        android:layout_marginStart="@dimen/search_spacing"
+        android:layout_marginEnd="@dimen/search_spacing"
+        android:layout_marginBottom="@dimen/search_spacing"
+        android:textColor="?attr/textSecondaryColor"
+        android:textSize="@dimen/font_size_small"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_search_add_title"
+        tools:text="Subtitle" />
 
     <View
-        android:layout_width="match_parent"
+        android:id="@+id/divider"
+        android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="?attr/dividerColor"/>
+        android:background="?attr/dividerColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

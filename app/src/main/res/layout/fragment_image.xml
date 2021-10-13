@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,55 +7,65 @@
     android:fitsSystemWindows="true">
 
     <com.otaliastudios.zoom.ZoomLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:scrollbars="vertical|horizontal"
-        app:transformation="centerInside"
-        app:transformationGravity="auto"
         app:alignment="center"
-        app:overScrollHorizontal="false"
-        app:overScrollVertical="false"
-        app:overPinchable="true"
-        app:horizontalPanEnabled="true"
-        app:verticalPanEnabled="true"
-        app:zoomEnabled="true"
+        app:animationDuration="280"
         app:flingEnabled="true"
-        app:scrollEnabled="true"
-        app:oneFingerScrollEnabled="true"
-        app:twoFingersScrollEnabled="true"
-        app:threeFingersScrollEnabled="true"
-        app:minZoom="1"
-        app:minZoomType="zoom"
+        app:hasClickableChildren="true"
+        app:horizontalPanEnabled="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:maxZoom="2.5"
         app:maxZoomType="zoom"
-        app:animationDuration="280"
-        app:hasClickableChildren="true">
+        app:minZoom="1"
+        app:minZoomType="zoom"
+        app:oneFingerScrollEnabled="true"
+        app:overPinchable="true"
+        app:overScrollHorizontal="false"
+        app:overScrollVertical="false"
+        app:scrollEnabled="true"
+        app:threeFingersScrollEnabled="true"
+        app:transformation="centerInside"
+        app:transformationGravity="auto"
+        app:twoFingersScrollEnabled="true"
+        app:verticalPanEnabled="true"
+        app:zoomEnabled="true">
 
-        <ImageView android:id="@+id/imageView"
+        <ImageView
+            android:id="@+id/iv_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="Image"
             android:scaleType="fitCenter"
-            tools:ignore="HardcodedText" />
+            tools:ignore="ContentDescription" />
 
     </com.otaliastudios.zoom.ZoomLayout>
 
-    <View android:id="@+id/gradient_View"
-        android:layout_width="match_parent"
+    <View
+        android:id="@+id/v_image_gradient"
+        android:layout_width="0dp"
         android:layout_height="300dp"
-        android:background="@drawable/bg_gradient_imageactivity"/>
+        android:background="@drawable/bg_gradient_imageactivity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.Toolbar android:id="@+id/toolbar"
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:minHeight="?attr/actionBarSize"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:theme="@style/Widget.AppTheme.Image.Toolbar"
-        app:popupTheme="@style/Widget.AppTheme.Image.Toolbar.Popup"/>
+        app:popupTheme="@style/Widget.AppTheme.Image.Toolbar.Popup"
+        app:theme="@style/Widget.AppTheme.Image.Toolbar" />
 
-    <include android:id="@+id/is_loading"
+    <include
+        android:id="@+id/is_loading"
         layout="@layout/layout_is_loading" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

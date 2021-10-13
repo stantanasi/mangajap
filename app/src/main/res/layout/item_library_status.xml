@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <TextView android:id="@+id/tv_library_status"
+    <TextView
+        android:id="@+id/tv_library_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_rounded_corners"
-        android:gravity="center"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="12dp"
         android:layout_marginStart="@dimen/library_spacing"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="@dimen/library_spacing"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_circular_corners"
+        android:gravity="center"
         android:paddingTop="2dp"
         android:paddingBottom="4dp"
-        android:text="Status"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:textColor="?attr/textPrimaryColor"
         android:textSize="@dimen/font_size_medium_large"
         android:textStyle="bold"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Status" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

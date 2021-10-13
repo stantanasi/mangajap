@@ -100,11 +100,7 @@ class LibraryFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 LibraryViewModel.State.Loading -> {
-                    if (binding.swipeRefreshLayout.isRefreshing) {
-                        binding.swipeRefreshLayout.isRefreshing = true
-                    } else {
-                        binding.isLoading.cslIsLoading.visibility = View.VISIBLE
-                    }
+                    binding.isLoading.cslIsLoading.visibility = View.VISIBLE
                 }
                 is LibraryViewModel.State.SuccessLoading -> {
                     itemList.apply {
@@ -113,7 +109,6 @@ class LibraryFragment : Fragment() {
                     }
                     displayLibrary()
                     mangaJapAdapter.notifyDataSetChanged()
-                    binding.swipeRefreshLayout.isRefreshing = false
                     binding.isLoading.cslIsLoading.visibility = View.GONE
                 }
                 is LibraryViewModel.State.FailedLoading -> when (state.error) {
@@ -175,7 +170,7 @@ class LibraryFragment : Fragment() {
 
 
     private fun displayLibrary() {
-        binding.sortBySpinner.apply {
+        binding.spinnerLibrarySortBy.apply {
             var isFirstLaunch = true
 
             adapter = SpinnerAdapter(context, SortBy.values().map { getString(it.stringId) })
@@ -212,26 +207,13 @@ class LibraryFragment : Fragment() {
             }
         }
 
-        binding.swipeRefreshLayout.apply {
-            setProgressBackgroundColorSchemeColor(requireContext().getAttrColor(R.attr.backgroundPrimaryColor))
-            setColorSchemeColors(requireContext().getAttrColor(R.attr.colorAccent))
-            setOnRefreshListener {
-                when (libraryType) {
-                    LibraryType.MangaList -> viewModel.getMangaLibrary(userId)
-                    LibraryType.AnimeList -> viewModel.getAnimeLibrary(userId)
-                    LibraryType.MangaFavoritesList -> viewModel.getMangaFavorites(userId)
-                    LibraryType.AnimeFavoritesList -> viewModel.getAnimeFavorites(userId)
-                }
-            }
-        }
-
-        binding.emptyListTextView.visibility = if (itemList.isEmpty()) View.VISIBLE else View.GONE
+        binding.tvLibraryEmptyList.visibility = if (itemList.isEmpty()) View.VISIBLE else View.GONE
 
         if (itemList.isEmpty()) return
 
         displayList()
 
-        binding.libraryRecyclerView.apply {
+        binding.rvLibrary.apply {
             spanCount = when (this.resources.configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> 3
                 Configuration.ORIENTATION_LANDSCAPE -> 4

@@ -36,7 +36,7 @@ class VhReview(
     }
 
     private fun displayReviewHeader(binding: ItemReviewHeaderBinding) {
-        binding.insertReview.setOnClickListener {
+        binding.root.setOnClickListener {
             review.manga?.let { manga ->
                 Navigation.findNavController(binding.root).navigate(
                         ReviewsFragmentDirections.actionReviewsToReviewSave(
@@ -58,7 +58,7 @@ class VhReview(
     }
 
     private fun displayReview(binding: ItemReviewBinding) {
-        binding.reviewUser.setOnClickListener {
+        binding.vReviewUser.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     ReviewsFragmentDirections.actionReviewsToProfile(
                             review.user?.id
@@ -66,7 +66,7 @@ class VhReview(
             )
         }
 
-        binding.reviewProfilePicCircleImageView.apply {
+        binding.civReviewUserProfilePic.apply {
             Picasso.get()
                     .load(review.user?.avatar?.tiny)
                     .placeholder(R.drawable.default_user_avatar)
@@ -78,7 +78,7 @@ class VhReview(
 
         binding.tvReviewPseudo.text = review.user?.pseudo ?: ""
 
-        binding.tvReviewUpdated.text = review.updatedAt?.format("dd MMMM yyyy")
+        binding.tvReviewLastUpdated.text = review.updatedAt?.format("dd MMMM yyyy")
 
         binding.ivEdit.apply {
             val userPreference = UserPreference(context)

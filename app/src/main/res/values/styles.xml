@@ -46,7 +46,7 @@
     </style>
 
     <style name="Widget.AppTheme.Dialog.Alert" parent="Widget.AppTheme">
-        <item name="colorAccent">@color/colorApp</item>
+        <item name="colorAccent">@color/color_app</item>
         <item name="android:textColorPrimary">?attr/textPrimaryColor</item>
         <item name="android:background">?attr/backgroundPrimaryColor</item>
     </style>
@@ -80,6 +80,7 @@
         <item name="tabMode">fixed</item>
         <item name="tabSelectedTextColor">?attr/textPrimaryColor</item>
         <item name="tabTextColor">#B9B9B9</item>
+        <item name="android:background">?attr/backgroundPrimaryColor</item>
     </style>
 
     <style name="Widget.AppTheme.TextView.Ad.Attribution" parent="Widget.AppTheme">
@@ -101,5 +102,7 @@
         <item name="android:colorBackground">?attr/backgroundPrimaryColor</item>
         <item name="android:textColorPrimary">?attr/textPrimaryColor</item>
     </style>
+
+    <!-- TODO: Add Widget.Divider.Horizontal -->
 
 </resources>

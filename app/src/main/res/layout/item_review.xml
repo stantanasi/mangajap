@@ -1,70 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="?attr/backgroundPrimaryColor"
     android:layout_marginBottom="@dimen/reviews_spacing"
-    android:orientation="vertical"
-    android:padding="@dimen/reviews_spacing">
+    android:background="?attr/backgroundPrimaryColor">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civ_review_user_profile_pic"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="@dimen/reviews_spacing"
+        android:src="@drawable/default_user_avatar"
+        app:civ_border_color="?attr/dividerColor"
+        app:civ_border_width="1dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_review_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_review_pseudo"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="@dimen/reviews_spacing"
-        android:orientation="horizontal">
-
-        <LinearLayout android:id="@+id/review_user"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <de.hdodenhof.circleimageview.CircleImageView android:id="@+id/reviewProfilePic_CircleImageView"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="@dimen/reviews_spacing"
-                android:src="#939393"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView android:id="@+id/tv_review_pseudo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="?attr/textPrimaryColor"
-                    android:textStyle="bold"
-                    tools:text="Pseudo" />
-
-                <TextView android:id="@+id/tv_review_updated"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="?attr/textSecondaryColor"
-                    tools:text="dd MMMM yyyy" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <ImageView android:id="@+id/iv_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/edit"
-            android:paddingStart="@dimen/reviews_spacing"
-            android:paddingEnd="0dp"
-            android:src="@drawable/ic_edit_black_24dp"
-            app:tint="?attr/textSecondaryColor" />
-
-    </LinearLayout>
-
-    <TextView android:id="@+id/tv_review_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/reviews_spacing"
+        android:layout_marginTop="@dimen/reviews_spacing"
         android:textColor="?attr/textPrimaryColor"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tv_review_last_updated"
+        app:layout_constraintEnd_toStartOf="@id/iv_edit"
+        app:layout_constraintStart_toEndOf="@id/civ_review_user_profile_pic"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Pseudo" />
+
+    <TextView
+        android:id="@+id/tv_review_last_updated"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/reviews_spacing"
+        android:layout_marginBottom="@dimen/reviews_spacing"
+        android:textColor="?attr/textSecondaryColor"
+        app:layout_constraintBottom_toTopOf="@+id/tv_review_content"
+        app:layout_constraintEnd_toStartOf="@id/iv_edit"
+        app:layout_constraintStart_toEndOf="@id/civ_review_user_profile_pic"
+        app:layout_constraintTop_toBottomOf="@+id/tv_review_pseudo"
+        tools:text="Date" />
+
+    <View
+        android:id="@+id/v_review_user"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/reviews_spacing"
+        android:layout_marginBottom="@dimen/reviews_spacing"
+        app:layout_constraintBottom_toTopOf="@id/tv_review_content"
+        app:layout_constraintEnd_toEndOf="@id/tv_review_pseudo"
+        app:layout_constraintStart_toStartOf="@id/civ_review_user_profile_pic"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/reviews_spacing"
+        android:layout_marginEnd="@dimen/reviews_spacing"
+        android:layout_marginBottom="@dimen/reviews_spacing"
+        android:contentDescription="@string/edit"
+        android:paddingStart="@dimen/reviews_spacing"
+        android:paddingEnd="0dp"
+        android:src="@drawable/ic_edit_black_24dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_review_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/textSecondaryColor" />
+
+    <TextView
+        android:id="@+id/tv_review_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/reviews_spacing"
+        android:layout_marginEnd="@dimen/reviews_spacing"
+        android:layout_marginBottom="@dimen/reviews_spacing"
+        android:textColor="?attr/textPrimaryColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:text="Content" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,7 +25,7 @@ class AgendaFragment : Fragment() {
 
     private enum class AgendaTab(
             val stringId: Int,
-            var fragment: RecyclerViewFragment = RecyclerViewFragment(),
+            val fragment: RecyclerViewFragment = RecyclerViewFragment(),
             val list: MutableList<MangaJapAdapter.Item> = mutableListOf()
     ) {
         ReadList(R.string.read_list),
@@ -44,8 +44,7 @@ class AgendaFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAgendaBinding.inflate(inflater, container, false)
-        AgendaTab.values().map {
-            it.fragment = RecyclerViewFragment()
+        AgendaTab.values().forEach {
             it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
             addTab(it)
         }

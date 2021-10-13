@@ -34,7 +34,7 @@ class SearchFragment : Fragment() {
 
     private enum class SearchTab(
             val stringId: Int,
-            var fragment: RecyclerViewFragment = RecyclerViewFragment(),
+            val fragment: RecyclerViewFragment = RecyclerViewFragment(),
             val list: MutableList<MangaJapAdapter.Item> = mutableListOf()
     ) {
         Manga(R.string.manga),
@@ -63,8 +63,7 @@ class SearchFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-        SearchTab.values().map {
-            it.fragment = RecyclerViewFragment()
+        SearchTab.values().forEach {
             it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
             addTab(it)
         }
@@ -271,7 +270,7 @@ class SearchFragment : Fragment() {
 
 
     private fun displaySearch() {
-        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
             private var timer: Timer = Timer()
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -298,7 +297,7 @@ class SearchFragment : Fragment() {
             }
         })
 
-        binding.searchTabLayout.apply {
+        binding.tbSearch.apply {
             getTabAt(actualTab.ordinal)?.apply {
                 select()
                 showTab(actualTab)
@@ -323,13 +322,13 @@ class SearchFragment : Fragment() {
     private fun addTab(searchTab: SearchTab) {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
 
-        if (!binding.searchTabLayout.contains(getString(searchTab.stringId))) {
-            binding.searchTabLayout.add(getString(searchTab.stringId))
+        if (!binding.tbSearch.contains(getString(searchTab.stringId))) {
+            binding.tbSearch.add(getString(searchTab.stringId))
             if (searchTab.fragment.isAdded) {
                 ft.detach(searchTab.fragment)
                 ft.attach(searchTab.fragment)
             } else {
-                ft.add(binding.searchFrameLayout.id, searchTab.fragment)
+                ft.add(binding.flSearch.id, searchTab.fragment)
             }
         }
 

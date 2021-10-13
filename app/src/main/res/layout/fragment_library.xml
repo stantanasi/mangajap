@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundSecondaryColor"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">
 
-        <include layout="@layout/view_toolbar"
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|enterAlways|snap"/>
+            app:layout_scrollFlags="scroll|enterAlways|snap" />
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
@@ -27,28 +30,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.tanasi.mangajap.ui.SpinnerReselect android:id="@+id/sortBy_Spinner"
+                <com.tanasi.mangajap.ui.SpinnerReselect
+                    android:id="@+id/spinner_library_sort_by"
+                    style="@style/Widget.AppTheme.Spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    style="@style/Widget.AppTheme.Spinner"/>
+                    android:gravity="center_vertical" />
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
-                <TextView android:id="@+id/filter"
+                <TextView
+                    android:id="@+id/filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="14dp"
+                    android:background="?attr/selectableItemBackground"
                     android:padding="6dp"
                     android:text="@string/filter"
                     android:textAllCaps="true"
                     android:textColor="?attr/textPrimaryColor"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -56,32 +61,45 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:id="@+id/swipeRefreshLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/library_RecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_library"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:clipToPadding="false"
-            android:padding="6dp"/>
+            android:padding="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <!-- TODO: not in center vertical -->
+        <TextView
+            android:id="@+id/tv_library_empty_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/listEmpty"
+            android:textColor="?attr/textPrimaryColor"
+            android:textSize="@dimen/font_size_medium_large"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
-    <TextView android:id="@+id/emptyList_TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/listEmpty"
-        android:textColor="?attr/textPrimaryColor"
-        android:textSize="@dimen/font_size_medium_large"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        <include
+            android:id="@+id/is_loading"
+            layout="@layout/layout_is_loading" />
 
-    <include android:id="@+id/is_loading"
-        layout="@layout/layout_is_loading"/>
-    <include android:id="@+id/is_updating"
-        layout="@layout/layout_is_updating"/>
+        <include
+            android:id="@+id/is_updating"
+            layout="@layout/layout_is_updating" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

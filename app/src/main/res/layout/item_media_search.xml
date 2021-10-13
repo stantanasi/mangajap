@@ -1,81 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/media"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    android:clipToPadding="false"
-    android:orientation="vertical">
+    android:clipToPadding="false">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/iv_search_media_cover"
+        android:layout_width="40dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="@dimen/search_spacing"
+        android:layout_marginTop="@dimen/search_spacing"
+        android:layout_marginBottom="@dimen/search_spacing"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_search_media_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/search_spacing"
+        android:layout_marginTop="@dimen/search_spacing"
+        android:layout_marginEnd="@dimen/search_spacing"
+        android:ellipsize="end"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="@dimen/search_spacing">
+        android:maxLines="2"
+        android:textColor="?attr/textPrimaryColor"
+        android:textSize="@dimen/font_size_medium"
+        app:layout_constraintBottom_toTopOf="@id/tv_search_media_type"
+        app:layout_constraintEnd_toStartOf="@id/cb_search_media_is_add"
+        app:layout_constraintStart_toEndOf="@id/iv_search_media_cover"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Title" />
 
-        <RelativeLayout
-            android:layout_width="40dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="@dimen/search_spacing">
+    <TextView
+        android:id="@+id/tv_search_media_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/search_spacing"
+        android:layout_marginEnd="@dimen/search_spacing"
+        android:maxLines="1"
+        android:textColor="?attr/textSecondaryColor"
+        android:textSize="@dimen/font_size_micro"
+        app:layout_constraintBottom_toTopOf="@id/tv_search_media_user_count"
+        app:layout_constraintEnd_toStartOf="@id/cb_search_media_is_add"
+        app:layout_constraintStart_toEndOf="@id/iv_search_media_cover"
+        app:layout_constraintTop_toBottomOf="@id/tv_search_media_title"
+        tools:text="Type" />
 
-            <ImageView android:id="@+id/mediaCover_ImageView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="cover"
-                android:scaleType="centerCrop"
-                tools:ignore="HardcodedText" />
+    <TextView
+        android:id="@+id/tv_search_media_user_count"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/search_spacing"
+        android:layout_marginEnd="@dimen/search_spacing"
+        android:layout_marginBottom="@dimen/search_spacing"
+        android:maxLines="1"
+        android:textColor="?attr/textSecondaryColor"
+        android:textSize="@dimen/font_size_micro"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintEnd_toStartOf="@id/cb_search_media_is_add"
+        app:layout_constraintStart_toEndOf="@id/iv_search_media_cover"
+        app:layout_constraintTop_toBottomOf="@id/tv_search_media_type"
+        tools:text="@string/userCount" />
 
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView android:id="@+id/mediaTitle_TextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:maxLines="2"
-                android:text="Title"
-                android:textColor="?attr/textPrimaryColor"
-                android:textSize="@dimen/font_size_medium"
-                tools:ignore="HardcodedText" />
-
-            <TextView android:id="@+id/mediaType_TextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="@string/type"
-                android:textColor="?attr/textSecondaryColor"
-                android:textSize="@dimen/font_size_micro"/>
-
-            <TextView android:id="@+id/mediaMembers_TextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="@string/userCount"
-                android:textColor="?attr/textSecondaryColor"
-                android:textSize="@dimen/font_size_micro"/>
-
-        </LinearLayout>
-
-        <CheckBox android:id="@+id/mediaIsAdd_CheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:button="@drawable/btn_checkbox"
-            android:layout_marginStart="@dimen/search_spacing"/>
-
-    </LinearLayout>
+    <CheckBox
+        android:id="@+id/cb_search_media_is_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/search_spacing"
+        android:layout_marginEnd="@dimen/search_spacing"
+        android:layout_marginBottom="@dimen/search_spacing"
+        android:button="@drawable/btn_checkbox"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:layout_width="match_parent"
+        android:id="@+id/divider"
+        android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="?attr/dividerColor"/>
+        android:background="?attr/dividerColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

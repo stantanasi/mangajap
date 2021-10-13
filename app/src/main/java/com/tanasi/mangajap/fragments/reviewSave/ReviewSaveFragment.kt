@@ -132,11 +132,11 @@ class ReviewSaveFragment : Fragment() {
     }
 
     private fun displayReview() {
-        binding.reviewEditText.text.append(review.content)
+        binding.etReviewSave.text.append(review.content)
     }
 
     private fun publishReview() {
-        val reviewContent = binding.reviewEditText.text.toString().trim { it <= ' ' }
+        val reviewContent = binding.etReviewSave.text.toString().trim { it <= ' ' }
 
         if (reviewContent.isReviewValid()) {
             if (review.id == "") {

@@ -55,7 +55,7 @@ class VhSeason(
     private fun displaySeasonHeader(binding: ItemSeasonAnimeHeaderBinding) {}
 
     private fun displaySeasonAnime(binding: ItemSeasonAnimeBinding) {
-        binding.season.setOnClickListener {
+        binding.root.setOnClickListener {
             season.isShowingEpisodes = !season.isShowingEpisodes
             showEpisodes()
         }

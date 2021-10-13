@@ -7,6 +7,7 @@ import com.tanasi.mangajap.adapters.viewHolders.*
 import com.tanasi.mangajap.databinding.*
 import com.tanasi.mangajap.models.*
 
+// TODO: use binding root   everywhere
 class MangaJapAdapter(
         private val items: List<Item>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -88,7 +89,7 @@ class MangaJapAdapter(
         Type.ANIME_DISCOVER -> VhAnime(ItemMediaTrendingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
         Type.ANIME_ENTRY_LIBRARY -> VhAnimeEntry(ItemMediaLibraryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.ANIME_ENTRY_PREVIEW -> VhAnimeEntry(ItemMediaPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        Type.ANIME_ENTRY_PREVIEW -> VhAnimeEntry(ItemMediaProfilePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
         Type.SEASON_ANIME_HEADER -> VhSeason(ItemSeasonAnimeHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.SEASON_ANIME -> VhSeason(ItemSeasonAnimeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -102,7 +103,7 @@ class MangaJapAdapter(
         Type.MANGA_HEADER_REVIEWS -> VhManga(ItemMangaReviewsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.MANGA_DISCOVER -> VhManga(ItemMediaTrendingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.MANGA_ENTRY_LIBRARY -> VhMangaEntry(ItemMediaLibraryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.MANGA_ENTRY_PREVIEW -> VhMangaEntry(ItemMediaPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        Type.MANGA_ENTRY_PREVIEW -> VhMangaEntry(ItemMediaProfilePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
         Type.REVIEW_HEADER -> VhReview(ItemReviewHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.REVIEW -> VhReview(ItemReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))

@@ -24,7 +24,7 @@ class EditTextDialog(
 
         setView(binding.root)
 
-        binding.editTextTextInputLayout.also {
+        binding.tilDialogEditText.also {
             it.hint = hint
             it.editText?.append(text)
         }
@@ -39,8 +39,8 @@ class EditTextDialog(
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             callable(
                     alertDialog,
-                    binding.editTextTextInputLayout,
-                    binding.editTextTextInputLayout.editText?.text.toString().trim { it <= ' ' }
+                    binding.tilDialogEditText,
+                    binding.tilDialogEditText.editText?.text.toString().trim { it <= ' ' }
             )
         }
         return alertDialog

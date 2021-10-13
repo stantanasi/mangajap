@@ -23,6 +23,8 @@ import com.tanasi.mangajap.utils.extensions.setToolbar
 
 class PeopleFragment : Fragment() {
 
+    // TODO: create Tab ?
+
     private var _binding: FragmentPeopleBinding? = null
     private val binding: FragmentPeopleBinding get() = _binding!!
 
@@ -90,7 +92,7 @@ class PeopleFragment : Fragment() {
         setMangaFragment()
         setAnimeFragment()
 
-        binding.peopleTabLayout.apply {
+        binding.tbPeople.apply {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     showFragment(fragmentList[tab.position])
@@ -143,13 +145,13 @@ class PeopleFragment : Fragment() {
 
         if (!fragmentList.contains(fragment)) {
             fragmentList.add(fragment)
-            binding.peopleTabLayout.addTab(binding.peopleTabLayout.newTab().setText(title))
+            binding.tbPeople.addTab(binding.tbPeople.newTab().setText(title))
             if (!fragment.isAdded) {
-                ft.add(binding.peopleFrameLayout.id, fragment)
+                ft.add(binding.flPeople.id, fragment)
             }
         } else {
-            if (!binding.peopleTabLayout.contains(title)) {
-                binding.peopleTabLayout.addTab(binding.peopleTabLayout.newTab().setText(title))
+            if (!binding.tbPeople.contains(title)) {
+                binding.tbPeople.addTab(binding.tbPeople.newTab().setText(title))
                 if (fragment.isAdded) {
                     ft.detach(fragment)
                     ft.attach(fragment)

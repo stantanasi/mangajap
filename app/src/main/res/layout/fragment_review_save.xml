@@ -1,75 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundSecondaryColor">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/view_app_bar" />
 
-        <include layout="@layout/view_app_bar" />
+    <EditText
+        android:id="@+id/et_review_save"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        android:gravity="top|start"
+        android:hint="@string/insertReview"
+        android:inputType="textMultiLine"
+        android:padding="@dimen/reviews_spacing"
+        android:textColor="?attr/textPrimaryColor"
+        android:textColorHint="?attr/textColorHint"
+        android:textSize="@dimen/font_size_small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
+        tools:ignore="Autofill" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="6dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/reviews_spacing"
+        android:layout_marginBottom="@dimen/reviews_spacing"
+        android:background="@color/color_app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_review_rules_title" />
 
-            <EditText android:id="@+id/review_EditText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:gravity="top|start"
-                android:hint="@string/insertReview"
-                android:inputType="textMultiLine"
-                android:padding="@dimen/reviews_spacing"
-                android:textColor="?attr/textPrimaryColor"
-                android:textColorHint="?attr/textColorHint"
-                android:textSize="@dimen/font_size_small"
-                tools:ignore="Autofill" />
+    <TextView
+        android:id="@+id/tv_review_rules_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/reviews_spacing"
+        android:layout_marginEnd="@dimen/reviews_spacing"
+        android:text="@string/doNotSpoil"
+        android:textColor="?attr/textColorHint"
+        android:textSize="@dimen/font_size_medium"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tv_review_rules"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/divider1" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal"
-                android:padding="@dimen/reviews_spacing">
+    <TextView
+        android:id="@+id/tv_review_rules"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/reviews_spacing"
+        android:layout_marginEnd="@dimen/reviews_spacing"
+        android:layout_marginBottom="@dimen/reviews_spacing"
+        android:text="@string/reviewRules"
+        android:textColor="?attr/textColorHint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/divider1" />
 
-                <View
-                    android:layout_width="6dp"
-                    android:layout_height="match_parent"
-                    android:background="?attr/colorAccent"
-                    android:layout_marginEnd="@dimen/reviews_spacing"/>
+    <include
+        android:id="@+id/is_loading"
+        layout="@layout/layout_is_loading" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+    <include
+        android:id="@+id/is_updating"
+        layout="@layout/layout_is_updating" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/doNotSpoil"
-                        android:textColor="?attr/textColorHint"
-                        android:textSize="@dimen/font_size_medium"
-                        android:textStyle="bold"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/reviewRules"
-                        android:textColor="?attr/textColorHint"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <include android:id="@+id/is_loading"
-        layout="@layout/layout_is_loading"/>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

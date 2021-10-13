@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
@@ -91,7 +92,7 @@ class VhManga(
     }
 
     private fun displaySearch(binding: ItemMediaSearchBinding) {
-        binding.media.setOnClickListener {
+        binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     SearchFragmentDirections.actionSearchToManga(
                             manga.id,
@@ -100,7 +101,7 @@ class VhManga(
             )
         }
 
-        binding.mediaCoverImageView.apply {
+        binding.ivSearchMediaCover.apply {
             Picasso.get()
                     .load(manga.coverImage)
                     .placeholder(R.drawable.placeholder)
@@ -108,13 +109,13 @@ class VhManga(
                     .into(this)
         }
 
-        binding.mediaTitleTextView.text = manga.title
+        binding.tvSearchMediaTitle.text = manga.title
 
-        binding.mediaTypeTextView.text = manga.mangaType?.stringId?.let { context.resources.getString(it) }
+        binding.tvSearchMediaType.text = manga.mangaType.stringId.let { context.resources.getString(it) }
 
-        binding.mediaMembersTextView.text = context.resources.getString(R.string.userCount, manga.userCount)
+        binding.tvSearchMediaUserCount.text = context.resources.getString(R.string.userCount, manga.userCount)
 
-        binding.mediaIsAddCheckBox.apply {
+        binding.cbSearchMediaIsAdd.apply {
             isChecked = manga.mangaEntry?.isAdd ?: false
             setOnClickListener {
                 manga.mangaEntry?.let {
@@ -132,9 +133,9 @@ class VhManga(
     }
 
     private fun displaySearchAdd(binding: ItemMediaSearchAddBinding) {
-        binding.media.setOnClickListener {
+        binding.root.setOnClickListener {
             var query = ""
-            if (context is MainActivity && context.getCurrentFragment() is SearchFragment) {
+            if (context is MainActivity) {
                 when (val fragment = context.getCurrentFragment()) {
                     is SearchFragment -> query = fragment.query
                 }
@@ -155,14 +156,13 @@ class VhManga(
             }.show()
         }
 
-        binding.tvMediaTitle.text = context.getString(R.string.propose_manga)
+        binding.tvSearchAddTitle.text = context.getString(R.string.propose_manga)
 
-        binding.tvMediaSubtitle.text = context.getString(R.string.propose_manga_summary)
+        binding.tvSearchAddSubtitle.text = context.getString(R.string.propose_manga_summary)
     }
 
     private fun displayTrending(binding: ItemMediaTrendingBinding) {
-        // TODO: si l'image est nulle alors afficher le titre du manga
-        binding.media.setOnClickListener {
+        binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     DiscoverFragmentDirections.actionDiscoverToManga(
                             manga.id,
@@ -171,15 +171,25 @@ class VhManga(
             )
         }
 
-        binding.mediaCoverImageView.apply {
+        binding.ivTrendingMediaCover.apply {
             Picasso.get()
                     .load(manga.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
-                    .into(this)
+                    .into(this, object : Callback {
+                        override fun onSuccess() {
+                            binding.tvTrendingMediaTitlePlaceholder.visibility = View.GONE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            binding.tvTrendingMediaTitlePlaceholder.visibility = View.VISIBLE
+                        }
+                    })
         }
 
-        binding.mediaIsAddCheckBox.apply {
+        binding.tvTrendingMediaTitlePlaceholder.text = manga.title
+
+        binding.cbTrendingMediaIsAdd.apply {
             isChecked = manga.mangaEntry?.isAdd ?: false
             visibility = if (manga.mangaEntry?.isAdd == true) View.GONE else View.VISIBLE
             setOnClickListener {
@@ -196,7 +206,7 @@ class VhManga(
             }
         }
 
-        binding.mediaProgressProgressBar.apply {
+        binding.pbTrendingMediaProgress.apply {
             manga.mangaEntry?.let { mangaEntry ->
                 visibility = View.VISIBLE
                 progress = mangaEntry.getProgress(manga)
@@ -208,7 +218,7 @@ class VhManga(
     }
 
     private fun displayHeader(binding: ItemMangaHeaderBinding) {
-        binding.mangaBannerImageView.apply {
+        binding.ivMangaBanner.apply {
             Picasso.get()
                     .load(manga.bannerImage ?: manga.coverImage)
                     .networkPolicy(NetworkPolicy.NO_CACHE)
@@ -223,7 +233,7 @@ class VhManga(
             }
         }
 
-        binding.mangaCoverImageView.apply {
+        binding.ivMangaCover.apply {
             Picasso.get().load(manga.coverImage).into(this)
             setOnClickListener {
                 Navigation.findNavController(binding.root).navigate(
@@ -234,84 +244,94 @@ class VhManga(
             }
         }
 
-        binding.mangaTitleTextView.text = manga.title
+        binding.tvMangaTitle.text = manga.title
 
-        binding.mangaStaff.apply {
-            if (manga.staff.isEmpty()) {
-                visibility = View.GONE
-            } else {
-                if (childCount > 0) {
-                    removeAllViews()
-                }
-                for (staff in manga.staff) {
-                    TextView(context).let { textView ->
-                        staff.people?.let { people ->
-                            val peopleName = when (people.pseudo) {
-                                "" -> "${people.firstName} ${people.lastName}"
-                                else -> people.pseudo
-                            }
-                            textView.text = peopleName
-                            textView.setTextColor(context.getAttrColor(R.attr.textSecondaryColor))
-                            textView.typeface = Typeface.DEFAULT_BOLD
-                            textView.setOnClickListener {
-                                Navigation.findNavController(binding.root).navigate(
-                                    MangaFragmentDirections.actionMangaToPeople(
-                                        people.id,
-                                        peopleName
-                                    )
-                                )
-                            }
+        binding.llMangaStaff.apply {
+            visibility = when (manga.staff.isEmpty()) {
+                true -> View.GONE
+                false -> View.VISIBLE
+            }
+
+            if (childCount > 0) {
+                removeAllViews()
+            }
+            manga.staff.forEach { staff ->
+                addView(TextView(context).also { textView ->
+                    staff.people?.let { people ->
+                        val peopleName = when (people.pseudo) {
+                            "" -> "${people.firstName} ${people.lastName}"
+                            else -> people.pseudo
                         }
-                        addView(textView)
+                        textView.text = peopleName
+                        textView.setTextColor(context.getAttrColor(R.attr.textSecondaryColor))
+                        textView.typeface = Typeface.DEFAULT_BOLD
+                        textView.setOnClickListener {
+                            Navigation.findNavController(binding.root).navigate(
+                                MangaFragmentDirections.actionMangaToPeople(
+                                    people.id,
+                                    peopleName
+                                )
+                            )
+                        }
                     }
-                }
-                visibility = View.VISIBLE
+                })
             }
         }
 
-        binding.mangaTypeTextView.text = context.getString(manga.mangaType?.stringId ?: Manga.MangaType.shonen.stringId)
+        binding.tvMangaType.text = context.getString(manga.mangaType.stringId)
     }
 
     private fun displaySummary(binding: ItemMangaSummaryBinding) {
-        binding.mangaSummarySubtitleTextView.apply {
+        binding.tvMangaSummarySubtitle.apply {
             text = context.getString(R.string.manga_metadata,
                     manga.startDate?.format("yyyy"),
                     manga.endDate?.format("yyyy") ?: context.getString(manga.status.stringId),
                     manga.origin?.getDisplayCountry(context.locale()))
         }
 
-        binding.mangaScoreTextView.text = manga.averageRating?.let { DecimalFormat("#.#").format(it / 20.0 * 5) + " / 5" } ?: "- / 5"
+        binding.tvMangaSummaryRating.text = manga.averageRating?.let { DecimalFormat("#.#").format(it / 20.0 * 5) + " / 5" } ?: "- / 5"
 
-        binding.mangaSynopsisTextView.apply {
-            text = manga.synopsis
-            maxLines = MangaFragment.MANGA_SYNOPSIS_MAX_LINES
-        }
+        fun readMoreSynopsis(readMore: Boolean) {
+            binding.tvMangaSummarySynopsis.maxLines = when (readMore) {
+                false -> MangaFragment.MANGA_SYNOPSIS_MAX_LINES
+                true -> Int.MAX_VALUE
+            }
 
-        binding.mangaReadMore.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                binding.mangaSynopsisTextView.maxLines = Int.MAX_VALUE
-                visibility = View.GONE
+            binding.vMangaSummarySynopsisGradient.visibility = when (readMore) {
+                false -> View.VISIBLE
+                true -> View.GONE
+            }
+
+            binding.tvMangaSummarySynopsisReadMore.visibility = when (readMore) {
+                false -> View.VISIBLE
+                true -> View.GONE
             }
         }
+        readMoreSynopsis(false)
 
-        binding.mangaRankedTextView.text = context.getString(R.string.manga_rating, (manga.ratingRank ?: ""))
+        binding.tvMangaSummarySynopsis.text = manga.synopsis
 
-        binding.mangaVolumeCountTextView.text = when (manga.status) {
+        binding.tvMangaSummarySynopsisReadMore.setOnClickListener {
+            readMoreSynopsis(true)
+        }
+
+        binding.tvMangaSummaryRank.text = context.getString(R.string.manga_rating, (manga.ratingRank ?: ""))
+
+        binding.tvMangaSummaryVolumeCount.text = when (manga.status) {
             Manga.Status.publishing -> context.resources.getString(R.string.approximatelyVolumeCount, manga.volumeCount)
             else -> context.resources.getString(R.string.volumeCount, manga.volumeCount)
         }
 
-        binding.mangaChapterCountTextView.text = when (manga.status) {
+        binding.tvMangaSummaryChapterCount.text = when (manga.status) {
             Manga.Status.publishing -> context.resources.getString(R.string.approximatelyChapterCount, manga.chapterCount)
             else -> context.resources.getString(R.string.chapterCount, manga.chapterCount)
         }
 
-        binding.mangaUserCountTextView.text = context.resources.getString(R.string.mangaUserCount, manga.userCount)
+        binding.tvMangaSummaryUserCount.text = context.resources.getString(R.string.mangaUserCount, manga.userCount)
     }
 
     private fun displayProgression(binding: ItemMangaProgressionBinding) {
-        binding.spinnerMangaEntryStatus.apply {
+        binding.spinnerMangaProgressionStatus.apply {
             (background as GradientDrawable).setStroke(context.dpToPx(1), ContextCompat.getColor(context, manga.mangaEntry?.getProgressColor(manga) ?: MangaEntry.Status.reading.colorId))
 
             adapter = SpinnerAdapter(
@@ -354,7 +374,7 @@ class VhManga(
             setSelection(manga.mangaEntry?.status?.ordinal ?: 0)
         }
 
-        binding.mangaMyDateTextView.apply {
+        binding.tvMangaProgressionSubtitle.apply {
             val startedAt = manga.mangaEntry?.startedAt?.format("dd MMMM yyyy") ?: "-"
             val finishedAt = manga.mangaEntry?.finishedAt?.format("dd MMMM yyyy") ?: "-"
 
@@ -385,13 +405,12 @@ class VhManga(
             }
         }
 
-        binding.mangaVolumesRead.setOnClickListener {
+        binding.vMangaProgressionVolume.setOnClickListener {
             MediaEntryProgressionDialog(
                     context,
                     context.getString(R.string.volumesRead),
                     manga.mangaEntry?.volumesRead ?: 0
             ) { value ->
-
                 manga.mangaEntry?.let {
                     it.putVolumesRead(value)
                     updateMangaEntry(it)
@@ -399,12 +418,14 @@ class VhManga(
             }.show()
         }
 
-        binding.mangaVolumesReadTextView.text = manga.mangaEntry?.volumesRead?.toString() ?: "0"
+        binding.tvMangaProgressionVolumeRead.text = manga.mangaEntry?.volumesRead?.toString() ?: "0"
 
-        binding.mangaVolumesTextView.text = context.resources.getString(R.string.VolumesRead, manga.volumeCount
-                ?: 0)
+        binding.tvMangaProgressionVolumeCount.text = context.getString(
+            R.string.VolumesRead,
+            manga.volumeCount
+        )
 
-        binding.mangaChaptersRead.setOnClickListener {
+        binding.vMangaProgressionChapter.setOnClickListener {
             MediaEntryProgressionDialog(
                     context,
                     context.getString(R.string.chaptersRead),
@@ -417,12 +438,14 @@ class VhManga(
             }.show()
         }
 
-        binding.mangaChaptersReadTextView.text = manga.mangaEntry?.chaptersRead?.toString() ?: "0"
+        binding.tvMangaProgressionChapterRead.text = manga.mangaEntry?.chaptersRead?.toString() ?: "0"
 
-        binding.mangaChaptersTextView.text = context.resources.getString(R.string.ChaptersRead, manga.chapterCount
-                ?: 0)
+        binding.tvMangaProgressionChapterCount.text = context.getString(
+            R.string.ChaptersRead,
+            manga.chapterCount
+        )
 
-        binding.mangaEntryRatingTextView.apply {
+        binding.tvMangaProgressionRating.apply {
             text = "${manga.mangaEntry?.rating ?: "-"} / 20"
             setOnClickListener {
                 NumberPickerDialog(
@@ -440,14 +463,14 @@ class VhManga(
             }
         }
 
-        binding.mangaEntryRemoveRatingImageView.setOnClickListener {
+        binding.ivMangaProgressionDeleteRating.setOnClickListener {
             manga.mangaEntry?.let {
                 it.putRating(null)
                 updateMangaEntry(it)
             }
         }
 
-        binding.mangaEntryIsFavoritesImageView.apply {
+        binding.ivMangaProgressionIsFavorites.apply {
             if (manga.mangaEntry?.isFavorites == true) setImageResource(R.drawable.ic_favorite_black_24dp)
             else setImageResource(R.drawable.ic_favorite_border_black_24dp)
             setOnClickListener {
@@ -460,7 +483,7 @@ class VhManga(
     }
 
     private fun displayReviews(binding: ItemMangaReviewsBinding) {
-        binding.llMangaAllReviews.setOnClickListener {
+        binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     MangaFragmentDirections.actionMangaToReviews(
                             ReviewsFragment.ReviewsType.Manga,

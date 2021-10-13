@@ -8,6 +8,7 @@ import android.view.*
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -32,8 +33,11 @@ import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.extensions.setToolbar
 import com.tanasi.mangajap.utils.extensions.shareText
 import com.tanasi.mangajap.utils.preferences.UserPreference
+import android.view.Gravity
 
 class MangaFragment : Fragment() {
+
+    // TODO: create Tab ?
 
     private var _binding: FragmentMangaBinding? = null
     private val binding: FragmentMangaBinding get() = _binding!!
@@ -113,18 +117,18 @@ class MangaFragment : Fragment() {
                     binding.isUpdating.cslIsUpdating.visibility = View.GONE
                 }
                 MangaViewModel.State.UpdatingForAdding -> {
-                    binding.addManga.setOnClickListener(null)
-                    binding.addMangaImageView.visibility = View.GONE
-                    binding.addMangaProgressBar.visibility = View.VISIBLE
+                    binding.clMangaProgressionAdd.setOnClickListener(null)
+                    binding.ivMangaProgressionAdd.visibility = View.GONE
+                    binding.pbMangaProgressionAdd.visibility = View.VISIBLE
                 }
                 is MangaViewModel.State.SuccessUpdatingForAdding -> {
                     manga.mangaEntry = state.mangaEntry
-                    binding.addMangaImageView.apply {
+                    binding.ivMangaProgressionAdd.apply {
                         visibility = View.VISIBLE
                         setImageResource(R.drawable.ic_check_black_24dp)
                     }
-                    binding.addMangaProgressBar.visibility = View.GONE
-                    binding.addMangaTextView.text = getString(R.string.added_to_library)
+                    binding.pbMangaProgressionAdd.visibility = View.GONE
+                    binding.tvMangaProgressionAdd.text = getString(R.string.added_to_library)
                     Handler(Looper.getMainLooper()).postDelayed({
                         displayManga()
                     }, 1 * 1000.toLong())
@@ -188,14 +192,14 @@ class MangaFragment : Fragment() {
 
         activity?.invalidateOptionsMenu()
 
-        binding.mangaProgressProgressBar.apply {
+        binding.pbMangaProgressionProgress.apply {
             manga.mangaEntry?.let { mangaEntry ->
                 progress = mangaEntry.getProgress(manga)
                 progressTintList = ContextCompat.getColorStateList(requireContext(), mangaEntry.getProgressColor(manga))
             }
         }
 
-        binding.addManga.apply {
+        binding.clMangaProgressionAdd.apply {
             manga.mangaEntry?.let { mangaEntry ->
                 if (mangaEntry.isAdd) {
                     visibility =  View.GONE
@@ -220,16 +224,16 @@ class MangaFragment : Fragment() {
             }
         }
 
-        binding.addMangaImageView.setImageResource(R.drawable.ic_add_black_24dp)
+        binding.ivMangaProgressionAdd.setImageResource(R.drawable.ic_add_black_24dp)
 
-        binding.addMangaProgressBar.visibility = View.GONE
+        binding.pbMangaProgressionAdd.visibility = View.GONE
 
-        binding.addMangaTextView.text = getString(R.string.add_manga_to_library)
+        binding.tvMangaProgressionAdd.text = getString(R.string.add_manga_to_library)
 
         setMangaAboutFragment()
         setMangaVolumeFragment()
 
-        binding.mangaTabLayout.apply {
+        binding.tbManga.apply {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     showFragment(fragmentList[tab.position])
@@ -251,8 +255,6 @@ class MangaFragment : Fragment() {
             add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_SUMMARY })
             if (manga.mangaEntry != null)
                 add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_PROGRESSION })
-//            if (manga.getUserCount() != 0)
-//                mangaAbout_List.add(manga.clone().setTypeLayout(MediaAdapter.Type.MANGA_HEADER_STATISTICS));
             add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_REVIEWS })
         }
 
@@ -286,13 +288,13 @@ class MangaFragment : Fragment() {
 
         if (!fragmentList.contains(fragment)) {
             fragmentList.add(fragment)
-            binding.mangaTabLayout.addTab(binding.mangaTabLayout.newTab().setText(title))
+            binding.tbManga.addTab(binding.tbManga.newTab().setText(title))
             if (!fragment.isAdded) {
-                ft.add(binding.mangaFrameLayout.id, fragment)
+                ft.add(binding.flManga.id, fragment)
             }
         } else {
-            if (!binding.mangaTabLayout.contains(title)) {
-                binding.mangaTabLayout.addTab(binding.mangaTabLayout.newTab().setText(title))
+            if (!binding.tbManga.contains(title)) {
+                binding.tbManga.addTab(binding.tbManga.newTab().setText(title))
                 if (fragment.isAdded) {
                     ft.detach(fragment)
                     ft.attach(fragment)
@@ -319,15 +321,20 @@ class MangaFragment : Fragment() {
         val layoutInflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupMangaBinding = PopupMangaBinding.inflate(layoutInflater)
 
-        val popupWindow = PopupWindow(popupMangaBinding.root, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true).apply {
+        val popupWindow = PopupWindow(
+            popupMangaBinding.root,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        ).apply {
             elevation = 25f
-            showAtLocation(popupMangaBinding.root, Gravity.TOP, 0, 140)
+            showAtLocation(popupMangaBinding.root, Gravity.TOP or Gravity.END, 100, 200)
         }
 
 
-        popupMangaBinding.mangaEntryStatusTextView.text = getString(manga.mangaEntry?.status?.stringId ?: MangaEntry.Status.reading.stringId)
+        popupMangaBinding.tvPopupMangaStatus.text = getString(manga.mangaEntry?.status?.stringId ?: MangaEntry.Status.reading.stringId)
 
-        popupMangaBinding.deleteManga.setOnClickListener {
+        popupMangaBinding.vPopupMangaDelete.setOnClickListener {
             manga.mangaEntry?.let { mangaEntry ->
                 viewModel.updateMangaEntry(mangaEntry.apply {
                     putAdd(false)
@@ -336,7 +343,7 @@ class MangaFragment : Fragment() {
             popupWindow.dismiss()
         }
 
-        popupMangaBinding.shareManga.setOnClickListener {
+        popupMangaBinding.vPopupMangaShare.setOnClickListener {
             shareText(getString(R.string.shareManga, manga.title))
         }
     }

@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundSecondaryColor"
-    android:fillViewport="true"
-    android:orientation="vertical">
+    android:fillViewport="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
+        <!-- TODO: rounded drawable -->
         <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
+            android:id="@+id/cv_search"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/discover_spacing"
-            android:layout_marginBottom="@dimen/discover_spacing"
             android:layout_marginStart="@dimen/discover_spacing"
+            android:layout_marginTop="@dimen/discover_spacing"
             android:layout_marginEnd="@dimen/discover_spacing"
             app:cardBackgroundColor="?attr/backgroundPrimaryColor"
+            app:cardCornerRadius="3dp"
             app:cardElevation="1dp"
-            app:cardCornerRadius="3dp">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout android:id="@+id/search"
+            <LinearLayout
+                android:id="@+id/ll_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
@@ -46,142 +48,132 @@
                     android:layout_height="wrap_content"
                     android:text="@string/search"
                     android:textColor="?attr/textPrimaryColor"
-                    android:textSize="@dimen/font_size_medium"/>
+                    android:textSize="@dimen/font_size_medium" />
 
             </LinearLayout>
-
 
         </androidx.cardview.widget.CardView>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <!-- TODO: app:layoutManager android:orientation tools:listitem -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_discover_people"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="@dimen/discover_spacing"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_search" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="?attr/dividerColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_discover_people" />
 
-                <androidx.recyclerview.widget.RecyclerView android:id="@+id/people_RecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:nestedScrollingEnabled="false"
-                    android:paddingBottom="8dp"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"/>
+        <TextView
+            android:id="@+id/tv_discover_recent_manga_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/discover_spacing"
+            android:layout_marginTop="@dimen/discover_spacing"
+            android:layout_marginEnd="@dimen/discover_spacing"
+            android:text="@string/recent_manga"
+            android:textColor="?attr/textPrimaryColor"
+            android:textSize="@dimen/font_size_medium_large"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider1" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?attr/dividerColor"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_discover_recent_manga"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/discover_spacing"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:paddingStart="13dp"
+            android:paddingEnd="13dp"
+            android:paddingBottom="13dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_discover_recent_manga_title" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="?attr/dividerColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_discover_recent_manga" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:padding="@dimen/discover_spacing"
-                        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_discover_recent_anime_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/discover_spacing"
+            android:layout_marginTop="@dimen/discover_spacing"
+            android:layout_marginEnd="@dimen/discover_spacing"
+            android:text="@string/recent_anime"
+            android:textColor="?attr/textPrimaryColor"
+            android:textSize="@dimen/font_size_medium_large"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider2" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/recent_manga"
-                            android:textColor="?attr/textPrimaryColor"
-                            android:textSize="@dimen/font_size_medium_large"
-                            android:textStyle="bold"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_discover_recent_anime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/discover_spacing"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:paddingStart="13dp"
+            android:paddingEnd="13dp"
+            android:paddingBottom="13dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_discover_recent_anime_title" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/discover_spacing"
-                            android:visibility="gone"
-                            style="@style/Widget.AppTheme.Button.SeeAll"/>
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="?attr/dividerColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_discover_recent_anime" />
 
-                    </LinearLayout>
+        <include
+            android:id="@+id/is_loading"
+            layout="@layout/layout_is_loading"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_search" />
 
-                    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_recent_manga"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:paddingBottom="13dp"
-                        android:paddingStart="13dp"
-                        android:paddingEnd="13dp"/>
+        <include
+            android:id="@+id/is_updating"
+            layout="@layout/layout_is_updating"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_search" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?attr/dividerColor"/>
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:padding="@dimen/discover_spacing"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/recent_anime"
-                            android:textColor="?attr/textPrimaryColor"
-                            android:textSize="@dimen/font_size_medium_large"
-                            android:textStyle="bold"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/discover_spacing"
-                            android:visibility="gone"
-                            style="@style/Widget.AppTheme.Button.SeeAll"/>
-
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_recent_anime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:paddingBottom="13dp"
-                        android:paddingStart="13dp"
-                        android:paddingEnd="13dp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?attr/dividerColor"/>
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <include android:id="@+id/is_loading"
-                layout="@layout/layout_is_loading"/>
-            <include android:id="@+id/is_updating"
-                layout="@layout/layout_is_updating"/>
-
-        </RelativeLayout>
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

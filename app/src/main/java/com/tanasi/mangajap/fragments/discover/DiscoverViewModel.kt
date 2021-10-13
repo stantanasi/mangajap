@@ -42,8 +42,8 @@ class DiscoverViewModel : ViewModel() {
                 JsonApiParams(
                     include = listOf("staff.manga", "staff.anime"),
                     fields = mapOf(
-                        "manga" to listOf("coverImage", "canonicalTitle"),
-                        "anime" to listOf("coverImage", "canonicalTitle")
+                        "manga" to listOf("coverImage", "title"),
+                        "anime" to listOf("coverImage", "title")
                     ),
                     sort = listOf("random"),
                     limit = 10

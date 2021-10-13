@@ -23,8 +23,8 @@ class VhLoadMore(
 
 
     private fun displayProgressBar(binding: ItemLoadMoreBinding) {
-        binding.isLoadingProgressBar.visibility = if (loadMore.isMoreDataAvailable) View.VISIBLE else View.GONE
+        binding.pbLoadMoreIsLoading.visibility = if (loadMore.isLoading) View.VISIBLE else View.GONE
 
-        binding.isNoMoreDataAvailable.visibility = if (loadMore.isMoreDataAvailable) View.GONE else View.VISIBLE
+        binding.ivLoadMoreIsNotLoading.visibility = if (loadMore.isMoreDataAvailable) View.GONE else View.VISIBLE
     }
 }

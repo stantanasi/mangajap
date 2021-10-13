@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
@@ -13,6 +14,7 @@ import com.tanasi.mangajap.fragments.manga.MangaFragment
 import com.tanasi.mangajap.models.Volume
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
+import java.lang.Exception
 
 class VhVolume(
         private val _binding: ViewBinding
@@ -32,7 +34,7 @@ class VhVolume(
     }
 
     private fun displayVolume(binding: ItemVolumeMangaBinding) {
-        binding.volume.setOnClickListener {
+        binding.root.setOnClickListener {
             if (context is MainActivity) {
                 when (val fragment = context.getCurrentFragment()) {
                     is MangaFragment -> fragment.also {
@@ -44,33 +46,36 @@ class VhVolume(
             }
         }
 
-        binding.volumeNumberTextView.run {
-            text = volume.number.toString()
-            visibility = when (volume.coverImage) {
-                null -> View.VISIBLE
-                else -> View.GONE
-            }
-        }
-
-        binding.volumeCoverImageView.apply {
+        binding.ivVolumeCover.apply {
+            clipToOutline = true
             Picasso.get()
                     .load(volume.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
-                    .into(this)
+                    .into(this, object : Callback {
+                        override fun onSuccess() {
+                            binding.tvVolumeNumberPlaceholder.visibility = View.GONE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            binding.tvVolumeNumberPlaceholder.visibility = View.VISIBLE
+                        }
+                    })
         }
 
-        binding.volumeTitleTextView.apply {
+        binding.tvVolumeNumberPlaceholder.text = volume.number.toString()
+
+        binding.tvVolumeTitle.apply {
             text = context.resources.getString(R.string.volume, volume.number)
         }
 
-        binding.volumePublishedTextView.apply {
+        binding.tvVolumePublishedDate.apply {
             text = volume.published?.format("dd-MM-yyyy") ?: ""
         }
     }
 
     private fun displayVolumeDetails(binding: ItemVolumeMangaDetailsBinding) {
-        binding.volumeCoverImageView.apply {
+        binding.ivVolumeCover.apply {
             Picasso.get()
                     .load(volume.coverImage)
                     .placeholder(R.drawable.placeholder)
@@ -78,7 +83,7 @@ class VhVolume(
                     .into(this)
         }
 
-        binding.volumeNumberTextView.apply {
+        binding.tvVolumeNumber.apply {
             text = context.resources.getString(R.string.volume, volume.number)
             visibility = when (volume.title) {
                 "" -> View.GONE
@@ -86,18 +91,18 @@ class VhVolume(
             }
         }
 
-        binding.volumeTitleTextView.apply {
+        binding.tvVolumeTitle.apply {
             text = when (volume.title) {
                 "" -> context.resources.getString(R.string.volume, volume.number)
                 else -> volume.title
             }
         }
 
-        binding.volumePublishedTextView.apply {
+        binding.tvVolumePublishedDate.apply {
             text = volume.published?.format("dd MMMM yyyy") ?: ""
         }
 
-        binding.tvChaptersFromTo.apply {
+        binding.tvChapterRange.apply {
             when {
                 volume.startChapter == null && volume.endChapter == null -> visibility = View.GONE
                 else -> {

@@ -29,7 +29,7 @@ class VhPeople(
     }
 
     private fun displayPeopleDiscover(binding: ItemPeopleDiscoverBinding) {
-        binding.peopleNameTextView.text = if (people.pseudo == "") people.firstName + " " + people.lastName else people.pseudo
+        binding.tvPeopleName.text = if (people.pseudo == "") people.firstName + " " + people.lastName else people.pseudo
 
 
         fun displayManga(imageView: ImageView, manga: Manga) {
@@ -65,7 +65,7 @@ class VhPeople(
         }
 
 
-        binding.peopleWork1CoverImageView.apply {
+        binding.ivPeople1StaffCover.apply {
             people.staff.getOrNull(0)?.let { staff ->
                 staff.manga?.let { manga ->
                     displayManga(this, manga)
@@ -75,7 +75,7 @@ class VhPeople(
             }
         }
 
-        binding.peopleWork2CoverImageView.apply {
+        binding.ivPeople2StaffCover.apply {
             people.staff.getOrNull(1)?.let { staff ->
                 staff.manga?.let { manga ->
                     displayManga(this, manga)
@@ -85,7 +85,7 @@ class VhPeople(
             }
         }
 
-        binding.peopleWork3CoverImageView.apply {
+        binding.ivPeople3StaffCover.apply {
             people.staff.getOrNull(2)?.let { staff ->
                 staff.manga?.let { manga ->
                     displayManga(this, manga)
@@ -95,7 +95,7 @@ class VhPeople(
             }
         }
 
-        binding.peopleSeeAll.setOnClickListener {
+        binding.tvPeopleSeeAllStaff.setOnClickListener {
             val peopleName = if (people.pseudo == "") people.firstName + " " + people.lastName else people.pseudo
             Navigation.findNavController(binding.root).navigate(
                     DiscoverFragmentDirections.actionDiscoverToPeople(

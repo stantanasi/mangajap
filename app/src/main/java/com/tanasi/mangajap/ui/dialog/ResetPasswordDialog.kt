@@ -22,7 +22,7 @@ class ResetPasswordDialog(
 
         setPositiveButton(R.string.confirm) { _, _ ->
             callable(
-                    binding.emailTextInputEditText.text.toString().trim { it <= ' ' }
+                    binding.tilDialogEmail.editText?.text?.toString()?.trim { it <= ' ' } ?: ""
             )
         }
 

@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/backgroundSecondaryColor"
-    android:orientation="vertical">
+    android:background="?attr/backgroundSecondaryColor">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:id="@+id/app_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:minHeight="?attr/actionBarSize"
             android:background="?attr/backgroundPrimaryColor"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
             app:navigationIcon="?attr/homeAsUpIndicator"
-            app:theme="@style/Widget.AppTheme.Toolbar"
-            app:popupTheme="@style/Widget.AppTheme.Toolbar.Popup">
+            app:popupTheme="@style/Widget.AppTheme.Toolbar.Popup"
+            app:theme="@style/Widget.AppTheme.Toolbar">
 
-            <EditText android:id="@+id/search_EditText"
+            <EditText
+                android:id="@+id/et_search"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="16dp"
                 android:background="@android:color/transparent"
-                android:gravity="center_vertical"
                 android:hint="@string/search"
                 android:inputType="text"
                 android:maxLines="1"
@@ -38,25 +38,32 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-        <com.google.android.material.tabs.TabLayout android:id="@+id/search_TabLayout"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tb_search"
+            style="@style/Widget.AppTheme.TabLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppTheme.TabLayout"/>
+            android:layout_height="wrap_content" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <FrameLayout
+        android:id="@+id/fl_search"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:descendantFocusability="blocksDescendants"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
-        <FrameLayout android:id="@+id/search_FrameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:descendantFocusability="blocksDescendants"/>
+    <include
+        android:id="@+id/is_loading"
+        layout="@layout/layout_is_loading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
-        <include android:id="@+id/is_loading"
-            layout="@layout/layout_is_loading"/>
-
-    </RelativeLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -45,7 +45,7 @@ class DiscoverFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.search.setOnClickListener {
+        binding.llSearch.setOnClickListener {
             findNavController().navigate(
                     DiscoverFragmentDirections.actionDiscoverToSearch()
             )
@@ -120,18 +120,17 @@ class DiscoverFragment : Fragment() {
 
 
     private fun displayDiscover() {
-        binding.peopleRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvDiscoverPeople.apply {
             adapter = peopleAdapter
             snapHelper.attachToRecyclerView(this)
         }
 
-        binding.rvRecentManga.apply {
+        binding.rvDiscoverRecentManga.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = mangaRecentAdapter
         }
 
-        binding.rvRecentAnime.apply {
+        binding.rvDiscoverRecentAnime.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = animeRecentAdapter
         }

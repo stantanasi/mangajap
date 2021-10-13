@@ -51,7 +51,7 @@ class ProfileEditFragment : Fragment() {
                         MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
                     }
                 }
-                binding.profilePicCircleImageView.setImageBitmap(bitmap)
+                binding.civProfileEditUserProfilePic.setImageBitmap(bitmap)
                 user.putAvatar(bitmap.toBase64())
             }
         }
@@ -142,7 +142,7 @@ class ProfileEditFragment : Fragment() {
 
 
     private fun displayProfile() {
-        binding.profilePic.setOnClickListener {
+        binding.trProfileEditUserProfilePic.setOnClickListener {
             if (requireContext().isStoragePermissionGranted()) {
                 val intent = Intent(Intent.ACTION_GET_CONTENT)
                 intent.type = "image/*"
@@ -152,7 +152,7 @@ class ProfileEditFragment : Fragment() {
             }
         }
 
-        binding.profilePicCircleImageView.apply {
+        binding.civProfileEditUserProfilePic.apply {
             Picasso.get()
                     .load(user.avatar?.small)
                     .placeholder(R.drawable.default_user_avatar)
@@ -162,13 +162,13 @@ class ProfileEditFragment : Fragment() {
                     .into(this)
         }
 
-        binding.removeProfilePic.setOnClickListener {
-            binding.profilePicCircleImageView.setImageResource(R.drawable.default_user_avatar)
+        binding.ivProfileEditDeleteUserProfilePic.setOnClickListener {
+            binding.civProfileEditUserProfilePic.setImageResource(R.drawable.default_user_avatar)
             user.putAvatar(null)
         }
 
 
-        binding.aboutYouEditText.apply {
+        binding.etProfileEditUserAbout.apply {
             append(user.about)
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -179,7 +179,7 @@ class ProfileEditFragment : Fragment() {
             })
         }
 
-        binding.firstNameEditText.apply {
+        binding.etProfileEditUserFirstName.apply {
             append(user.firstName)
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -190,7 +190,7 @@ class ProfileEditFragment : Fragment() {
             })
         }
 
-        binding.lastNameEditText.apply {
+        binding.etProfileEditUserLastName.apply {
             append(user.lastName)
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -201,34 +201,33 @@ class ProfileEditFragment : Fragment() {
             })
         }
 
-        binding.birthday.setOnClickListener {
-            (user.birthday ?: Calendar.getInstance()).let {
-                DatePickerDialog(
+        binding.tvProfileEditUserBirthday.apply {
+            text = user.birthday?.format("dd MMMM yyyy") ?: ""
+            setOnClickListener {
+                (user.birthday ?: Calendar.getInstance()).let {
+                    DatePickerDialog(
                         requireContext(),
                         { _, year, month, dayOfMonth ->
                             val date = Calendar.getInstance()
                             date[year, month] = dayOfMonth
 
                             user.putBirthday(date)
-                            binding.birthdayTextView.text = date.format("dd MMMM yyyy")
+                            text = date.format("dd MMMM yyyy")
                         },
                         it[Calendar.YEAR],
                         it[Calendar.MONTH],
                         it[Calendar.DAY_OF_MONTH]
-                ).show()
+                    ).show()
+                }
             }
         }
 
-        binding.birthdayTextView.apply {
-            text = user.birthday?.format("dd MMMM yyyy") ?: ""
-        }
-
-        binding.removeBirthday.setOnClickListener {
+        binding.ivProfileEditDeleteUserBirthday.setOnClickListener {
             user.putBirthday(null)
-            binding.birthdayTextView.text = ""
+            binding.tvProfileEditUserBirthday.text = ""
         }
 
-        binding.genderSpinner.apply {
+        binding.spinnerProfileEditUserGender.apply {
             adapter = SpinnerAdapter(context, User.Gender.values().map { getString(it.stringId) })
             setSelection(user.gender?.ordinal ?: 0)
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -240,7 +239,7 @@ class ProfileEditFragment : Fragment() {
             }
         }
 
-        binding.countrySpinner.apply {
+        binding.spinnerProfileEditUserCountry.apply {
             val countries: MutableList<String> = mutableListOf()
             val countriesCode: MutableList<String> = mutableListOf()
 

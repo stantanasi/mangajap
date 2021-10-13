@@ -14,13 +14,14 @@ import com.tanasi.mangajap.fragments.follow.FollowFragmentDirections
 import com.tanasi.mangajap.models.Follow
 
 class VhFollow(
-        private val _binding: ViewBinding
+    private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
-        _binding.root
+    _binding.root
 ) {
 
     private val context: Context = itemView.context
     private lateinit var follow: Follow
+
     fun setVhFollow(follow: Follow) {
         this.follow = follow
         when (_binding) {
@@ -29,55 +30,35 @@ class VhFollow(
     }
 
     private fun displayFollow(binding: ItemFollowBinding) {
-        binding.user.apply {
-            when (follow.typeLayout) {
-                MangaJapAdapter.Type.FOLLOWERS -> {
-                    setOnClickListener {
-                        Navigation.findNavController(binding.root).navigate(
-                                FollowFragmentDirections.actionFollowToProfile(
-                                        follow.follower?.id ?: ""
-                                )
-                        )
+        binding.root.setOnClickListener {
+            Navigation.findNavController(binding.root).navigate(
+                FollowFragmentDirections.actionFollowToProfile(
+                    userId = when (follow.typeLayout) {
+                        MangaJapAdapter.Type.FOLLOWERS -> follow.followed?.id ?: ""
+                        MangaJapAdapter.Type.FOLLOWING -> follow.followed?.id ?: ""
+                        else -> ""
                     }
-                }
-                MangaJapAdapter.Type.FOLLOWING -> {
-                    setOnClickListener {
-                        Navigation.findNavController(binding.root).navigate(
-                                FollowFragmentDirections.actionFollowToProfile(
-                                        follow.followed?.id ?: ""
-                                )
-                        )
-                    }
-                }
-                else -> {}
-            }
+                )
+            )
         }
 
-        binding.userProfilePicCircleImageView.apply {
-            when (follow.typeLayout) {
-                MangaJapAdapter.Type.FOLLOWERS -> {
-                    Picasso.get()
-                            .load(follow.follower?.avatar?.tiny)
-                            .placeholder(R.drawable.default_user_avatar)
-                            .error(R.drawable.default_user_avatar)
-                            .networkPolicy(NetworkPolicy.NO_CACHE)
-                            .memoryPolicy(MemoryPolicy.NO_CACHE)
-                            .into(this)
-                }
-                MangaJapAdapter.Type.FOLLOWING -> {
-                    Picasso.get()
-                            .load(follow.followed?.avatar?.tiny)
-                            .placeholder(R.drawable.default_user_avatar)
-                            .error(R.drawable.default_user_avatar)
-                            .networkPolicy(NetworkPolicy.NO_CACHE)
-                            .memoryPolicy(MemoryPolicy.NO_CACHE)
-                            .into(this)
-                }
-                else -> {}
-            }
+        binding.civFollowUserProfilePic.apply {
+            Picasso.get()
+                .load(
+                    when (follow.typeLayout) {
+                        MangaJapAdapter.Type.FOLLOWERS -> follow.follower?.avatar?.tiny
+                        MangaJapAdapter.Type.FOLLOWING -> follow.followed?.avatar?.tiny
+                        else -> null
+                    }
+                )
+                .placeholder(R.drawable.default_user_avatar)
+                .error(R.drawable.default_user_avatar)
+                .networkPolicy(NetworkPolicy.NO_CACHE)
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .into(this)
         }
 
-        binding.userPseudoTextView.apply {
+        binding.tvFollowUserPseudo.apply {
             text = when (follow.typeLayout) {
                 MangaJapAdapter.Type.FOLLOWERS -> follow.follower?.pseudo ?: ""
                 MangaJapAdapter.Type.FOLLOWING -> follow.followed?.pseudo ?: ""

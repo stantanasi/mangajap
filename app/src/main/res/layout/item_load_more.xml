@@ -1,36 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:layout_marginTop="14dp"
+    android:layout_marginBottom="30dp">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="14dp"/>
+    <ProgressBar
+        android:id="@+id/pb_load_more_is_loading"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/iv_load_more_is_not_loading"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_no_more_data"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
-        <ProgressBar
-            android:id="@+id/isLoading_ProgressBar"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_centerInParent="true" />
-
-        <ImageView android:id="@+id/isNoMoreDataAvailable"
-            android:layout_width="6dp"
-            android:layout_height="6dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_no_more_data"
-            android:contentDescription="No more data"
-            tools:ignore="HardcodedText" />
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="30dp"/>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

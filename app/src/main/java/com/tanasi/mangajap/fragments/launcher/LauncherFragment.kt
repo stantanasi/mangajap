@@ -36,18 +36,18 @@ class LauncherFragment : Fragment() {
 
 
     private fun displayLauncher() {
-        binding.login.setOnClickListener {
+        binding.tvLauncherLogin.setOnClickListener {
             findNavController().navigate(
                     LauncherFragmentDirections.actionLauncherFragmentToLoginFragment()
             )
         }
 
-        binding.register.setOnClickListener {
+        binding.tvLauncherRegister.setOnClickListener {
             findNavController().navigate(
                     LauncherFragmentDirections.actionLauncherFragmentToRegisterFragment()
             )
         }
 
-        binding.appVersionTextView.text = requireContext().packageManager.requirePackageInfo(requireContext().packageName, 0)?.versionName ?: ""
+        binding.tvLauncherAppVersion.text = requireContext().packageManager.requirePackageInfo(requireContext().packageName, 0)?.versionName ?: ""
     }
 }

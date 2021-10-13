@@ -16,9 +16,9 @@
 
     <style name="AppTheme.Light" parent="AppTheme">
         <item name="colorPrimary">?attr/backgroundPrimaryColor</item>
-        <item name="colorSecondary">#808080</item>
+        <item name="colorSecondary">?attr/backgroundSecondaryColor</item>
         <item name="colorPrimaryDark">?attr/backgroundPrimaryColor</item>
-        <item name="colorAccent">@color/colorApp</item>
+        <item name="colorAccent">@color/color_app</item>
         <item name="colorControlHighlight">#40000000</item> <!-- Ripple effect color -->
 
         <item name="textColorHighlight">#159753</item>
@@ -26,12 +26,8 @@
         <item name="textColorLink">#753951</item>
 
         <item name="textPrimaryColor">#000000</item>
-        <item name="textPrimarySize">14sp</item>
-        <item name="textPrimaryStyle">normal</item>
 
         <item name="textSecondaryColor">#808080</item>
-        <item name="textSecondarySize">14sp</item>
-        <item name="textSecondaryStyle">normal</item>
 
         <item name="backgroundPrimaryColor">#FFFFFF</item>
         <item name="backgroundSecondaryColor">#F0F0F0</item>
@@ -46,9 +42,9 @@
 
     <style name="AppTheme.Dark" parent="AppTheme">
         <item name="colorPrimary">?attr/backgroundPrimaryColor</item>
-        <item name="colorSecondary">#808080</item>
+        <item name="colorSecondary">?attr/backgroundSecondaryColor</item>
         <item name="colorPrimaryDark">?attr/backgroundPrimaryColor</item>
-        <item name="colorAccent">@color/colorApp</item>
+        <item name="colorAccent">@color/color_app</item>
         <item name="colorControlHighlight">#40FFFFFF</item> <!-- Ripple effect color -->
 
         <item name="textColorHighlight">#159753</item>
@@ -56,12 +52,7 @@
         <item name="textColorLink">#753951</item>
 
         <item name="textPrimaryColor">#FFFFFF</item>
-        <item name="textPrimarySize">14sp</item>
-        <item name="textPrimaryStyle">normal</item>
-
         <item name="textSecondaryColor">#C8C8C8</item>
-        <item name="textSecondarySize">14sp</item>
-        <item name="textSecondaryStyle">normal</item>
 
         <item name="backgroundPrimaryColor">#272727</item>
         <item name="backgroundSecondaryColor">#171717</item>

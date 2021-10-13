@@ -6,18 +6,20 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.databinding.ItemAnimeToWatchBinding
 import com.tanasi.mangajap.databinding.ItemMediaLibraryBinding
-import com.tanasi.mangajap.databinding.ItemMediaPreviewBinding
+import com.tanasi.mangajap.databinding.ItemMediaProfilePreviewBinding
 import com.tanasi.mangajap.fragments.agenda.AgendaFragmentDirections
 import com.tanasi.mangajap.fragments.library.LibraryFragment
 import com.tanasi.mangajap.fragments.library.LibraryFragmentDirections
 import com.tanasi.mangajap.fragments.profile.ProfileFragmentDirections
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
+import java.lang.Exception
 
 class VhAnimeEntry(
         private val _binding: ViewBinding
@@ -31,7 +33,7 @@ class VhAnimeEntry(
     fun setVhAnimeEntry(animeEntry: AnimeEntry) {
         this.animeEntry = animeEntry
         when (_binding) {
-            is ItemMediaPreviewBinding -> displayPreview(_binding)
+            is ItemMediaProfilePreviewBinding -> displayPreview(_binding)
             is ItemMediaLibraryBinding -> displayLibrary(_binding)
             is ItemAnimeToWatchBinding -> displayToWatch(_binding)
         }
@@ -45,8 +47,8 @@ class VhAnimeEntry(
         }
     }
 
-    private fun displayPreview(binding: ItemMediaPreviewBinding) {
-        binding.media.setOnClickListener {
+    private fun displayPreview(binding: ItemMediaProfilePreviewBinding) {
+        binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     ProfileFragmentDirections.actionProfileToAnime(
                             animeEntry.anime?.id ?: "",
@@ -55,15 +57,25 @@ class VhAnimeEntry(
             )
         }
 
-        binding.mediaCoverImageView.apply {
+        binding.ivProfileMediaCover.apply {
             Picasso.get()
                     .load(animeEntry.anime?.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
-                    .into(this)
+                    .into(this, object : Callback {
+                        override fun onSuccess() {
+                            binding.tvProfileMediaTitlePlaceholder.visibility = View.GONE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            binding.tvProfileMediaTitlePlaceholder.visibility = View.VISIBLE
+                        }
+                    })
         }
 
-        binding.mediaIsAddCheckBox.apply {
+        binding.tvProfileMediaTitlePlaceholder.text = animeEntry.anime?.title ?: ""
+
+        binding.cbProfileMediaIsAdd.apply {
             visibility = if (animeEntry.isAdd) View.GONE else View.VISIBLE
             isChecked = animeEntry.isAdd
             setOnClickListener {
@@ -73,14 +85,14 @@ class VhAnimeEntry(
             }
         }
 
-        binding.mediaProgressProgressBar.apply {
+        binding.pbProfileMediaProgress.apply {
             progress = animeEntry.anime?.let { animeEntry.getProgress(it) } ?: 0
             progressTintList = ContextCompat.getColorStateList(context, animeEntry.anime?.let { animeEntry.getProgressColor(it) } ?: AnimeEntry.Status.watching.colorId)
         }
     }
 
     private fun displayLibrary(binding: ItemMediaLibraryBinding) {
-        binding.media.setOnClickListener {
+        binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     LibraryFragmentDirections.actionLibraryToAnime(
                             animeEntry.anime?.id ?: "",
@@ -89,17 +101,27 @@ class VhAnimeEntry(
             )
         }
 
-        binding.mediaCoverImageView.apply {
+        binding.ivLibraryMediaCover.apply {
             Picasso.get()
                     .load(animeEntry.anime?.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
-                    .into(this)
+                    .into(this, object : Callback {
+                        override fun onSuccess() {
+                            binding.tvLibraryMediaTitlePlaceholder.visibility = View.GONE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            binding.tvLibraryMediaTitlePlaceholder.visibility = View.VISIBLE
+                        }
+                    })
         }
 
-        binding.mediaTitleTextView.text = animeEntry.anime?.title ?: ""
+        binding.tvLibraryMediaTitlePlaceholder.text = animeEntry.anime?.title ?: ""
 
-        binding.mediaIsAddCheckBox.apply {
+        binding.tvLibraryMediaTitle.text = animeEntry.anime?.title ?: ""
+
+        binding.cbLibraryMediaIsAdd.apply {
             visibility = if (animeEntry.isAdd) View.GONE else View.VISIBLE
             isChecked = animeEntry.isAdd
             setOnClickListener {
@@ -109,14 +131,14 @@ class VhAnimeEntry(
             }
         }
 
-        binding.mediaProgressProgressBar.apply {
+        binding.pbLibraryMediaProgress.apply {
             progress = animeEntry.anime?.let { animeEntry.getProgress(it) } ?: 0
             progressTintList = ContextCompat.getColorStateList(context, animeEntry.anime?.let { animeEntry.getProgressColor(it) } ?: AnimeEntry.Status.watching.colorId)
         }
     }
 
     private fun displayToWatch(binding: ItemAnimeToWatchBinding) {
-        binding.anime.setOnClickListener {
+        binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     AgendaFragmentDirections.actionAgendaToAnime(
                             animeEntry.anime?.id ?: "",
@@ -125,7 +147,7 @@ class VhAnimeEntry(
             )
         }
 
-        binding.ivAnimeCover.apply {
+        binding.ivAnimeToWatchCover.apply {
             Picasso.get()
                     .load(animeEntry.anime?.coverImage)
                     .placeholder(R.drawable.placeholder)
@@ -133,13 +155,13 @@ class VhAnimeEntry(
                     .into(this)
         }
 
-        binding.tvAnimeTitle.text = animeEntry.anime?.title ?: ""
+        binding.tvAnimeToWatchTitle.text = animeEntry.anime?.title ?: ""
 
-        binding.tvEpisodeToWatch.apply {
+        binding.tvAnimeToWatchNextEpisode.apply {
             text = context.getString(R.string.episode_number, animeEntry.episodesWatch + 1)
         }
 
-        binding.tvEpisodeRemainingCount.apply {
+        binding.tvAnimeToWatchEpisodeRemainingCount.apply {
             val episodeRemainingCount = (animeEntry.anime?.episodeCount ?: 0) - (animeEntry.episodesWatch + 1)
             if (episodeRemainingCount > 0) {
                 visibility = View.VISIBLE

@@ -27,7 +27,7 @@ class RadioGroupDialog(
         setView(binding.root)
 
         array.map { string ->
-            binding.dialogRadioGroup.addView(RadioButton(context).apply {
+            binding.rgDialogRadioGroup.addView(RadioButton(context).apply {
                 id = View.generateViewId()
                 text = string
                 setTextColor(context.getAttrColor(R.attr.textSecondaryColor))
@@ -41,7 +41,7 @@ class RadioGroupDialog(
 
     override fun show(): AlertDialog {
         val alertDialog = super.show()
-        binding.dialogRadioGroup.setOnCheckedChangeListener { radioGroup, id ->
+        binding.rgDialogRadioGroup.setOnCheckedChangeListener { radioGroup, id ->
             val radioBtn: RadioButton = radioGroup.findViewById(id)
             callable(array.indexOf(radioBtn.text.toString()))
             alertDialog.dismiss()

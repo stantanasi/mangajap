@@ -47,7 +47,8 @@ class SettingsFragment : Fragment() {
         val args = Bundle()
         args.putString("settings", settings.name)
         settingsPreferenceFragment.arguments = args
-        ft.replace(R.id.settings_FrameLayout, settingsPreferenceFragment)
+        // TODO: check ?
+        ft.replace(binding.flSettings.id, settingsPreferenceFragment)
         if (back_stack) ft.addToBackStack(null)
         ft.commit()
     }

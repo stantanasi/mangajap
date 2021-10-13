@@ -16,6 +16,7 @@ class VhUserStats(
         _binding.root
 ) {
 
+    private val context = itemView.context
     private lateinit var userStats: User.Stats
 
     fun setVhUserStats(userStats: User.Stats) {
@@ -27,7 +28,7 @@ class VhUserStats(
     }
 
     private fun displayPreview(binding: ItemStatsPreviewBinding) {
-        binding.title.apply {
+        binding.tvStatsPreviewTitle.apply {
             text = when (userStats.typeLayout) {
                 MangaJapAdapter.Type.STATS_PREVIEW_MANGA_FOLLOWED -> context.resources.getString(R.string.mangasFollows)
                 MangaJapAdapter.Type.STATS_PREVIEW_MANGA_VOLUMES -> context.resources.getString(R.string.volumesRead)
@@ -39,7 +40,7 @@ class VhUserStats(
             }
         }
 
-        binding.body.apply {
+        binding.tvStatsPreviewBody.apply {
             text = when (userStats.typeLayout) {
                 MangaJapAdapter.Type.STATS_PREVIEW_MANGA_FOLLOWED -> userStats.user.followedMangaCount.withSuffix()
                 MangaJapAdapter.Type.STATS_PREVIEW_MANGA_VOLUMES -> userStats.user.mangaVolumeRead.withSuffix()
@@ -51,7 +52,7 @@ class VhUserStats(
             }
         }
 
-        binding.details.apply {
+        binding.tvStatsPreviewDetails.apply {
             text = when (userStats.typeLayout) {
                 else -> ""
             }
@@ -62,32 +63,24 @@ class VhUserStats(
     }
 
     private fun displayTimeSpentPreview(binding: ItemStatsTimeSpentPreviewBinding) {
-        binding.title.apply {
-            text = when (userStats.typeLayout) {
-                MangaJapAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> context.resources.getString(R.string.timeSpentOnAnime)
-                else -> ""
-            }
+        binding.tvStatsPreviewTitle.text = when (userStats.typeLayout) {
+            MangaJapAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> context.getString(R.string.timeSpentOnAnime)
+            else -> ""
         }
 
-        binding.timeMonthTextView.apply {
-            text = when (userStats.typeLayout) {
-                MangaJapAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> userStats.user.timeSpentOnAnime.let { String.format("%02d", it / 43800) }
-                else -> ""
-            }
+        binding.tvStatsPreviewMonths.text = when (userStats.typeLayout) {
+            MangaJapAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> userStats.user.timeSpentOnAnime.let { String.format("%02d", it / 43800) }
+            else -> ""
         }
 
-        binding.timeDaysTextView.apply {
-            text = when (userStats.typeLayout) {
-                MangaJapAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> userStats.user.timeSpentOnAnime.let { String.format("%02d", it / 1440 % 30) }
-                else -> ""
-            }
+        binding.tvStatsPreviewDays.text = when (userStats.typeLayout) {
+            MangaJapAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> userStats.user.timeSpentOnAnime.let { String.format("%02d", it / 1440 % 30) }
+            else -> ""
         }
 
-        binding.timeHoursTextView.apply {
-            text = when (userStats.typeLayout) {
-                MangaJapAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> userStats.user.timeSpentOnAnime.let { String.format("%02d", it / 60 % 24) }
-                else -> ""
-            }
+        binding.tvStatsPreviewHours.text = when (userStats.typeLayout) {
+            MangaJapAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> userStats.user.timeSpentOnAnime.let { String.format("%02d", it / 60 % 24) }
+            else -> ""
         }
     }
 }

@@ -70,14 +70,20 @@ class AnimeViewModel : ViewModel() {
         _state.value = try {
             if (season.episodes.isEmpty()) {
                 val response = mangaJapApiService.getSeasonEpisodes(
-                    season.id
+                    season.id,
+                    JsonApiParams(
+                        limit = 10000
+                    )
                 )
 
                 when (response) {
                     is JsonApiResponse.Success -> {
-                        season.episodes.addAll(response.body.data!!)
-                        season.episodes.map { episode ->
-                            episode.season = season
+                        season.episodes.run {
+                            clear()
+                            addAll(response.body.data!!)
+                            map { episode ->
+                                episode.season = season
+                            }
                         }
 
                         State.SuccessLoadingEpisodes(season)
@@ -93,6 +99,7 @@ class AnimeViewModel : ViewModel() {
     }
 
 
+    // TODO: rassembler les deux fonctions
     fun createAddAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
         _state.value = State.UpdatingForAdding
 

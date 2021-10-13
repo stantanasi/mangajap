@@ -8,9 +8,9 @@ import com.tanasi.mangajap.databinding.ItemLibraryStatusBinding
 import com.tanasi.mangajap.models.Header
 
 class VhHeader(
-        private val _binding: ViewBinding
+    private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
-        _binding.root
+    _binding.root
 ) {
 
     private val context: Context = itemView.context

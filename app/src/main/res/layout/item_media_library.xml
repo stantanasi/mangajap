@@ -1,77 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/media"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
     android:orientation="vertical">
 
+    <!--  TODO: Rounded elevation drawable  -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="2dp"
         android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
+        android:layout_marginBottom="2dp"
+        android:clipToPadding="false"
         app:cardBackgroundColor="?attr/backgroundPrimaryColor"
         app:cardCornerRadius="3dp"
-        app:cardElevation="2dp"
-        card_view:cardUseCompatPadding="true">
+        app:cardElevation="2dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <RelativeLayout
+            <ImageView
+                android:id="@+id/iv_library_media_cover"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintDimensionRatio="@string/media_ratio"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription"
+                tools:src="@drawable/placeholder" />
 
-                <ImageView
-                    android:id="@+id/mediaCover_ImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="cover"
-                    card_view:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/tv_library_media_title_placeholder"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="@dimen/library_spacing"
+                android:gravity="center"
+                android:textColor="#505050"
+                android:textSize="@dimen/font_size_small"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Title"
+                tools:visibility="visible" />
 
-                <ProgressBar
-                    android:id="@+id/mediaProgress_ProgressBar"
-                    style="@android:style/Widget.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="5dp"
-                    android:layout_alignParentBottom="true"
-                    android:progress="80"
-                    android:progressDrawable="@drawable/progress_bar_drawable"/>
+            <CheckBox
+                android:id="@+id/cb_library_media_is_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/library_spacing"
+                android:layout_marginEnd="@dimen/library_spacing"
+                android:button="@drawable/btn_checkbox"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <CheckBox android:id="@+id/mediaIsAdd_CheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:button="@drawable/btn_checkbox"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="@dimen/profile_spacing"/>
-
-            </RelativeLayout>
+            <ProgressBar
+                android:id="@+id/pb_library_media_progress"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="5dp"
+                android:progressDrawable="@drawable/progress_bar_drawable"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:progress="80" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
-    <TextView android:id="@+id/mediaTitle_TextView"
+    <TextView
+        android:id="@+id/tv_library_media_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
         android:ellipsize="end"
         android:gravity="center"
-        android:layout_marginBottom="4dp"
         android:maxLines="1"
-        android:text="Title"
         android:textColor="?attr/textSecondaryColor"
-        card_view:ignore="HardcodedText" />
+        tools:text="Title" />
 
 </LinearLayout>

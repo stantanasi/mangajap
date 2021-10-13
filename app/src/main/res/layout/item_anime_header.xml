@@ -1,111 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:background="?attr/backgroundSecondaryColor">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="@string/banner_ratio"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView android:id="@+id/animeBanner_ImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:transitionName="imageView"
-                    tools:ignore="ContentDescription" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_gradient_trailer"/>
-
-            </RelativeLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:gravity="center_vertical"
-            android:layout_marginTop="-20dp"
-            android:layout_marginBottom="@dimen/anime_spacing"
-            android:layout_marginStart="@dimen/anime_spacing"
-            android:layout_marginEnd="@dimen/anime_spacing"
-            android:orientation="horizontal">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/anime_spacing"
-                app:cardCornerRadius="5dp">
-
-                <ImageView android:id="@+id/animeCover_ImageView"
-                    android:layout_width="110dp"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="cover"
-                    android:layout_gravity="center_horizontal"
-                    android:scaleType="centerCrop"
-                    android:transitionName="imageView"
-                    tools:ignore="HardcodedText" />
-
-            </androidx.cardview.widget.CardView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView android:id="@+id/animeTitle_TextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Title"
-                    android:textAppearance="@style/TextAppearance.Media.Title"
-                    tools:ignore="HardcodedText" />
-
-                <TextView android:id="@+id/animeReleaseDate_TextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:text="Release Date"
-                    android:textColor="?attr/textSecondaryColor"
-                    android:textSize="@dimen/font_size_micro"
-                    tools:ignore="HardcodedText" />
-
-                <TextView android:id="@+id/animeType_TextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Type"
-                    android:textColor="?attr/textSecondaryColor"
-                    android:textSize="@dimen/font_size_micro"
-                    tools:ignore="HardcodedText" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/iv_anime_banner"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="@string/banner_ratio"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/placeholder" />
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?attr/dividerColor"/>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_gradient_secondary"
+        app:layout_constraintBottom_toBottomOf="@id/iv_anime_banner"
+        app:layout_constraintEnd_toEndOf="@id/iv_anime_banner"
+        app:layout_constraintStart_toStartOf="@id/iv_anime_banner"
+        app:layout_constraintTop_toTopOf="@id/iv_anime_banner" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_anime_cover"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/anime_spacing"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:transitionName="imageView"
+        android:translationY="-20dp"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_anime_banner"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/placeholder" />
+
+    <TextView
+        android:id="@+id/tv_anime_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/anime_spacing"
+        android:layout_marginTop="-20dp"
+        android:layout_marginEnd="@dimen/anime_spacing"
+        android:textAppearance="@style/TextAppearance.Media.Title"
+        app:layout_constraintBottom_toTopOf="@id/tv_anime_release_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_anime_cover"
+        app:layout_constraintTop_toBottomOf="@id/iv_anime_banner"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Title" />
+
+    <TextView
+        android:id="@+id/tv_anime_release_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/anime_spacing"
+        android:layout_marginEnd="@dimen/anime_spacing"
+        android:layout_marginBottom="4dp"
+        android:textColor="?attr/textSecondaryColor"
+        android:textSize="@dimen/font_size_micro"
+        app:layout_constraintBottom_toTopOf="@id/tv_anime_type"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_anime_cover"
+        app:layout_constraintTop_toBottomOf="@id/tv_anime_title"
+        tools:text="Release Date" />
+
+    <TextView
+        android:id="@+id/tv_anime_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/anime_spacing"
+        android:layout_marginEnd="@dimen/anime_spacing"
+        android:layout_marginBottom="@dimen/anime_spacing"
+        android:textColor="?attr/textSecondaryColor"
+        android:textSize="@dimen/font_size_micro"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_anime_cover"
+        app:layout_constraintTop_toBottomOf="@id/tv_anime_release_date"
+        tools:text="Type" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?attr/dividerColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

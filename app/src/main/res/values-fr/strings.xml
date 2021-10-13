@@ -140,7 +140,7 @@
     <string name="timeSpentOnAnime">Temps passé : animés</string>
     <string name="days">Jours</string>
     <string name="hours">Heures</string>
-    <string name="month">Mois</string>
+    <string name="months">Mois</string>
     <string name="animeEntryStatusPlanned">À voir</string>
     <string name="mangaEntryStatusPlanned">À lire</string>
     <string name="sortByScore">Note</string>

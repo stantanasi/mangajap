@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
@@ -39,6 +40,7 @@ import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
 import com.tanasi.mangajap.utils.extensions.locale
 import com.tanasi.mangajap.utils.preferences.UserPreference
+import java.lang.Exception
 import java.text.DecimalFormat
 import java.util.*
 
@@ -93,7 +95,7 @@ class VhAnime(
     }
 
     private fun displaySearch(binding: ItemMediaSearchBinding) {
-        binding.media.setOnClickListener {
+        binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     SearchFragmentDirections.actionSearchToAnime(
                             anime.id,
@@ -102,7 +104,7 @@ class VhAnime(
             )
         }
 
-        binding.mediaCoverImageView.apply {
+        binding.ivSearchMediaCover.apply {
             Picasso.get()
                     .load(anime.coverImage)
                     .placeholder(R.drawable.placeholder)
@@ -110,13 +112,13 @@ class VhAnime(
                     .into(this)
         }
 
-        binding.mediaTitleTextView.text = anime.title
+        binding.tvSearchMediaTitle.text = anime.title
 
-        binding.mediaTypeTextView.text = anime.animeType?.stringId?.let { context.resources.getString(it) }
+        binding.tvSearchMediaType.text = anime.animeType?.stringId?.let { context.resources.getString(it) }
 
-        binding.mediaMembersTextView.text = context.resources.getString(R.string.userCount, anime.userCount)
+        binding.tvSearchMediaUserCount.text = context.resources.getString(R.string.userCount, anime.userCount)
 
-        binding.mediaIsAddCheckBox.apply {
+        binding.cbSearchMediaIsAdd.apply {
             isChecked = anime.animeEntry?.isAdd ?: false
             setOnClickListener {
                 anime.animeEntry?.let { animeEntry ->
@@ -134,7 +136,7 @@ class VhAnime(
     }
 
     private fun displaySearchAdd(binding: ItemMediaSearchAddBinding) {
-        binding.media.setOnClickListener {
+        binding.root.setOnClickListener {
             var query = ""
             if (context is MainActivity && context.getCurrentFragment() is SearchFragment) {
                 when (val fragment = context.getCurrentFragment()) {
@@ -157,13 +159,13 @@ class VhAnime(
             }.show()
         }
 
-        binding.tvMediaTitle.text = context.getString(R.string.propose_anime)
+        binding.tvSearchAddTitle.text = context.getString(R.string.propose_anime)
 
-        binding.tvMediaSubtitle.text = context.getString(R.string.propose_anime_summary)
+        binding.tvSearchAddSubtitle.text = context.getString(R.string.propose_anime_summary)
     }
 
     private fun displayTrending(binding: ItemMediaTrendingBinding) {
-        binding.media.setOnClickListener {
+        binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     DiscoverFragmentDirections.actionDiscoverToAnime(
                             anime.id,
@@ -172,15 +174,25 @@ class VhAnime(
             )
         }
 
-        binding.mediaCoverImageView.apply {
+        binding.ivTrendingMediaCover.apply {
             Picasso.get()
                     .load(anime.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
-                    .into(this)
+                    .into(this, object : Callback {
+                        override fun onSuccess() {
+                            binding.tvTrendingMediaTitlePlaceholder.visibility = View.GONE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            binding.tvTrendingMediaTitlePlaceholder.visibility = View.VISIBLE
+                        }
+                    })
         }
 
-        binding.mediaIsAddCheckBox.apply {
+        binding.tvTrendingMediaTitlePlaceholder.text = anime.title
+
+        binding.cbTrendingMediaIsAdd.apply {
             isChecked = anime.animeEntry?.isAdd ?: false
             visibility = if (anime.animeEntry?.isAdd == true) View.GONE else View.VISIBLE
             setOnClickListener {
@@ -197,7 +209,7 @@ class VhAnime(
             }
         }
 
-        binding.mediaProgressProgressBar.apply {
+        binding.pbTrendingMediaProgress.apply {
             anime.animeEntry?.let { animeEntry ->
                 visibility = View.VISIBLE
                 progress = animeEntry.getProgress(anime)
@@ -209,7 +221,7 @@ class VhAnime(
     }
 
     private fun displayHeader(binding: ItemAnimeHeaderBinding) {
-        binding.animeBannerImageView.apply {
+        binding.ivAnimeBanner.apply {
             Picasso.get()
                     .load(anime.bannerImage ?: anime.coverImage)
                     .networkPolicy(NetworkPolicy.NO_CACHE)
@@ -224,8 +236,11 @@ class VhAnime(
             }
         }
 
-        binding.animeCoverImageView.apply {
-            Picasso.get().load(anime.coverImage).into(this)
+        binding.ivAnimeCover.apply {
+            Picasso.get()
+                .load(anime.coverImage)
+                .into(this)
+
             setOnClickListener {
                 Navigation.findNavController(binding.root).navigate(
                         AnimeFragmentDirections.actionAnimeToImage(
@@ -235,39 +250,52 @@ class VhAnime(
             }
         }
 
-        binding.animeTitleTextView.text = anime.title
+        binding.tvAnimeTitle.text = anime.title
 
-        binding.animeReleaseDateTextView.text = anime.startDate?.format("dd MMMM yyyy") ?: "-"
+        binding.tvAnimeReleaseDate.text = anime.startDate?.format("dd MMMM yyyy") ?: "-"
 
-        binding.animeTypeTextView.text = anime.animeType?.stringId?.let { context.resources.getString(it) }
+        binding.tvAnimeType.text = anime.animeType?.stringId?.let { context.resources.getString(it) }
     }
 
     private fun displaySummary(binding: ItemAnimeSummaryBinding) {
-        binding.animeSummarySubtitleTextView.apply {
+        binding.tvAnimeSummarySubtitle.apply {
             text = context.getString(R.string.anime_metadata,
                     anime.startDate?.format("yyyy"),
                     anime.endDate?.format("yyyy") ?: context.getString(anime.status.stringId),
                     anime.origin?.getDisplayCountry(context.locale()))
         }
 
-        binding.animeRatingTextView.text = anime.averageRating?.let { DecimalFormat("#.#").format(it / 20.0 * 5) + " / 5" } ?: "- / 5"
+        binding.tvAnimeSummaryRating.text = anime.averageRating?.let { DecimalFormat("#.#").format(it / 20.0 * 5) + " / 5" } ?: "- / 5"
 
-        binding.animeSynopsisTextView.apply {
-            text = anime.synopsis
-            maxLines = AnimeFragment.ANIME_SYNOPSIS_MAX_LINES
-        }
 
-        binding.animeReadMore.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                binding.animeSynopsisTextView.maxLines = Int.MAX_VALUE
-                visibility = View.GONE
+        fun readMoreSynopsis(readMore: Boolean) {
+            binding.tvAnimeSummarySynopsis.maxLines = when (readMore) {
+                false -> AnimeFragment.ANIME_SYNOPSIS_MAX_LINES
+                true -> Int.MAX_VALUE
+            }
+
+            binding.vAnimeSummarySynopsisGradient.visibility = when (readMore) {
+                false -> View.VISIBLE
+                true -> View.GONE
+            }
+
+            binding.tvAnimeSummarySynopsisReadMore.visibility = when (readMore) {
+                false -> View.VISIBLE
+                true -> View.GONE
             }
         }
+        readMoreSynopsis(false)
 
-        binding.animeRankedTextView.text = context.getString(R.string.anime_rating, (anime.ratingRank ?: ""))
+        binding.tvAnimeSummarySynopsis.text = anime.synopsis
 
-        binding.animeTrailerImageView.apply {
+        binding.tvAnimeSummarySynopsisReadMore.setOnClickListener {
+            readMoreSynopsis(true)
+        }
+
+        binding.tvAnimeSummaryRank.text = context.getString(R.string.anime_rating, (anime.ratingRank ?: ""))
+
+        binding.ivAnimeSummaryTrailer.apply {
+            clipToOutline = true
             Picasso.get()
                     .load("http://img.youtube.com/vi/${anime.youtubeVideoId}/0.jpg")
                     .placeholder(R.drawable.placeholder)
@@ -280,21 +308,21 @@ class VhAnime(
             }
         }
 
-        binding.animeSeasonCountTextView.text = when (anime.status) {
+        binding.tvAnimeSummarySeasonCount.text = when (anime.status) {
             Anime.Status.airing -> context.resources.getString(R.string.approximatelySeasonCount, anime.seasonCount)
             else -> context.resources.getString(R.string.seasonCount, anime.seasonCount)
         }
 
-        binding.animeEpisodeCountTextView.text = when (anime.status) {
+        binding.tvAnimeSummaryEpisodeCount.text = when (anime.status) {
             Anime.Status.airing -> context.resources.getString(R.string.approximatelyEpisodeCount, anime.episodeCount)
             else -> context.resources.getString(R.string.episodeCount, anime.episodeCount)
         }
 
-        binding.animeUserCountTextView.text = context.resources.getString(R.string.animeUserCount, anime.userCount)
+        binding.tvAnimeSummaryUserCount.text = context.resources.getString(R.string.animeUserCount, anime.userCount)
     }
 
     private fun displayProgression(binding: ItemAnimeProgressionBinding) {
-        binding.spinnerAnimeEntryStatus.apply {
+        binding.spinnerAnimeProgressionStatus.apply {
             (background as GradientDrawable).setStroke(context.dpToPx(1), ContextCompat.getColor(context, anime.animeEntry?.getProgressColor(anime) ?: AnimeEntry.Status.watching.colorId))
 
             adapter = SpinnerAdapter(
@@ -338,7 +366,7 @@ class VhAnime(
             setSelection(anime.animeEntry?.status?.ordinal ?: 0)
         }
 
-        binding.animeEntryDateTextView.apply {
+        binding.tvAnimeProgressionSubtitle.apply {
             val startedAt = anime.animeEntry?.startedAt?.format("dd MMMM yyyy") ?: "-"
             val finishedAt = anime.animeEntry?.finishedAt?.format("dd MMMM yyyy") ?: "-"
 
@@ -369,22 +397,22 @@ class VhAnime(
             }
         }
 
-        binding.animeSeasonsSpinner.apply {
+        binding.spinnerAnimeProgressionSelectSeason.apply {
             adapter = SpinnerAdapter(context, anime.seasons.map { context.getString(R.string.seasonNumber, it.number) })
             onItemSelectedListener = object : OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
                     val season = anime.seasons[position]
-                    binding.animeEpisodeWatchTextView.text = season.episodeWatched.toString()
-                    binding.animeEpisodeCountTextView.text = context.resources.getString(R.string.EpisodesWatch, season.episodeCount)
-                    binding.animeEpisodeWatch.setOnClickListener {
+                    binding.tvAnimeProgressionSeasonEpisodeWatched.text = season.episodeWatched.toString()
+                    binding.tvAnimeProgressionSeasonEpisodeCount.text = context.resources.getString(R.string.EpisodesWatch, season.episodeCount)
+                    binding.vAnimeProgressionSeasonEpisode.setOnClickListener {
                         MediaEntryProgressionDialog(
                                 context,
                                 context.getString(R.string.episodes_watched),
                                 season.episodeWatched
                         ) { value ->
-                            anime.animeEntry?.let {
-                                it.putEpisodesWatch(value + anime.seasons.map { if (it.number < season.number) it.episodeCount else 0 }.sum())
-                                updateAnimeEntry(it)
+                            anime.animeEntry?.let { animeEntry ->
+                                animeEntry.putEpisodesWatch(value + anime.seasons.map { if (it.number < season.number) it.episodeCount else 0 }.sum())
+                                updateAnimeEntry(animeEntry)
                             }
                         }.show()
                     }
@@ -397,7 +425,7 @@ class VhAnime(
             })
         }
 
-        binding.animeEntryRatingTextView.apply {
+        binding.tvAnimeProgressionRating.apply {
             text = "${anime.animeEntry?.rating ?: "-"} / 20"
             setOnClickListener {
                 NumberPickerDialog(
@@ -415,16 +443,18 @@ class VhAnime(
             }
         }
 
-        binding.animeEntryRemoveRatingImageView.setOnClickListener {
+        binding.ivAnimeProgressionDeleteRating.setOnClickListener {
             anime.animeEntry?.let {
                 it.putRating(null)
                 updateAnimeEntry(it)
             }
         }
 
-        binding.animeEntryIsFavoritesImageView.apply {
-            if (anime.animeEntry?.isFavorites == true) setImageResource(R.drawable.ic_favorite_black_24dp)
-            else setImageResource(R.drawable.ic_favorite_border_black_24dp)
+        binding.ivAnimeProgressionIsFavorites.apply {
+            when (anime.animeEntry?.isFavorites) {
+                true -> setImageResource(R.drawable.ic_favorite_black_24dp)
+                else -> setImageResource(R.drawable.ic_favorite_border_black_24dp)
+            }
             setOnClickListener {
                 anime.animeEntry?.let {
                     it.putFavorites(!it.isFavorites)
@@ -435,7 +465,7 @@ class VhAnime(
     }
 
     private fun displayReviews(binding: ItemAnimeReviewsBinding) {
-        binding.llAnimeAllReviews.setOnClickListener {
+        binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     AnimeFragmentDirections.actionAnimeToReviews(
                             ReviewsFragment.ReviewsType.Anime,

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundSecondaryColor"
@@ -19,222 +18,244 @@
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView android:id="@+id/navigation"
+                <ImageView
+                    android:id="@+id/iv_profile_navigation_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="14dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_margin="14dp"
                     android:padding="2dp"
                     android:src="@drawable/ic_arrow_back_black_24dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:tint="?attr/textPrimaryColor"
                     tools:ignore="ContentDescription" />
 
-                <ImageView android:id="@+id/settings"
+                <ImageView
+                    android:id="@+id/iv_profile_settings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginEnd="14dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/settings"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="14dp"
                     android:padding="2dp"
                     android:src="@drawable/ic_settings_black_24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:tint="?attr/textPrimaryColor" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/civ_profile_user_pic"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="20dp"
+                    android:src="#939393"
+                    android:transitionName="imageView"
+                    app:civ_border_color="?attr/dividerColor"
+                    app:civ_border_width="3dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_profile_user_pseudo"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
+                    android:layout_marginStart="@dimen/profile_spacing"
+                    android:layout_marginEnd="@dimen/profile_spacing"
+                    android:gravity="center"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="@dimen/font_size_extra_extra_extra_large"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/civ_profile_user_pic"
+                    tools:text="Pseudo" />
 
-                    <FrameLayout
+                <TextView
+                    android:id="@+id/tv_profile_user_about"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/profile_spacing"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="@dimen/profile_spacing"
+                    android:gravity="center"
+                    android:textColor="?attr/textSecondaryColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_user_pseudo"
+                    tools:text="About me" />
+
+                <TextView
+                    android:id="@+id/tv_profile_user_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/profile_spacing"
+                    android:background="@drawable/bg_circular_corners"
+                    android:gravity="center"
+                    android:paddingStart="16dp"
+                    android:paddingTop="6dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="6dp"
+                    android:text="@string/edit"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="@dimen/font_size_micro"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_user_about"
+                    app:layout_constraintWidth_default="wrap"
+                    app:layout_goneMarginBottom="@dimen/profile_spacing"
+                    tools:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/ll_profile_follow"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_btn_unfollow"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_user_edit"
+                    app:layout_constraintWidth_default="wrap"
+                    app:layout_goneMarginBottom="@dimen/profile_spacing"
+                    app:layout_goneMarginTop="@dimen/profile_spacing"
+                    tools:visibility="visible">
+
+                    <ProgressBar
+                        android:id="@+id/pb_profile_is_following"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="4dp"
+                        android:indeterminateTint="@color/color_app" />
+
+                    <TextView
+                        android:id="@+id/tv_profile_you_follow_user"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp">
-
-                        <ProgressBar
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"/>
-
-                        <de.hdodenhof.circleimageview.CircleImageView android:id="@+id/profilePic_CircleImageView"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:src="#939393"
-                            android:transitionName="imageView"
-                            app:civ_border_color="?attr/dividerColor"
-                            app:civ_border_width="3dp" />
-
-                    </FrameLayout>
-
-                    <TextView android:id="@+id/pseudo_TextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="?attr/textPrimaryColor"
-                        android:textSize="@dimen/font_size_extra_extra_extra_large"
-                        android:textStyle="bold"
-                        tools:text="Pseudo" />
-
-                    <TextView android:id="@+id/about_TextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/profile_spacing"
-                        android:textColor="?attr/textSecondaryColor"
-                        tools:text="About me" />
-
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:layout_marginBottom="@dimen/profile_spacing"
-                        android:orientation="vertical">
-
-                        <TextView android:id="@+id/editProfile_TextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_btn_edit"
-                            android:text="@string/edit"
-                            android:textAllCaps="true"
-                            android:textColor="?attr/textPrimaryColor"
-                            android:textSize="@dimen/font_size_micro"
-                            android:textStyle="bold"/>
-
-                        <LinearLayout android:id="@+id/follow"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_follow_no_btn"
-                            android:orientation="horizontal">
-
-                            <ProgressBar android:id="@+id/pb_is_following"
-                                android:layout_width="20dp"
-                                android:layout_height="match_parent"
-                                android:indeterminateTint="@color/follow_color"
-                                android:layout_marginEnd="4dp"/>
-
-                            <TextView android:id="@+id/followBtn_TextView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/follow"
-                                android:textAllCaps="true"
-                                android:textColor="@color/follow_color"
-                                android:textSize="@dimen/font_size_micro"
-                                android:textStyle="bold"/>
-
-                        </LinearLayout>
-
-                        <TextView android:id="@+id/followsYou_TextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/followsYou"
-                            android:textColor="?attr/textSecondaryColor"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:layout_marginTop="@dimen/profile_spacing"
-                        android:layout_marginBottom="@dimen/profile_spacing"
-                        android:layout_marginStart="@dimen/profile_spacing"
-                        android:layout_marginEnd="@dimen/profile_spacing">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView  android:id="@+id/mediaFollowed_TextView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="Media"
-                                android:textColor="?attr/textSecondaryColor"
-                                tools:ignore="HardcodedText" />
-
-                            <TextView android:id="@+id/mediaFollowedCount_TextView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="##"
-                                android:textColor="?attr/textPrimaryColor"
-                                android:textSize="@dimen/font_size_medium"
-                                android:textStyle="bold"
-                                tools:ignore="HardcodedText" />
-
-                        </LinearLayout>
-
-                        <LinearLayout android:id="@+id/followers"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="@string/followers"
-                                android:textColor="?attr/textSecondaryColor"/>
-
-                            <TextView android:id="@+id/followersCount_TextView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="##"
-                                android:textColor="?attr/textPrimaryColor"
-                                android:textSize="@dimen/font_size_medium"
-                                android:textStyle="bold"
-                                tools:ignore="HardcodedText" />
-
-                        </LinearLayout>
-
-                        <LinearLayout android:id="@+id/following"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="@string/followed"
-                                android:textColor="?attr/textSecondaryColor"/>
-
-                            <TextView android:id="@+id/followingCount_TextView"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="##"
-                                android:textColor="?attr/textPrimaryColor"
-                                android:textSize="@dimen/font_size_medium"
-                                android:textStyle="bold"
-                                tools:ignore="HardcodedText" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
+                        android:text="@string/follow"
+                        android:textAllCaps="true"
+                        android:textColor="@color/color_app"
+                        android:textSize="@dimen/font_size_micro"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
-            </RelativeLayout>
+                <TextView
+                    android:id="@+id/tv_profile_user_is_following_you"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/followsYou"
+                    android:textColor="?attr/textSecondaryColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ll_profile_follow"
+                    app:layout_constraintWidth_default="wrap"
+                    app:layout_goneMarginTop="@dimen/profile_spacing"
+                    tools:visibility="visible" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrier1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="tv_profile_user_edit,ll_profile_follow,tv_profile_user_is_following_you" />
+
+                <TextView
+                    android:id="@+id/tv_profile_media_followed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/profile_spacing"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:textColor="?attr/textSecondaryColor"
+                    app:layout_constraintEnd_toStartOf="@id/tv_profile_followers"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/barrier1"
+                    tools:text="Media" />
+
+                <TextView
+                    android:id="@+id/tv_profile_media_followed_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="@dimen/font_size_medium"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@id/tv_profile_media_followed"
+                    app:layout_constraintStart_toStartOf="@id/tv_profile_media_followed"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_media_followed"
+                    tools:text="##" />
+
+                <TextView
+                    android:id="@+id/tv_profile_followers"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/profile_spacing"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="@dimen/profile_spacing"
+                    android:gravity="center"
+                    android:text="@string/followers"
+                    android:textColor="?attr/textSecondaryColor"
+                    app:layout_constraintEnd_toStartOf="@id/tv_profile_following"
+                    app:layout_constraintStart_toEndOf="@id/tv_profile_media_followed"
+                    app:layout_constraintTop_toBottomOf="@id/barrier1" />
+
+                <TextView
+                    android:id="@+id/tv_profile_followers_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="@dimen/font_size_medium"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@id/tv_profile_followers"
+                    app:layout_constraintStart_toStartOf="@id/tv_profile_followers"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_followers"
+                    tools:text="##" />
+
+                <TextView
+                    android:id="@+id/tv_profile_following"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="@dimen/profile_spacing"
+                    android:gravity="center"
+                    android:text="@string/followed"
+                    android:textColor="?attr/textSecondaryColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_profile_followers"
+                    app:layout_constraintTop_toBottomOf="@id/barrier1" />
+
+                <TextView
+                    android:id="@+id/tv_profile_following_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="@dimen/font_size_medium"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@id/tv_profile_following"
+                    app:layout_constraintStart_toStartOf="@id/tv_profile_following"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_following"
+                    tools:text="##" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-        <com.google.android.material.tabs.TabLayout android:id="@+id/profile_TabLayout"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tb_profile"
+            style="@style/Widget.AppTheme.TabLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppTheme.TabLayout" />
+            android:layout_height="wrap_content" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -243,106 +264,120 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:descendantFocusability="blocksDescendants">
 
-            <androidx.recyclerview.widget.RecyclerView android:id="@+id/previewStats_RecyclerView"
-                android:layout_width="match_parent"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_profile_user_stats"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:nestedScrollingEnabled="false"
                 android:paddingStart="4dp"
-                android:paddingEnd="4dp"/>
+                android:paddingEnd="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/ll_profile_user_library"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/profile_spacing"
-                android:orientation="vertical">
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/profile_spacing"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_profile_user_stats">
 
-                <LinearLayout android:id="@+id/previewListTitle"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tv_profile_user_library"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:padding="@dimen/profile_spacing"
-                    android:orientation="horizontal">
+                    android:layout_marginEnd="@dimen/profile_spacing"
+                    android:layout_weight="1"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="@dimen/font_size_extra_large"
+                    android:textStyle="bold"
+                    tools:text="@string/mangaList" />
 
-                    <TextView android:id="@+id/previewLibrary_TextView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/profile_spacing"
-                        android:layout_weight="1"
-                        android:text="@string/mangaList"
-                        android:textColor="?attr/textPrimaryColor"
-                        android:textSize="@dimen/font_size_extra_large"
-                        android:textStyle="bold"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Widget.AppTheme.Button.SeeAll"/>
-
-                </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView android:id="@+id/previewLibrary_RecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:nestedScrollingEnabled="false"
-                    android:paddingStart="7dp"
-                    android:paddingEnd="7dp"/>
+                <TextView
+                    style="@style/Widget.AppTheme.Button.SeeAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
-            <LinearLayout android:id="@+id/previewFavorites"
-                android:layout_width="match_parent"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_profile_user_library"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/profile_spacing"
-                android:orientation="vertical">
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_profile_user_library" />
 
-                <LinearLayout android:id="@+id/previewFavoritesTitle"
-                    android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/ll_profile_user_library_favorites"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/profile_spacing"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/profile_spacing"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_profile_user_library">
+
+                <TextView
+                    android:id="@+id/tv_profile_user_library_favorites"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:padding="@dimen/profile_spacing"
-                    android:orientation="horizontal">
+                    android:layout_marginEnd="@dimen/profile_spacing"
+                    android:layout_weight="1"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textSize="@dimen/font_size_medium_large"
+                    tools:text="@string/favoritesManga" />
 
-                    <TextView android:id="@+id/previewFavorites_TextView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/profile_spacing"
-                        android:layout_weight="1"
-                        android:text="@string/favoritesManga"
-                        android:textColor="?attr/textPrimaryColor"
-                        android:textSize="@dimen/font_size_medium_large"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Widget.AppTheme.Button.SeeAll"/>
-
-                </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView android:id="@+id/previewFavorites_RecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:nestedScrollingEnabled="false"
-                    android:paddingStart="7dp"
-                    android:paddingEnd="7dp"/>
+                <TextView
+                    style="@style/Widget.AppTheme.Button.SeeAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
-        </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_profile_user_library_favorites"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_profile_user_library_favorites" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_profile_user_library_favorites"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="ll_profile_user_library_favorites,rv_profile_user_library_favorites"
+                tools:visibility="gone" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-    <include android:id="@+id/is_loading"
-        layout="@layout/layout_is_loading"/>
+    <include
+        android:id="@+id/is_loading"
+        layout="@layout/layout_is_loading" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

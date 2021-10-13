@@ -72,7 +72,7 @@ class VhAd(
             it.text = nativeAd.body
         }
 
-        binding.adMediaView.let {
+        binding.mvAdMedia.let {
             binding.adView.mediaView = it
             it.setImageScaleType(ImageView.ScaleType.CENTER_CROP)
         }
@@ -96,7 +96,7 @@ class VhAd(
             it.text = nativeAd.headline
         }
 
-        binding.adMediaView.let {
+        binding.mvAdMedia.let {
             binding.adView.mediaView = it
             it.setImageScaleType(ImageView.ScaleType.CENTER_CROP)
         }
@@ -125,7 +125,7 @@ class VhAd(
             it.text = nativeAd.body
         }
 
-        binding.adMediaView.let {
+        binding.mvAdMedia.let {
             binding.adView.mediaView = it
             it.setImageScaleType(ImageView.ScaleType.CENTER_CROP)
         }

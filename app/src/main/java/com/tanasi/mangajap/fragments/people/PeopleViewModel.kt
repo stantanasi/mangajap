@@ -31,8 +31,8 @@ class PeopleViewModel : ViewModel() {
                 JsonApiParams(
                         include = listOf("manga-staff.manga", "anime-staff.anime"),
                         fields = mapOf(
-                                "manga" to listOf("coverImage", "canonicalTitle", "startDate"),
-                                "anime" to listOf("coverImage", "canonicalTitle", "startDate"))
+                                "manga" to listOf("coverImage", "title", "startDate"),
+                                "anime" to listOf("coverImage", "title", "startDate"))
                 )
         )
         _state.value = try {

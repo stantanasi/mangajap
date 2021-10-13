@@ -126,7 +126,7 @@ class FollowFragment : Fragment() {
 
 
     private fun displayFollows() {
-        binding.anyFollows.apply {
+        binding.tvFollowUserHasAnyFollow.apply {
             if (followsList.none { it !is LoadMore } || followsList.isEmpty()) {
                 visibility = View.VISIBLE
                 text = when (followType) {
@@ -138,11 +138,11 @@ class FollowFragment : Fragment() {
             }
         }
 
-        binding.followsRecyclerView.apply {
+        binding.rvFollow.apply {
             if (followsList.none { it !is LoadMore } || followsList.isEmpty()) {
-                binding.followsRecyclerView.visibility = View.GONE
+                visibility = View.GONE
             } else {
-                binding.followsRecyclerView.visibility = View.VISIBLE
+                visibility = View.VISIBLE
                 layoutManager = LinearLayoutManager(context)
                 adapter = mangaJapAdapter.also { adapter ->
                     adapter.setOnLoadMoreListener {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundSecondaryColor"
@@ -30,25 +30,28 @@
                     android:layout_marginBottom="@dimen/editProfile_spacing"
                     android:stretchColumns="1">
 
-                    <TableRow android:id="@+id/profilePic"
+                    <TableRow
+                        android:id="@+id/tr_profile_edit_user_profile_pic"
                         android:background="?attr/backgroundPrimaryColor"
                         android:gravity="center_vertical">
 
-                        <de.hdodenhof.circleimageview.CircleImageView android:id="@+id/profilePic_CircleImageView"
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/civ_profile_edit_user_profile_pic"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:layout_margin="@dimen/editProfile_spacing"
-                            android:src="#939393"/>
+                            android:src="#939393" />
 
                         <TextView
                             android:text="@string/profilePicture"
                             android:textColor="?attr/textPrimaryColor"
-                            android:textSize="@dimen/font_size_medium"/>
+                            android:textSize="@dimen/font_size_medium" />
 
-                        <ImageView android:id="@+id/removeProfilePic"
-                            android:focusable="true"
+                        <ImageView
+                            android:id="@+id/iv_profile_edit_delete_user_profile_pic"
                             android:layout_marginStart="@dimen/editProfile_spacing"
                             android:layout_marginEnd="@dimen/editProfile_spacing"
+                            android:focusable="true"
                             android:src="@drawable/ic_close_24dp"
                             app:tint="?attr/textSecondaryColor"
                             tools:ignore="ContentDescription" />
@@ -57,14 +60,15 @@
 
                 </TableLayout>
 
-                <EditText android:id="@+id/aboutYou_EditText"
+                <EditText
+                    android:id="@+id/et_profile_edit_user_about"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/editProfile_spacing"
                     android:background="?attr/backgroundPrimaryColor"
                     android:gravity="start"
                     android:hint="@string/aboutYou"
                     android:inputType="textMultiLine"
-                    android:layout_marginBottom="@dimen/editProfile_spacing"
                     android:minLines="2"
                     android:padding="@dimen/editProfile_spacing"
                     android:textColor="?attr/textPrimaryColor"
@@ -75,15 +79,15 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/editProfile_spacing"
-                    android:layout_marginBottom="8dp"
                     android:layout_marginStart="@dimen/editProfile_spacing"
+                    android:layout_marginTop="@dimen/editProfile_spacing"
                     android:layout_marginEnd="@dimen/editProfile_spacing"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/personalInformation"
                     android:textAllCaps="true"
                     android:textColor="?attr/textSecondaryColor"
                     android:textSize="@dimen/font_size_micro"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -93,7 +97,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?attr/dividerColor"/>
+                        android:background="?attr/dividerColor" />
 
                     <TableRow
                         android:background="?attr/backgroundPrimaryColor"
@@ -104,11 +108,12 @@
                             android:text="@string/firstName"
                             android:textColor="?attr/textSecondaryColor" />
 
-                        <EditText android:id="@+id/firstName_EditText"
-                            android:background="@android:color/transparent"
-                            android:inputType="textPersonName"
+                        <EditText
+                            android:id="@+id/et_profile_edit_user_first_name"
                             android:layout_marginEnd="@dimen/editProfile_spacing"
                             android:layout_span="2"
+                            android:background="@android:color/transparent"
+                            android:inputType="textPersonName"
                             android:maxLines="1"
                             android:textColor="?attr/textPrimaryColor"
                             android:textColorHint="?attr/textColorHint"
@@ -121,7 +126,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?attr/dividerColor"/>
+                        android:background="?attr/dividerColor" />
 
                     <TableRow
                         android:background="?attr/backgroundPrimaryColor"
@@ -132,11 +137,12 @@
                             android:text="@string/lastName"
                             android:textColor="?attr/textSecondaryColor" />
 
-                        <EditText android:id="@+id/lastName_EditText"
-                            android:background="@android:color/transparent"
-                            android:inputType="textPersonName"
+                        <EditText
+                            android:id="@+id/et_profile_edit_user_last_name"
                             android:layout_marginEnd="@dimen/editProfile_spacing"
                             android:layout_span="2"
+                            android:background="@android:color/transparent"
+                            android:inputType="textPersonName"
                             android:maxLines="1"
                             android:textColor="?attr/textPrimaryColor"
                             android:textColorHint="?attr/textColorHint"
@@ -149,29 +155,31 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?attr/dividerColor"/>
+                        android:background="?attr/dividerColor" />
 
-                    <TableRow android:id="@+id/birthday"
+                    <TableRow
                         android:background="?attr/backgroundPrimaryColor"
-                        android:gravity="center_vertical" >
+                        android:gravity="center_vertical">
 
                         <TextView
                             android:layout_margin="@dimen/editProfile_spacing"
                             android:text="@string/birthday"
                             android:textColor="?attr/textSecondaryColor" />
 
-                        <TextView android:id="@+id/birthday_TextView"
+                        <TextView
+                            android:id="@+id/tv_profile_edit_user_birthday"
                             android:hint="@string/date"
                             android:maxLines="1"
                             android:textColor="?attr/textPrimaryColor"
                             android:textColorHint="?attr/textColorHint"
                             android:textSize="@dimen/font_size_small"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold" />
 
-                        <ImageView android:id="@+id/removeBirthday"
-                            android:focusable="true"
+                        <ImageView
+                            android:id="@+id/iv_profile_edit_delete_user_birthday"
                             android:layout_marginStart="@dimen/editProfile_spacing"
                             android:layout_marginEnd="@dimen/editProfile_spacing"
+                            android:focusable="true"
                             android:src="@drawable/ic_close_24dp"
                             app:tint="?attr/textSecondaryColor"
                             tools:ignore="ContentDescription" />
@@ -181,7 +189,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?attr/dividerColor"/>
+                        android:background="?attr/dividerColor" />
 
                     <TableRow
                         android:background="?attr/backgroundPrimaryColor"
@@ -192,19 +200,20 @@
                             android:text="@string/gender"
                             android:textColor="?attr/textSecondaryColor" />
 
-                        <Spinner android:id="@+id/gender_Spinner"
-                            android:gravity="center_vertical"
+                        <Spinner
+                            android:id="@+id/spinner_profile_edit_user_gender"
+                            style="@style/Widget.AppTheme.Spinner"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="-10dp"
                             android:layout_span="2"
-                            style="@style/Widget.AppTheme.Spinner"/>
+                            android:gravity="center_vertical" />
 
                     </TableRow>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?attr/dividerColor"/>
+                        android:background="?attr/dividerColor" />
 
                     <TableRow
                         android:background="?attr/backgroundPrimaryColor"
@@ -215,19 +224,20 @@
                             android:text="@string/country"
                             android:textColor="?attr/textSecondaryColor" />
 
-                        <Spinner android:id="@+id/country_Spinner"
-                            android:gravity="center_vertical"
+                        <Spinner
+                            android:id="@+id/spinner_profile_edit_user_country"
+                            style="@style/Widget.AppTheme.Spinner"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="-10dp"
                             android:layout_span="2"
-                            style="@style/Widget.AppTheme.Spinner"/>
+                            android:gravity="center_vertical" />
 
                     </TableRow>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="?attr/dividerColor"/>
+                        android:background="?attr/dividerColor" />
 
                 </TableLayout>
 
@@ -235,11 +245,13 @@
 
         </ScrollView>
 
-        <include android:id="@+id/is_loading"
-            layout="@layout/layout_is_loading"/>
+        <include
+            android:id="@+id/is_loading"
+            layout="@layout/layout_is_loading" />
 
-        <include android:id="@+id/is_updating"
-            layout="@layout/layout_is_updating"/>
+        <include
+            android:id="@+id/is_updating"
+            layout="@layout/layout_is_updating" />
 
     </RelativeLayout>
 
