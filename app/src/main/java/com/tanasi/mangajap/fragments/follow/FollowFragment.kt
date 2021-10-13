@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
@@ -143,7 +142,6 @@ class FollowFragment : Fragment() {
                 visibility = View.GONE
             } else {
                 visibility = View.VISIBLE
-                layoutManager = LinearLayoutManager(context)
                 adapter = mangaJapAdapter.also { adapter ->
                     adapter.setOnLoadMoreListener {
                         post {

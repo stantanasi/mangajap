@@ -277,9 +277,12 @@
                 android:nestedScrollingEnabled="false"
                 android:paddingStart="4dp"
                 android:paddingEnd="4dp"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/item_stats_preview" />
 
             <LinearLayout
                 android:id="@+id/ll_profile_user_library"
@@ -321,7 +324,10 @@
                 android:paddingEnd="7dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ll_profile_user_library" />
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/ll_profile_user_library"
+                tools:listitem="@layout/item_media_profile_preview" />
 
             <LinearLayout
                 android:id="@+id/ll_profile_user_library_favorites"
@@ -363,14 +369,17 @@
                 android:paddingEnd="7dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ll_profile_user_library_favorites" />
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/ll_profile_user_library_favorites"
+                tools:listitem="@layout/item_media_profile_preview" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_profile_user_library_favorites"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:constraint_referenced_ids="ll_profile_user_library_favorites,rv_profile_user_library_favorites"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

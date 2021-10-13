@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.adapters.MangaJapAdapter
@@ -126,12 +125,10 @@ class DiscoverFragment : Fragment() {
         }
 
         binding.rvDiscoverRecentManga.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = mangaRecentAdapter
         }
 
         binding.rvDiscoverRecentAnime.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = animeRecentAdapter
         }
     }

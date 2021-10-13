@@ -54,7 +54,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- TODO: app:layoutManager android:orientation tools:listitem -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_discover_people"
             android:layout_width="0dp"
@@ -65,6 +64,9 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:paddingBottom="8dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_people_discover"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_search" />
@@ -103,6 +105,9 @@
             android:paddingStart="13dp"
             android:paddingEnd="13dp"
             android:paddingBottom="13dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_media_trending"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_discover_recent_manga_title" />
@@ -141,6 +146,9 @@
             android:paddingStart="13dp"
             android:paddingEnd="13dp"
             android:paddingBottom="13dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_media_trending"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_discover_recent_anime_title" />

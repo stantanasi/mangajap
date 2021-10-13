@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -384,7 +383,6 @@ class ProfileFragment : Fragment() {
 
 
         binding.rvProfileUserStats.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = MangaJapAdapter(actualTab.statsList)
         }
 
@@ -417,7 +415,6 @@ class ProfileFragment : Fragment() {
                         is AnimeEntry -> item.typeLayout = MangaJapAdapter.Type.ANIME_ENTRY_PREVIEW
                     }
                 }
-                layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                 adapter = MangaJapAdapter(actualTab.libraryList)
             }
         }
@@ -456,7 +453,6 @@ class ProfileFragment : Fragment() {
                         is AnimeEntry -> item.typeLayout = MangaJapAdapter.Type.ANIME_ENTRY_PREVIEW
                     }
                 }
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = MangaJapAdapter(actualTab.favoritesList)
             }
         }
