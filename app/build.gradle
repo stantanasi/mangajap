@@ -13,8 +13,8 @@ android {
         applicationId "com.tanasi.mangajap"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 82
-        versionName "2.12.6"
+        versionCode 83
+        versionName "2.12.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
