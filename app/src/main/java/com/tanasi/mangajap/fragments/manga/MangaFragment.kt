@@ -110,18 +110,12 @@ class MangaFragment : Fragment() {
                     ).show()
                 }
 
-                MangaViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
-                is MangaViewModel.State.SuccessUpdating -> {
-                    manga.mangaEntry = state.mangaEntry
-                    displayManga()
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
-                }
-                MangaViewModel.State.UpdatingForAdding -> {
+                MangaViewModel.State.AddingEntry -> {
                     binding.clMangaProgressionAdd.setOnClickListener(null)
                     binding.ivMangaProgressionAdd.visibility = View.GONE
                     binding.pbMangaProgressionAdd.visibility = View.VISIBLE
                 }
-                is MangaViewModel.State.SuccessUpdatingForAdding -> {
+                is MangaViewModel.State.SuccessAddingEntry -> {
                     manga.mangaEntry = state.mangaEntry
                     binding.ivMangaProgressionAdd.apply {
                         visibility = View.VISIBLE
@@ -132,6 +126,28 @@ class MangaFragment : Fragment() {
                     Handler(Looper.getMainLooper()).postDelayed({
                         displayManga()
                     }, 1 * 1000.toLong())
+                }
+                is MangaViewModel.State.FailedAddingEntry -> when (state.error) {
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message ?: "",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message ?: "",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                MangaViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
+                is MangaViewModel.State.SuccessUpdating -> {
+                    manga.mangaEntry = state.mangaEntry
+                    displayManga()
+                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
                 }
                 is MangaViewModel.State.FailedUpdating -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -206,7 +222,7 @@ class MangaFragment : Fragment() {
                 } else {
                     visibility = View.VISIBLE
                     setOnClickListener {
-                        viewModel.updateAddingMangaEntry(mangaEntry.apply {
+                        viewModel.addMangaEntry(mangaEntry.apply {
                             putAdd(true)
                         })
                     }
@@ -214,7 +230,7 @@ class MangaFragment : Fragment() {
             } ?: also {
                 visibility = View.VISIBLE
                 setOnClickListener {
-                    viewModel.createMangaEntry(MangaEntry().also {
+                    viewModel.addMangaEntry(MangaEntry().also {
                         it.putAdd(true)
                         it.putStatus(MangaEntry.Status.reading)
                         it.putUser(User().apply { id = UserPreference(requireContext()).selfId })

@@ -115,18 +115,12 @@ class AnimeFragment : Fragment() {
                     ).show()
                 }
 
-                AnimeViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
-                is AnimeViewModel.State.SuccessUpdating -> {
-                    anime.animeEntry = state.animeEntry
-                    displayAnime()
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
-                }
-                AnimeViewModel.State.UpdatingForAdding -> {
+                AnimeViewModel.State.AddingEntry -> {
                     binding.clAnimeProgressionAdd.setOnClickListener(null)
                     binding.ivAnimeProgressionAdd.visibility = View.GONE
                     binding.pbAnimeProgressionAdd.visibility = View.VISIBLE
                 }
-                is AnimeViewModel.State.SuccessUpdatingForAdding -> {
+                is AnimeViewModel.State.SuccessAddingEntry -> {
                     binding.ivAnimeProgressionAdd.apply {
                         visibility = View.VISIBLE
                         setImageResource(R.drawable.ic_check_black_24dp)
@@ -137,6 +131,28 @@ class AnimeFragment : Fragment() {
                     Handler(Looper.getMainLooper()).postDelayed({
                         displayAnime()
                     }, 1 * 1000.toLong())
+                }
+                is AnimeViewModel.State.FailedAddingEntry -> when (state.error) {
+                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    }
+                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message ?: "",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                        requireContext(),
+                        state.error.error.message ?: "",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                AnimeViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
+                is AnimeViewModel.State.SuccessUpdating -> {
+                    anime.animeEntry = state.animeEntry
+                    displayAnime()
+                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
                 }
                 is AnimeViewModel.State.FailedUpdating -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -211,7 +227,7 @@ class AnimeFragment : Fragment() {
                 } else {
                     visibility = View.VISIBLE
                     setOnClickListener {
-                        viewModel.updateAddingAnimeEntry(animeEntry.apply {
+                        viewModel.addAnimeEntry(animeEntry.apply {
                             putAdd(true)
                         })
                     }
@@ -219,7 +235,7 @@ class AnimeFragment : Fragment() {
             } ?: also {
                 visibility = View.VISIBLE
                 setOnClickListener {
-                    viewModel.createAddAnimeEntry(AnimeEntry().also {
+                    viewModel.addAnimeEntry(AnimeEntry().also {
                         it.putAdd(true)
                         it.putStatus(AnimeEntry.Status.watching)
                         it.putUser(User().apply { id = UserPreference(requireContext()).selfId })

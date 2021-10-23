@@ -28,10 +28,12 @@ class AnimeViewModel : ViewModel() {
         data class SuccessLoadingEpisodes(val season: Season) : State()
         data class FailedLoadingEpisodes(val error: JsonApiResponse.Error) : State()
 
+        object AddingEntry : State()
+        data class SuccessAddingEntry(val animeEntry: AnimeEntry) : State()
+        data class FailedAddingEntry(val error: JsonApiResponse.Error) : State()
+
         object Updating : State()
         data class SuccessUpdating(val animeEntry: AnimeEntry) : State()
-        object UpdatingForAdding : State()
-        data class SuccessUpdatingForAdding(val animeEntry: AnimeEntry) : State()
         data class FailedUpdating(val error: JsonApiResponse.Error) : State()
     }
 
@@ -63,6 +65,7 @@ class AnimeViewModel : ViewModel() {
             State.FailedLoading(JsonApiResponse.Error.UnknownError(e))
         }
     }
+
 
     fun getSeasonEpisodes(season: Season) = viewModelScope.launch {
         _state.value = State.LoadingEpisodes(season)
@@ -99,37 +102,22 @@ class AnimeViewModel : ViewModel() {
     }
 
 
-    // TODO: rassembler les deux fonctions
-    fun createAddAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
-        _state.value = State.UpdatingForAdding
+    fun addAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
+        _state.value = State.AddingEntry
 
-        val response = mangaJapApiService.createAnimeEntry(
-            animeEntry
-        )
+
         _state.value = try {
+            val response = when (animeEntry.id) {
+                "" -> mangaJapApiService.createAnimeEntry(animeEntry)
+                else -> mangaJapApiService.updateAnimeEntry(animeEntry.id, animeEntry)
+            }
+
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessUpdatingForAdding(response.body.data!!)
-                is JsonApiResponse.Error -> State.FailedUpdating(response)
+                is JsonApiResponse.Success -> State.SuccessAddingEntry(response.body.data!!)
+                is JsonApiResponse.Error -> State.FailedAddingEntry(response)
             }
         } catch (e: Exception) {
-            State.FailedUpdating(JsonApiResponse.Error.UnknownError(e))
-        }
-    }
-
-    fun updateAddingAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
-        _state.value = State.UpdatingForAdding
-
-        val response = mangaJapApiService.updateAnimeEntry(
-            animeEntry.id,
-            animeEntry
-        )
-        _state.value = try {
-            when (response) {
-                is JsonApiResponse.Success -> State.SuccessUpdatingForAdding(response.body.data!!)
-                is JsonApiResponse.Error -> State.FailedUpdating(response)
-            }
-        } catch (e: Exception) {
-            State.FailedUpdating(JsonApiResponse.Error.UnknownError(e))
+            State.FailedAddingEntry(JsonApiResponse.Error.UnknownError(e))
         }
     }
 
