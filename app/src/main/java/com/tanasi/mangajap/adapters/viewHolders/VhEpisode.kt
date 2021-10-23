@@ -11,6 +11,7 @@ import com.tanasi.mangajap.fragments.anime.AnimeFragment
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Episode
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
+import com.tanasi.mangajap.utils.extensions.toActivity
 
 class VhEpisode(
     private val _binding: ViewBinding
@@ -30,10 +31,8 @@ class VhEpisode(
 
 
     private fun updateAnimeEntry(animeEntry: AnimeEntry) {
-        if (context is MainActivity) {
-            when (val fragment = context.getCurrentFragment()) {
-                is AnimeFragment -> fragment.viewModel.updateAnimeEntry(animeEntry)
-            }
+        when (val fragment = context.toActivity()?.getCurrentFragment()) {
+            is AnimeFragment -> fragment.viewModel.updateAnimeEntry(animeEntry)
         }
     }
 

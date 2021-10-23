@@ -65,29 +65,23 @@ class VhManga(
 
 
     private fun createMangaEntry(mangaEntry: MangaEntry) {
-        if (context is MainActivity) {
-            when (val fragment = context.getCurrentFragment()) {
-                is SearchFragment -> fragment.viewModel.createMangaEntry(manga, mangaEntry)
-                is DiscoverFragment -> fragment.viewModel.createMangaEntry(manga, mangaEntry)
-            }
+        when (val fragment = context.toActivity()?.getCurrentFragment()) {
+            is SearchFragment -> fragment.viewModel.createMangaEntry(manga, mangaEntry)
+            is DiscoverFragment -> fragment.viewModel.createMangaEntry(manga, mangaEntry)
         }
     }
 
     private fun updateMangaEntry(mangaEntry: MangaEntry) {
-        if (context is MainActivity) {
-            when (val fragment = context.getCurrentFragment()) {
-                is MangaFragment -> fragment.viewModel.updateMangaEntry(mangaEntry)
-                is SearchFragment -> fragment.viewModel.updateMangaEntry(manga, mangaEntry)
-                is DiscoverFragment -> fragment.viewModel.updateMangaEntry(manga, mangaEntry)
-            }
+        when (val fragment = context.toActivity()?.getCurrentFragment()) {
+            is MangaFragment -> fragment.viewModel.updateMangaEntry(mangaEntry)
+            is SearchFragment -> fragment.viewModel.updateMangaEntry(manga, mangaEntry)
+            is DiscoverFragment -> fragment.viewModel.updateMangaEntry(manga, mangaEntry)
         }
     }
 
     private fun createMangaRequest(request: Request) {
-        if (context is MainActivity) {
-            when (val fragment = context.getCurrentFragment()) {
-                is SearchFragment -> fragment.viewModel.createRequest(request)
-            }
+        when (val fragment = context.toActivity()?.getCurrentFragment()) {
+            is SearchFragment -> fragment.viewModel.createRequest(request)
         }
     }
 
@@ -134,11 +128,9 @@ class VhManga(
 
     private fun displaySearchAdd(binding: ItemMediaSearchAddBinding) {
         binding.root.setOnClickListener {
-            var query = ""
-            if (context is MainActivity) {
-                when (val fragment = context.getCurrentFragment()) {
-                    is SearchFragment -> query = fragment.query
-                }
+            val query = when (val fragment = context.toActivity()?.getCurrentFragment()) {
+                is SearchFragment -> fragment.query
+                else -> ""
             }
 
             EditTextDialog(

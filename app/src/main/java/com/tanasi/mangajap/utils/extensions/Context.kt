@@ -23,6 +23,8 @@ fun Context.setLocale(lang: String? = null) {
     }, this.resources.displayMetrics)
 }
 
+fun Context.toActivity(): AppCompatActivity? = this as? AppCompatActivity
+
 
 fun Context.isStoragePermissionGranted(): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

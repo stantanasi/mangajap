@@ -14,6 +14,7 @@ import com.tanasi.mangajap.fragments.manga.MangaFragment
 import com.tanasi.mangajap.models.Volume
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
+import com.tanasi.mangajap.utils.extensions.toActivity
 import java.lang.Exception
 
 class VhVolume(
@@ -35,13 +36,11 @@ class VhVolume(
 
     private fun displayVolume(binding: ItemVolumeMangaBinding) {
         binding.root.setOnClickListener {
-            if (context is MainActivity) {
-                when (val fragment = context.getCurrentFragment()) {
-                    is MangaFragment -> fragment.also {
-                        if (it.showDetailsVolume == volume) it.showDetailsVolume = null
-                        else it.showDetailsVolume = volume
-                        it.displayManga()
-                    }
+            when (val fragment = context.toActivity()?.getCurrentFragment()) {
+                is MangaFragment -> fragment.also {
+                    if (it.showDetailsVolume == volume) it.showDetailsVolume = null
+                    else it.showDetailsVolume = volume
+                    it.displayManga()
                 }
             }
         }

@@ -19,6 +19,7 @@ import com.tanasi.mangajap.fragments.library.LibraryFragmentDirections
 import com.tanasi.mangajap.fragments.profile.ProfileFragmentDirections
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
+import com.tanasi.mangajap.utils.extensions.toActivity
 import java.lang.Exception
 
 class VhMangaEntry(
@@ -40,10 +41,8 @@ class VhMangaEntry(
     }
 
     private fun updateMangaEntry(mangaEntry: MangaEntry) {
-        if (context is MainActivity) {
-            when (val fragment = context.getCurrentFragment()) {
-                is LibraryFragment -> fragment.viewModel.updateMangaEntry(mangaEntry)
-            }
+        when (val fragment = context.toActivity()?.getCurrentFragment()) {
+            is LibraryFragment -> fragment.viewModel.updateMangaEntry(mangaEntry)
         }
     }
 

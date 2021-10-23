@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
@@ -35,10 +36,7 @@ import com.tanasi.mangajap.ui.dialog.EditTextDialog
 import com.tanasi.mangajap.ui.dialog.MediaEntryDateDialog
 import com.tanasi.mangajap.ui.dialog.MediaEntryProgressionDialog
 import com.tanasi.mangajap.ui.dialog.NumberPickerDialog
-import com.tanasi.mangajap.utils.extensions.dpToPx
-import com.tanasi.mangajap.utils.extensions.format
-import com.tanasi.mangajap.utils.extensions.getCurrentFragment
-import com.tanasi.mangajap.utils.extensions.locale
+import com.tanasi.mangajap.utils.extensions.*
 import com.tanasi.mangajap.utils.preferences.UserPreference
 import java.lang.Exception
 import java.text.DecimalFormat
@@ -68,29 +66,23 @@ class VhAnime(
     }
 
     private fun createAnimeEntry(animeEntry: AnimeEntry) {
-        if (context is MainActivity) {
-            when (val fragment = context.getCurrentFragment()) {
-                is SearchFragment -> fragment.viewModel.createAnimeEntry(anime, animeEntry)
-                is DiscoverFragment -> fragment.viewModel.createAnimeEntry(anime, animeEntry)
-            }
+        when (val fragment = context.toActivity()?.getCurrentFragment()) {
+            is SearchFragment -> fragment.viewModel.createAnimeEntry(anime, animeEntry)
+            is DiscoverFragment -> fragment.viewModel.createAnimeEntry(anime, animeEntry)
         }
     }
 
     private fun updateAnimeEntry(animeEntry: AnimeEntry) {
-        if (context is MainActivity) {
-            when (val fragment = context.getCurrentFragment()) {
-                is AnimeFragment -> fragment.viewModel.updateAnimeEntry(animeEntry)
-                is SearchFragment -> fragment.viewModel.updateAnimeEntry(anime, animeEntry)
-                is DiscoverFragment -> fragment.viewModel.updateAnimeEntry(anime, animeEntry)
-            }
+        when (val fragment = context.toActivity()?.getCurrentFragment()) {
+            is AnimeFragment -> fragment.viewModel.updateAnimeEntry(animeEntry)
+            is SearchFragment -> fragment.viewModel.updateAnimeEntry(anime, animeEntry)
+            is DiscoverFragment -> fragment.viewModel.updateAnimeEntry(anime, animeEntry)
         }
     }
 
     private fun createAnimeRequest(request: Request) {
-        if (context is MainActivity) {
-            when (val fragment = context.getCurrentFragment()) {
-                is SearchFragment -> fragment.viewModel.createRequest(request)
-            }
+        when (val fragment = context.toActivity()?.getCurrentFragment()) {
+            is SearchFragment -> fragment.viewModel.createRequest(request)
         }
     }
 
@@ -137,11 +129,9 @@ class VhAnime(
 
     private fun displaySearchAdd(binding: ItemMediaSearchAddBinding) {
         binding.root.setOnClickListener {
-            var query = ""
-            if (context is MainActivity && context.getCurrentFragment() is SearchFragment) {
-                when (val fragment = context.getCurrentFragment()) {
-                    is SearchFragment -> query = fragment.query
-                }
+            val query: String = when (val fragment = context.toActivity()?.getCurrentFragment()) {
+                is SearchFragment -> fragment.query
+                else -> ""
             }
 
             EditTextDialog(
