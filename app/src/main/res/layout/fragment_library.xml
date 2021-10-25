@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             layout="@layout/view_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways|snap" />
 
         <androidx.appcompat.widget.Toolbar
@@ -80,11 +80,12 @@
             tools:listitem="@layout/item_media_library"
             tools:spanCount="3" />
 
-        <!-- TODO: not in center vertical -->
         <TextView
             android:id="@+id/tv_library_empty_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:gravity="center"
             android:text="@string/listEmpty"
             android:textColor="?attr/textPrimaryColor"
             android:textSize="@dimen/font_size_medium_large"
