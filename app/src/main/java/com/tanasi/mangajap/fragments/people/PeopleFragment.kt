@@ -17,13 +17,20 @@ import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentPeopleBinding
 import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
 import com.tanasi.mangajap.models.People
-import com.tanasi.mangajap.models.Staff
+import com.tanasi.mangajap.utils.extensions.add
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.extensions.setToolbar
 
 class PeopleFragment : Fragment() {
 
-    // TODO: create Tab ?
+    private enum class PeopleTab(
+        val stringId: Int,
+        val fragment: RecyclerViewFragment = RecyclerViewFragment(),
+        val list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+    ) {
+        Manga(R.string.manga),
+        Anime(R.string.anime);
+    }
 
     private var _binding: FragmentPeopleBinding? = null
     private val binding: FragmentPeopleBinding get() = _binding!!
@@ -34,19 +41,12 @@ class PeopleFragment : Fragment() {
 
     private lateinit var people: People
 
-    private val mangaFragment: RecyclerViewFragment = RecyclerViewFragment()
-    private val animeFragment: RecyclerViewFragment = RecyclerViewFragment()
-
-    private val mangaStaffList: MutableList<Staff> = mutableListOf()
-    private val animeStaffList: MutableList<Staff> = mutableListOf()
-
-    private val fragmentList: MutableList<Fragment> = mutableListOf()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPeopleBinding.inflate(inflater, container, false)
         viewModel.getPeople(args.peopleId)
-        mangaFragment.setList(mangaStaffList, LinearLayoutManager(context))
-        animeFragment.setList(animeStaffList, LinearLayoutManager(context))
+        PeopleTab.values().forEach {
+            it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
+        }
         return binding.root
     }
 
@@ -92,10 +92,14 @@ class PeopleFragment : Fragment() {
         setMangaFragment()
         setAnimeFragment()
 
-        binding.tbPeople.apply {
+        binding.tlPeople.apply {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    showFragment(fragmentList[tab.position])
+                    PeopleTab.values()
+                        .find { getString(it.stringId) == tab.text.toString() }
+                        ?.let {
+                            showTab(it)
+                        }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -103,13 +107,17 @@ class PeopleFragment : Fragment() {
             })
             getTabAt(selectedTabPosition)?.apply {
                 select()
-                showFragment(fragmentList[position])
+                PeopleTab.values()
+                    .find { getString(it.stringId) == text.toString() }
+                    ?.let {
+                        showTab(it)
+                    }
             }
         }
     }
 
     private fun setMangaFragment() {
-        mangaStaffList.apply {
+        PeopleTab.Manga.list.apply {
             clear()
             people.mangaStaff
                     .sortedByDescending { it.manga?.startDate }
@@ -118,14 +126,14 @@ class PeopleFragment : Fragment() {
                     }
         }
 
-        if (mangaStaffList.isNotEmpty()) {
-            if (mangaFragment.isAdded) mangaFragment.mangaJapAdapter?.notifyDataSetChanged()
-            addFragment(mangaFragment, getString(R.string.manga))
+        if (PeopleTab.Manga.list.isNotEmpty()) {
+            if (PeopleTab.Manga.fragment.isAdded) PeopleTab.Manga.fragment.mangaJapAdapter?.notifyDataSetChanged()
+            addTab(PeopleTab.Manga)
         }
     }
 
     private fun setAnimeFragment() {
-        animeStaffList.apply {
+        PeopleTab.Anime.list.apply {
             clear()
             people.animeStaff
                     .sortedByDescending { it.anime?.startDate }
@@ -134,43 +142,38 @@ class PeopleFragment : Fragment() {
                     }
         }
 
-        if (animeStaffList.isNotEmpty()) {
-            if (animeFragment.isAdded) animeFragment.mangaJapAdapter?.notifyDataSetChanged()
-            addFragment(animeFragment, getString(R.string.anime))
+        if (PeopleTab.Anime.list.isNotEmpty()) {
+            if (PeopleTab.Anime.fragment.isAdded) PeopleTab.Anime.fragment.mangaJapAdapter?.notifyDataSetChanged()
+            addTab(PeopleTab.Anime)
         }
     }
 
-    private fun addFragment(fragment: Fragment, title: String) {
+    private fun addTab(peopleTab: PeopleTab) {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
 
-        if (!fragmentList.contains(fragment)) {
-            fragmentList.add(fragment)
-            binding.tbPeople.addTab(binding.tbPeople.newTab().setText(title))
-            if (!fragment.isAdded) {
-                ft.add(binding.flPeople.id, fragment)
-            }
-        } else {
-            if (!binding.tbPeople.contains(title)) {
-                binding.tbPeople.addTab(binding.tbPeople.newTab().setText(title))
-                if (fragment.isAdded) {
-                    ft.detach(fragment)
-                    ft.attach(fragment)
-                }
+        if (!binding.tlPeople.contains(getString(peopleTab.stringId))) {
+            binding.tlPeople.add(getString(peopleTab.stringId))
+            if (peopleTab.fragment.isAdded) {
+                ft.detach(peopleTab.fragment)
+                ft.attach(peopleTab.fragment)
+            } else {
+                ft.add(binding.flPeople.id, peopleTab.fragment)
             }
         }
 
         ft.commitAllowingStateLoss()
     }
 
-    private fun showFragment(fragment: Fragment) {
+    private fun showTab(peopleTab: PeopleTab) {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
-        for (i in fragmentList.indices) {
-            if (fragmentList[i] === fragment) {
-                ft.show(fragmentList[i])
-            } else {
-                ft.hide(fragmentList[i])
+
+        PeopleTab.values().forEach {
+            when (peopleTab) {
+                it -> ft.show(peopleTab.fragment)
+                else -> ft.hide(it.fragment)
             }
         }
+
         ft.commitAllowingStateLoss()
     }
 }

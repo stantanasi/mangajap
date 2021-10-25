@@ -28,16 +28,19 @@ import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.models.Volume
-import com.tanasi.mangajap.utils.extensions.addOrLast
-import com.tanasi.mangajap.utils.extensions.contains
-import com.tanasi.mangajap.utils.extensions.setToolbar
-import com.tanasi.mangajap.utils.extensions.shareText
+import com.tanasi.mangajap.utils.extensions.*
 import com.tanasi.mangajap.utils.preferences.UserPreference
-import android.view.Gravity
 
 class MangaFragment : Fragment() {
 
-    // TODO: create Tab ?
+    private enum class MangaTab(
+        val stringId: Int,
+        val fragment: RecyclerViewFragment = RecyclerViewFragment(),
+        val list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+    ) {
+        About(R.string.about),
+        Volumes(R.string.volumes);
+    }
 
     private var _binding: FragmentMangaBinding? = null
     private val binding: FragmentMangaBinding get() = _binding!!
@@ -49,34 +52,30 @@ class MangaFragment : Fragment() {
     private lateinit var manga: Manga
     var showDetailsVolume: Volume? = null
 
-    private val mangaAboutList: MutableList<MangaJapAdapter.Item> = mutableListOf()
-    private val mangaVolumeList: MutableList<MangaJapAdapter.Item> = mutableListOf()
-    private val mangaMyBookList: MutableList<MangaJapAdapter.Item> = mutableListOf()
-
-    private val mangaAboutFragment: RecyclerViewFragment = RecyclerViewFragment()
-    private val mangaVolumeFragment: RecyclerViewFragment = RecyclerViewFragment()
-    private val mangaBooksFragment: RecyclerViewFragment = RecyclerViewFragment()
-
-    private var fragmentList: MutableList<Fragment> = mutableListOf()
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMangaBinding.inflate(inflater, container, false)
         viewModel.getManga(args.mangaId)
-        mangaAboutFragment.setList(mangaAboutList, LinearLayoutManager(requireContext()))
-        mangaVolumeFragment.setList(
-                mangaVolumeList,
+        MangaTab.About.let {
+            it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
+            addTab(it)
+        }
+        MangaTab.Volumes.let {
+            it.fragment.setList(
+                it.list,
                 GridLayoutManager(requireContext(), MANGA_VOLUME_SPAN_COUNT).apply {
                     spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
-                            if (mangaVolumeList[position].typeLayout == MangaJapAdapter.Type.VOLUME_MANGA_DETAILS) return spanCount
-                            return 1
+                            return when (it.list[position].typeLayout) {
+                                MangaJapAdapter.Type.VOLUME_MANGA_DETAILS -> spanCount
+                                else -> 1
+                            }
                         }
                     }
                 },
                 7
-        )
-        mangaBooksFragment.setList(mangaMyBookList, GridLayoutManager(requireContext(), 3))
+            )
+        }
         return binding.root
     }
 
@@ -249,23 +248,31 @@ class MangaFragment : Fragment() {
         setMangaAboutFragment()
         setMangaVolumeFragment()
 
-        binding.tbManga.apply {
+        binding.tlManga.apply {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    showFragment(fragmentList[tab.position])
+                    MangaTab.values()
+                        .find { getString(it.stringId) == tab.text.toString() }
+                        ?.let {
+                            showTab(it)
+                        }
                 }
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
                 override fun onTabReselected(tab: TabLayout.Tab) {}
             })
             getTabAt(selectedTabPosition)?.apply {
                 select()
-                showFragment(fragmentList[position])
+                MangaTab.values()
+                    .find { getString(it.stringId) == text.toString() }
+                    ?.let {
+                        showTab(it)
+                    }
             }
         }
     }
 
     private fun setMangaAboutFragment() {
-        mangaAboutList.apply {
+        MangaTab.About.list.apply {
             clear()
             add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER })
             add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_SUMMARY })
@@ -274,62 +281,58 @@ class MangaFragment : Fragment() {
             add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_REVIEWS })
         }
 
-        if (mangaAboutFragment.isAdded) mangaAboutFragment.mangaJapAdapter?.notifyDataSetChanged()
-        addFragment(mangaAboutFragment, getString(R.string.about))
+        if (MangaTab.About.fragment.isAdded)
+            MangaTab.About.fragment.mangaJapAdapter?.notifyDataSetChanged()
     }
 
     private fun setMangaVolumeFragment() {
-        mangaVolumeList.apply {
+        MangaTab.Volumes.list.apply {
             clear()
             addAll(manga.volumes.map { volume ->
                 volume.apply { typeLayout  = MangaJapAdapter.Type.VOLUME_MANGA }
             })
 
             showDetailsVolume?.let {
-                mangaVolumeList.addOrLast(
-                    (MANGA_VOLUME_SPAN_COUNT - mangaVolumeList.indexOf(it) % MANGA_VOLUME_SPAN_COUNT) + mangaVolumeList.indexOf(it),
+                MangaTab.Volumes.list.addOrLast(
+                    index = (MANGA_VOLUME_SPAN_COUNT - MangaTab.Volumes.list.indexOf(it) % MANGA_VOLUME_SPAN_COUNT)
+                            + MangaTab.Volumes.list.indexOf(it),
                     it.clone().apply { typeLayout = MangaJapAdapter.Type.VOLUME_MANGA_DETAILS }
                 )
             }
         }
 
-        if (mangaVolumeList.isNotEmpty()) {
-            if (mangaVolumeFragment.isAdded) mangaVolumeFragment.mangaJapAdapter?.notifyDataSetChanged()
-            addFragment(mangaVolumeFragment, getString(R.string.volumes))
+        if (MangaTab.Volumes.list.isNotEmpty()) {
+            if (MangaTab.Volumes.fragment.isAdded) MangaTab.Volumes.fragment.mangaJapAdapter?.notifyDataSetChanged()
+            addTab(MangaTab.Volumes)
         }
     }
 
-    private fun addFragment(fragment: Fragment, title: String) {
+    private fun addTab(mangaTab: MangaTab) {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
 
-        if (!fragmentList.contains(fragment)) {
-            fragmentList.add(fragment)
-            binding.tbManga.addTab(binding.tbManga.newTab().setText(title))
-            if (!fragment.isAdded) {
-                ft.add(binding.flManga.id, fragment)
-            }
-        } else {
-            if (!binding.tbManga.contains(title)) {
-                binding.tbManga.addTab(binding.tbManga.newTab().setText(title))
-                if (fragment.isAdded) {
-                    ft.detach(fragment)
-                    ft.attach(fragment)
-                }
+        if (!binding.tlManga.contains(getString(mangaTab.stringId))) {
+            binding.tlManga.add(getString(mangaTab.stringId))
+            if (mangaTab.fragment.isAdded) {
+                ft.detach(mangaTab.fragment)
+                ft.attach(mangaTab.fragment)
+            } else {
+                ft.add(binding.flManga.id, mangaTab.fragment)
             }
         }
 
         ft.commitAllowingStateLoss()
     }
 
-    private fun showFragment(fragment: Fragment) {
+    private fun showTab(mangaTab: MangaTab) {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
-        for (i in fragmentList.indices) {
-            if (fragmentList[i] === fragment) {
-                ft.show(fragmentList[i])
-            } else {
-                ft.hide(fragmentList[i])
+
+        MangaTab.values().forEach {
+            when (mangaTab) {
+                it -> ft.show(mangaTab.fragment)
+                else -> ft.hide(it.fragment)
             }
         }
+
         ft.commitAllowingStateLoss()
     }
 

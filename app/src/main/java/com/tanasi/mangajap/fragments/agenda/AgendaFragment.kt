@@ -40,7 +40,7 @@ class AgendaFragment : Fragment() {
     private lateinit var generalPreference: GeneralPreference
     private lateinit var userPreference: UserPreference
 
-    private lateinit var actualTab: AgendaTab
+    private lateinit var currentTab: AgendaTab
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAgendaBinding.inflate(inflater, container, false)
@@ -100,8 +100,8 @@ class AgendaFragment : Fragment() {
 
         viewModel.getAgenda(userPreference.selfId)
 
-        if (!this::actualTab.isInitialized) {
-            actualTab = when (generalPreference.displayFirst) {
+        if (!this::currentTab.isInitialized) {
+            currentTab = when (generalPreference.displayFirst) {
                 GeneralPreference.DisplayFirst.Manga -> AgendaTab.ReadList
                 GeneralPreference.DisplayFirst.Anime -> AgendaTab.WatchList
             }
@@ -115,20 +115,20 @@ class AgendaFragment : Fragment() {
         binding.tlAgenda.apply {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    actualTab = AgendaTab.values()[tab.position]
-                    generalPreference.displayFirst = when (actualTab) {
+                    currentTab = AgendaTab.values()[tab.position]
+                    generalPreference.displayFirst = when (currentTab) {
                         AgendaTab.ReadList -> GeneralPreference.DisplayFirst.Manga
                         AgendaTab.WatchList -> GeneralPreference.DisplayFirst.Anime
                     }
-                    showTab(actualTab)
+                    showTab(currentTab)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
                 override fun onTabReselected(tab: TabLayout.Tab) {}
             })
-            getTabAt(actualTab.ordinal)?.apply {
+            getTabAt(currentTab.ordinal)?.apply {
                 select()
-                showTab(actualTab)
+                showTab(currentTab)
             }
         }
     }
@@ -153,11 +153,10 @@ class AgendaFragment : Fragment() {
     private fun showTab(agendaTab: AgendaTab) {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
 
-        AgendaTab.values().map {
-            if (agendaTab == it) {
-                ft.show(agendaTab.fragment)
-            } else {
-                ft.hide(it.fragment)
+        AgendaTab.values().forEach {
+            when (agendaTab) {
+                it -> ft.show(agendaTab.fragment)
+                else -> ft.hide(it.fragment)
             }
         }
 

@@ -49,7 +49,7 @@ class SearchFragment : Fragment() {
 
     private lateinit var generalPreference: GeneralPreference
 
-    private lateinit var actualTab: SearchTab
+    private lateinit var currentTab: SearchTab
 
     var query = ""
 
@@ -75,13 +75,13 @@ class SearchFragment : Fragment() {
 
         generalPreference = GeneralPreference(requireContext())
 
-        if (!this::actualTab.isInitialized) {
-            actualTab = when (generalPreference.displayFirst) {
+        if (!this::currentTab.isInitialized) {
+            currentTab = when (generalPreference.displayFirst) {
                 GeneralPreference.DisplayFirst.Manga -> SearchTab.Manga
                 GeneralPreference.DisplayFirst.Anime -> SearchTab.Anime
             }
         }
-        when (actualTab) {
+        when (currentTab) {
             SearchTab.Manga -> viewModel.getMangas(query)
             SearchTab.Anime -> viewModel.getAnimes(query)
             SearchTab.Users -> viewModel.getUsers(query)
@@ -174,7 +174,7 @@ class SearchFragment : Fragment() {
                 }
 
                 SearchViewModel.State.LoadingMore -> {
-                    when (actualTab) {
+                    when (currentTab) {
                         SearchTab.Manga -> mangaLoadMore.isLoading = true
                         SearchTab.Anime -> animeLoadMore.isLoading = true
                         SearchTab.Users -> userLoadMore.isLoading = true
@@ -237,7 +237,7 @@ class SearchFragment : Fragment() {
 
                 SearchViewModel.State.Saving -> {
                 }
-                is SearchViewModel.State.SuccessSaving -> actualTab.fragment.mangaJapAdapter?.notifyDataSetChanged()
+                is SearchViewModel.State.SuccessSaving -> currentTab.fragment.mangaJapAdapter?.notifyDataSetChanged()
                 is SearchViewModel.State.FailedSaving -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
                         Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
@@ -278,7 +278,7 @@ class SearchFragment : Fragment() {
                 timer.schedule(object : TimerTask() {
                     override fun run() {
                         this@SearchFragment.runOnUiThread {
-                            when (actualTab) {
+                            when (currentTab) {
                                 SearchTab.Manga -> viewModel.getMangas(query)
                                 SearchTab.Anime -> viewModel.getAnimes(query)
                                 SearchTab.Users -> viewModel.getUsers(query)
@@ -298,15 +298,15 @@ class SearchFragment : Fragment() {
 
     private fun displaySearch() {
         binding.tbSearch.apply {
-            getTabAt(actualTab.ordinal)?.apply {
+            getTabAt(currentTab.ordinal)?.apply {
                 select()
-                showTab(actualTab)
+                showTab(currentTab)
             }
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    actualTab = SearchTab.values()[tab.position]
-                    showTab(actualTab)
-                    when (actualTab) {
+                    currentTab = SearchTab.values()[tab.position]
+                    showTab(currentTab)
+                    when (currentTab) {
                         SearchTab.Manga -> viewModel.getMangas(query)
                         SearchTab.Anime -> viewModel.getAnimes(query)
                         SearchTab.Users -> viewModel.getUsers(query)

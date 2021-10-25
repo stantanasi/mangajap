@@ -28,7 +28,7 @@
             tools:progress="80" />
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tb_anime"
+            android:id="@+id/tl_anime"
             style="@style/Widget.AppTheme.TabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

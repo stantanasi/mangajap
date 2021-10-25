@@ -27,6 +27,7 @@ import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Season
 import com.tanasi.mangajap.models.User
+import com.tanasi.mangajap.utils.extensions.add
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.extensions.setToolbar
 import com.tanasi.mangajap.utils.extensions.shareText
@@ -34,7 +35,14 @@ import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class AnimeFragment : Fragment() {
 
-    // TODO: create enum Tab ?
+    private enum class AnimeTab(
+        val stringId: Int,
+        val fragment: RecyclerViewFragment = RecyclerViewFragment(),
+        val list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+    ) {
+        About(R.string.about),
+        Episodes(R.string.episodes);
+    }
 
     private var _binding: FragmentAnimeBinding? = null
     private val binding: FragmentAnimeBinding get() = _binding!!
@@ -45,20 +53,14 @@ class AnimeFragment : Fragment() {
 
     private lateinit var anime: Anime
 
-    private var animeAboutList: MutableList<MangaJapAdapter.Item> = mutableListOf()
-    private var animeEpisodesList: MutableList<MangaJapAdapter.Item> = mutableListOf()
-
-    private val animeAboutFragment = RecyclerViewFragment()
-    private val animeEpisodesFragment = RecyclerViewFragment()
-
-    private var fragmentList: MutableList<Fragment> = mutableListOf()
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAnimeBinding.inflate(inflater, container, false)
         viewModel.getAnime(args.animeId)
-        animeAboutFragment.setList(animeAboutList, LinearLayoutManager(requireContext()))
-        animeEpisodesFragment.setList(animeEpisodesList, LinearLayoutManager(requireContext()))
+        AnimeTab.values().forEach {
+            it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
+            addTab(it)
+        }
         return binding.root
     }
 
@@ -254,23 +256,23 @@ class AnimeFragment : Fragment() {
         setAnimeAboutFragment()
         setAnimeEpisodesFragment()
 
-        binding.tbAnime.apply {
+        binding.tlAnime.apply {
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    showFragment(fragmentList[tab.position])
+                    showTab(AnimeTab.values()[tab.position])
                 }
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
                 override fun onTabReselected(tab: TabLayout.Tab) {}
             })
             getTabAt(selectedTabPosition)?.apply {
                 select()
-                showFragment(fragmentList[position])
+                showTab(AnimeTab.values()[position])
             }
         }
     }
 
     private fun setAnimeAboutFragment() {
-        animeAboutList.apply {
+        AnimeTab.About.list.apply {
             clear()
             add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_HEADER })
             add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_SUMMARY })
@@ -279,61 +281,55 @@ class AnimeFragment : Fragment() {
             add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_REVIEWS })
         }
 
-        if (animeAboutFragment.isAdded) animeAboutFragment.mangaJapAdapter?.notifyDataSetChanged()
-        addFragment(animeAboutFragment, getString(R.string.about))
+        if (AnimeTab.About.fragment.isAdded)
+            AnimeTab.About.fragment.mangaJapAdapter?.notifyDataSetChanged()
     }
 
     private fun setAnimeEpisodesFragment() {
-        animeEpisodesList.apply {
+        AnimeTab.Episodes.list.apply {
             clear()
             add(Season().apply { typeLayout = MangaJapAdapter.Type.SEASON_ANIME_HEADER })
         }
         for (season in anime.seasons) {
-            animeEpisodesList.add(season)
+            AnimeTab.Episodes.list.add(season)
             if (season.isShowingEpisodes) {
-                animeEpisodesList.addAll(season.episodes.map { episode ->
+                AnimeTab.Episodes.list.addAll(season.episodes.map { episode ->
                     episode.apply { typeLayout = MangaJapAdapter.Type.EPISODE_ANIME }
                 })
             }
         }
 
-        if (animeEpisodesList.isNotEmpty()) {
-            if (animeEpisodesFragment.isAdded) animeEpisodesFragment.mangaJapAdapter?.notifyDataSetChanged()
-            addFragment(animeEpisodesFragment, getString(R.string.episodes))
-        }
+        if (AnimeTab.Episodes.fragment.isAdded)
+            AnimeTab.Episodes.fragment.mangaJapAdapter?.notifyDataSetChanged()
+
     }
 
-    private fun addFragment(fragment: Fragment, title: String) {
+    private fun addTab(animeTab: AnimeTab) {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
 
-        if (!fragmentList.contains(fragment)) {
-            fragmentList.add(fragment)
-            binding.tbAnime.addTab(binding.tbAnime.newTab().setText(title))
-            if (!fragment.isAdded) {
-                ft.add(binding.flAnime.id, fragment)
-            }
-        } else {
-            if (!binding.tbAnime.contains(title)) {
-                binding.tbAnime.addTab(binding.tbAnime.newTab().setText(title))
-                if (fragment.isAdded) {
-                    ft.detach(fragment)
-                    ft.attach(fragment)
-                }
+        if (!binding.tlAnime.contains(getString(animeTab.stringId))) {
+            binding.tlAnime.add(getString(animeTab.stringId))
+            if (animeTab.fragment.isAdded) {
+                ft.detach(animeTab.fragment)
+                ft.attach(animeTab.fragment)
+            } else {
+                ft.add(binding.flAnime.id, animeTab.fragment)
             }
         }
 
         ft.commitAllowingStateLoss()
     }
 
-    private fun showFragment(fragment: Fragment) {
-        val ft = childFragmentManager.beginTransaction()
-        for (i in fragmentList.indices) {
-            if (fragmentList[i] === fragment) {
-                ft.show(fragmentList[i])
-            } else {
-                ft.hide(fragmentList[i])
+    private fun showTab(animeTab: AnimeTab) {
+        val ft: FragmentTransaction = childFragmentManager.beginTransaction()
+
+        AnimeTab.values().forEach {
+            when (animeTab) {
+                it -> ft.show(animeTab.fragment)
+                else -> ft.hide(it.fragment)
             }
         }
+
         ft.commitAllowingStateLoss()
     }
 

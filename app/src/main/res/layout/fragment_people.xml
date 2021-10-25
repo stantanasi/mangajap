@@ -16,7 +16,7 @@
         <include layout="@layout/view_toolbar" />
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tb_people"
+            android:id="@+id/tl_people"
             style="@style/Widget.AppTheme.TabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

@@ -26,6 +26,7 @@ import com.tanasi.mangajap.databinding.FragmentProfileBinding
 import com.tanasi.mangajap.fragments.follow.FollowFragment
 import com.tanasi.mangajap.fragments.library.LibraryFragment
 import com.tanasi.mangajap.models.*
+import com.tanasi.mangajap.utils.extensions.add
 import com.tanasi.mangajap.utils.extensions.addOrLast
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
@@ -54,7 +55,7 @@ class ProfileFragment : Fragment() {
     private lateinit var userPreference: UserPreference
 
     private var userId: String? = null
-    private var actualTab: ProfileTab = ProfileTab.values()[0]
+    private var currentTab: ProfileTab = ProfileTab.values().first()
 
     private lateinit var user: User
     private var followed: Follow? = null
@@ -65,6 +66,9 @@ class ProfileFragment : Fragment() {
         userId = args.userId
         viewModel.getProfile(userId)
         (requireActivity() as MainActivity).showBottomNavView(userId == null)
+        ProfileTab.values().forEach {
+            addTab(it)
+        }
         return binding.root
     }
 
@@ -74,7 +78,7 @@ class ProfileFragment : Fragment() {
         generalPreference = GeneralPreference(requireContext())
         userPreference = UserPreference(requireContext())
 
-        actualTab = when (generalPreference.displayFirst) {
+        currentTab = when (generalPreference.displayFirst) {
             GeneralPreference.DisplayFirst.Manga -> ProfileTab.Manga
             GeneralPreference.DisplayFirst.Anime -> ProfileTab.Anime
         }
@@ -229,14 +233,11 @@ class ProfileFragment : Fragment() {
 
         binding.tvProfileFollowingCount.text = user.followingCount.toString()
 
-        binding.tbProfile.apply {
-            ProfileTab.values().map {
-                if (!contains(getString(it.stringId))) addTab(newTab().setText(getString(it.stringId)))
-            }
+        binding.tlProfile.apply {
             addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    actualTab = ProfileTab.values()[tab.position]
-                    generalPreference.displayFirst = when (actualTab) {
+                    currentTab = ProfileTab.values()[tab.position]
+                    generalPreference.displayFirst = when (currentTab) {
                         ProfileTab.Manga -> GeneralPreference.DisplayFirst.Manga
                         ProfileTab.Anime -> GeneralPreference.DisplayFirst.Anime
                     }
@@ -246,7 +247,7 @@ class ProfileFragment : Fragment() {
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
                 override fun onTabReselected(tab: TabLayout.Tab) {}
             })
-            getTabAt(actualTab.ordinal)?.apply {
+            getTabAt(currentTab.ordinal)?.apply {
                 select()
                 displayList()
             }
@@ -312,35 +313,35 @@ class ProfileFragment : Fragment() {
 
     private fun displayList() {
         binding.tvProfileMediaFollowed.apply {
-            text = when (actualTab) {
+            text = when (currentTab) {
                 ProfileTab.Manga -> getString(R.string.manga)
                 ProfileTab.Anime -> getString(R.string.anime)
             }
         }
 
         binding.tvProfileMediaFollowedCount.apply {
-            text = when (actualTab) {
+            text = when (currentTab) {
                 ProfileTab.Manga -> user.followedMangaCount.toString()
                 ProfileTab.Anime -> user.followedAnimeCount.toString()
             }
         }
 
         binding.tvProfileUserLibrary.apply {
-            text = when (actualTab) {
+            text = when (currentTab) {
                 ProfileTab.Manga -> getString(R.string.mangaList)
                 ProfileTab.Anime -> getString(R.string.animeList)
             }
         }
 
         binding.tvProfileUserLibraryFavorites.apply {
-            text = when (actualTab) {
+            text = when (currentTab) {
                 ProfileTab.Manga -> getString(R.string.favoritesManga)
                 ProfileTab.Anime -> getString(R.string.favoritesAnime)
             }
         }
 
 
-        when (actualTab) {
+        when (currentTab) {
             ProfileTab.Manga -> ProfileTab.Manga.let { tab ->
                 tab.statsList.apply {
                     clear()
@@ -380,7 +381,7 @@ class ProfileFragment : Fragment() {
 
 
         binding.rvProfileUserStats.apply {
-            adapter = MangaJapAdapter(actualTab.statsList)
+            adapter = MangaJapAdapter(currentTab.statsList)
         }
 
 
@@ -390,7 +391,7 @@ class ProfileFragment : Fragment() {
                     ProfileFragmentDirections.actionProfileToLibrary(
                             user.id,
                             user.pseudo,
-                            when (actualTab) {
+                            when (currentTab) {
                                 ProfileTab.Manga -> LibraryFragment.LibraryType.MangaList
                                 ProfileTab.Anime -> LibraryFragment.LibraryType.AnimeList
                             }
@@ -399,27 +400,27 @@ class ProfileFragment : Fragment() {
         }
 
         binding.rvProfileUserLibrary.apply {
-            if (actualTab.libraryList.isEmpty()) {
+            if (currentTab.libraryList.isEmpty()) {
                 visibility = View.GONE
             } else {
                 visibility = View.VISIBLE
-                actualTab.libraryList.apply {
+                currentTab.libraryList.apply {
                     subList(if (size < PREVIEW_SIZE) size else PREVIEW_SIZE, size).clear()
                 }
-                for (item in actualTab.libraryList) {
+                for (item in currentTab.libraryList) {
                     when (item) {
                         is MangaEntry -> item.typeLayout = MangaJapAdapter.Type.MANGA_ENTRY_PREVIEW
                         is AnimeEntry -> item.typeLayout = MangaJapAdapter.Type.ANIME_ENTRY_PREVIEW
                     }
                 }
-                adapter = MangaJapAdapter(actualTab.libraryList)
+                adapter = MangaJapAdapter(currentTab.libraryList)
             }
         }
 
 
 
         binding.groupProfileUserLibraryFavorites.visibility = when {
-            actualTab.favoritesList.isEmpty() -> View.GONE
+            currentTab.favoritesList.isEmpty() -> View.GONE
             else -> View.VISIBLE
         }
 
@@ -428,7 +429,7 @@ class ProfileFragment : Fragment() {
                     ProfileFragmentDirections.actionProfileToLibrary(
                             user.id,
                             user.pseudo,
-                            when (actualTab) {
+                            when (currentTab) {
                                 ProfileTab.Manga -> LibraryFragment.LibraryType.MangaFavoritesList
                                 ProfileTab.Anime -> LibraryFragment.LibraryType.AnimeFavoritesList
                             }
@@ -437,21 +438,27 @@ class ProfileFragment : Fragment() {
         }
 
         binding.rvProfileUserLibraryFavorites.apply {
-            if (actualTab.favoritesList.isEmpty()) {
+            if (currentTab.favoritesList.isEmpty()) {
                 visibility = View.GONE
             } else {
                 visibility = View.VISIBLE
-                actualTab.favoritesList.apply {
+                currentTab.favoritesList.apply {
                     subList(if (size < PREVIEW_SIZE) size else PREVIEW_SIZE, size).clear()
                 }
-                for (item in actualTab.favoritesList) {
+                for (item in currentTab.favoritesList) {
                     when (item) {
                         is MangaEntry -> item.typeLayout = MangaJapAdapter.Type.MANGA_ENTRY_PREVIEW
                         is AnimeEntry -> item.typeLayout = MangaJapAdapter.Type.ANIME_ENTRY_PREVIEW
                     }
                 }
-                adapter = MangaJapAdapter(actualTab.favoritesList)
+                adapter = MangaJapAdapter(currentTab.favoritesList)
             }
+        }
+    }
+
+    private fun addTab(profileTab: ProfileTab) {
+        if (!binding.tlProfile.contains(getString(profileTab.stringId))) {
+            binding.tlProfile.add(getString(profileTab.stringId))
         }
     }
 
