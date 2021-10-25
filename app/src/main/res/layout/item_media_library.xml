@@ -7,7 +7,6 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <!--  TODO: Rounded elevation drawable  -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
