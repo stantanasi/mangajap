@@ -31,17 +31,17 @@ class LoginFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                LoginViewModel.State.Loading -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
+                LoginViewModel.State.Loading -> binding.isUpdating.root.visibility = View.VISIBLE
 
                 is LoginViewModel.State.LoginSucceed -> {
                     UserPreference(requireContext()).selfId = state.userId
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
+                    binding.isUpdating.root.visibility = View.GONE
                     startActivity(Intent(requireContext(), MainActivity::class.java))
                     requireActivity().finish()
                 }
                 is LoginViewModel.State.LoginFailed -> {
                     Toast.makeText(requireContext(), state.error.message, Toast.LENGTH_SHORT).show()
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
+                    binding.isUpdating.root.visibility = View.GONE
                 }
 
                 is LoginViewModel.State.PasswordResetEmailSuccess -> Toast.makeText(

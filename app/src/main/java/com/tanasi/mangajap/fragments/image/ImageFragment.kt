@@ -62,14 +62,14 @@ class ImageFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                ImageViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                ImageViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
                 is ImageViewModel.State.SuccessLoading -> {
                     image = state.image
                     requireActivity().invalidateOptionsMenu()
                     state.image.getAverageColor().let { averageColor ->
                         binding.root.setBackgroundColor(averageColor)
                     }
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is ImageViewModel.State.FailedLoading -> requireActivity().invalidateOptionsMenu()
             }

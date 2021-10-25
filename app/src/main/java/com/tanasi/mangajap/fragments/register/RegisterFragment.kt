@@ -33,10 +33,10 @@ class RegisterFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                RegisterViewModel.State.Loading -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
+                RegisterViewModel.State.Loading -> binding.isUpdating.root.visibility = View.VISIBLE
 
                 is RegisterViewModel.State.RegisterSucceed -> {
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
+                    binding.isUpdating.root.visibility = View.GONE
                     startActivity(Intent(requireContext(), MainActivity::class.java))
                     requireActivity().finish()
                 }
@@ -56,7 +56,7 @@ class RegisterFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
+                    binding.isUpdating.root.visibility = View.GONE
                 }
             }
         }

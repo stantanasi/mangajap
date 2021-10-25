@@ -57,11 +57,11 @@ class PeopleFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                PeopleViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                PeopleViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
                 is PeopleViewModel.State.SuccessLoading -> {
                     people = state.people
                     displayPeople()
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is PeopleViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {

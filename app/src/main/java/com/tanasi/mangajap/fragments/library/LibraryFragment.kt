@@ -100,7 +100,7 @@ class LibraryFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 LibraryViewModel.State.Loading -> {
-                    binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                    binding.isLoading.root.visibility = View.VISIBLE
                 }
                 is LibraryViewModel.State.SuccessLoading -> {
                     itemList.apply {
@@ -109,7 +109,7 @@ class LibraryFragment : Fragment() {
                     }
                     displayLibrary()
                     mangaJapAdapter.notifyDataSetChanged()
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is LibraryViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -127,7 +127,7 @@ class LibraryFragment : Fragment() {
                     ).show()
                 }
 
-                LibraryViewModel.State.Saving -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
+                LibraryViewModel.State.Saving -> binding.isUpdating.root.visibility = View.VISIBLE
                 is LibraryViewModel.State.SuccessSaving -> {
                     itemList
                             .find {
@@ -142,7 +142,7 @@ class LibraryFragment : Fragment() {
                                 }
                             }
                     mangaJapAdapter.notifyDataSetChanged()
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
+                    binding.isUpdating.root.visibility = View.GONE
                 }
                 is LibraryViewModel.State.FailedSaving -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {

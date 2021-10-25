@@ -59,7 +59,7 @@ class FollowFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                FollowViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                FollowViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
                 is FollowViewModel.State.SuccessLoading -> {
                     followsList.apply {
                         clear()
@@ -69,7 +69,7 @@ class FollowFragment : Fragment() {
                     nextLink = state.nextLink
                     loadMore.isMoreDataAvailable = nextLink != ""
                     displayFollows()
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is FollowViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {

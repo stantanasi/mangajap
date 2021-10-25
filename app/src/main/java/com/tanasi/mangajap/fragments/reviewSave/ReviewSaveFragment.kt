@@ -56,11 +56,11 @@ class ReviewSaveFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                ReviewSaveViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                ReviewSaveViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
                 is ReviewSaveViewModel.State.SuccessLoading -> {
                     review = state.review
                     displayReview()
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is ReviewSaveViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -78,7 +78,7 @@ class ReviewSaveFragment : Fragment() {
                     ).show()
                 }
 
-                ReviewSaveViewModel.State.Saving -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                ReviewSaveViewModel.State.Saving -> binding.isLoading.root.visibility = View.VISIBLE
                 is ReviewSaveViewModel.State.SuccessSaving -> findNavController().navigateUp()
                 is ReviewSaveViewModel.State.FailedSaving -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {

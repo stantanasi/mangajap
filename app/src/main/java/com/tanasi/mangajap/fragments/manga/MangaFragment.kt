@@ -88,11 +88,11 @@ class MangaFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                MangaViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                MangaViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
                 is MangaViewModel.State.SuccessLoading -> {
                     manga = state.manga
                     displayManga()
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is MangaViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -143,11 +143,11 @@ class MangaFragment : Fragment() {
                     ).show()
                 }
 
-                MangaViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
+                MangaViewModel.State.Updating -> binding.isUpdating.root.visibility = View.VISIBLE
                 is MangaViewModel.State.SuccessUpdating -> {
                     manga.mangaEntry = state.mangaEntry
                     displayManga()
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
+                    binding.isUpdating.root.visibility = View.GONE
                 }
                 is MangaViewModel.State.FailedUpdating -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {

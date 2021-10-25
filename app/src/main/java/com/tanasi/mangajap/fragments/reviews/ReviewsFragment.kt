@@ -57,11 +57,11 @@ class ReviewsFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 ReviewsViewModel.State.Loading -> {
-                    binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                    binding.isLoading.root.visibility = View.VISIBLE
                 }
                 is ReviewsViewModel.State.SuccessLoading -> {
                     displayReviews(state.reviews)
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is ReviewsViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {

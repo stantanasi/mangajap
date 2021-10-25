@@ -73,13 +73,13 @@ class ProfileEditFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                ProfileEditViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                ProfileEditViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
                 is ProfileEditViewModel.State.SuccessLoading -> {
                     user = state.user
                     requireActivity().invalidateOptionsMenu()
 
                     displayProfile()
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is ProfileEditViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -97,7 +97,7 @@ class ProfileEditFragment : Fragment() {
                     ).show()
                 }
 
-                ProfileEditViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
+                ProfileEditViewModel.State.Updating -> binding.isUpdating.root.visibility = View.VISIBLE
                 is ProfileEditViewModel.State.SuccessUpdating -> findNavController().navigateUp()
                 is ProfileEditViewModel.State.FailedUpdating -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {

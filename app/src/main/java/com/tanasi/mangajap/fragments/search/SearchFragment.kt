@@ -94,7 +94,7 @@ class SearchFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                SearchViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                SearchViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
                 is SearchViewModel.State.SuccessLoadingManga -> {
                     SearchTab.Manga.list.apply {
                         clear()
@@ -114,7 +114,7 @@ class SearchFragment : Fragment() {
                         }
                         SearchTab.Manga.fragment.mangaJapAdapter?.notifyDataSetChanged()
                     }
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is SearchViewModel.State.SuccessLoadingAnime -> {
                     SearchTab.Anime.list.apply {
@@ -135,7 +135,7 @@ class SearchFragment : Fragment() {
                         }
                         SearchTab.Anime.fragment.mangaJapAdapter?.notifyDataSetChanged()
                     }
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is SearchViewModel.State.SuccessLoadingUsers -> {
                     SearchTab.Users.list.apply {
@@ -155,7 +155,7 @@ class SearchFragment : Fragment() {
                         }
                         SearchTab.Users.fragment.mangaJapAdapter?.notifyDataSetChanged()
                     }
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is SearchViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -268,7 +268,7 @@ class SearchFragment : Fragment() {
             private var timer: Timer = Timer()
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                binding.isLoading.root.visibility = View.VISIBLE
                 timer.cancel()
             }
 

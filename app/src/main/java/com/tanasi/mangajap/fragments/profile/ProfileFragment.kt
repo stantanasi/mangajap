@@ -89,14 +89,14 @@ class ProfileFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                ProfileViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                ProfileViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
                 is ProfileViewModel.State.SuccessLoading -> {
                     user = state.user
                     followed = state.followed
                     follower = state.follower
 
                     displayProfile()
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is ProfileViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {

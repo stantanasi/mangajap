@@ -59,7 +59,7 @@ class AgendaFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                AgendaViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                AgendaViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
                 is AgendaViewModel.State.SuccessLoading -> {
                     AgendaTab.ReadList.list.apply {
                         clear()
@@ -78,7 +78,7 @@ class AgendaFragment : Fragment() {
                         })
                     }
                     AgendaTab.values().map { it.fragment.mangaJapAdapter?.notifyDataSetChanged() }
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is AgendaViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {

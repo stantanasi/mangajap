@@ -53,7 +53,7 @@ open class RecyclerViewFragment : Fragment() {
 
             displayList()
 
-            binding.isLoading.cslIsLoading.visibility = View.GONE
+            binding.isLoading.root.visibility = View.GONE
         }
     }
 
@@ -94,9 +94,9 @@ open class RecyclerViewFragment : Fragment() {
         if (_binding == null) return
 
         if (isLoading) {
-            binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+            binding.isLoading.root.visibility = View.VISIBLE
         } else {
-            binding.isLoading.cslIsLoading.visibility = View.GONE
+            binding.isLoading.root.visibility = View.GONE
         }
     }
 }

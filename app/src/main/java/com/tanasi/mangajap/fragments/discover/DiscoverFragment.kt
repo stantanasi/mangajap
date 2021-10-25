@@ -52,7 +52,7 @@ class DiscoverFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                DiscoverViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                DiscoverViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
                 is DiscoverViewModel.State.SuccessLoading -> {
                     peopleList.apply {
                         clear()
@@ -69,7 +69,7 @@ class DiscoverFragment : Fragment() {
                     }
 
                     displayDiscover()
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is DiscoverViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -87,11 +87,11 @@ class DiscoverFragment : Fragment() {
                     ).show()
                 }
 
-                DiscoverViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
+                DiscoverViewModel.State.Updating -> binding.isUpdating.root.visibility = View.VISIBLE
                 is DiscoverViewModel.State.SuccessUpdating -> {
                     mangaRecentAdapter.notifyDataSetChanged()
                     animeRecentAdapter.notifyDataSetChanged()
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
+                    binding.isUpdating.root.visibility = View.GONE
                 }
                 is DiscoverViewModel.State.FailedUpdating -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {

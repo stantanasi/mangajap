@@ -70,11 +70,11 @@ class AnimeFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                AnimeViewModel.State.Loading -> binding.isLoading.cslIsLoading.visibility = View.VISIBLE
+                AnimeViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
                 is AnimeViewModel.State.SuccessLoading -> {
                     anime = state.anime
                     displayAnime()
-                    binding.isLoading.cslIsLoading.visibility = View.GONE
+                    binding.isLoading.root.visibility = View.GONE
                 }
                 is AnimeViewModel.State.FailedLoading -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -148,11 +148,11 @@ class AnimeFragment : Fragment() {
                     ).show()
                 }
 
-                AnimeViewModel.State.Updating -> binding.isUpdating.cslIsUpdating.visibility = View.VISIBLE
+                AnimeViewModel.State.Updating -> binding.isUpdating.root.visibility = View.VISIBLE
                 is AnimeViewModel.State.SuccessUpdating -> {
                     anime.animeEntry = state.animeEntry
                     displayAnime()
-                    binding.isUpdating.cslIsUpdating.visibility = View.GONE
+                    binding.isUpdating.root.visibility = View.GONE
                 }
                 is AnimeViewModel.State.FailedUpdating -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
