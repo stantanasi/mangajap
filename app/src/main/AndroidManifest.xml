@@ -10,7 +10,8 @@
         tools:node="replace" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application android:name=".MangaJapApplication"
+    <application
+        android:name=".MangaJapApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -33,21 +34,33 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="MangaJap" />
 
-        <activity android:name=".activities.LauncherActivity"
+        <activity
+            android:name=".activities.LauncherActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="mangajap.web.app" />
+            </intent-filter>
         </activity>
+
         <activity android:name=".activities.MainActivity" />
 
         <service
             android:name=".services.NotificationService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
     </application>
