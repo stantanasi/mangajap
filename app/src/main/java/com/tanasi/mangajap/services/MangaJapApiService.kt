@@ -57,7 +57,7 @@ interface MangaJapApiService {
             }.build()
 
             val retrofit = Retrofit.Builder()
-                .baseUrl("http://mangajap.000webhostapp.com/api/")
+                .baseUrl("https://mangajap-api.herokuapp.com/")
                 .client(client)
                 .addCallAdapterFactory(OAuth2CallAdapterFactory.create())
                 .addConverterFactory(OAuth2ConverterFactory.create())
