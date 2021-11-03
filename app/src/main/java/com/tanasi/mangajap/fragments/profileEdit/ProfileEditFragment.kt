@@ -125,7 +125,7 @@ class ProfileEditFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (this::user.isInitialized) {
-            inflater.inflate(R.menu.menu_activity_edit_profile, menu)
+            inflater.inflate(R.menu.menu_fragment_profile_edit, menu)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }

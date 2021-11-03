@@ -110,7 +110,7 @@ class ReviewSaveFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_reviews_activity, menu)
+        inflater.inflate(R.menu.menu_fragment_review_save, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 

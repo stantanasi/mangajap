@@ -183,7 +183,7 @@ class AnimeFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (this::anime.isInitialized) {
             anime.animeEntry?.let { animeEntry ->
-                if (animeEntry.isAdd) inflater.inflate(R.menu.menu_anime_activity, menu)
+                if (animeEntry.isAdd) inflater.inflate(R.menu.menu_fragment_anime, menu)
                 else inflater.inflate(R.menu.menu_share, menu)
             } ?: let {
                 inflater.inflate(R.menu.menu_share, menu)

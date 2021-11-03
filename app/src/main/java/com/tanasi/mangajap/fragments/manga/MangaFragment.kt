@@ -175,7 +175,7 @@ class MangaFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (this::manga.isInitialized) {
             manga.mangaEntry?.let { mangaEntry ->
-                if (mangaEntry.isAdd) inflater.inflate(R.menu.menu_manga_activity, menu)
+                if (mangaEntry.isAdd) inflater.inflate(R.menu.menu_fragment_manga, menu)
                 else inflater.inflate(R.menu.menu_share, menu)
             } ?: let {
                 inflater.inflate(R.menu.menu_share, menu)

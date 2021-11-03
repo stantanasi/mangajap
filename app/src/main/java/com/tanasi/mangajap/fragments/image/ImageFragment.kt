@@ -86,7 +86,7 @@ class ImageFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (this::image.isInitialized) {
-            inflater.inflate(R.menu.menu_image_activity, menu)
+            inflater.inflate(R.menu.menu_fragment_image, menu)
         }
         return super.onCreateOptionsMenu(menu, inflater)
     }
