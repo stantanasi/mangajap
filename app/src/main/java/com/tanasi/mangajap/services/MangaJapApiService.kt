@@ -26,33 +26,6 @@ interface MangaJapApiService {
                     .addHeader("Authorization", "Bearer ${Firebase.auth.uid}")
                     .addHeader("Accept", "application/json")
 
-                chain.request().body()?.let { requestBody ->
-                    val method = chain.request().method()
-                    val data = Buffer().also { requestBody.writeTo(it) }.readUtf8()
-                    val contentType = requestBody.contentType()
-
-                    requestBuilder.post(
-                        RequestBody.create(
-                            contentType,
-                            JSONObject().also { newData ->
-                                newData.put("REQUEST_METHOD", method)
-                                data?.let { newData.put("data", JSONObject(it)) }
-                            }.toString()
-                        )
-                    )
-                } ?: let {
-                    val method = chain.request().method()
-
-                    requestBuilder.post(
-                        RequestBody.create(
-                            MediaType.get("application/json; charset=UTF-8"),
-                            JSONObject()
-                                .put("REQUEST_METHOD", method)
-                                .toString()
-                        )
-                    )
-                }
-
                 chain.proceed(requestBuilder.build())
             }.build()
 

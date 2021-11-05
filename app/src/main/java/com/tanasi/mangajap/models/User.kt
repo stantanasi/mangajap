@@ -18,7 +18,6 @@ class User(
     updatedAt: String? = null,
     var uid: String = "",
     var pseudo: String = "",
-    var slug: String = "",
     var about: String = "",
     var isAdmin: Boolean = false,
     var isPremium: Boolean = false,
