@@ -35,7 +35,9 @@ class SearchFragment : Fragment() {
     private enum class SearchTab(
             val stringId: Int,
             val fragment: RecyclerViewFragment = RecyclerViewFragment(),
-            val list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+            val list: MutableList<MangaJapAdapter.Item> = mutableListOf(),
+            val loadMore: LoadMore = LoadMore(),
+            var nextLink: String = "",
     ) {
         Manga(R.string.manga),
         Anime(R.string.anime),
@@ -52,14 +54,7 @@ class SearchFragment : Fragment() {
     private lateinit var currentTab: SearchTab
 
     var query = ""
-
-    private val mangaLoadMore: LoadMore = LoadMore()
-    private val animeLoadMore: LoadMore = LoadMore()
-    private val userLoadMore: LoadMore = LoadMore()
-
-    private var mangaNextLink: String = ""
-    private var animeNextLink: String = ""
-    private var userNextLink: String = ""
+    
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
@@ -101,16 +96,14 @@ class SearchFragment : Fragment() {
                         addAll(state.mangaList)
                         if (size < 15) add(Manga().also { it.typeLayout = MangaJapAdapter.Type.MANGA_SEARCH_ADD })
                         addOrLast(3, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_SEARCH })
-                        add(mangaLoadMore)
+                        add(SearchTab.Manga.loadMore)
                     }
-                    mangaNextLink = state.nextLink
-                    mangaLoadMore.isMoreDataAvailable = mangaNextLink != ""
+                    SearchTab.Manga.nextLink = state.nextLink
+                    SearchTab.Manga.loadMore.isMoreDataAvailable = (SearchTab.Manga.nextLink != "")
 
                     if (SearchTab.Manga.fragment.isAdded) {
                         SearchTab.Manga.fragment.mangaJapAdapter?.setOnLoadMoreListener {
-                            SearchTab.Manga.fragment.recyclerView?.post {
-                                if (mangaNextLink != "") viewModel.loadMoreManga(mangaNextLink)
-                            }
+                            if (SearchTab.Manga.nextLink != "") viewModel.loadMoreManga(SearchTab.Manga.nextLink)
                         }
                         SearchTab.Manga.fragment.mangaJapAdapter?.notifyDataSetChanged()
                     }
@@ -122,16 +115,14 @@ class SearchFragment : Fragment() {
                         addAll(state.animeList)
                         if (size < 15) add(Anime().also { it.typeLayout = MangaJapAdapter.Type.ANIME_SEARCH_ADD })
                         addOrLast(3, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_SEARCH })
-                        add(animeLoadMore)
+                        add(SearchTab.Anime.loadMore)
                     }
-                    animeNextLink = state.nextLink
-                    animeLoadMore.isMoreDataAvailable = animeNextLink != ""
+                    SearchTab.Anime.nextLink = state.nextLink
+                    SearchTab.Anime.loadMore.isMoreDataAvailable = (SearchTab.Anime.nextLink != "")
 
                     if (SearchTab.Anime.fragment.isAdded) {
                         SearchTab.Anime.fragment.mangaJapAdapter?.setOnLoadMoreListener {
-                            SearchTab.Anime.fragment.recyclerView?.post {
-                                if (animeNextLink != "") viewModel.loadMoreAnime(animeNextLink)
-                            }
+                            if (SearchTab.Anime.nextLink != "") viewModel.loadMoreAnime(SearchTab.Anime.nextLink)
                         }
                         SearchTab.Anime.fragment.mangaJapAdapter?.notifyDataSetChanged()
                     }
@@ -142,16 +133,14 @@ class SearchFragment : Fragment() {
                         clear()
                         addAll(state.userList)
                         addOrLast(3, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_SEARCH })
-                        add(userLoadMore)
+                        add(SearchTab.Users.loadMore)
                     }
-                    userNextLink = state.nextLink
-                    userLoadMore.isMoreDataAvailable = userNextLink != ""
+                    SearchTab.Users.nextLink = state.nextLink
+                    SearchTab.Users.loadMore.isMoreDataAvailable = (SearchTab.Users.nextLink != "")
 
                     if (SearchTab.Users.fragment.isAdded) {
                         SearchTab.Users.fragment.mangaJapAdapter?.setOnLoadMoreListener {
-                            SearchTab.Users.fragment.recyclerView?.post {
-                                if (userNextLink != "") viewModel.loadMoreUser(userNextLink)
-                            }
+                            if (SearchTab.Users.nextLink != "") viewModel.loadMoreUser(SearchTab.Users.nextLink)
                         }
                         SearchTab.Users.fragment.mangaJapAdapter?.notifyDataSetChanged()
                     }
@@ -175,47 +164,47 @@ class SearchFragment : Fragment() {
 
                 SearchViewModel.State.LoadingMore -> {
                     when (currentTab) {
-                        SearchTab.Manga -> mangaLoadMore.isLoading = true
-                        SearchTab.Anime -> animeLoadMore.isLoading = true
-                        SearchTab.Users -> userLoadMore.isLoading = true
+                        SearchTab.Manga -> SearchTab.Manga.loadMore.isLoading = true
+                        SearchTab.Anime -> SearchTab.Anime.loadMore.isLoading = true
+                        SearchTab.Users -> SearchTab.Users.loadMore.isLoading = true
                     }
                 }
                 is SearchViewModel.State.SuccessLoadingMoreManga -> {
                     SearchTab.Manga.list.apply {
                         addAll(state.mangaList)
-                        remove(mangaLoadMore)
-                        add(mangaLoadMore)
+                        remove(SearchTab.Manga.loadMore)
+                        add(SearchTab.Manga.loadMore)
                     }
-                    mangaNextLink = state.nextLink
+                    SearchTab.Manga.nextLink = state.nextLink
                     if (SearchTab.Manga.fragment.isAdded) {
-                        mangaLoadMore.isMoreDataAvailable = mangaNextLink != ""
-                        mangaLoadMore.isLoading = false
+                        SearchTab.Manga.loadMore.isMoreDataAvailable = (SearchTab.Manga.nextLink != "")
+                        SearchTab.Manga.loadMore.isLoading = false
                         SearchTab.Manga.fragment.mangaJapAdapter?.notifyDataSetChanged()
                     }
                 }
                 is SearchViewModel.State.SuccessLoadingMoreAnime -> {
                     SearchTab.Anime.list.apply {
                         addAll(state.animeList)
-                        remove(animeLoadMore)
-                        add(animeLoadMore)
+                        remove(SearchTab.Anime.loadMore)
+                        add(SearchTab.Anime.loadMore)
                     }
-                    animeNextLink = state.nextLink
+                    SearchTab.Anime.nextLink = state.nextLink
                     if (SearchTab.Anime.fragment.isAdded) {
-                        animeLoadMore.isMoreDataAvailable = animeNextLink != ""
-                        animeLoadMore.isLoading = false
+                        SearchTab.Anime.loadMore.isMoreDataAvailable = (SearchTab.Anime.nextLink != "")
+                        SearchTab.Anime.loadMore.isLoading = false
                         SearchTab.Anime.fragment.mangaJapAdapter?.notifyDataSetChanged()
                     }
                 }
                 is SearchViewModel.State.SuccessLoadingMoreUsers -> {
                     SearchTab.Users.list.apply {
                         addAll(state.userList)
-                        remove(userLoadMore)
-                        add(userLoadMore)
+                        remove(SearchTab.Users.loadMore)
+                        add(SearchTab.Users.loadMore)
                     }
-                    userNextLink = state.nextLink
+                    SearchTab.Users.nextLink = state.nextLink
                     if (SearchTab.Users.fragment.isAdded) {
-                        userLoadMore.isMoreDataAvailable = userNextLink != ""
-                        userLoadMore.isLoading = false
+                        SearchTab.Users.loadMore.isMoreDataAvailable = (SearchTab.Users.nextLink != "")
+                        SearchTab.Users.loadMore.isLoading = false
                         SearchTab.Users.fragment.mangaJapAdapter?.notifyDataSetChanged()
                     }
                 }

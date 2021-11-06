@@ -209,20 +209,26 @@ class SearchViewModel : ViewModel() {
     fun getUsers(query: String) = viewModelScope.launch {
         _state.value = State.Loading
 
-        val response = mangaJapApiService.getUsers(
-                JsonApiParams(
+        _state.value = try {
+            if (query == "") {
+                State.SuccessLoadingUsers(listOf(), "")
+
+            } else {
+                val response = mangaJapApiService.getUsers(
+                    JsonApiParams(
                         sort = listOf("-followersCount"),
                         limit = 15,
                         filter = mapOf("query" to listOf(query))
+                    )
                 )
-        )
-        _state.value = try {
-            when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoadingUsers(
+
+                when (response) {
+                    is JsonApiResponse.Success -> State.SuccessLoadingUsers(
                         response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.USER } },
                         response.body.links?.next ?: ""
-                )
-                is JsonApiResponse.Error -> State.FailedLoading(response)
+                    )
+                    is JsonApiResponse.Error -> State.FailedLoading(response)
+                }
             }
         } catch (e: Exception) {
             State.FailedLoading(JsonApiResponse.Error.UnknownError(e))

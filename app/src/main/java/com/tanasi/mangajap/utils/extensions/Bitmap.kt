@@ -18,8 +18,8 @@ import java.io.IOException
 fun Bitmap.toBase64(): String {
     val baos = ByteArrayOutputStream()
     this.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-    val b: ByteArray = baos.toByteArray()
-    return Base64.encodeToString(b, Base64.DEFAULT)
+    val data = baos.toByteArray()
+    return Base64.encodeToString(data, Base64.DEFAULT)
 }
 
 fun Bitmap.getAverageColor(): Int {
