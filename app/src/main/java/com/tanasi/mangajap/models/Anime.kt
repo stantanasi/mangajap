@@ -11,30 +11,30 @@ import java.util.*
 
 @JsonApiType("anime")
 class Anime(
-    override var id: String = "",
+    val id: String,
+
     createdAt: String? = null,
     updatedAt: String? = null,
     val title: String = "",
     titles: JSONObject? = null,
-    val synopsis: String? = null,
-    startDate: String? = null,
+    val synopsis: String = "",
+    startDate: String = "",
     endDate: String? = null,
-    origin: String? = null,
+    origin: String = "",
     status: String = "",
     animeType: String = "",
-    val seasonCount: Int? = null,
-    val episodeCount: Int? = null,
-    val episodeLength: Int? = null,
-    val totalLength: Int? = null,
+    val seasonCount: Int = 0,
+    val episodeCount: Int = 0,
+    val episodeLength: Int = 0,
     val averageRating: Double? = null,
     val ratingRank: Int? = null,
-    val popularity: Int? = null,
-    val userCount: Int? = null,
-    val favoritesCount: Int? = null,
-    val reviewCount: Int? = null,
+    val popularity: Int = 0,
+    val userCount: Int = 0,
+    val favoritesCount: Int = 0,
+    val reviewCount: Int = 0,
+    val youtubeVideoId: String = "",
     val coverImage: String? = null,
     val bannerImage: String? = null,
-    val youtubeVideoId: String? = null,
 
     val seasons: List<Season> = listOf(),
     val genres: List<Genre> = listOf(),
@@ -43,16 +43,16 @@ class Anime(
     val reviews: List<Review> = listOf(),
     val franchises: List<Franchise> = listOf(),
     @JsonApiRelationship("anime-entry") var animeEntry: AnimeEntry? = null,
-) : JsonApiResource(), MangaJapAdapter.Item, Cloneable {
+) : MangaJapAdapter.Item, Cloneable {
 
-    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val titles: Titles = Titles.create(titles)
     val startDate: Calendar? = startDate?.toCalendar("yyyy-MM-dd")
     val endDate: Calendar? = endDate?.toCalendar("yyyy-MM-dd")
     val origin: Locale? = origin?.let { Locale("", it) }
-    var status: Status = Status.getByName(status)
-    var animeType: AnimeType? = AnimeType.getByName(animeType)
+    val status: Status = Status.getByName(status)
+    val animeType: AnimeType? = AnimeType.getByName(animeType)
+    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
 
     data class Titles(
@@ -108,7 +108,5 @@ class Anime(
 
     override lateinit var typeLayout: MangaJapAdapter.Type
 
-    public override fun clone(): Anime {
-        return super.clone() as Anime
-    }
+    public override fun clone(): Anime = super.clone() as Anime
 }

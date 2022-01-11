@@ -105,12 +105,10 @@ class AnimeViewModel : ViewModel() {
     fun addAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
         _state.value = State.AddingEntry
 
-
         _state.value = try {
-            val response = when (animeEntry.id) {
-                "" -> mangaJapApiService.createAnimeEntry(animeEntry)
-                else -> mangaJapApiService.updateAnimeEntry(animeEntry.id, animeEntry)
-            }
+            val response = animeEntry.id?.let {
+                mangaJapApiService.updateAnimeEntry(it, animeEntry)
+            } ?: mangaJapApiService.createAnimeEntry(animeEntry)
 
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessAddingEntry(response.body.data!!)
@@ -124,11 +122,12 @@ class AnimeViewModel : ViewModel() {
     fun updateAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
         _state.value = State.Updating
 
-        val response = mangaJapApiService.updateAnimeEntry(
-            animeEntry.id,
-            animeEntry
-        )
         _state.value = try {
+            val response = mangaJapApiService.updateAnimeEntry(
+                animeEntry.id!!,
+                animeEntry
+            )
+
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessUpdating(response.body.data!!)
                 is JsonApiResponse.Error -> State.FailedUpdating(response)

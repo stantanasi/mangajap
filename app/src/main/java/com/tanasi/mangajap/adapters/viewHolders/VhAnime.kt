@@ -115,13 +115,13 @@ class VhAnime(
             setOnClickListener {
                 anime.animeEntry?.let { animeEntry ->
                     updateAnimeEntry(animeEntry.also {
-                        it.putAdd(isChecked)
+                        it.isAdd = isChecked
                     })
                 } ?: createAnimeEntry(AnimeEntry().also {
-                    it.putAdd(isChecked)
-                    it.putStatus(AnimeEntry.Status.watching)
-                    it.putUser(User().apply { id = UserPreference(context).selfId })
-                    it.putAnime(anime)
+                    it.isAdd = isChecked
+                    it.status = AnimeEntry.Status.watching
+                    it.user = User(id = UserPreference(context).selfId)
+                    it.anime = anime
                 })
             }
         }
@@ -141,9 +141,9 @@ class VhAnime(
                     query
             ) { dialog, _, text ->
                 createAnimeRequest(Request().also {
-                    it.putRequestType(Request.RequestType.anime)
-                    it.putData(text)
-                    it.putUser(User().apply { id = UserPreference(context).selfId })
+                    it.requestType = Request.RequestType.anime
+                    it.data = text
+                    it.user = User(id = UserPreference(context).selfId)
                 })
                 dialog.dismiss()
             }.show()
@@ -188,13 +188,13 @@ class VhAnime(
             setOnClickListener {
                 anime.animeEntry?.let { animeEntry ->
                     updateAnimeEntry(animeEntry.also {
-                        it.putAdd(isChecked)
+                        it.isAdd = isChecked
                     })
                 } ?: createAnimeEntry(AnimeEntry().also {
-                    it.putAdd(isChecked)
-                    it.putStatus(AnimeEntry.Status.watching)
-                    it.putUser(User().apply { id = UserPreference(context).selfId })
-                    it.putAnime(anime)
+                    it.isAdd = isChecked
+                    it.status = AnimeEntry.Status.watching
+                    it.user = User(id = UserPreference(context).selfId)
+                    it.anime = anime
                 })
             }
         }
@@ -337,13 +337,15 @@ class VhAnime(
                 override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
                     anime.animeEntry?.let { animeEntry ->
                         if (AnimeEntry.Status.values()[position] != animeEntry.status) {
-                            updateAnimeEntry(animeEntry.apply {
-                                putStatus(AnimeEntry.Status.values()[position])
+                            updateAnimeEntry(animeEntry.also {
+                                it.status = AnimeEntry.Status.values()[position]
                                 when (AnimeEntry.Status.values()[position]) {
-                                    AnimeEntry.Status.watching -> if (animeEntry.startedAt == null) putStartedAt(Calendar.getInstance())
+                                    AnimeEntry.Status.watching ->
+                                        if (animeEntry.startedAt == null) it.startedAt = Calendar.getInstance()
                                     AnimeEntry.Status.completed,
                                     AnimeEntry.Status.on_hold,
-                                    AnimeEntry.Status.dropped -> if (animeEntry.finishedAt == null) putFinishedAt(Calendar.getInstance())
+                                    AnimeEntry.Status.dropped ->
+                                        if (animeEntry.finishedAt == null) it.finishedAt = Calendar.getInstance()
                                     else -> {}
                                 }
                             })
@@ -379,8 +381,8 @@ class VhAnime(
                         anime.animeEntry?.finishedAt
                 ) { startedAt, finishedAt ->
                     anime.animeEntry?.let {
-                        it.putStartedAt(startedAt)
-                        it.putFinishedAt(finishedAt)
+                        it.startedAt = startedAt
+                        it.finishedAt = finishedAt
                         updateAnimeEntry(it)
                     }
                 }.show()
@@ -401,7 +403,7 @@ class VhAnime(
                                 season.episodeWatched
                         ) { value ->
                             anime.animeEntry?.let { animeEntry ->
-                                animeEntry.putEpisodesWatch(value + anime.seasons.map { if (it.number < season.number) it.episodeCount else 0 }.sum())
+                                animeEntry.episodesWatch = (value + anime.seasons.map { if (it.number < season.number) it.episodeCount else 0 }.sum())
                                 updateAnimeEntry(animeEntry)
                             }
                         }.show()
@@ -426,7 +428,7 @@ class VhAnime(
                         anime.animeEntry?.rating
                 ) { value ->
                     anime.animeEntry?.let {
-                        it.putRating(value)
+                        it.rating = value
                         updateAnimeEntry(it)
                     }
                 }.show()
@@ -435,7 +437,7 @@ class VhAnime(
 
         binding.ivAnimeProgressionDeleteRating.setOnClickListener {
             anime.animeEntry?.let {
-                it.putRating(null)
+                it.rating = null
                 updateAnimeEntry(it)
             }
         }
@@ -447,7 +449,7 @@ class VhAnime(
             }
             setOnClickListener {
                 anime.animeEntry?.let {
-                    it.putFavorites(!it.isFavorites)
+                    it.isFavorites = !it.isFavorites
                     updateAnimeEntry(it)
                 }
             }

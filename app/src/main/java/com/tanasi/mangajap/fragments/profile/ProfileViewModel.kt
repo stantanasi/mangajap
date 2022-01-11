@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tanasi.jsonapi.JsonApiBody
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
+import com.tanasi.jsonapi.bodies.JsonApiBody
 import com.tanasi.mangajap.MangaJapApplication
 import com.tanasi.mangajap.models.Follow
 import com.tanasi.mangajap.models.User
@@ -50,7 +50,7 @@ class ProfileViewModel : ViewModel() {
                 when (response) {
                     is JsonApiResponse.Success -> {
                         val user = response.body.data!!.first()
-                        UserPreference(MangaJapApplication.context).selfId = user.id
+                        UserPreference(MangaJapApplication.context).selfId = user.id!!
                         State.SuccessLoading(user, null, null)
                     }
                     is JsonApiResponse.Error -> State.FailedLoading(response)
@@ -146,10 +146,11 @@ class ProfileViewModel : ViewModel() {
     fun deleteFollow(follow: Follow) = viewModelScope.launch {
         _state.value = State.UpdatingFollowed
 
-        val response = mangaJapApiService.deleteFollow(
-                follow.id
-        )
         _state.value = try {
+            val response = mangaJapApiService.deleteFollow(
+                follow.id!!
+            )
+
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessUpdatingFollowed(null)
                 is JsonApiResponse.Error -> State.FailedUpdatingFollowed(response)

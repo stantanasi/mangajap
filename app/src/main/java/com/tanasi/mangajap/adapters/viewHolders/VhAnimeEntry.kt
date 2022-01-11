@@ -79,7 +79,7 @@ class VhAnimeEntry(
             isChecked = animeEntry.isAdd
             setOnClickListener {
                 updateAnimeEntry(animeEntry.also {
-                    it.putAdd(isChecked)
+                    it.isAdd = isChecked
                 })
             }
         }
@@ -125,7 +125,7 @@ class VhAnimeEntry(
             isChecked = animeEntry.isAdd
             setOnClickListener {
                 updateAnimeEntry(animeEntry.also {
-                    it.putAdd(isChecked)
+                    it.isAdd = isChecked
                 })
             }
         }

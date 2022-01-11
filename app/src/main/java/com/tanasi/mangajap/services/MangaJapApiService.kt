@@ -4,16 +4,12 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
-import com.tanasi.jsonapi.adapter.JsonApiCallAdapterFactory
+import com.tanasi.jsonapi.callAdapter.JsonApiCallAdapterFactory
 import com.tanasi.jsonapi.converter.JsonApiConverterFactory
 import com.tanasi.mangajap.models.*
 import com.tanasi.oauth2.adapter.OAuth2CallAdapterFactory
 import com.tanasi.oauth2.converter.OAuth2ConverterFactory
-import okhttp3.MediaType
 import okhttp3.OkHttpClient
-import okhttp3.RequestBody
-import okio.Buffer
-import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.http.*
 

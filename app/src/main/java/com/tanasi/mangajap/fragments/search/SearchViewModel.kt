@@ -105,11 +105,12 @@ class SearchViewModel : ViewModel() {
     fun updateMangaEntry(manga: Manga, mangaEntry: MangaEntry) = viewModelScope.launch {
         _state.value = State.Saving
 
-        val response = mangaJapApiService.updateMangaEntry(
-                mangaEntry.id,
-                mangaEntry
-        )
         _state.value = try {
+            val response = mangaJapApiService.updateMangaEntry(
+                mangaEntry.id!!,
+                mangaEntry
+            )
+
             when (response) {
                 is JsonApiResponse.Success -> {
                     manga.mangaEntry = response.body.data!!
@@ -188,11 +189,12 @@ class SearchViewModel : ViewModel() {
     fun updateAnimeEntry(anime: Anime, animeEntry: AnimeEntry) = viewModelScope.launch {
         _state.value = State.Saving
 
-        val response = mangaJapApiService.updateAnimeEntry(
-                animeEntry.id,
-                animeEntry
-        )
         _state.value = try {
+            val response = mangaJapApiService.updateAnimeEntry(
+                animeEntry.id!!,
+                animeEntry
+            )
+
             when (response) {
                 is JsonApiResponse.Success -> {
                     anime.animeEntry = response.body.data!!

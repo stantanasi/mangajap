@@ -1,5 +1,7 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiAttribute
+import com.tanasi.jsonapi.JsonApiProperty
 import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
@@ -8,32 +10,51 @@ import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.toCalendar
 import java.util.*
 import kotlin.math.max
+import kotlin.reflect.KProperty
 
-@JsonApiType("mangaEntries")
+@JsonApiType("manga-entries")
 class MangaEntry(
-    override var id: String = "",
+    var id: String? = null,
+
     createdAt: String? = null,
     updatedAt: String? = null,
-    var isAdd: Boolean = false,
-    var isFavorites: Boolean = false,
-    var isPrivate: Boolean = false,
+    isAdd: Boolean = false,
+    isFavorites: Boolean = false,
     status: String = "",
-    var volumesRead: Int = 0,
-    var chaptersRead: Int = 0,
-    startedAt: String? = null,
-    finishedAt: String? = null,
-    var rating: Int? = null,
-    var rereadCount: Int = 0,
+    volumesRead: Int = 0,
+    chaptersRead: Int = 0,
+    @JsonApiAttribute("startedAt") private var _startedAt: String? = null,
+    @JsonApiAttribute("finishedAt") private var _finishedAt: String? = null,
+    rating: Int? = null,
 
-    var user: User? = null,
-    var manga: Manga? = null,
-) : JsonApiResource(), MangaJapAdapter.Item {
+    user: User? = null,
+    manga: Manga? = null,
+) : JsonApiResource, MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    val status: Status = Status.getByName(status)
-    val startedAt: Calendar? = startedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    val finishedAt: Calendar? = finishedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    var isAdd: Boolean by JsonApiProperty(isAdd)
+    var isFavorites: Boolean by JsonApiProperty(isFavorites)
+    var status: Status by JsonApiProperty(Status.getByName(status))
+    var volumesRead: Int by JsonApiProperty(volumesRead)
+    var chaptersRead: Int by JsonApiProperty(chaptersRead)
+    var startedAt: Calendar? = _startedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        set(value) {
+            field = value
+            _startedAt = value?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            dirtyProperties.add(MangaEntry::_startedAt)
+        }
+    var finishedAt: Calendar? = _finishedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        set(value) {
+            field = value
+            _finishedAt = value?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            dirtyProperties.add(MangaEntry::_finishedAt)
+        }
+    var rating: Int? by JsonApiProperty(rating)
+
+    var user: User? by JsonApiProperty(user)
+    var manga: Manga? by JsonApiProperty(manga)
+
 
     enum class Status(val stringId: Int, val colorId: Int) {
         reading(R.string.mangaEntryStatusReading, R.color.mangaEntryStatusReading_color),
@@ -49,12 +70,14 @@ class MangaEntry(
                 reading
             }
         }
+
+        override fun toString(): String = this.name
     }
 
 
     fun getProgress(manga: Manga): Int {
-        val volumesProgress = ((volumesRead.toDouble() / (manga.volumeCount ?: 1)) * 100).toInt()
-        val chaptersProgress = ((chaptersRead.toDouble() / (manga.chapterCount ?: 1)) * 100).toInt()
+        val volumesProgress = ((volumesRead.toDouble() / manga.volumeCount) * 100).toInt()
+        val chaptersProgress = ((chaptersRead.toDouble() / manga.chapterCount) * 100).toInt()
 
         return when {
             volumesProgress - chaptersProgress in 1..5 -> chaptersProgress
@@ -75,32 +98,7 @@ class MangaEntry(
             Status.dropped -> R.color.mangaEntryStatusDropped_color
         }
 
-    fun putAdd(isAdd: Boolean) = putAttribute("isAdd", isAdd)
 
-    fun putFavorites(isFavorites: Boolean) = putAttribute("isFavorites", isFavorites)
-
-    fun putPrivate(isPrivate: Boolean) = putAttribute("isPrivate", isPrivate)
-
-    fun putStartedAt(startedAt: Calendar?) =
-        putAttribute("startedAt", startedAt?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
-
-    fun putFinishedAt(finishedAt: Calendar?) =
-        putAttribute("finishedAt", finishedAt?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
-
-    fun putStatus(status: Status) = putAttribute("status", status.name)
-
-    fun putVolumesRead(volumesRead: Int) = putAttribute("volumesRead", volumesRead)
-
-    fun putChaptersRead(chaptersRead: Int) = putAttribute("chaptersRead", chaptersRead)
-
-    fun putRating(rating: Int?) = putAttribute("rating", rating)
-
-    fun putRereadCount(rereadCount: Int) = putAttribute("rereadCount", rereadCount)
-
-    fun putUser(user: User) = putRelationship("user", user)
-
-    fun putManga(manga: Manga) = putRelationship("manga", manga)
-
-
+    override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()
     override lateinit var typeLayout: MangaJapAdapter.Type
 }

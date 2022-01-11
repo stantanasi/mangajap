@@ -94,7 +94,7 @@ class SearchFragment : Fragment() {
                     SearchTab.Manga.list.apply {
                         clear()
                         addAll(state.mangaList)
-                        if (size < 15) add(Manga().also { it.typeLayout = MangaJapAdapter.Type.MANGA_SEARCH_ADD })
+                        if (size < 15) add(Manga("").also { it.typeLayout = MangaJapAdapter.Type.MANGA_SEARCH_ADD })
                         addOrLast(3, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_SEARCH })
                         add(SearchTab.Manga.loadMore)
                     }
@@ -113,7 +113,7 @@ class SearchFragment : Fragment() {
                     SearchTab.Anime.list.apply {
                         clear()
                         addAll(state.animeList)
-                        if (size < 15) add(Anime().also { it.typeLayout = MangaJapAdapter.Type.ANIME_SEARCH_ADD })
+                        if (size < 15) add(Anime("").also { it.typeLayout = MangaJapAdapter.Type.ANIME_SEARCH_ADD })
                         addOrLast(3, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_SEARCH })
                         add(SearchTab.Anime.loadMore)
                     }

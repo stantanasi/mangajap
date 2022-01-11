@@ -100,7 +100,10 @@ class VhSeason(
                 visibility = View.VISIBLE
                 isChecked = season.isWatched
                 setOnClickListener {
-                    animeEntry.putEpisodesWatch(season.episodes.last().number)
+                    animeEntry.episodesWatch = season.episodes.lastOrNull()?.number
+                        ?: season.anime?.seasons?.let { seasons ->
+                            seasons.subList(0, seasons.indexOf(season)+1).sumOf { it.episodeCount }
+                        } ?: 0
                     updateAnimeEntry(animeEntry)
                 }
             } ?: let {

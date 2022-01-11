@@ -8,15 +8,15 @@ import java.util.*
 
 @JsonApiType("genres")
 class Genre(
-    override var id: String = "",
+    val id: String,
     createdAt: String? = null,
     updatedAt: String? = null,
     val title: String = "",
     val description: String = "",
 
-    var manga: List<Manga> = listOf(),
-    var anime: List<Anime> = listOf(),
-) : JsonApiResource(), MangaJapAdapter.Item {
+    val manga: List<Manga> = listOf(),
+    val anime: List<Anime> = listOf(),
+) : MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

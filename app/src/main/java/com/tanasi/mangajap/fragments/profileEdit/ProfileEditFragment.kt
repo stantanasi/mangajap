@@ -52,7 +52,9 @@ class ProfileEditFragment : Fragment() {
                     }
                 }
                 binding.civProfileEditUserProfilePic.setImageBitmap(bitmap)
-                user.putAvatar(bitmap.toBase64())
+                user.avatar = User.Avatar("", "", "", "",
+                    original = bitmap.toBase64()
+                )
             }
         }
     }
@@ -133,7 +135,9 @@ class ProfileEditFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.save -> {
-                if (this::user.isInitialized) viewModel.updateUser(user)
+                if (this::user.isInitialized) {
+                    viewModel.updateUser(user)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -164,7 +168,7 @@ class ProfileEditFragment : Fragment() {
 
         binding.ivProfileEditDeleteUserProfilePic.setOnClickListener {
             binding.civProfileEditUserProfilePic.setImageResource(R.drawable.default_user_avatar)
-            user.putAvatar(null)
+            user.avatar = null
         }
 
 
@@ -174,7 +178,7 @@ class ProfileEditFragment : Fragment() {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable) {
-                    user.putAbout(s.toString())
+                    user.about = s.toString()
                 }
             })
         }
@@ -185,7 +189,7 @@ class ProfileEditFragment : Fragment() {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable) {
-                    user.putFirstName(s.toString())
+                    user.firstName = s.toString()
                 }
             })
         }
@@ -196,7 +200,7 @@ class ProfileEditFragment : Fragment() {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable) {
-                    user.putLastName(s.toString())
+                    user.lastName = s.toString()
                 }
             })
         }
@@ -211,7 +215,7 @@ class ProfileEditFragment : Fragment() {
                             val date = Calendar.getInstance()
                             date[year, month] = dayOfMonth
 
-                            user.putBirthday(date)
+                            user.birthday = date
                             text = date.format("dd MMMM yyyy")
                         },
                         it[Calendar.YEAR],
@@ -223,7 +227,7 @@ class ProfileEditFragment : Fragment() {
         }
 
         binding.ivProfileEditDeleteUserBirthday.setOnClickListener {
-            user.putBirthday(null)
+            user.birthday = null
             binding.tvProfileEditUserBirthday.text = ""
         }
 
@@ -232,7 +236,7 @@ class ProfileEditFragment : Fragment() {
             setSelection(user.gender?.ordinal ?: 0)
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-                    user.putGender(User.Gender.values()[position])
+                    user.gender = User.Gender.values()[position]
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -259,7 +263,7 @@ class ProfileEditFragment : Fragment() {
             setSelection(countriesCode.indexOf(user.country))
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-                    user.putCountry(countriesCode[position])
+                    user.country = countriesCode[position]
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}

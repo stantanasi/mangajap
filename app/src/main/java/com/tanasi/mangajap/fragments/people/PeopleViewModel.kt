@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
-import com.tanasi.jsonapi.utils.jsonApiAttribute
-import com.tanasi.jsonapi.utils.jsonApiType
+import com.tanasi.jsonapi.extensions.jsonApiName
+import com.tanasi.jsonapi.extensions.jsonApiType
+import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.People
 import com.tanasi.mangajap.services.MangaJapApiService
@@ -33,22 +34,17 @@ class PeopleViewModel : ViewModel() {
             id,
             JsonApiParams(
                 include = listOf("manga-staff.manga", "anime-staff.anime"),
-                // TODO: use Manga::staff.name
                 fields = mapOf(
-                    Manga::class.run {
-                        jsonApiType() to listOf(
-                            jsonApiAttribute(Manga::coverImage),
-                            jsonApiAttribute(Manga::title),
-                            jsonApiAttribute(Manga::startDate),
-                        )
-                    },
-                    Manga::class.jsonApiType() to listOf(
-                        Manga::class.jsonApiAttribute(Manga::coverImage),
-                        Manga::class.jsonApiAttribute(Manga::title),
-                        Manga::class.jsonApiAttribute(Manga::startDate),
+                    Manga::class.jsonApiType to listOf(
+                        Manga::coverImage.jsonApiName(Manga::class),
+                        Manga::title.jsonApiName(Manga::class),
+                        Manga::startDate.jsonApiName(Manga::class),
                     ),
-                    "manga" to listOf("coverImage", "title", "startDate"),
-                    "anime" to listOf("coverImage", "title", "startDate")
+                    Anime::class.jsonApiType to listOf(
+                        Anime::coverImage.jsonApiName(Anime::class),
+                        Anime::title.jsonApiName(Anime::class),
+                        Anime::startDate.jsonApiName(Anime::class),
+                    ),
                 )
             )
         )

@@ -10,14 +10,15 @@ import kotlin.math.min
 
 @JsonApiType("seasons")
 class Season(
-    override var id: String = "",
+    val id: String,
+
     titles: JSONObject? = null,
     val number: Int = 0,
     val episodeCount: Int = 0,
 
     var anime: Anime? = null,
     val episodes: MutableList<Episode> = mutableListOf(),
-) : JsonApiResource(), MangaJapAdapter.Item {
+) : MangaJapAdapter.Item {
 
     val titles: Titles = Titles.from(titles)
 

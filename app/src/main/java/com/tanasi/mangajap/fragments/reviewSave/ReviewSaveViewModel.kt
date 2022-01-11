@@ -17,13 +17,13 @@ class ReviewSaveViewModel : ViewModel() {
     val state: LiveData<State> = _state
 
     sealed class State {
-        object Loading: State()
-        data class SuccessLoading(val review: Review): State()
-        data class FailedLoading(val error: JsonApiResponse.Error): State()
+        object Loading : State()
+        data class SuccessLoading(val review: Review) : State()
+        data class FailedLoading(val error: JsonApiResponse.Error) : State()
 
-        object Saving: State()
-        data class SuccessSaving(val review: Review): State()
-        data class FailedSaving(val error: JsonApiResponse.Error): State()
+        object Saving : State()
+        data class SuccessSaving(val review: Review) : State()
+        data class FailedSaving(val error: JsonApiResponse.Error) : State()
     }
 
     fun getReview(id: String?) = viewModelScope.launch {
@@ -34,7 +34,7 @@ class ReviewSaveViewModel : ViewModel() {
                 State.SuccessLoading(Review())
             } else {
                 val response = mangaJapApiService.getReview(
-                        id
+                    id
                 )
                 when (response) {
                     is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!)
@@ -50,7 +50,7 @@ class ReviewSaveViewModel : ViewModel() {
         _state.value = State.Saving
 
         val response = mangaJapApiService.createReview(
-                review
+            review
         )
         _state.value = try {
             when (response) {
@@ -65,11 +65,12 @@ class ReviewSaveViewModel : ViewModel() {
     fun updateReview(review: Review) = viewModelScope.launch {
         _state.value = State.Saving
 
-        val response = mangaJapApiService.updateReview(
-                review.id,
-                review
-        )
         _state.value = try {
+            val response = mangaJapApiService.updateReview(
+                review.id!!,
+                review
+            )
+
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessSaving(response.body.data!!)
                 is JsonApiResponse.Error -> State.FailedSaving(response)

@@ -228,20 +228,20 @@ class AnimeFragment : Fragment() {
                     visibility =  View.GONE
                 } else {
                     visibility = View.VISIBLE
-                    setOnClickListener {
-                        viewModel.addAnimeEntry(animeEntry.apply {
-                            putAdd(true)
+                    setOnClickListener { _ ->
+                        viewModel.addAnimeEntry(animeEntry.also {
+                            it.isAdd = true
                         })
                     }
                 }
             } ?: also {
                 visibility = View.VISIBLE
-                setOnClickListener {
+                setOnClickListener { _ ->
                     viewModel.addAnimeEntry(AnimeEntry().also {
-                        it.putAdd(true)
-                        it.putStatus(AnimeEntry.Status.watching)
-                        it.putUser(User().apply { id = UserPreference(requireContext()).selfId })
-                        it.putAnime(anime)
+                        it.isAdd = true
+                        it.status = AnimeEntry.Status.watching
+                        it.user = (User(id = UserPreference(requireContext()).selfId))
+                        it.anime = (anime)
                     })
                 }
             }
@@ -288,7 +288,7 @@ class AnimeFragment : Fragment() {
     private fun setAnimeEpisodesFragment() {
         AnimeTab.Episodes.list.apply {
             clear()
-            add(Season().apply { typeLayout = MangaJapAdapter.Type.SEASON_ANIME_HEADER })
+            add(Season("").apply { typeLayout = MangaJapAdapter.Type.SEASON_ANIME_HEADER })
         }
         for (season in anime.seasons) {
             AnimeTab.Episodes.list.add(season)
@@ -349,10 +349,10 @@ class AnimeFragment : Fragment() {
 
         popupAnimeBinding.tvPopupAnimeStatus.text = getString(anime.animeEntry?.status?.stringId ?: AnimeEntry.Status.watching.stringId)
 
-        popupAnimeBinding.vPopupAnimeDelete.setOnClickListener {
+        popupAnimeBinding.vPopupAnimeDelete.setOnClickListener { _ ->
             anime.animeEntry?.let { animeEntry ->
                 viewModel.updateAnimeEntry(animeEntry.apply {
-                    putAdd(false)
+                    isAdd = false
                 })
             }
             popupWindow.dismiss()

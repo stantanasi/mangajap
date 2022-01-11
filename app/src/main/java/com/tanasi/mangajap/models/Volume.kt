@@ -9,7 +9,8 @@ import java.util.*
 
 @JsonApiType("volumes")
 class Volume(
-    override var id: String = "",
+    val id: String,
+
     createdAt: String? = null,
     updatedAt: String? = null,
     titles: JSONObject? = null,
@@ -20,7 +21,7 @@ class Volume(
     val coverImage: String? = null,
 
     val manga: Manga? = null,
-) : JsonApiResource(), MangaJapAdapter.Item, Cloneable {
+) : MangaJapAdapter.Item, Cloneable {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

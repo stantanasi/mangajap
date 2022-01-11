@@ -9,18 +9,19 @@ import java.util.*
 
 @JsonApiType("franchises")
 class Franchise(
-    override var id: String = "",
+    val id: String,
+
     createdAt: String? = null,
     updatedAt: String? = null,
     role: String = "",
 
-    var source: MangaJapAdapter.Item? = null,
-    var destination: MangaJapAdapter.Item? = null,
-) : JsonApiResource(), MangaJapAdapter.Item {
+    val source: MangaJapAdapter.Item? = null,
+    val destination: MangaJapAdapter.Item? = null,
+) : MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    var role: Role = Role.getByName(role)
+    val role: Role = Role.getByName(role)
 
 
     override lateinit var typeLayout: MangaJapAdapter.Type

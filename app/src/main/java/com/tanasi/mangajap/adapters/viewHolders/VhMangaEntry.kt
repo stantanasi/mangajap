@@ -79,7 +79,7 @@ class VhMangaEntry(
             isChecked = mangaEntry.isAdd
             setOnClickListener {
                 updateMangaEntry(mangaEntry.also {
-                    it.putAdd(isChecked)
+                    it.isAdd = isChecked
                 })
             }
         }
@@ -123,7 +123,7 @@ class VhMangaEntry(
             isChecked = mangaEntry.isAdd
             setOnClickListener {
                 updateMangaEntry(mangaEntry.also {
-                    it.putAdd(isChecked)
+                    it.isAdd = isChecked
                 })
             }
         }

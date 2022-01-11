@@ -129,18 +129,19 @@ class LibraryFragment : Fragment() {
 
                 LibraryViewModel.State.Saving -> binding.isUpdating.root.visibility = View.VISIBLE
                 is LibraryViewModel.State.SuccessSaving -> {
-                    itemList
-                            .find {
-                                when (it) {
-                                    is MangaEntry -> it.id == state.jsonApiResource.id
-                                    else -> false
-                                }
-                            }
-                            ?.let {
-                                when (state.jsonApiResource) {
-                                    is MangaJapAdapter.Item -> itemList[itemList.indexOf(it)] = state.jsonApiResource
-                                }
-                            }
+                    // TODO: creer sealed class media
+//                    itemList
+//                            .find {
+//                                when (it) {
+//                                    is MangaEntry -> it.id == state.jsonApiResource.id
+//                                    else -> false
+//                                }
+//                            }
+//                            ?.let {
+//                                when (state.jsonApiResource) {
+//                                    is MangaJapAdapter.Item -> itemList[itemList.indexOf(it)] = state.jsonApiResource
+//                                }
+//                            }
                     mangaJapAdapter.notifyDataSetChanged()
                     binding.isUpdating.root.visibility = View.GONE
                 }

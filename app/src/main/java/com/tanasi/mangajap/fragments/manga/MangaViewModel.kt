@@ -59,10 +59,9 @@ class MangaViewModel : ViewModel() {
         _state.value = State.AddingEntry
 
         _state.value = try {
-            val response = when (mangaEntry.id) {
-                "" -> mangaJapApiService.createMangaEntry(mangaEntry)
-                else -> mangaJapApiService.updateMangaEntry(mangaEntry.id, mangaEntry)
-            }
+            val response = mangaEntry.id?.let {
+                mangaJapApiService.updateMangaEntry(it, mangaEntry)
+            } ?: mangaJapApiService.createMangaEntry(mangaEntry)
 
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessAddingEntry(response.body.data!!)
@@ -76,11 +75,11 @@ class MangaViewModel : ViewModel() {
     fun updateMangaEntry(mangaEntry: MangaEntry) = viewModelScope.launch {
         _state.value = State.Updating
 
-        val response = mangaJapApiService.updateMangaEntry(
-                mangaEntry.id,
-                mangaEntry
-        )
         _state.value = try {
+            val response = mangaJapApiService.updateMangaEntry(
+                mangaEntry.id!!,
+                mangaEntry
+            )
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessUpdating(response.body.data!!)
                 is JsonApiResponse.Error -> State.FailedUpdating(response)

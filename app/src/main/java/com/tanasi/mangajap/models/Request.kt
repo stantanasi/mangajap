@@ -1,50 +1,55 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiAttribute
+import com.tanasi.jsonapi.JsonApiProperty
 import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.toCalendar
 import java.util.*
+import kotlin.reflect.KProperty
 
-@JsonApiType("request")
+@JsonApiType("requests")
 class Request(
-    override var id: String = "",
+    var id: String? = null,
+
     createdAt: String? = null,
     updatedAt: String? = null,
     requestType: String = "",
-    var data: String = "",
-    var isDone: Boolean = false,
-    var userHasRead: Boolean = false,
+    data: String = "",
+    isDone: Boolean = false,
+    userHasRead: Boolean = false,
 
-    var user: User? = null,
-) : JsonApiResource(), MangaJapAdapter.Item {
+    user: User? = null,
+) : JsonApiResource, MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    var requestType: RequestType? = RequestType.getByName(requestType)
+    var requestType: RequestType by JsonApiProperty(RequestType.getByName(requestType))
+    var data: String by JsonApiProperty(data)
+    var isDone: Boolean by JsonApiProperty(isDone)
+    var userHasRead: Boolean by JsonApiProperty(userHasRead)
+
+    var user: User? by JsonApiProperty(user)
+
 
     enum class RequestType(val stringId: Int) {
         manga(R.string.manga),
         anime(R.string.anime);
 
         companion object {
-            fun getByName(name: String): RequestType? = try {
+            fun getByName(name: String): RequestType = try {
                 valueOf(name)
             } catch (e: Exception) {
-                null
+                manga
             }
         }
+
+        override fun toString(): String = this.name
     }
 
 
-    fun putRequestType(requestType: RequestType) = putAttribute("requestType", requestType.name)
-
-    fun putData(data: String) = putAttribute("data", data)
-
-    fun putUserHasRead(userHasRead: Boolean) = putAttribute("userHasRead", userHasRead)
-
-    fun putUser(user: User) = putRelationship("user", user)
-
+    override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()
     override lateinit var typeLayout: MangaJapAdapter.Type
 }

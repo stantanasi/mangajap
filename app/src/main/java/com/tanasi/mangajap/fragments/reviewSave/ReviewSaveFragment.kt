@@ -33,7 +33,6 @@ class ReviewSaveFragment : Fragment() {
 
     private val viewModel: ReviewSaveViewModel by viewModels()
 
-    private var reviewId: String? = null
     private lateinit var mediaType: ReviewMediaType
     private lateinit var mediaId: String
 
@@ -41,7 +40,6 @@ class ReviewSaveFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentReviewSaveBinding.inflate(inflater, container, false)
-        reviewId = args.reviewId
         viewModel.getReview(args.reviewId)
         mediaType = args.mediaType
         mediaId = args.mediaId ?: ""
@@ -139,18 +137,17 @@ class ReviewSaveFragment : Fragment() {
         val reviewContent = binding.etReviewSave.text.toString().trim { it <= ' ' }
 
         if (reviewContent.isReviewValid()) {
-            if (review.id == "") {
-                viewModel.createReview(review.apply {
-                    putContent(reviewContent)
-                    putUser(User().apply { id = UserPreference(requireContext()).selfId })
+            when (review.id) {
+                null -> viewModel.createReview(review.also {
+                    it.content = reviewContent
+                    it.user = User().apply { id = UserPreference(requireContext()).selfId }
                     when (mediaType) {
-                        ReviewMediaType.Manga -> putManga(Manga().apply { id = mediaId })
-                        ReviewMediaType.Anime -> putAnime(Anime().apply { id = mediaId })
+                        ReviewMediaType.Manga -> it.manga = Manga(id = mediaId)
+                        ReviewMediaType.Anime -> it.anime = Anime(id = mediaId)
                     }
                 })
-            } else {
-                viewModel.updateReview(review.apply {
-                    putContent(reviewContent)
+                else -> viewModel.updateReview(review.also {
+                    it.content = reviewContent
                 })
             }
         } else {

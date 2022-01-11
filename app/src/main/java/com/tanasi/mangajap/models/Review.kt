@@ -1,34 +1,35 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiProperty
 import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.toCalendar
 import java.util.*
+import kotlin.reflect.KProperty
 
 @JsonApiType("reviews")
 class Review(
-    override var id: String = "",
+    var id: String? = null,
+
     createdAt: String? = null,
     updatedAt: String? = null,
-    var content: String = "",
+    content: String = "",
 
-    var user: User? = null,
-    var manga: Manga? = null,
-    var anime: Anime? = null,
-) : JsonApiResource(), MangaJapAdapter.Item {
+    user: User? = null,
+    manga: Manga? = null,
+    anime: Anime? = null,
+) : JsonApiResource, MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    var content: String by JsonApiProperty(content)
+
+    var user: User? by JsonApiProperty(user)
+    var manga: Manga? by JsonApiProperty(manga)
+    var anime: Anime? by JsonApiProperty(anime)
 
 
-    fun putContent(content: String) = putAttribute("content", content)
-
-    fun putUser(user: User) = putRelationship("user", user)
-
-    fun putManga(manga: Manga) = putRelationship("manga", manga)
-
-    fun putAnime(anime: Anime) = putRelationship("anime", anime)
-
+    override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()
     override lateinit var typeLayout: MangaJapAdapter.Type
 }

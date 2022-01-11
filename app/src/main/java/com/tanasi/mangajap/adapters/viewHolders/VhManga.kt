@@ -112,14 +112,15 @@ class VhManga(
         binding.cbSearchMediaIsAdd.apply {
             isChecked = manga.mangaEntry?.isAdd ?: false
             setOnClickListener {
-                manga.mangaEntry?.let {
-                    it.putAdd(isChecked)
-                    updateMangaEntry(it)
+                manga.mangaEntry?.let { mangaEntry ->
+                    mangaEntry.isAdd = isChecked
+                    updateMangaEntry(mangaEntry)
+
                 } ?: MangaEntry().also {
-                    it.putAdd(isChecked)
-                    it.putStatus(MangaEntry.Status.reading)
-                    it.putUser(User().apply { id = UserPreference(context).selfId })
-                    it.putManga(manga)
+                    it.isAdd = isChecked
+                    it.status = MangaEntry.Status.reading
+                    it.user = User(id = UserPreference(context).selfId)
+                    it.manga = manga
                     createMangaEntry(it)
                 }
             }
@@ -140,9 +141,9 @@ class VhManga(
                     query
             ) { dialog, _, text ->
                 createMangaRequest(Request().also {
-                    it.putRequestType(Request.RequestType.manga)
-                    it.putData(text)
-                    it.putUser(User().apply { id = UserPreference(context).selfId })
+                    it.requestType = Request.RequestType.manga
+                    it.data = text
+                    it.user = User(id = UserPreference(context).selfId)
                 })
                 dialog.dismiss()
             }.show()
@@ -186,13 +187,13 @@ class VhManga(
             visibility = if (manga.mangaEntry?.isAdd == true) View.GONE else View.VISIBLE
             setOnClickListener {
                 manga.mangaEntry?.let {
-                    it.putAdd(isChecked)
+                    it.isAdd = isChecked
                     updateMangaEntry(it)
                 } ?: MangaEntry().also {
-                    it.putAdd(isChecked)
-                    it.putStatus(MangaEntry.Status.reading)
-                    it.putUser(User().apply { id = UserPreference(context).selfId })
-                    it.putManga(manga)
+                    it.isAdd = isChecked
+                    it.status = MangaEntry.Status.reading
+                    it.user = User(id = UserPreference(context).selfId)
+                    it.manga = manga
                     createMangaEntry(it)
                 }
             }
@@ -348,12 +349,14 @@ class VhManga(
                 override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
                     manga.mangaEntry?.let {
                         if (MangaEntry.Status.values()[position] != it.status) {
-                            it.putStatus(MangaEntry.Status.values()[position])
+                            it.status = MangaEntry.Status.values()[position]
                             when (MangaEntry.Status.values()[position]) {
-                                MangaEntry.Status.reading -> if (it.startedAt == null) it.putStartedAt(Calendar.getInstance())
+                                MangaEntry.Status.reading ->
+                                    if (it.startedAt == null) it.startedAt = Calendar.getInstance()
                                 MangaEntry.Status.completed,
                                 MangaEntry.Status.on_hold,
-                                MangaEntry.Status.dropped -> if (it.finishedAt == null) it.putFinishedAt(Calendar.getInstance())
+                                MangaEntry.Status.dropped ->
+                                    if (it.finishedAt == null) it.finishedAt = Calendar.getInstance()
                                 else -> {}
                             }
                             updateMangaEntry(it)
@@ -389,8 +392,8 @@ class VhManga(
                         manga.mangaEntry?.finishedAt,
                 ) { startedAt, finishedAt ->
                     manga.mangaEntry?.let {
-                        it.putStartedAt(startedAt)
-                        it.putFinishedAt(finishedAt)
+                        it.startedAt = startedAt
+                        it.finishedAt = finishedAt
                         updateMangaEntry(it)
                     }
                 }.show()
@@ -404,7 +407,7 @@ class VhManga(
                     manga.mangaEntry?.volumesRead ?: 0
             ) { value ->
                 manga.mangaEntry?.let {
-                    it.putVolumesRead(value)
+                    it.volumesRead = value
                     updateMangaEntry(it)
                 }
             }.show()
@@ -424,7 +427,7 @@ class VhManga(
                     manga.mangaEntry?.chaptersRead ?: 0
             ) { value ->
                 manga.mangaEntry?.let {
-                    it.putChaptersRead(value)
+                    it.chaptersRead = value
                     updateMangaEntry(it)
                 }
             }.show()
@@ -448,7 +451,7 @@ class VhManga(
                         manga.mangaEntry?.rating
                 ) { value ->
                     manga.mangaEntry?.let {
-                        it.putRating(value)
+                        it.rating = value
                         updateMangaEntry(it)
                     }
                 }.show()
@@ -457,7 +460,7 @@ class VhManga(
 
         binding.ivMangaProgressionDeleteRating.setOnClickListener {
             manga.mangaEntry?.let {
-                it.putRating(null)
+                it.rating = null
                 updateMangaEntry(it)
             }
         }
@@ -465,9 +468,9 @@ class VhManga(
         binding.ivMangaProgressionIsFavorites.apply {
             if (manga.mangaEntry?.isFavorites == true) setImageResource(R.drawable.ic_favorite_black_24dp)
             else setImageResource(R.drawable.ic_favorite_border_black_24dp)
-            setOnClickListener {
+            setOnClickListener { _ ->
                 manga.mangaEntry?.let {
-                    it.putFavorites(!it.isFavorites)
+                    it.isFavorites = !it.isFavorites
                     updateMangaEntry(it)
                 }
             }

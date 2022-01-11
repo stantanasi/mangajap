@@ -10,7 +10,8 @@ import java.util.*
 
 @JsonApiType("episodes")
 class Episode(
-    override var id: String = "",
+    val id: String,
+
     createdAt: String? = null,
     updatedAt: String? = null,
     titles: JSONObject? = null,
@@ -19,9 +20,9 @@ class Episode(
     airDate: String? = null,
     episodeType: String = "",
 
-    var anime: Anime? = null,
+    val anime: Anime? = null,
     var season: Season? = null,
-) : JsonApiResource(), MangaJapAdapter.Item {
+) : MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

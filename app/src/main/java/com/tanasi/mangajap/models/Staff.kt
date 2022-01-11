@@ -9,19 +9,21 @@ import java.util.*
 
 @JsonApiType("staff")
 class Staff(
-    override var id: String = "",
+    val id: String,
+
     createdAt: String? = null,
     updatedAt: String? = null,
     role: String = "",
 
-    var people: People? = null,
-    var manga: Manga? = null,
-    var anime: Anime? = null,
-) : JsonApiResource(), MangaJapAdapter.Item {
+    val people: People? = null,
+    val manga: Manga? = null,
+    val anime: Anime? = null,
+) : MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    var role: Role? = Role.getByName(role)
+    val role: Role? = Role.getByName(role)
+
 
     enum class Role(val stringId: Int) {
         author(R.string.staffRoleAuthor),
@@ -40,6 +42,7 @@ class Staff(
             }
         }
     }
+
 
     override lateinit var typeLayout: MangaJapAdapter.Type
 }

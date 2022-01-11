@@ -118,11 +118,12 @@ class LibraryViewModel : ViewModel() {
     fun updateMangaEntry(mangaEntry: MangaEntry) = viewModelScope.launch {
         _state.value = State.Saving
 
-        val response = mangaJapApiService.updateMangaEntry(
-                mangaEntry.id,
-                mangaEntry
-        )
         _state.value = try {
+            val response = mangaJapApiService.updateMangaEntry(
+                mangaEntry.id!!,
+                mangaEntry
+            )
+
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessSaving(response.body.data!!)
                 is JsonApiResponse.Error -> State.FailedSaving(response)
@@ -135,11 +136,11 @@ class LibraryViewModel : ViewModel() {
     fun updateAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
         _state.value = State.Saving
 
-        val response = mangaJapApiService.updateAnimeEntry(
-                animeEntry.id,
-                animeEntry
-        )
         _state.value = try {
+            val response = mangaJapApiService.updateAnimeEntry(
+                animeEntry.id!!,
+                animeEntry
+            )
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessSaving(response.body.data!!)
                 is JsonApiResponse.Error -> State.FailedSaving(response)

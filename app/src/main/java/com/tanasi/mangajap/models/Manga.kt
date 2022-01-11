@@ -13,7 +13,8 @@ import java.util.*
 
 @JsonApiType("manga")
 class Manga(
-    override var id: String = "",
+    val id: String,
+
     createdAt: String? = null,
     updatedAt: String? = null,
     val title: String = "",
@@ -35,14 +36,14 @@ class Manga(
     val coverImage: String? = null,
     val bannerImage: String? = null,
 
-    var volumes: List<Volume> = listOf(),
-    var genres: List<Genre> = listOf(),
-    var themes: List<Theme> = listOf(),
-    var staff: List<Staff> = listOf(),
-    var reviews: List<Review> = listOf(),
-    @JsonApiRelationship("franchise") var franchise: List<Franchise> = listOf(),
+    val volumes: List<Volume> = listOf(),
+    val genres: List<Genre> = listOf(),
+    val themes: List<Theme> = listOf(),
+    val staff: List<Staff> = listOf(),
+    val reviews: List<Review> = listOf(),
+    @JsonApiRelationship("franchise") val franchise: List<Franchise> = listOf(),
     @JsonApiRelationship("manga-entry") var mangaEntry: MangaEntry? = null,
-) : JsonApiResource(), MangaJapAdapter.Item, Cloneable {
+) : MangaJapAdapter.Item, Cloneable {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

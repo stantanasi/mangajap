@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
+import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.services.MangaJapApiService
 import kotlinx.coroutines.launch
@@ -40,8 +41,8 @@ class RegisterViewModel : ViewModel() {
             val user = result?.user!!
 
             val response = mangaJapApiService.createUser(User().also {
-                it.putPseudo(pseudo)
-                it.putUID(user.uid)
+                it.pseudo = pseudo
+                it.uid = user.uid
             })
 
             when (response) {

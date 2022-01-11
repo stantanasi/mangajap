@@ -220,9 +220,9 @@ class MangaFragment : Fragment() {
                     visibility =  View.GONE
                 } else {
                     visibility = View.VISIBLE
-                    setOnClickListener {
-                        viewModel.addMangaEntry(mangaEntry.apply {
-                            putAdd(true)
+                    setOnClickListener { _ ->
+                        viewModel.addMangaEntry(mangaEntry.also {
+                            it.isAdd = true
                         })
                     }
                 }
@@ -230,10 +230,10 @@ class MangaFragment : Fragment() {
                 visibility = View.VISIBLE
                 setOnClickListener {
                     viewModel.addMangaEntry(MangaEntry().also {
-                        it.putAdd(true)
-                        it.putStatus(MangaEntry.Status.reading)
-                        it.putUser(User().apply { id = UserPreference(requireContext()).selfId })
-                        it.putManga(manga)
+                        it.isAdd = true
+                        it.status = MangaEntry.Status.reading
+                        it.user = User(id = UserPreference(requireContext()).selfId)
+                        it.manga = manga
                     })
                 }
             }
@@ -353,10 +353,10 @@ class MangaFragment : Fragment() {
 
         popupMangaBinding.tvPopupMangaStatus.text = getString(manga.mangaEntry?.status?.stringId ?: MangaEntry.Status.reading.stringId)
 
-        popupMangaBinding.vPopupMangaDelete.setOnClickListener {
+        popupMangaBinding.vPopupMangaDelete.setOnClickListener { _ ->
             manga.mangaEntry?.let { mangaEntry ->
-                viewModel.updateMangaEntry(mangaEntry.apply {
-                    putAdd(false)
+                viewModel.updateMangaEntry(mangaEntry.also {
+                    it.isAdd = false
                 })
             }
             popupWindow.dismiss()

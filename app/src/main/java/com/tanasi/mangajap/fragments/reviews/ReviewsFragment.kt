@@ -94,7 +94,7 @@ class ReviewsFragment : Fragment() {
                 reviewsList.apply {
                     clear()
                     add(Review().also { review ->
-                        review.manga = Manga().apply { id = mediaId }
+                        review.manga = Manga(id = mediaId)
                         review.typeLayout = MangaJapAdapter.Type.REVIEW_HEADER
                     })
                     addAll(reviews)
@@ -104,7 +104,7 @@ class ReviewsFragment : Fragment() {
                 reviewsList.apply {
                     clear()
                     add(Review().also { review ->
-                        review.anime = Anime().apply { id = mediaId }
+                        review.anime = Anime(id = mediaId)
                         review.typeLayout = MangaJapAdapter.Type.REVIEW_HEADER
                     })
                     addAll(reviews)

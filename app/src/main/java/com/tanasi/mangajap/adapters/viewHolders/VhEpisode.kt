@@ -66,7 +66,7 @@ class VhEpisode(
                 visibility = View.VISIBLE
                 isChecked = animeEntry.episodesWatch >= episode.number
                 setOnClickListener {
-                    animeEntry.putEpisodesWatch(episode.number)
+                    animeEntry.episodesWatch = episode.number
                     updateAnimeEntry(animeEntry)
                 }
             } ?: let {

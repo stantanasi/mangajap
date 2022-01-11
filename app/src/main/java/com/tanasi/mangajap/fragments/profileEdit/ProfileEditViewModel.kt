@@ -48,11 +48,12 @@ class ProfileEditViewModel : ViewModel() {
     fun updateUser(user: User) = viewModelScope.launch {
         _state.value = State.Updating
 
-        val response = mangaJapApiService.updateUser(
-                user.id,
-                user
-        )
         _state.value = try {
+            val response = mangaJapApiService.updateUser(
+                user.id!!,
+                user
+            )
+
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessUpdating(response.body.data!!)
                 is JsonApiResponse.Error -> State.FailedUpdating(response)

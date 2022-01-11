@@ -7,9 +7,10 @@ import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.toCalendar
 import java.util.*
 
-@JsonApiType("people")
+@JsonApiType("peoples")
 class People(
-    override var id: String = "",
+    val id: String,
+
     createdAt: String? = null,
     updatedAt: String? = null,
     val firstName: String = "",
@@ -17,10 +18,10 @@ class People(
     val pseudo: String = "",
     val image: String? = null,
 
-    var staff: List<Staff> = listOf(),
-    @JsonApiRelationship("manga-staff") var mangaStaff: List<Staff> = listOf(),
-    @JsonApiRelationship("anime-staff") var animeStaff: List<Staff> = listOf(),
-) : JsonApiResource(), MangaJapAdapter.Item {
+    val staff: List<Staff> = listOf(),
+    @JsonApiRelationship("manga-staff") val mangaStaff: List<Staff> = listOf(),
+    @JsonApiRelationship("anime-staff") val animeStaff: List<Staff> = listOf(),
+) : MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

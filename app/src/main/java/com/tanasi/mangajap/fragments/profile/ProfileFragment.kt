@@ -212,7 +212,7 @@ class ProfileFragment : Fragment() {
         binding.vProfileFollowers.setOnClickListener {
             findNavController().navigate(
                 ProfileFragmentDirections.actionProfileToFollow(
-                    user.id,
+                    user.id!!,
                     user.pseudo,
                     FollowFragment.FollowType.Followers
                 )
@@ -224,7 +224,7 @@ class ProfileFragment : Fragment() {
         binding.vProfileFollowing.setOnClickListener {
             findNavController().navigate(
                 ProfileFragmentDirections.actionProfileToFollow(
-                    user.id,
+                    user.id!!,
                     user.pseudo,
                     FollowFragment.FollowType.Following
                 )
@@ -278,8 +278,8 @@ class ProfileFragment : Fragment() {
                 setBackgroundResource(R.drawable.bg_btn_unfollow)
                 setOnClickListener {
                     viewModel.follow(Follow().also {
-                        it.putFollower(User().apply { id = UserPreference(requireContext()).selfId })
-                        it.putFollowed(user)
+                        it.follower = User(id = UserPreference(requireContext()).selfId)
+                        it.followed = user
                     })
                 }
             }
@@ -389,7 +389,7 @@ class ProfileFragment : Fragment() {
         binding.llProfileUserLibrary.setOnClickListener {
             findNavController().navigate(
                     ProfileFragmentDirections.actionProfileToLibrary(
-                            user.id,
+                            user.id!!,
                             user.pseudo,
                             when (currentTab) {
                                 ProfileTab.Manga -> LibraryFragment.LibraryType.MangaList
@@ -427,7 +427,7 @@ class ProfileFragment : Fragment() {
         binding.llProfileUserLibraryFavorites.setOnClickListener {
             findNavController().navigate(
                     ProfileFragmentDirections.actionProfileToLibrary(
-                            user.id,
+                            user.id!!,
                             user.pseudo,
                             when (currentTab) {
                                 ProfileTab.Manga -> LibraryFragment.LibraryType.MangaFavoritesList

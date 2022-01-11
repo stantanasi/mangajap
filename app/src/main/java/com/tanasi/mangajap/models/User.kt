@@ -1,41 +1,39 @@
 package com.tanasi.mangajap.models
 
-import com.tanasi.jsonapi.JsonApiAttribute
-import com.tanasi.jsonapi.JsonApiRelationship
-import com.tanasi.jsonapi.JsonApiResource
-import com.tanasi.jsonapi.JsonApiType
+import com.tanasi.jsonapi.*
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.toCalendar
 import org.json.JSONObject
 import java.util.*
+import kotlin.reflect.KProperty
 
 @JsonApiType("users")
 class User(
-    override var id: String = "",
+    var id: String? = null,
+
     createdAt: String? = null,
     updatedAt: String? = null,
-    var uid: String = "",
-    var pseudo: String = "",
-    var about: String = "",
-    var isAdmin: Boolean = false,
-    var isPremium: Boolean = false,
-    var followersCount: Long = 0,
-    var followingCount: Long = 0,
-    var followedMangaCount: Long = 0,
-    @JsonApiAttribute("volumesRead") var mangaVolumeRead: Long = 0,
-    @JsonApiAttribute("chaptersRead") var mangaChapterRead: Long = 0,
-    var followedAnimeCount: Long = 0,
-    @JsonApiAttribute("episodesWatch") var animeEpisodeWatch: Long = 0,
-    var timeSpentOnAnime: Long = 0,
-    var firstName: String? = null,
-    var lastName: String? = null,
-    birthday: String? = null,
+    uid: String = "",
+    pseudo: String = "",
+    about: String = "",
+    val isAdmin: Boolean = false,
+    val isPremium: Boolean = false,
+    val followersCount: Long = 0,
+    val followingCount: Long = 0,
+    val followedMangaCount: Long = 0,
+    @JsonApiAttribute("volumesRead") val mangaVolumeRead: Long = 0,
+    @JsonApiAttribute("chaptersRead") val mangaChapterRead: Long = 0,
+    val followedAnimeCount: Long = 0,
+    @JsonApiAttribute("episodesWatch") val animeEpisodeWatch: Long = 0,
+    val timeSpentOnAnime: Long = 0,
+    firstName: String = "",
+    lastName: String = "",
+    @JsonApiAttribute("birthday") private var _birthday: String? = null,
     gender: String? = "",
-    var country: String? = null,
+    country: String = "",
     avatar: JSONObject? = null,
-    var email: String? = null,
 
     var followers: List<Follow> = listOf(),
     var following: List<Follow> = listOf(),
@@ -45,16 +43,29 @@ class User(
     @JsonApiRelationship("anime-favorites") var animeFavorites: List<AnimeEntry> = listOf(),
     var reviews: List<Review> = listOf(),
     var requests: List<Request> = listOf(),
-) : JsonApiResource(), MangaJapAdapter.Item {
+) : JsonApiResource, MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    val birthday: Calendar? = birthday?.toCalendar("yyyy-MM-dd")
-    var gender: Gender? = Gender.getByName(gender)
-    var avatar: Avatar? = Avatar.create(avatar)
+
+    var uid: String by JsonApiProperty(uid)
+    var pseudo: String by JsonApiProperty(pseudo)
+    var about: String by JsonApiProperty(about)
+    var firstName: String by JsonApiProperty(firstName)
+    var lastName: String by JsonApiProperty(lastName)
+    var birthday: Calendar? = _birthday?.toCalendar("yyyy-MM-dd")
+        set(value) {
+            field = value
+            _birthday = value?.format("yyyy-MM-dd")
+            dirtyProperties.add(User::_birthday)
+        }
+    var gender: Gender? by JsonApiProperty(Gender.getByName(gender))
+    var country: String? by JsonApiProperty(country)
+    var avatar: Avatar? by JsonApiProperty(Avatar.create(avatar))
 
 
     enum class Gender(val stringId: Int) {
+        // TODO: créer un gender null
         men(R.string.genderMen),
         women(R.string.genderWomen),
         other(R.string.genderOther);
@@ -66,6 +77,8 @@ class User(
                 null
             }
         }
+
+        override fun toString(): String = this.name
     }
 
     data class Avatar(
@@ -73,7 +86,7 @@ class User(
         val small: String,
         val medium: String,
         val large: String,
-        val original: String
+        var original: String
     ) {
         companion object {
             fun create(avatar: JSONObject?): Avatar? = avatar?.let {
@@ -86,6 +99,8 @@ class User(
                 )
             }
         }
+
+        override fun toString(): String = this.original
     }
 
 
@@ -96,28 +111,6 @@ class User(
     }
 
 
-    fun putUID(uid: String) = putAttribute("uid", uid)
-
-    fun putPseudo(pseudo: String) = putAttribute("pseudo", pseudo)
-
-    fun putAbout(about: String?) = putAttribute("about", about)
-
-    fun putFirstName(firstName: String?) = putAttribute("firstName", firstName)
-
-    fun putLastName(lastName: String?) = putAttribute("lastName", lastName)
-
-    fun putBirthday(birthday: Calendar?) = putAttribute("birthday", birthday?.format("yyyy-MM-dd"))
-
-    fun putGender(gender: Gender?) = putAttribute("gender", gender?.name)
-
-    fun putCountry(country: String?) = putAttribute("country", country)
-
-    fun putAvatar(avatar: String?) = putAttribute("avatar", avatar)
-
-    fun putEmail(email: String?) = putAttribute("email", email)
-
-    fun putPassword(password: String?) = putAttribute("password", password)
-
-
+    override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()
     override lateinit var typeLayout: MangaJapAdapter.Type
 }

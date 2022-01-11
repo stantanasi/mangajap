@@ -1,36 +1,54 @@
 package com.tanasi.mangajap.models
 
-import com.tanasi.jsonapi.JsonApiResource
-import com.tanasi.jsonapi.JsonApiType
+import com.tanasi.jsonapi.*
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.toCalendar
 import java.util.*
+import kotlin.reflect.KProperty
 
-@JsonApiType("animeEntries")
+@JsonApiType("anime-entries")
 class AnimeEntry(
-    override var id: String = "",
+    var id: String? = null,
+
     createdAt: String? = null,
     updatedAt: String? = null,
-    var isAdd: Boolean = false,
-    var isFavorites: Boolean = false,
+    isAdd: Boolean = false,
+    isFavorites: Boolean = false,
     status: String = "",
-    var episodesWatch: Int = 0,
-    startedAt: String? = null,
-    finishedAt: String? = null,
-    var rating: Int? = null,
-    var rewatchCount: Int = 0,
+    episodesWatch: Int = 0,
+    @JsonApiAttribute("startedAt") private var _startedAt: String? = null,
+    @JsonApiAttribute("finishedAt") private var _finishedAt: String? = null,
+    rating: Int? = null,
 
-    var user: User? = null,
-    var anime: Anime? = null,
-) : JsonApiResource(), MangaJapAdapter.Item {
+    user: User? = null,
+    anime: Anime? = null,
+) : JsonApiResource, MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    var status: Status = Status.getByName(status)
-    val startedAt: Calendar? = startedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    val finishedAt: Calendar? = finishedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    var isAdd: Boolean by JsonApiProperty(isAdd)
+    var isFavorites: Boolean by JsonApiProperty(isFavorites)
+    var status: Status by JsonApiProperty(Status.getByName(status))
+    var episodesWatch: Int by JsonApiProperty(episodesWatch)
+    var startedAt: Calendar? = _startedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        set(value) {
+            field = value
+            _startedAt = value?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            dirtyProperties.add(AnimeEntry::_startedAt)
+        }
+    var finishedAt: Calendar? = _finishedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        set(value) {
+            field = value
+            _finishedAt = value?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            dirtyProperties.add(AnimeEntry::_finishedAt)
+        }
+    var rating: Int? by JsonApiProperty(rating)
+
+    var user: User? by JsonApiProperty(user)
+    var anime: Anime? by JsonApiProperty(anime)
+
 
     enum class Status(val stringId: Int, val colorId: Int) {
         watching(R.string.animeEntryStatusWatching, R.color.animeEntryStatusWatching_color),
@@ -46,6 +64,8 @@ class AnimeEntry(
                 watching
             }
         }
+
+        override fun toString(): String = this.name
     }
 
     fun getProgress(anime: Anime): Int =
@@ -64,28 +84,6 @@ class AnimeEntry(
         }
 
 
-    fun putAdd(isAdd: Boolean) = putAttribute("isAdd", isAdd)
-
-    fun putFavorites(isFavorites: Boolean) = putAttribute("isFavorites", isFavorites)
-
-    fun putStatus(status: Status) = putAttribute("status", status.name)
-
-    fun putEpisodesWatch(episodesWatch: Int) = putAttribute("episodesWatch", episodesWatch)
-
-    fun putStartedAt(startedAt: Calendar?) =
-        putAttribute("startedAt", startedAt?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
-
-    fun putFinishedAt(finishedAt: Calendar?) =
-        putAttribute("finishedAt", finishedAt?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
-
-    fun putRating(rating: Int?) = putAttribute("rating", rating)
-
-    fun putRewatchCount(rewatchCount: Int) = putAttribute("rewatchCount", rewatchCount)
-
-    fun putUser(user: User) = putRelationship("user", user)
-
-    fun putAnime(anime: Anime) = putRelationship("anime", anime)
-
-
+    override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()
     override lateinit var typeLayout: MangaJapAdapter.Type
 }
