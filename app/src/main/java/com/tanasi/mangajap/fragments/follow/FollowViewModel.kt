@@ -31,16 +31,17 @@ class FollowViewModel : ViewModel() {
         _state.value = State.Loading
 
         val response = mangaJapApiService.getUserFollowers(
-                userId,
-                JsonApiParams(
-                        include = listOf("follower")
-                )
+            userId,
+            JsonApiParams(
+                include = listOf("follower"),
+                limit = 15,
+            )
         )
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoading(
-                        response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWERS } },
-                        response.body.links?.next ?: ""
+                    response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWERS } },
+                    response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
@@ -53,16 +54,17 @@ class FollowViewModel : ViewModel() {
         _state.value = State.Loading
 
         val response = mangaJapApiService.getUserFollowing(
-                userId,
-                JsonApiParams(
-                        include = listOf("followed")
-                )
+            userId,
+            JsonApiParams(
+                include = listOf("followed"),
+                limit = 15,
+            )
         )
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoading(
-                        response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWING } },
-                        response.body.links?.next ?: ""
+                    response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWING } },
+                    response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
@@ -75,13 +77,13 @@ class FollowViewModel : ViewModel() {
         _state.value = State.LoadingMore
 
         val response = mangaJapApiService.loadMoreFollows(
-                nextLink
+            nextLink
         )
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoadingMore(
-                        response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWERS } },
-                        response.body.links?.next ?: ""
+                    response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWERS } },
+                    response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoadingMore(response)
             }
@@ -94,13 +96,13 @@ class FollowViewModel : ViewModel() {
         _state.value = State.LoadingMore
 
         val response = mangaJapApiService.loadMoreFollows(
-                nextLink
+            nextLink
         )
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoadingMore(
-                        response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWING } },
-                        response.body.links?.next ?: ""
+                    response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWING } },
+                    response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoadingMore(response)
             }
