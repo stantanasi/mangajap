@@ -65,7 +65,6 @@ class User(
 
 
     enum class Gender(val stringId: Int) {
-        // TODO: créer un gender null
         men(R.string.genderMen),
         women(R.string.genderWomen),
         other(R.string.genderOther);

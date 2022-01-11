@@ -232,11 +232,22 @@ class ProfileEditFragment : Fragment() {
         }
 
         binding.spinnerProfileEditUserGender.apply {
-            adapter = SpinnerAdapter(context, User.Gender.values().map { getString(it.stringId) })
-            setSelection(user.gender?.ordinal ?: 0)
+            adapter = SpinnerAdapter(
+                context,
+                User.Gender.values()
+                    .map { getString(it.stringId) }
+                    .toMutableList()
+                    .also {
+                        it.add(0, "------")
+                    }
+            )
+            setSelection(user.gender?.ordinal?.let { it + 1 } ?: 0)
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-                    user.gender = User.Gender.values()[position]
+                    user.gender = when (position) {
+                        0 -> null
+                        else -> User.Gender.values()[position-1]
+                    }
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
