@@ -26,7 +26,6 @@ import com.tanasi.mangajap.ui.dialog.RadioGroupDialog
 import com.tanasi.mangajap.ui.dialog.VerifyPasswordDialog
 import com.tanasi.mangajap.utils.extensions.*
 import com.tanasi.mangajap.utils.preferences.SettingsPreference
-import com.tanasi.mangajap.utils.preferences.UserPreference
 import java.util.*
 
 // TODO: faire comme dans Steams, bouton "ANNOUNCEMENTS = annonces" dans les paramètres qui affiche toutes les nouveautés, notes...
@@ -35,7 +34,6 @@ import java.util.*
 class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
     private lateinit var settingsPreference: SettingsPreference
-    private lateinit var userPreference: UserPreference
     private var settings: Settings? = null
 
     lateinit var settingsFragment: SettingsFragment
@@ -77,7 +75,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         super.onViewCreated(view, savedInstanceState)
 
         settingsPreference = SettingsPreference(requireContext())
-        userPreference = UserPreference(requireContext())
 
         if (!this::settingsFragment.isInitialized)
             settingsFragment = (requireActivity() as MainActivity).getFragment(SettingsFragment::class.java)!!

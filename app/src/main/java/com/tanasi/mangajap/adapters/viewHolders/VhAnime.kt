@@ -8,17 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.adapters.SpinnerAdapter
 import com.tanasi.mangajap.databinding.*
 import com.tanasi.mangajap.fragments.anime.AnimeFragment
@@ -37,7 +37,6 @@ import com.tanasi.mangajap.ui.dialog.MediaEntryDateDialog
 import com.tanasi.mangajap.ui.dialog.MediaEntryProgressionDialog
 import com.tanasi.mangajap.ui.dialog.NumberPickerDialog
 import com.tanasi.mangajap.utils.extensions.*
-import com.tanasi.mangajap.utils.preferences.UserPreference
 import java.lang.Exception
 import java.text.DecimalFormat
 import java.util.*
@@ -120,7 +119,7 @@ class VhAnime(
                 } ?: createAnimeEntry(AnimeEntry().also {
                     it.isAdd = isChecked
                     it.status = AnimeEntry.Status.watching
-                    it.user = User(id = UserPreference(context).selfId)
+                    it.user = User(id = Firebase.auth.uid)
                     it.anime = anime
                 })
             }
@@ -143,7 +142,7 @@ class VhAnime(
                 createAnimeRequest(Request().also {
                     it.requestType = Request.RequestType.anime
                     it.data = text
-                    it.user = User(id = UserPreference(context).selfId)
+                    it.user = User(id = Firebase.auth.uid)
                 })
                 dialog.dismiss()
             }.show()
@@ -193,7 +192,7 @@ class VhAnime(
                 } ?: createAnimeEntry(AnimeEntry().also {
                     it.isAdd = isChecked
                     it.status = AnimeEntry.Status.watching
-                    it.user = User(id = UserPreference(context).selfId)
+                    it.user = User(id = Firebase.auth.uid)
                     it.anime = anime
                 })
             }

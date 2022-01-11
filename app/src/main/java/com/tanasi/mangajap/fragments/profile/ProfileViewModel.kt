@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.jsonapi.bodies.JsonApiBody
-import com.tanasi.mangajap.MangaJapApplication
 import com.tanasi.mangajap.models.Follow
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.services.MangaJapApiService
-import com.tanasi.mangajap.utils.preferences.UserPreference
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -49,14 +49,12 @@ class ProfileViewModel : ViewModel() {
                 )
                 when (response) {
                     is JsonApiResponse.Success -> {
-                        val user = response.body.data!!.first()
-                        UserPreference(MangaJapApplication.context).selfId = user.id!!
-                        State.SuccessLoading(user, null, null)
+                        State.SuccessLoading(response.body.data!!.firstOrNull()!!, null, null)
                     }
                     is JsonApiResponse.Error -> State.FailedLoading(response)
                 }
             } else {
-                val selfId = UserPreference(MangaJapApplication.context).selfId
+                val selfId = Firebase.auth.uid!!
 
                 val userResponseDeferred = async { mangaJapApiService.getUser(
                         userId,

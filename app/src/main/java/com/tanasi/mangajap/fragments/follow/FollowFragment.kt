@@ -8,13 +8,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentFollowBinding
 import com.tanasi.mangajap.models.LoadMore
 import com.tanasi.mangajap.utils.extensions.setToolbar
-import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class FollowFragment : Fragment() {
 
@@ -52,10 +53,16 @@ class FollowFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        when (followType) {
-            FollowType.Followers -> setToolbar(getString(R.string.followers), if (userId == UserPreference(requireContext()).selfId) "" else userPseudo)
-            FollowType.Following -> setToolbar(getString(R.string.followed), if (userId == UserPreference(requireContext()).selfId) "" else userPseudo)
-        }
+        setToolbar(
+            when (followType) {
+                FollowType.Followers -> getString(R.string.followers)
+                FollowType.Following -> getString(R.string.followed)
+            },
+            when (userId) {
+                Firebase.auth.uid -> ""
+                else -> userPseudo
+            }
+        )
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {

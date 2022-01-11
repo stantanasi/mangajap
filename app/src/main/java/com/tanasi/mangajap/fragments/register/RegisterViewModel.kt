@@ -40,9 +40,10 @@ class RegisterViewModel : ViewModel() {
             }
             val user = result?.user!!
 
-            val response = mangaJapApiService.createUser(User().also {
+            val response = mangaJapApiService.createUser(User(
+                id = user.uid
+            ).also {
                 it.pseudo = pseudo
-                it.uid = user.uid
             })
 
             when (response) {

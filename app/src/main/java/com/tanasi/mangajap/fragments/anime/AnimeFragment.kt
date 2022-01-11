@@ -16,6 +16,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
@@ -31,7 +33,6 @@ import com.tanasi.mangajap.utils.extensions.add
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.extensions.setToolbar
 import com.tanasi.mangajap.utils.extensions.shareText
-import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class AnimeFragment : Fragment() {
 
@@ -240,8 +241,8 @@ class AnimeFragment : Fragment() {
                     viewModel.addAnimeEntry(AnimeEntry().also {
                         it.isAdd = true
                         it.status = AnimeEntry.Status.watching
-                        it.user = (User(id = UserPreference(requireContext()).selfId))
-                        it.anime = (anime)
+                        it.user = User(id = Firebase.auth.uid)
+                        it.anime = anime
                     })
                 }
             }

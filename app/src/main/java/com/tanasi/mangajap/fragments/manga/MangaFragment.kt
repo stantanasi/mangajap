@@ -17,6 +17,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
@@ -29,7 +31,6 @@ import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.models.Volume
 import com.tanasi.mangajap.utils.extensions.*
-import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class MangaFragment : Fragment() {
 
@@ -232,7 +233,7 @@ class MangaFragment : Fragment() {
                     viewModel.addMangaEntry(MangaEntry().also {
                         it.isAdd = true
                         it.status = MangaEntry.Status.reading
-                        it.user = User(id = UserPreference(requireContext()).selfId)
+                        it.user = User(id = Firebase.auth.uid)
                         it.manga = manga
                     })
                 }

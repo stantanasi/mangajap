@@ -15,6 +15,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
@@ -30,7 +32,6 @@ import com.tanasi.mangajap.utils.extensions.add
 import com.tanasi.mangajap.utils.extensions.addOrLast
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
-import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class ProfileFragment : Fragment() {
 
@@ -52,7 +53,6 @@ class ProfileFragment : Fragment() {
     private val viewModel: ProfileViewModel by viewModels()
 
     private lateinit var generalPreference: GeneralPreference
-    private lateinit var userPreference: UserPreference
 
     private var userId: String? = null
     private var currentTab: ProfileTab = ProfileTab.values().first()
@@ -76,7 +76,6 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         generalPreference = GeneralPreference(requireContext())
-        userPreference = UserPreference(requireContext())
 
         currentTab = when (generalPreference.displayFirst) {
             GeneralPreference.DisplayFirst.Manga -> ProfileTab.Manga
@@ -159,7 +158,7 @@ class ProfileFragment : Fragment() {
                 )
             }
             visibility = when (userId) {
-                null, userPreference.selfId -> View.VISIBLE
+                null, Firebase.auth.uid -> View.VISIBLE
                 else -> View.GONE
             }
         }
@@ -195,7 +194,7 @@ class ProfileFragment : Fragment() {
         }
 
         binding.tvProfileUserEdit.apply {
-            if (userId == null || userId == userPreference.selfId) {
+            if (userId == null || userId == Firebase.auth.uid) {
                 visibility = View.VISIBLE
                 setOnClickListener {
                     findNavController().navigate(
@@ -261,7 +260,7 @@ class ProfileFragment : Fragment() {
 
 
     private fun displayFollow() {
-        if (userId == null || userId == userPreference.selfId) {
+        if (userId == null || userId == Firebase.auth.uid) {
             binding.llProfileFollow.visibility = View.GONE
             binding.tvProfileUserIsFollowingYou.visibility = View.GONE
             return
@@ -278,7 +277,7 @@ class ProfileFragment : Fragment() {
                 setBackgroundResource(R.drawable.bg_btn_unfollow)
                 setOnClickListener {
                     viewModel.follow(Follow().also {
-                        it.follower = User(id = UserPreference(requireContext()).selfId)
+                        it.follower = User(id = Firebase.auth.uid)
                         it.followed = user
                     })
                 }

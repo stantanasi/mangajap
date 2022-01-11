@@ -11,11 +11,10 @@ import kotlin.reflect.KProperty
 
 @JsonApiType("users")
 class User(
-    var id: String? = null,
+    var id: String?,
 
     createdAt: String? = null,
     updatedAt: String? = null,
-    uid: String = "",
     pseudo: String = "",
     about: String = "",
     val isAdmin: Boolean = false,
@@ -48,7 +47,6 @@ class User(
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
-    var uid: String by JsonApiProperty(uid)
     var pseudo: String by JsonApiProperty(pseudo)
     var about: String by JsonApiProperty(about)
     var firstName: String by JsonApiProperty(firstName)

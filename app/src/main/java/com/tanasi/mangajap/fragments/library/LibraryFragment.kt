@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
@@ -20,10 +22,8 @@ import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Header
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.utils.extensions.format
-import com.tanasi.mangajap.utils.extensions.getAttrColor
 import com.tanasi.mangajap.utils.extensions.setToolbar
 import com.tanasi.mangajap.utils.preferences.LibraryPreference
-import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class LibraryFragment : Fragment() {
     
@@ -88,7 +88,7 @@ class LibraryFragment : Fragment() {
 
         userPseudo.let {
             var pseudo = it
-            if ((userId == UserPreference(requireContext()).selfId)) pseudo = ""
+            if (userId == Firebase.auth.uid) pseudo = ""
             when (libraryType) {
                 LibraryType.MangaList -> setToolbar(getString(R.string.mangaList), pseudo)
                 LibraryType.AnimeList -> setToolbar(getString(R.string.animeList), pseudo)

@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
@@ -19,7 +21,6 @@ import com.tanasi.mangajap.models.Header
 import com.tanasi.mangajap.utils.extensions.add
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
-import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class AgendaFragment : Fragment() {
 
@@ -38,7 +39,6 @@ class AgendaFragment : Fragment() {
     private val viewModel: AgendaViewModel by viewModels()
 
     private lateinit var generalPreference: GeneralPreference
-    private lateinit var userPreference: UserPreference
 
     private lateinit var currentTab: AgendaTab
 
@@ -55,7 +55,6 @@ class AgendaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         generalPreference = GeneralPreference(requireContext())
-        userPreference = UserPreference(requireContext())
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -98,7 +97,7 @@ class AgendaFragment : Fragment() {
             }
         }
 
-        viewModel.getAgenda(userPreference.selfId)
+        viewModel.getAgenda(Firebase.auth.uid!!)
 
         if (!this::currentTab.isInitialized) {
             currentTab = when (generalPreference.displayFirst) {

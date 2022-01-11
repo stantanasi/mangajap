@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.FragmentReviewSaveBinding
@@ -17,7 +19,6 @@ import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.Review
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.utils.extensions.setToolbar
-import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class ReviewSaveFragment : Fragment() {
 
@@ -140,7 +141,7 @@ class ReviewSaveFragment : Fragment() {
             when (review.id) {
                 null -> viewModel.createReview(review.also {
                     it.content = reviewContent
-                    it.user = User().apply { id = UserPreference(requireContext()).selfId }
+                    it.user = User(id = Firebase.auth.uid)
                     when (mediaType) {
                         ReviewMediaType.Manga -> it.manga = Manga(id = mediaId)
                         ReviewMediaType.Anime -> it.anime = Anime(id = mediaId)

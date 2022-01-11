@@ -5,6 +5,8 @@ import android.view.View
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
@@ -15,7 +17,6 @@ import com.tanasi.mangajap.fragments.reviewSave.ReviewSaveFragment
 import com.tanasi.mangajap.fragments.reviews.ReviewsFragmentDirections
 import com.tanasi.mangajap.models.Review
 import com.tanasi.mangajap.utils.extensions.format
-import com.tanasi.mangajap.utils.preferences.UserPreference
 
 class VhReview(
         private val _binding: ViewBinding
@@ -81,8 +82,7 @@ class VhReview(
         binding.tvReviewLastUpdated.text = review.updatedAt?.format("dd MMMM yyyy")
 
         binding.ivEdit.apply {
-            val userPreference = UserPreference(context)
-            if (review.user?.id == userPreference.selfId) {
+            if (review.user?.id == Firebase.auth.uid) {
                 visibility = View.VISIBLE
                 setOnClickListener {
                     Navigation.findNavController(binding.root).navigate(
