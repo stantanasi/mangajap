@@ -147,10 +147,10 @@ interface MangaJapApiService {
      * People
      */
 
-    @GET("people")
+    @GET("peoples")
     suspend fun getPeoples(@QueryMap params: JsonApiParams = JsonApiParams()): JsonApiResponse<List<People>>
 
-    @GET("people/{id}")
+    @GET("peoples/{id}")
     suspend fun getPeople(
         @Path("id") id: String,
         @QueryMap params: JsonApiParams = JsonApiParams()
