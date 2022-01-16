@@ -129,20 +129,22 @@ class LibraryFragment : Fragment() {
 
                 LibraryViewModel.State.Saving -> binding.isUpdating.root.visibility = View.VISIBLE
                 is LibraryViewModel.State.SuccessSaving -> {
-                    // TODO: creer sealed class media
-//                    itemList
-//                            .find {
-//                                when (it) {
-//                                    is MangaEntry -> it.id == state.jsonApiResource.id
-//                                    else -> false
-//                                }
-//                            }
-//                            ?.let {
-//                                when (state.jsonApiResource) {
-//                                    is MangaJapAdapter.Item -> itemList[itemList.indexOf(it)] = state.jsonApiResource
-//                                }
-//                            }
-                    mangaJapAdapter.notifyDataSetChanged()
+                    val index = when (val resource = state.jsonApiResource) {
+                        is AnimeEntry -> itemList
+                            .indexOfFirst { it is AnimeEntry && it.id == resource.id }
+                            .takeIf { it >= 0 }
+                            ?.also {
+                                itemList[it] = resource
+                            } ?: 0
+                        is MangaEntry -> itemList
+                            .indexOfFirst { it is MangaEntry && it.id == resource.id }
+                            .takeIf { it >= 0 }
+                            ?.also {
+                                itemList[it] = resource
+                            } ?: 0
+                        else -> 0
+                    }
+                    mangaJapAdapter.notifyItemChanged(index)
                     binding.isUpdating.root.visibility = View.GONE
                 }
                 is LibraryViewModel.State.FailedSaving -> when (state.error) {
