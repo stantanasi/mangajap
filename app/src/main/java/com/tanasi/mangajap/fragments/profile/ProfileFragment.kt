@@ -64,7 +64,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         userId = args.userId
-        viewModel.getProfile(userId)
+        viewModel.getProfile(userId ?: Firebase.auth.uid!!)
         (requireActivity() as MainActivity).showBottomNavView(userId == null)
         ProfileTab.values().forEach {
             addTab(it)

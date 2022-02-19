@@ -9,8 +9,9 @@ import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.jsonapi.bodies.JsonApiBody
-import com.tanasi.mangajap.models.Follow
-import com.tanasi.mangajap.models.User
+import com.tanasi.jsonapi.extensions.jsonApiName
+import com.tanasi.jsonapi.extensions.jsonApiType
+import com.tanasi.mangajap.models.*
 import com.tanasi.mangajap.services.MangaJapApiService
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -32,93 +33,79 @@ class ProfileViewModel : ViewModel() {
         data class FailedUpdatingFollowed(val error: JsonApiResponse.Error): State()
     }
 
-    fun getProfile(userId: String?) = viewModelScope.launch {
+    fun getProfile(userId: String) = viewModelScope.launch {
         _state.value = State.Loading
 
         _state.value = try {
-            if (userId == null) {
-                val response = mangaJapApiService.getUsers(
-                        JsonApiParams(
-                                include = listOf("manga-library.manga", "anime-library.anime", "manga-favorites.manga", "anime-favorites.anime"),
-                                fields = mapOf(
-                                        "manga" to listOf( "title", "coverImage", "volumeCount", "chapterCount"),
-                                        "anime" to listOf("title", "coverImage", "episodeCount")
-                                ),
-                                filter = mapOf("self" to listOf("true"))
-                        )
+            val selfId = Firebase.auth.uid!!
+
+            val userResponseDeferred = async { mangaJapApiService.getUser(
+                userId,
+                JsonApiParams(
+                    include = listOf(
+                        "manga-library.manga",
+                        "anime-library.anime",
+                        "manga-favorites.manga",
+                        "anime-favorites.anime"
+                    ),
+                    fields = mapOf(
+                        "manga" to listOf("title", "coverImage", "volumeCount", "chapterCount"),
+                        "anime" to listOf("title", "coverImage", "episodeCount")
+                    ),
                 )
-                when (response) {
-                    is JsonApiResponse.Success -> {
-                        State.SuccessLoading(response.body.data!!.firstOrNull()!!, null, null)
-                    }
-                    is JsonApiResponse.Error -> State.FailedLoading(response)
-                }
-            } else {
-                val selfId = Firebase.auth.uid!!
-
-                val userResponseDeferred = async { mangaJapApiService.getUser(
-                        userId,
+            ) }
+            val followedResponseDeferred = async {
+                if (userId != selfId) {
+                    mangaJapApiService.getFollows(
                         JsonApiParams(
-                                include = listOf("manga-library.manga", "anime-library.anime", "manga-favorites.manga", "anime-favorites.anime"),
-                                fields = mapOf(
-                                        "manga" to listOf( "title", "coverImage", "volumeCount", "chapterCount"),
-                                        "anime" to listOf("title", "coverImage", "episodeCount")
-                                )
+                            filter = mapOf(
+                                "follower" to listOf(selfId),
+                                "followed" to listOf(userId)
+                            )
                         )
-                ) }
-                val followedResponseDeferred = async {
-                    if (userId != selfId) {
-                        mangaJapApiService.getFollows(
-                                JsonApiParams(
-                                        filter = mapOf(
-                                                "followerId" to listOf(selfId),
-                                                "followedId" to listOf(userId)
-                                        )
-                                )
-                        )
-                    } else {
-                        JsonApiResponse.Success(200, JsonApiBody("", listOf()))
-                    }
-                }
-                val followerResponseDeferred = async {
-                    if (userId != selfId) {
-                        mangaJapApiService.getFollows(
-                                JsonApiParams(
-                                        filter = mapOf(
-                                                "followerId" to listOf(userId),
-                                                "followedId" to listOf(selfId)
-                                        )
-                                )
-                        )
-                    } else {
-                        JsonApiResponse.Success(200, JsonApiBody("", listOf()))
-                    }
-                }
-
-                val userResponse = userResponseDeferred.await()
-                val followedResponse = followedResponseDeferred.await()
-                val followerResponse = followerResponseDeferred.await()
-
-                when {
-                    userResponse is JsonApiResponse.Success &&
-                            followedResponse is JsonApiResponse.Success &&
-                            followerResponse is JsonApiResponse.Success -> State.SuccessLoading(
-                            userResponse.body.data!!,
-                            followedResponse.body.data?.firstOrNull(),
-                            followerResponse.body.data?.firstOrNull()
                     )
-
-                    userResponse is JsonApiResponse.Success -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load user data")))
-                    userResponse is JsonApiResponse.Error -> State.FailedLoading(userResponse)
-
-                    followedResponse is JsonApiResponse.Success -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load followed data")))
-                    followedResponse is JsonApiResponse.Error -> State.FailedLoading(followedResponse)
-
-                    followerResponse is JsonApiResponse.Success -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load follower data")))
-                    followerResponse is JsonApiResponse.Error -> State.FailedLoading(followerResponse)
-
-                    else -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load data")))
+                } else {
+                    JsonApiResponse.Success(200, JsonApiBody("", listOf()))
                 }
+            }
+            val followerResponseDeferred = async {
+                if (userId != selfId) {
+                    mangaJapApiService.getFollows(
+                        JsonApiParams(
+                            filter = mapOf(
+                                "follower" to listOf(userId),
+                                "followed" to listOf(selfId)
+                            )
+                        )
+                    )
+                } else {
+                    JsonApiResponse.Success(200, JsonApiBody("", listOf()))
+                }
+            }
+
+            val userResponse = userResponseDeferred.await()
+            val followedResponse = followedResponseDeferred.await()
+            val followerResponse = followerResponseDeferred.await()
+
+            when {
+                userResponse is JsonApiResponse.Success &&
+                        followedResponse is JsonApiResponse.Success &&
+                        followerResponse is JsonApiResponse.Success -> State.SuccessLoading(
+                    userResponse.body.data!!,
+                    followedResponse.body.data?.firstOrNull(),
+                    followerResponse.body.data?.firstOrNull()
+                )
+
+                userResponse is JsonApiResponse.Success -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load user data")))
+                userResponse is JsonApiResponse.Error -> State.FailedLoading(userResponse)
+
+                followedResponse is JsonApiResponse.Success -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load followed data")))
+                followedResponse is JsonApiResponse.Error -> State.FailedLoading(followedResponse)
+
+                followerResponse is JsonApiResponse.Success -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load follower data")))
+                followerResponse is JsonApiResponse.Error -> State.FailedLoading(followerResponse)
+
+                else -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load data")))
             }
         } catch (e: Exception) {
             State.FailedLoading(JsonApiResponse.Error.UnknownError(e))

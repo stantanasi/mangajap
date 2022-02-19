@@ -135,7 +135,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             Settings.main -> displayMain()
             Settings.general -> displayGeneral()
             Settings.account -> {
-                viewModel.getSelfUser()
+                viewModel.getUser(Firebase.auth.uid!!)
                 displayAccount()
             }
             Settings.about -> displayAbout()

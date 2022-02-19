@@ -36,13 +36,13 @@ class PeopleViewModel : ViewModel() {
                 include = listOf("manga-staff.manga", "anime-staff.anime"),
                 fields = mapOf(
                     Manga::class.jsonApiType to listOf(
-                        Manga::coverImage.jsonApiName(Manga::class),
                         Manga::title.jsonApiName(Manga::class),
+                        Manga::coverImage.jsonApiName(Manga::class),
                         Manga::startDate.jsonApiName(Manga::class),
                     ),
                     Anime::class.jsonApiType to listOf(
-                        Anime::coverImage.jsonApiName(Anime::class),
                         Anime::title.jsonApiName(Anime::class),
+                        Anime::coverImage.jsonApiName(Anime::class),
                         Anime::startDate.jsonApiName(Anime::class),
                     ),
                 )

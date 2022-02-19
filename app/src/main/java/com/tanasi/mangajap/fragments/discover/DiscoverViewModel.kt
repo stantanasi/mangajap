@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
+import com.tanasi.jsonapi.extensions.jsonApiName
+import com.tanasi.jsonapi.extensions.jsonApiType
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.models.*
 import com.tanasi.mangajap.services.MangaJapApiService
@@ -42,8 +44,8 @@ class DiscoverViewModel : ViewModel() {
                 JsonApiParams(
                     include = listOf("staff.manga", "staff.anime"),
                     fields = mapOf(
-                        "manga" to listOf("coverImage", "title"),
-                        "anime" to listOf("coverImage", "title")
+                        "manga" to listOf("title", "coverImage"),
+                        "anime" to listOf("title", "coverImage"),
                     ),
                     sort = listOf("random"),
                     limit = 10

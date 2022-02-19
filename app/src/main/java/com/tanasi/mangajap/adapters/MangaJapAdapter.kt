@@ -74,67 +74,68 @@ class MangaJapAdapter(
 
     private var onLoadMoreListener: (() -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder = when (Type.values()[viewType]) {
-        Type.AD_DISCOVER -> VhAd(ItemAdDiscoverBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.AD_PROFILE -> VhAd(ItemAdProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.AD_SEARCH -> VhAd(ItemAdSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        when (Type.values()[viewType]) {
+            Type.AD_DISCOVER -> VhAd(ItemAdDiscoverBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.AD_PROFILE -> VhAd(ItemAdProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.AD_SEARCH -> VhAd(ItemAdSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.ANIME_SEARCH -> VhAnime(ItemMediaSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.ANIME_SEARCH_ADD -> VhAnime(ItemMediaSearchAddBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.ANIME_HEADER -> VhAnime(ItemAnimeHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.ANIME_SUMMARY -> VhAnime(ItemAnimeSummaryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.ANIME_PROGRESSION -> VhAnime(ItemAnimeProgressionBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.ANIME_REVIEWS -> VhAnime(ItemAnimeReviewsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.ANIME_DISCOVER -> VhAnime(ItemMediaTrendingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.ANIME_SEARCH -> VhAnime(ItemMediaSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.ANIME_SEARCH_ADD -> VhAnime(ItemMediaSearchAddBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.ANIME_HEADER -> VhAnime(ItemAnimeHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.ANIME_SUMMARY -> VhAnime(ItemAnimeSummaryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.ANIME_PROGRESSION -> VhAnime(ItemAnimeProgressionBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.ANIME_REVIEWS -> VhAnime(ItemAnimeReviewsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.ANIME_DISCOVER -> VhAnime(ItemMediaTrendingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.ANIME_ENTRY_LIBRARY -> VhAnimeEntry(ItemMediaLibraryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.ANIME_ENTRY_PREVIEW -> VhAnimeEntry(ItemMediaProfilePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.ANIME_ENTRY_LIBRARY -> VhAnimeEntry(ItemMediaLibraryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.ANIME_ENTRY_PREVIEW -> VhAnimeEntry(ItemMediaProfilePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.SEASON_ANIME_HEADER -> VhSeason(ItemSeasonAnimeHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.SEASON_ANIME -> VhSeason(ItemSeasonAnimeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.EPISODE_ANIME -> VhEpisode(ItemEpisodeAnimeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.SEASON_ANIME_HEADER -> VhSeason(ItemSeasonAnimeHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.SEASON_ANIME -> VhSeason(ItemSeasonAnimeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.EPISODE_ANIME -> VhEpisode(ItemEpisodeAnimeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.MANGA_SEARCH -> VhManga(ItemMediaSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.MANGA_SEARCH_ADD -> VhManga(ItemMediaSearchAddBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.MANGA_HEADER -> VhManga(ItemMangaHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.MANGA_HEADER_SUMMARY -> VhManga(ItemMangaSummaryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.MANGA_HEADER_PROGRESSION -> VhManga(ItemMangaProgressionBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.MANGA_HEADER_REVIEWS -> VhManga(ItemMangaReviewsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.MANGA_DISCOVER -> VhManga(ItemMediaTrendingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.MANGA_ENTRY_LIBRARY -> VhMangaEntry(ItemMediaLibraryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.MANGA_ENTRY_PREVIEW -> VhMangaEntry(ItemMediaProfilePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.MANGA_SEARCH -> VhManga(ItemMediaSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.MANGA_SEARCH_ADD -> VhManga(ItemMediaSearchAddBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.MANGA_HEADER -> VhManga(ItemMangaHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.MANGA_HEADER_SUMMARY -> VhManga(ItemMangaSummaryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.MANGA_HEADER_PROGRESSION -> VhManga(ItemMangaProgressionBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.MANGA_HEADER_REVIEWS -> VhManga(ItemMangaReviewsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.MANGA_DISCOVER -> VhManga(ItemMediaTrendingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.MANGA_ENTRY_LIBRARY -> VhMangaEntry(ItemMediaLibraryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.MANGA_ENTRY_PREVIEW -> VhMangaEntry(ItemMediaProfilePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.REVIEW_HEADER -> VhReview(ItemReviewHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.REVIEW -> VhReview(ItemReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.REVIEW_HEADER -> VhReview(ItemReviewHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.REVIEW -> VhReview(ItemReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
 
-        Type.STATS_PREVIEW_MANGA_FOLLOWED,
-        Type.STATS_PREVIEW_MANGA_VOLUMES,
-        Type.STATS_PREVIEW_MANGA_CHAPTERS,
-        Type.STATS_PREVIEW_ANIME_FOLLOWED,
-        Type.STATS_PREVIEW_ANIME_EPISODES -> VhUserStats(ItemStatsPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.STATS_PREVIEW_ANIME_TIME_SPENT -> VhUserStats(ItemStatsTimeSpentPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.STATS_PREVIEW_MANGA_FOLLOWED,
+            Type.STATS_PREVIEW_MANGA_VOLUMES,
+            Type.STATS_PREVIEW_MANGA_CHAPTERS,
+            Type.STATS_PREVIEW_ANIME_FOLLOWED,
+            Type.STATS_PREVIEW_ANIME_EPISODES -> VhUserStats(ItemStatsPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.STATS_PREVIEW_ANIME_TIME_SPENT -> VhUserStats(ItemStatsTimeSpentPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.VOLUME_MANGA -> VhVolume(ItemVolumeMangaBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.VOLUME_MANGA_DETAILS -> VhVolume(ItemVolumeMangaDetailsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.VOLUME_MANGA -> VhVolume(ItemVolumeMangaBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.VOLUME_MANGA_DETAILS -> VhVolume(ItemVolumeMangaDetailsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.USER -> VhUser(ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.USER -> VhUser(ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.FOLLOWERS -> VhFollow(ItemFollowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.FOLLOWING -> VhFollow(ItemFollowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.FOLLOWERS -> VhFollow(ItemFollowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.FOLLOWING -> VhFollow(ItemFollowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.PEOPLE_DISCOVER -> VhPeople(ItemPeopleDiscoverBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.PEOPLE_DISCOVER -> VhPeople(ItemPeopleDiscoverBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.STAFF_PEOPLE -> VhStaff(ItemStaffPeopleBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.STAFF_PEOPLE -> VhStaff(ItemStaffPeopleBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.LOAD_MORE -> VhLoadMore(ItemLoadMoreBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.LOAD_MORE -> VhLoadMore(ItemLoadMoreBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.HEADER_AGENDA -> VhHeader(ItemAgendaHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.HEADER_LIBRARY_STATUS -> VhHeader(ItemLibraryStatusBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.HEADER_AGENDA -> VhHeader(ItemAgendaHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.HEADER_LIBRARY_STATUS -> VhHeader(ItemLibraryStatusBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-        Type.ANIME_ENTRY_TO_WATCH -> VhAnimeEntry(ItemAnimeToWatchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-        Type.MANGA_ENTRY_TO_READ -> VhMangaEntry(ItemMangaToReadBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-    }
+            Type.ANIME_ENTRY_TO_WATCH -> VhAnimeEntry(ItemAnimeToWatchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            Type.MANGA_ENTRY_TO_READ -> VhMangaEntry(ItemMangaToReadBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         onLoadMoreListener?.let { onLoadMoreListener ->
