@@ -45,7 +45,7 @@ class AnimeViewModel : ViewModel() {
             val response = mangaJapApiService.getAnime(
                 id,
                 JsonApiParams(
-                    include = listOf("anime-entry", "seasons")
+                    include = listOf("anime-entry", "genres", "themes", "seasons", "franchises.destination")
                 )
             )
 
