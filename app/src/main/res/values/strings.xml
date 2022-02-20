@@ -257,5 +257,6 @@
     <string name="verifyPassword">Verify your password</string>
     <string name="verifyPasswordMessage">Re-enter your MangaJap password to continue.</string>
     <string name="password_reset_email_sent">Password reset email sent!</string>
+    <string name="franchises">From the same franchise</string>
 
 </resources>
