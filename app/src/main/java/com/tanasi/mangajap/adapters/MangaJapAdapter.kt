@@ -28,10 +28,13 @@ class MangaJapAdapter(
         ANIME_SUMMARY,
         ANIME_PROGRESSION,
         ANIME_REVIEWS,
+        ANIME_FRANCHISES,
 
         ANIME_ENTRY_LIBRARY,
         ANIME_ENTRY_PREVIEW,
         ANIME_ENTRY_TO_WATCH,
+
+        FRANCHISE,
 
         MANGA_SEARCH,
         MANGA_SEARCH_ADD,
@@ -41,6 +44,7 @@ class MangaJapAdapter(
         MANGA_HEADER_SUMMARY,
         MANGA_HEADER_PROGRESSION,
         MANGA_HEADER_REVIEWS,
+        MANGA_HEADER_FRANCHISES,
 
         MANGA_ENTRY_LIBRARY,
         MANGA_ENTRY_PREVIEW,
@@ -85,6 +89,7 @@ class MangaJapAdapter(
         Type.ANIME_SUMMARY -> VhAnime(ItemAnimeSummaryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.ANIME_PROGRESSION -> VhAnime(ItemAnimeProgressionBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.ANIME_REVIEWS -> VhAnime(ItemAnimeReviewsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        Type.ANIME_FRANCHISES -> VhAnime(ItemAnimeFranchisesBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.ANIME_DISCOVER -> VhAnime(ItemMediaTrendingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
         Type.ANIME_ENTRY_LIBRARY -> VhAnimeEntry(ItemMediaLibraryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -94,12 +99,15 @@ class MangaJapAdapter(
         Type.SEASON_ANIME -> VhSeason(ItemSeasonAnimeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.EPISODE_ANIME -> VhEpisode(ItemEpisodeAnimeBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
+        Type.FRANCHISE -> VhFranchise(ItemFranchiseBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+
         Type.MANGA_SEARCH -> VhManga(ItemMediaSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.MANGA_SEARCH_ADD -> VhManga(ItemMediaSearchAddBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.MANGA_HEADER -> VhManga(ItemMangaHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.MANGA_HEADER_SUMMARY -> VhManga(ItemMangaSummaryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.MANGA_HEADER_PROGRESSION -> VhManga(ItemMangaProgressionBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.MANGA_HEADER_REVIEWS -> VhManga(ItemMangaReviewsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        Type.MANGA_HEADER_FRANCHISES -> VhManga(ItemMangaFranchisesBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.MANGA_DISCOVER -> VhManga(ItemMediaTrendingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.MANGA_ENTRY_LIBRARY -> VhMangaEntry(ItemMediaLibraryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         Type.MANGA_ENTRY_PREVIEW -> VhMangaEntry(ItemMediaProfilePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -154,6 +162,7 @@ class MangaJapAdapter(
             is VhAnimeEntry -> holder.setVhAnimeEntry(items[position] as AnimeEntry)
             is VhEpisode -> holder.setVhEpisode(items[position] as Episode)
             is VhFollow -> holder.setVhFollow(items[position] as Follow)
+            is VhFranchise -> holder.setVhFranchise(items[position] as Franchise)
             is VhLoadMore -> holder.setLoadMore(items[position] as LoadMore)
             is VhManga -> holder.setVhManga(items[position] as Manga)
             is VhMangaEntry -> holder.setVhMangaEntry(items[position] as MangaEntry)
