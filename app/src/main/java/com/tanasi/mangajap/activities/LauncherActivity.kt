@@ -7,7 +7,6 @@ import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.mangajap.databinding.ActivityLauncherBinding
-import com.tanasi.mangajap.utils.extensions.getActualTheme
 import com.tanasi.mangajap.utils.extensions.setLocale
 
 class LauncherActivity : AppCompatActivity() {
@@ -16,7 +15,6 @@ class LauncherActivity : AppCompatActivity() {
     private val binding: ActivityLauncherBinding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(getActualTheme())
         super.onCreate(savedInstanceState)
         setLocale()
         _binding = ActivityLauncherBinding.inflate(layoutInflater)

@@ -13,7 +13,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.ActivityMainBinding
 import com.tanasi.mangajap.fragments.settingsPreference.SettingsPreferenceFragment
-import com.tanasi.mangajap.utils.extensions.getActualTheme
 import com.tanasi.mangajap.utils.extensions.setLocale
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
 
@@ -23,7 +22,6 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(getActualTheme())
         super.onCreate(savedInstanceState)
         setLocale()
         _binding = ActivityMainBinding.inflate(layoutInflater)
