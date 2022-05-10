@@ -198,9 +198,9 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 ) { position ->
                     settingsPreference.theme = SettingsPreference.Theme.values()[position]
 
-                    startActivity(Intent(requireContext(), MainActivity::class.java))
-                    requireActivity().finish()
-                    requireActivity().overridePendingTransition(R.anim.fade_in_activity, R.anim.fade_out_activity)
+                    summary = getString(settingsPreference.theme.stringId)
+
+                    requireContext().setNightMode()
                 }.show()
                 false
             }
