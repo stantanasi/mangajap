@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <!-- TODO: créer theme sombre good practices -->
     <style name="AppTheme.SplashScreen" parent="AppTheme">
         <item name="android:windowBackground">@drawable/bg_splash_screen</item>
 
@@ -62,6 +61,32 @@
         <item name="dividerColor">#404040</item>
 
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+
+        <item name="actionMenuTextColor">?attr/textPrimaryColor</item>
+    </style>
+
+    <style name="AppTheme.MangaJap" parent="AppTheme">
+        <item name="colorPrimary">?attr/backgroundPrimaryColor</item>
+        <item name="colorSecondary">?attr/backgroundSecondaryColor</item>
+        <item name="colorPrimaryDark">?attr/backgroundPrimaryColor</item>
+        <item name="colorAccent">@color/color_app</item>
+        <item name="colorControlHighlight">#40000000</item> <!-- Ripple effect color -->
+
+        <item name="textColorHighlight">#159753</item>
+        <item name="textColorHint">#9E9E9E</item>
+        <item name="textColorLink">#753951</item>
+
+        <item name="textPrimaryColor">#000000</item>
+
+        <item name="textSecondaryColor">#808080</item>
+
+        <item name="backgroundPrimaryColor">#FFFFFF</item>
+        <item name="backgroundSecondaryColor">#F0F0F0</item>
+        <item name="backgroundSecondaryColorTransparent">#B3F0F0F0</item>
+
+        <item name="dividerColor">#d7d7d7</item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
 
         <item name="actionMenuTextColor">?attr/textPrimaryColor</item>
     </style>
