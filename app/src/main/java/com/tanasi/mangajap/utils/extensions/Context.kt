@@ -12,8 +12,6 @@ import androidx.core.content.ContextCompat
 import com.tanasi.mangajap.utils.preferences.SettingsPreference
 import java.util.*
 
-fun AppCompatActivity.getActualTheme(): Int = SettingsPreference(this).theme.styleId
-
 fun Context.setNightMode(theme: SettingsPreference.Theme = SettingsPreference(this).theme) {
     val mode = when (theme) {
         SettingsPreference.Theme.device -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM

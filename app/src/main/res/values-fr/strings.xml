@@ -95,8 +95,9 @@
     <string name="defineALanguage">Définir un langage</string>
     <string name="theme">Thème</string>
     <string name="defineATheme">Définir un thème</string>
-    <string name="themeClassic">Classique</string>
-    <string name="themeDark">Sombre</string>
+    <string name="device_theme">Thème de l\'appareil</string>
+    <string name="light_theme">Thème clair</string>
+    <string name="dark_theme">Thème sombre</string>
     <string name="about">À propos</string>
     <string name="logout">Se déconnecter</string>
     <string name="logoutConfirmation">Êtes-vous sûr de vouloir vous déconnecter ?</string>
