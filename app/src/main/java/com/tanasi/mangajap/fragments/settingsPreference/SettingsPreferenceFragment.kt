@@ -148,17 +148,17 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         settingsFragment.setToolbar(getString(R.string.settings), "").setNavigationOnClickListener { findNavController().navigateUp() }
 
         findPreference<Preference>("general")?.setOnPreferenceClickListener {
-            settingsFragment.showFragment(Settings.general, true)
+            settingsFragment.showFragment(Settings.general)
             false
         }
 
         findPreference<Preference>("account")?.setOnPreferenceClickListener {
-            settingsFragment.showFragment(Settings.account, true)
+            settingsFragment.showFragment(Settings.account)
             false
         }
 
         findPreference<Preference>("about")?.setOnPreferenceClickListener {
-            settingsFragment.showFragment(Settings.about, true)
+            settingsFragment.showFragment(Settings.about)
             false
         }
     }
