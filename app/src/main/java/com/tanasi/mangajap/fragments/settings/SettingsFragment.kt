@@ -30,7 +30,8 @@ class SettingsFragment : Fragment() {
 
         setToolbar(resources.getString(R.string.settings), "").setNavigationOnClickListener { findNavController().navigateUp() }
 
-        showFragment(SettingsPreferenceFragment.Settings.main, false)
+        if (savedInstanceState == null)
+            showFragment(SettingsPreferenceFragment.Settings.main, false)
     }
 
     override fun onDestroyView() {
