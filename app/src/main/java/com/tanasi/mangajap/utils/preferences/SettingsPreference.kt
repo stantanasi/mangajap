@@ -77,7 +77,7 @@ class SettingsPreference(
             fun getByName(name: String?): Theme = try {
                 valueOf(name!!)
             } catch (e: Exception) {
-                light
+                device
             }
         }
     }
