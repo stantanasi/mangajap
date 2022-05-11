@@ -20,7 +20,8 @@ interface MangaJapApiService {
             val client = OkHttpClient.Builder().addInterceptor { chain ->
                 val requestBuilder = chain.request().newBuilder()
                     .addHeader("Authorization", "Bearer ${Firebase.auth.uid}")
-                    .addHeader("Accept", "application/json")
+                    .addHeader("Accept", "application/vnd.api+json")
+                    .addHeader("Content-Type", "application/vnd.api+json")
 
                 chain.proceed(requestBuilder.build())
             }.build()
