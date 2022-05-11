@@ -279,6 +279,8 @@ class AnimeFragment : Fragment() {
             add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_SUMMARY })
             if (anime.animeEntry != null)
                 add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_PROGRESSION })
+            if (anime.franchises.isNotEmpty())
+                add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_FRANCHISES })
             add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_REVIEWS })
         }
 
