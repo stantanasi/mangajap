@@ -3,17 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="3dp"
-    android:clipToPadding="false"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
         app:cardBackgroundColor="?attr/backgroundPrimaryColor"
         app:cardCornerRadius="3dp"
-        app:cardElevation="2dp">
+        app:cardElevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -48,7 +45,6 @@
                 tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     </androidx.cardview.widget.CardView>
 
