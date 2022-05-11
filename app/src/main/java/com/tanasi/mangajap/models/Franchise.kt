@@ -15,8 +15,8 @@ class Franchise(
     updatedAt: String? = null,
     role: String = "",
 
-    val source: MangaJapAdapter.Item? = null,
-    val destination: MangaJapAdapter.Item? = null,
+    val source: Media? = null,
+    val destination: Media? = null,
 ) : MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -24,7 +24,7 @@ class Franchise(
     val role: Role = Role.getByName(role)
 
 
-    override lateinit var typeLayout: MangaJapAdapter.Type
+    override var typeLayout: MangaJapAdapter.Type = MangaJapAdapter.Type.FRANCHISE
 
 
     enum class Role(val stringId: Int) {
