@@ -84,18 +84,10 @@ class VhFranchise(
                 )
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.placeholder)
-                .into(this, object : Callback {
-                    override fun onSuccess() {
-                        binding.tvFranchiseTitlePlaceholder.visibility = View.GONE
-                    }
-
-                    override fun onError(e: Exception?) {
-                        binding.tvFranchiseTitlePlaceholder.visibility = View.VISIBLE
-                    }
-                })
+                .into(this)
         }
 
-        binding.tvFranchiseTitlePlaceholder.text = when (destination) {
+        binding.tvFranchiseTitle.text = when (destination) {
             is Anime -> destination.title
             is Manga -> destination.title
             else -> ""

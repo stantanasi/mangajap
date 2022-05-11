@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -28,32 +29,49 @@
                 tools:ignore="ContentDescription"
                 tools:src="@drawable/placeholder" />
 
-            <TextView
-                android:id="@+id/tv_franchise_title_placeholder"
+            <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_margin="@dimen/profile_spacing"
-                android:gravity="center"
-                android:textColor="#505050"
-                android:textSize="@dimen/font_size_small_medium"
-                android:textStyle="bold"
+                android:background="@drawable/bg_gradient_franchise"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Title"
-                tools:visibility="visible" />
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_franchise_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="?attr/textPrimaryColor"
+                android:textSize="@dimen/font_size_micro"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/tv_franchise_role"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Title" />
+
+            <TextView
+                android:id="@+id/tv_franchise_role"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="?attr/textSecondaryColor"
+                android:textSize="@dimen/font_size_micro"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Role" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
-    <TextView
-        android:id="@+id/tv_franchise_role"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="?attr/textPrimaryColor"
-        tools:text="Role" />
 
 </LinearLayout>
