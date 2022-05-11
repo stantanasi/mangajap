@@ -279,6 +279,8 @@ class MangaFragment : Fragment() {
             add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_SUMMARY })
             if (manga.mangaEntry != null)
                 add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_PROGRESSION })
+            if (manga.franchises.isNotEmpty())
+                add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_FRANCHISES })
             add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_REVIEWS })
         }
 
