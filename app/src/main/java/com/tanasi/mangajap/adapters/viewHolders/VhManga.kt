@@ -18,6 +18,7 @@ import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
+import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.adapters.SpinnerAdapter
 import com.tanasi.mangajap.databinding.*
 import com.tanasi.mangajap.fragments.discover.DiscoverFragment
@@ -60,6 +61,7 @@ class VhManga(
             is ItemMangaSummaryBinding -> displaySummary(_binding)
             is ItemMangaProgressionBinding -> displayProgression(_binding)
             is ItemMangaReviewsBinding -> displayReviews(_binding)
+            is ItemMangaFranchisesBinding -> displayFranchises(_binding)
         }
     }
 
@@ -489,5 +491,9 @@ class VhManga(
         }
 
         binding.tvMangaReviewCount.text = manga.reviewCount.toString()
+    }
+
+    private fun displayFranchises(binding: ItemMangaFranchisesBinding) {
+        binding.rvMangaFranchises.adapter = MangaJapAdapter(manga.franchises)
     }
 }

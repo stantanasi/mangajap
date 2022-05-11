@@ -23,6 +23,12 @@
         <action
             android:id="@+id/action_manga_to_image"
             app:destination="@id/image" />
+        <action
+            android:id="@+id/action_manga_to_anime"
+            app:destination="@id/anime" />
+        <action
+            android:id="@+id/action_manga_to_manga"
+            app:destination="@id/manga" />
     </fragment>
     <fragment
         android:id="@+id/discover"
@@ -89,6 +95,12 @@
         <action
             android:id="@+id/action_anime_to_image"
             app:destination="@id/image" />
+        <action
+            android:id="@+id/action_anime_to_manga"
+            app:destination="@id/manga" />
+        <action
+            android:id="@+id/action_anime_to_anime"
+            app:destination="@id/anime" />
     </fragment>
     <fragment
         android:id="@+id/people"

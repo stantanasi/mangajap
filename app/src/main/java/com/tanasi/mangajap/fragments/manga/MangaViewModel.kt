@@ -38,7 +38,7 @@ class MangaViewModel : ViewModel() {
         val response = mangaJapApiService.getManga(
                 id,
                 JsonApiParams(
-                        include = listOf("manga-entry", "staff.people", "volumes")
+                        include = listOf("manga-entry", "genres", "themes", "volumes", "staff.people", "franchises.destination")
                 )
         )
         _state.value = try {
