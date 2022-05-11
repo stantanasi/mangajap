@@ -38,8 +38,8 @@ class AnimeFragment : Fragment() {
 
     private enum class AnimeTab(
         val stringId: Int,
-        val fragment: RecyclerViewFragment = RecyclerViewFragment(),
-        val list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+        var fragment: RecyclerViewFragment = RecyclerViewFragment(),
+        var list: MutableList<MangaJapAdapter.Item> = mutableListOf()
     ) {
         About(R.string.about),
         Episodes(R.string.episodes);
@@ -48,9 +48,8 @@ class AnimeFragment : Fragment() {
     private var _binding: FragmentAnimeBinding? = null
     private val binding: FragmentAnimeBinding get() = _binding!!
 
-    val viewModel: AnimeViewModel by viewModels()
-
     private val args: AnimeFragmentArgs by navArgs()
+    val viewModel: AnimeViewModel by viewModels()
 
     private lateinit var anime: Anime
 
@@ -59,8 +58,8 @@ class AnimeFragment : Fragment() {
         _binding = FragmentAnimeBinding.inflate(inflater, container, false)
         viewModel.getAnime(args.animeId)
         AnimeTab.values().forEach {
-            it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
-            addTab(it)
+            it.fragment = RecyclerViewFragment()
+            it.list = mutableListOf()
         }
         return binding.root
     }
@@ -70,6 +69,11 @@ class AnimeFragment : Fragment() {
 
         setToolbar(args.animeTitle, "")
         setHasOptionsMenu(true)
+
+        AnimeTab.values().forEach {
+            it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
+            addTab(it)
+        }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {

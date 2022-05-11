@@ -36,8 +36,8 @@ class MangaFragment : Fragment() {
 
     private enum class MangaTab(
         val stringId: Int,
-        val fragment: RecyclerViewFragment = RecyclerViewFragment(),
-        val list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+        var fragment: RecyclerViewFragment = RecyclerViewFragment(),
+        var list: MutableList<MangaJapAdapter.Item> = mutableListOf()
     ) {
         About(R.string.about),
         Volumes(R.string.volumes);
@@ -47,7 +47,6 @@ class MangaFragment : Fragment() {
     private val binding: FragmentMangaBinding get() = _binding!!
 
     private val args: MangaFragmentArgs by navArgs()
-
     val viewModel: MangaViewModel by viewModels()
 
     private lateinit var manga: Manga
@@ -57,6 +56,19 @@ class MangaFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMangaBinding.inflate(inflater, container, false)
         viewModel.getManga(args.mangaId)
+        MangaTab.values().forEach {
+            it.fragment = RecyclerViewFragment()
+            it.list = mutableListOf()
+        }
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setToolbar(args.mangaTitle, "")
+        setHasOptionsMenu(true)
+
         MangaTab.About.let {
             it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
             addTab(it)
@@ -77,14 +89,6 @@ class MangaFragment : Fragment() {
                 7
             )
         }
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setToolbar(args.mangaTitle, "")
-        setHasOptionsMenu(true)
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {

@@ -25,8 +25,8 @@ class PeopleFragment : Fragment() {
 
     private enum class PeopleTab(
         val stringId: Int,
-        val fragment: RecyclerViewFragment = RecyclerViewFragment(),
-        val list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+        var fragment: RecyclerViewFragment = RecyclerViewFragment(),
+        var list: MutableList<MangaJapAdapter.Item> = mutableListOf()
     ) {
         Manga(R.string.manga),
         Anime(R.string.anime);
@@ -45,7 +45,8 @@ class PeopleFragment : Fragment() {
         _binding = FragmentPeopleBinding.inflate(inflater, container, false)
         viewModel.getPeople(args.peopleId)
         PeopleTab.values().forEach {
-            it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
+            it.fragment = RecyclerViewFragment()
+            it.list = mutableListOf()
         }
         return binding.root
     }
@@ -54,6 +55,10 @@ class PeopleFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setToolbar(args.peopleName, "")
+
+        PeopleTab.values().forEach {
+            it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
+        }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
