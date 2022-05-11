@@ -148,17 +148,17 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         settingsFragment.setToolbar(getString(R.string.settings), "").setNavigationOnClickListener { findNavController().navigateUp() }
 
         findPreference<Preference>("general")?.setOnPreferenceClickListener {
-            settingsFragment.showFragment(Settings.general, true)
+            settingsFragment.showFragment(Settings.general)
             false
         }
 
         findPreference<Preference>("account")?.setOnPreferenceClickListener {
-            settingsFragment.showFragment(Settings.account, true)
+            settingsFragment.showFragment(Settings.account)
             false
         }
 
         findPreference<Preference>("about")?.setOnPreferenceClickListener {
-            settingsFragment.showFragment(Settings.about, true)
+            settingsFragment.showFragment(Settings.about)
             false
         }
     }
@@ -198,9 +198,9 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 ) { position ->
                     settingsPreference.theme = SettingsPreference.Theme.values()[position]
 
-                    startActivity(Intent(requireContext(), MainActivity::class.java))
-                    requireActivity().finish()
-                    requireActivity().overridePendingTransition(R.anim.fade_in_activity, R.anim.fade_out_activity)
+                    summary = getString(settingsPreference.theme.stringId)
+
+                    requireContext().setNightMode()
                 }.show()
                 false
             }

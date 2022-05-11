@@ -7,11 +7,19 @@ import android.content.res.Configuration
 import android.os.Build
 import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import com.tanasi.mangajap.utils.preferences.SettingsPreference
 import java.util.*
 
-fun AppCompatActivity.getActualTheme(): Int = SettingsPreference(this).theme.styleId
+fun Context.setNightMode(theme: SettingsPreference.Theme = SettingsPreference(this).theme) {
+    val mode = when (theme) {
+        SettingsPreference.Theme.device -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        SettingsPreference.Theme.light -> AppCompatDelegate.MODE_NIGHT_NO
+        SettingsPreference.Theme.dark -> AppCompatDelegate.MODE_NIGHT_YES
+    }
+    AppCompatDelegate.setDefaultNightMode(mode)
+}
 
 fun Context.locale(): Locale = Locale(SettingsPreference(this).language.name)
 
