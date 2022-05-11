@@ -34,6 +34,7 @@ class FollowViewModel : ViewModel() {
             userId,
             JsonApiParams(
                 include = listOf("follower"),
+                sort = listOf("-createdAt"),
                 limit = 15,
             )
         )
@@ -57,6 +58,7 @@ class FollowViewModel : ViewModel() {
             userId,
             JsonApiParams(
                 include = listOf("followed"),
+                sort = listOf("-createdAt"),
                 limit = 15,
             )
         )

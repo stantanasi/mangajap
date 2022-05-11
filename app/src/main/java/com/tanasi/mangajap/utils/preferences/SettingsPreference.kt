@@ -68,15 +68,16 @@ class SettingsPreference(
         }
 
 
-    enum class Theme(val styleId: Int, val stringId: Int) {
-        light(R.style.AppTheme_Light, R.string.themeClassic),
-        dark(R.style.AppTheme_Dark, R.string.themeDark);
+    enum class Theme(val stringId: Int) {
+        device(R.string.device_theme),
+        light(R.string.light_theme),
+        dark(R.string.dark_theme);
 
         companion object {
             fun getByName(name: String?): Theme = try {
                 valueOf(name!!)
             } catch (e: Exception) {
-                light
+                device
             }
         }
     }

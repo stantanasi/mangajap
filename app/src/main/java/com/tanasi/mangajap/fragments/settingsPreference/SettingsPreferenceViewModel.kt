@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
+import com.tanasi.jsonapi.extensions.jsonApiName
+import com.tanasi.jsonapi.extensions.jsonApiType
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.services.MangaJapApiService
 import kotlinx.coroutines.launch
@@ -27,18 +29,18 @@ class SettingsPreferenceViewModel : ViewModel() {
         data class FailedUpdating(val error: JsonApiResponse.Error): State()
     }
 
-    fun getSelfUser() = viewModelScope.launch {
+    fun getUser(userId: String) = viewModelScope.launch {
         _state.value = State.Loading
 
-        val response = mangaJapApiService.getUsers(
-                JsonApiParams(
-                        fields = mapOf("users" to listOf("pseudo", "email")),
-                        filter = mapOf("self" to listOf("true"))
-                )
+        val response = mangaJapApiService.getUser(
+            userId,
+            JsonApiParams(
+                fields = mapOf("users" to listOf("pseudo")),
+            )
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.first())
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!)
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {

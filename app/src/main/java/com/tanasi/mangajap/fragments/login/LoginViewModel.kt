@@ -9,6 +9,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
+import com.tanasi.jsonapi.extensions.jsonApiName
+import com.tanasi.jsonapi.extensions.jsonApiType
+import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.services.MangaJapApiService
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -23,7 +26,7 @@ class LoginViewModel : ViewModel() {
     sealed class State {
         object Loading: State()
 
-        data class LoginSucceed(val user: FirebaseUser, val userId: String): State()
+        data class LoginSucceed(val firebaseUser: FirebaseUser): State()
         data class LoginFailed(val error: Exception): State()
 
         data class PasswordResetEmailSuccess(val succeed: Boolean): State()
@@ -37,20 +40,8 @@ class LoginViewModel : ViewModel() {
             val authResult = Firebase.auth
                 .signInWithEmailAndPassword(email, password).await()
 
-            val response = mangaJapApiService.getUsers(
-                JsonApiParams(
-                    fields = mapOf("users" to listOf("pseudo", "email")),
-                    filter = mapOf("self" to listOf("true"))
-                )
-            )
-
-            val user = when (response) {
-                is JsonApiResponse.Success -> response.body.data!!.first()
-                else -> null
-            }
-
             authResult?.user?.let { firebaseUser ->
-                State.LoginSucceed(firebaseUser, user?.id ?: "")
+                State.LoginSucceed(firebaseUser)
             } ?: State.LoginFailed(Exception("Login failed"))
         } catch (e: Exception) {
             State.LoginFailed(e)

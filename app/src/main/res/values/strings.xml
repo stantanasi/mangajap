@@ -152,8 +152,9 @@
     <string name="sortByProgression">Progression</string>
     <string name="sortByReleaseDate">Release date</string>
 
-    <string name="themeClassic">Classic</string>
-    <string name="themeDark">Dark</string>
+    <string name="device_theme">Device theme</string>
+    <string name="light_theme">Light theme</string>
+    <string name="dark_theme">Dark theme</string>
 
     <string name="staffRoleAuthor">Author</string>
     <string name="staffRoleIllustrator">Illustrator</string>

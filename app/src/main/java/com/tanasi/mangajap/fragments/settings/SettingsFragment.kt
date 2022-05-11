@@ -30,7 +30,8 @@ class SettingsFragment : Fragment() {
 
         setToolbar(resources.getString(R.string.settings), "").setNavigationOnClickListener { findNavController().navigateUp() }
 
-        showFragment(SettingsPreferenceFragment.Settings.main, false)
+        if (savedInstanceState == null)
+            showFragment(SettingsPreferenceFragment.Settings.main)
     }
 
     override fun onDestroyView() {
@@ -39,15 +40,18 @@ class SettingsFragment : Fragment() {
     }
 
 
-    fun showFragment(settings: SettingsPreferenceFragment.Settings, back_stack: Boolean) {
+    fun showFragment(settings: SettingsPreferenceFragment.Settings) {
         val ft: FragmentTransaction = childFragmentManager.beginTransaction()
-        val settingsPreferenceFragment = SettingsPreferenceFragment()
-        settingsPreferenceFragment.settingsFragment = this
-        val args = Bundle()
-        args.putString("settings", settings.name)
-        settingsPreferenceFragment.arguments = args
-        ft.replace(binding.flSettings.id, settingsPreferenceFragment)
-        if (back_stack) ft.addToBackStack(null)
+        ft.replace(binding.flSettings.id, SettingsPreferenceFragment().also {
+            it.settingsFragment = this
+            it.arguments = Bundle().also { bundle ->
+                bundle.putString("settings", settings.name)
+            }
+        })
+        when (settings) {
+            SettingsPreferenceFragment.Settings.main -> {}
+            else -> ft.addToBackStack(null)
+        }
         ft.commit()
     }
 }

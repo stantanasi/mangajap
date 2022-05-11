@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <!-- TODO: créer theme sombre good practices -->
     <style name="AppTheme.SplashScreen" parent="AppTheme">
         <item name="android:windowBackground">@drawable/bg_splash_screen</item>
 
@@ -15,7 +14,7 @@
         <item name="colorAccent">?attr/colorAccent</item>
     </style>
 
-    <style name="AppTheme.Light" parent="AppTheme">
+    <style name="AppTheme.MangaJap" parent="AppTheme">
         <item name="colorPrimary">?attr/backgroundPrimaryColor</item>
         <item name="colorSecondary">?attr/backgroundSecondaryColor</item>
         <item name="colorPrimaryDark">?attr/backgroundPrimaryColor</item>
@@ -37,31 +36,6 @@
         <item name="dividerColor">#d7d7d7</item>
 
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-
-        <item name="actionMenuTextColor">?attr/textPrimaryColor</item>
-    </style>
-
-    <style name="AppTheme.Dark" parent="AppTheme">
-        <item name="colorPrimary">?attr/backgroundPrimaryColor</item>
-        <item name="colorSecondary">?attr/backgroundSecondaryColor</item>
-        <item name="colorPrimaryDark">?attr/backgroundPrimaryColor</item>
-        <item name="colorAccent">@color/color_app</item>
-        <item name="colorControlHighlight">#40FFFFFF</item> <!-- Ripple effect color -->
-
-        <item name="textColorHighlight">#159753</item>
-        <item name="textColorHint">#5A5A5A</item>
-        <item name="textColorLink">#753951</item>
-
-        <item name="textPrimaryColor">#FFFFFF</item>
-        <item name="textSecondaryColor">#C8C8C8</item>
-
-        <item name="backgroundPrimaryColor">#272727</item>
-        <item name="backgroundSecondaryColor">#171717</item>
-        <item name="backgroundSecondaryColorTransparent">#B3171717</item>
-
-        <item name="dividerColor">#404040</item>
-
-        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
 
         <item name="actionMenuTextColor">?attr/textPrimaryColor</item>
     </style>
