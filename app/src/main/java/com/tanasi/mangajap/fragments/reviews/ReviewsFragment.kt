@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.tanasi.jsonapi.JsonApiResponse
+import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentReviewsBinding
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.Review
+import com.tanasi.mangajap.ui.SpacingItemDecoration
 import com.tanasi.mangajap.utils.extensions.setToolbar
 
 class ReviewsFragment : Fragment() {
@@ -114,6 +116,9 @@ class ReviewsFragment : Fragment() {
 
         binding.rvReviews.apply {
             adapter = MangaJapAdapter(reviewsList)
+            addItemDecoration(SpacingItemDecoration(
+                spacing = resources.getDimension(R.dimen.reviews_spacing).toInt()
+            ))
         }
     }
 }
