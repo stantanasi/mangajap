@@ -7,10 +7,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/anime_spacing"
-        android:layout_marginTop="@dimen/anime_spacing"
-        android:layout_marginEnd="@dimen/anime_spacing"
-        android:layout_marginBottom="@dimen/anime_spacing"
         android:text="@string/show_all_episodes"
         android:textAllCaps="true"
         android:textColor="?attr/colorAccent"
