@@ -57,7 +57,7 @@ class VhAnime(
         when (_binding) {
             is ItemMediaSearchBinding -> displaySearch(_binding)
             is ItemMediaSearchAddBinding -> displaySearchAdd(_binding)
-            is ItemMediaTrendingBinding -> displayTrending(_binding)
+            is ItemMediaDiscoverBinding -> displayTrending(_binding)
 
             is ItemAnimeHeaderBinding -> displayHeader(_binding)
             is ItemAnimeSummaryBinding -> displaySummary(_binding)
@@ -156,7 +156,7 @@ class VhAnime(
         binding.tvSearchAddSubtitle.text = context.getString(R.string.propose_anime_summary)
     }
 
-    private fun displayTrending(binding: ItemMediaTrendingBinding) {
+    private fun displayTrending(binding: ItemMediaDiscoverBinding) {
         binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     DiscoverFragmentDirections.actionDiscoverToAnime(
