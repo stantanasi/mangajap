@@ -21,6 +21,7 @@ import com.tanasi.mangajap.databinding.FragmentLibraryBinding
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Header
 import com.tanasi.mangajap.models.MangaEntry
+import com.tanasi.mangajap.ui.SpacingItemDecoration
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.setToolbar
 import com.tanasi.mangajap.utils.preferences.LibraryPreference
@@ -231,6 +232,9 @@ class LibraryFragment : Fragment() {
                 }
             }
             adapter = mangaJapAdapter
+            addItemDecoration(SpacingItemDecoration(
+                spacing = resources.getDimension(R.dimen.library_spacing).toInt()
+            ))
         }
     }
 
