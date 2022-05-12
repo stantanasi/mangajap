@@ -7,8 +7,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class SpacingItemDecoration(
-    private val spacing: Int
+    private val vertical: Int,
+    private val horizontal: Int,
 ) : RecyclerView.ItemDecoration() {
+
+    constructor(spacing: Int): this(spacing, spacing)
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -24,18 +27,18 @@ class SpacingItemDecoration(
                 val spanCount = layoutManager.spanCount / layoutManager.spanSizeLookup.getSpanSize(position)
                 val column = position % spanCount
 
-                outRect.left = column * spacing / spanCount
-                outRect.right = spacing - (column + 1) * spacing / spanCount
+                outRect.left = column * horizontal / spanCount
+                outRect.right = horizontal - (column + 1) * horizontal / spanCount
                 if (position >= spanCount) {
-                    outRect.top = spacing
+                    outRect.top = vertical
                 }
             }
 
             is LinearLayoutManager -> {
                 if (position != count - 1) {
                     when (layoutManager.orientation) {
-                        RecyclerView.VERTICAL -> outRect.bottom = spacing
-                        RecyclerView.HORIZONTAL -> outRect.right = spacing
+                        RecyclerView.VERTICAL -> outRect.bottom = vertical
+                        RecyclerView.HORIZONTAL -> outRect.right = horizontal
                     }
                 }
             }
