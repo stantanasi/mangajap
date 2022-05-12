@@ -28,6 +28,7 @@ import com.tanasi.mangajap.databinding.FragmentProfileBinding
 import com.tanasi.mangajap.fragments.follow.FollowFragment
 import com.tanasi.mangajap.fragments.library.LibraryFragment
 import com.tanasi.mangajap.models.*
+import com.tanasi.mangajap.ui.SpacingItemDecoration
 import com.tanasi.mangajap.utils.extensions.add
 import com.tanasi.mangajap.utils.extensions.addOrLast
 import com.tanasi.mangajap.utils.extensions.contains
@@ -142,6 +143,16 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
+
+        binding.rvProfileUserStats.addItemDecoration(SpacingItemDecoration(
+            spacing = (resources.getDimension(R.dimen.profile_spacing) * 1.2).toInt()
+        ))
+        binding.rvProfileUserLibrary.addItemDecoration(SpacingItemDecoration(
+            spacing = (resources.getDimension(R.dimen.profile_spacing) * 0.6).toInt()
+        ))
+        binding.rvProfileUserLibraryFavorites.addItemDecoration(SpacingItemDecoration(
+            spacing = (resources.getDimension(R.dimen.profile_spacing) * 0.6).toInt()
+        ))
     }
 
     override fun onDestroyView() {
