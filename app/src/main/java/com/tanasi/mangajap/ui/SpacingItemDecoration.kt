@@ -24,12 +24,14 @@ class SpacingItemDecoration(
 
         when (val layoutManager = parent.layoutManager) {
             is GridLayoutManager -> {
-                val spanCount = layoutManager.spanCount / layoutManager.spanSizeLookup.getSpanSize(position)
-                val column = position % spanCount
+                val spanCount = layoutManager.spanCount
+                val spanSize = layoutManager.spanSizeLookup.getSpanSize(position)
+                val spanIndex = layoutManager.spanSizeLookup.getSpanIndex(position, spanCount)
 
-                outRect.left = column * horizontal / spanCount
-                outRect.right = horizontal - (column + 1) * horizontal / spanCount
-                if (position >= spanCount) {
+                outRect.left = spanIndex * horizontal / spanCount
+                outRect.right = horizontal - (spanIndex + spanSize) * horizontal / spanCount
+
+                if (position != spanIndex) {
                     outRect.top = vertical
                 }
             }
