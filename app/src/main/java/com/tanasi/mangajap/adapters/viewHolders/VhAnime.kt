@@ -314,7 +314,7 @@ class VhAnime(
 
     private fun displayProgression(binding: ItemAnimeProgressionBinding) {
         binding.spinnerAnimeProgressionStatus.apply {
-            (background as GradientDrawable).setStroke(context.dpToPx(1), ContextCompat.getColor(context, anime.animeEntry?.getProgressColor(anime) ?: AnimeEntry.Status.watching.colorId))
+            (background as GradientDrawable).setStroke(1.dpToPx(context), ContextCompat.getColor(context, anime.animeEntry?.getProgressColor(anime) ?: AnimeEntry.Status.watching.colorId))
 
             adapter = SpinnerAdapter(
                 context,

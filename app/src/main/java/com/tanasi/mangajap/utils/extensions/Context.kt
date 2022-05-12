@@ -61,16 +61,6 @@ fun Context.getCountries(): Map<String, String> {
     return countries
 }
 
-fun Context.pxToDp(px: Int): Int {
-    val density = this.resources.displayMetrics.density
-    return (px / density).toInt()
-}
-
-fun Context.dpToPx(dp: Int): Int {
-    val density = this.resources.displayMetrics.density
-    return (dp * density).toInt()
-}
-
 fun Context.getAppVersionName(): String {
     return try {
         this.packageManager.getPackageInfo(this.packageName, 0).versionName

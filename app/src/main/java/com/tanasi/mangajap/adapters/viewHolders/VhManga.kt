@@ -327,7 +327,7 @@ class VhManga(
 
     private fun displayProgression(binding: ItemMangaProgressionBinding) {
         binding.spinnerMangaProgressionStatus.apply {
-            (background as GradientDrawable).setStroke(context.dpToPx(1), ContextCompat.getColor(context, manga.mangaEntry?.getProgressColor(manga) ?: MangaEntry.Status.reading.colorId))
+            (background as GradientDrawable).setStroke(1.dpToPx(context), ContextCompat.getColor(context, manga.mangaEntry?.getProgressColor(manga) ?: MangaEntry.Status.reading.colorId))
 
             adapter = SpinnerAdapter(
                 context,

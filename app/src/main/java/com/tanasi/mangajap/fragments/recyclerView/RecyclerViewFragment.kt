@@ -76,10 +76,10 @@ open class RecyclerViewFragment : Fragment() {
             }
             adapter = mangaJapAdapter
             setPadding(
-                    requireContext().dpToPx(padding),
-                    requireContext().dpToPx(padding),
-                    requireContext().dpToPx(padding),
-                    requireContext().dpToPx(padding)
+                padding.dpToPx(requireContext()),
+                padding.dpToPx(requireContext()),
+                padding.dpToPx(requireContext()),
+                padding.dpToPx(requireContext()),
             )
         }
     }
