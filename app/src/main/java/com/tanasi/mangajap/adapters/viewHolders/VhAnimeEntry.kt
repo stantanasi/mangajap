@@ -9,8 +9,7 @@ import androidx.viewbinding.ViewBinding
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
-import com.tanasi.mangajap.databinding.ItemAnimeToWatchBinding
+import com.tanasi.mangajap.databinding.ItemAgendaAnimeBinding
 import com.tanasi.mangajap.databinding.ItemMediaLibraryBinding
 import com.tanasi.mangajap.databinding.ItemMediaProfilePreviewBinding
 import com.tanasi.mangajap.fragments.agenda.AgendaFragmentDirections
@@ -36,7 +35,7 @@ class VhAnimeEntry(
         when (_binding) {
             is ItemMediaProfilePreviewBinding -> displayPreview(_binding)
             is ItemMediaLibraryBinding -> displayLibrary(_binding)
-            is ItemAnimeToWatchBinding -> displayToWatch(_binding)
+            is ItemAgendaAnimeBinding -> displayToWatch(_binding)
         }
     }
 
@@ -136,7 +135,7 @@ class VhAnimeEntry(
         }
     }
 
-    private fun displayToWatch(binding: ItemAnimeToWatchBinding) {
+    private fun displayToWatch(binding: ItemAgendaAnimeBinding) {
         binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     AgendaFragmentDirections.actionAgendaToAnime(

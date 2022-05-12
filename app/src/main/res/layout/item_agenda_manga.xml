@@ -4,9 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/agenda_spacing"
-    android:layout_marginEnd="@dimen/agenda_spacing"
-    android:layout_marginBottom="@dimen/agenda_spacing"
     app:cardBackgroundColor="?attr/backgroundPrimaryColor"
     app:cardCornerRadius="10dp">
 
@@ -17,9 +14,10 @@
         <ImageView
             android:id="@+id/iv_manga_to_read_cover"
             android:layout_width="125dp"
-            android:layout_height="100dp"
+            android:layout_height="0dp"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_min="100dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />

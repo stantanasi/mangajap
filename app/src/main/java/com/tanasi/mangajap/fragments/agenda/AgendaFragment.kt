@@ -18,6 +18,7 @@ import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentAgendaBinding
 import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
 import com.tanasi.mangajap.models.Header
+import com.tanasi.mangajap.ui.SpacingItemDecoration
 import com.tanasi.mangajap.utils.extensions.add
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
@@ -46,6 +47,10 @@ class AgendaFragment : Fragment() {
         _binding = FragmentAgendaBinding.inflate(inflater, container, false)
         AgendaTab.values().forEach {
             it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
+            it.fragment.setPadding(resources.getDimension(R.dimen.agenda_spacing).toInt())
+            it.fragment.addItemDecoration(SpacingItemDecoration(
+                spacing = resources.getDimension(R.dimen.agenda_spacing).toInt()
+            ))
             addTab(it)
         }
         return binding.root
@@ -62,7 +67,6 @@ class AgendaFragment : Fragment() {
                 is AgendaViewModel.State.SuccessLoading -> {
                     AgendaTab.ReadList.list.apply {
                         clear()
-                        add(Header(getString(R.string.read_list)).also { it.typeLayout = MangaJapAdapter.Type.HEADER_AGENDA })
                         addAll(state.readingManga.filter { mangaEntry ->
                             mangaEntry.manga?.let { manga -> mangaEntry.getProgress(manga) < 100 }
                                 ?: false
@@ -70,7 +74,6 @@ class AgendaFragment : Fragment() {
                     }
                     AgendaTab.WatchList.list.apply {
                         clear()
-                        add(Header(getString(R.string.watch_list)).also { it.typeLayout = MangaJapAdapter.Type.HEADER_AGENDA })
                         addAll(state.watchingAnime.filter { animeEntry ->
                             animeEntry.anime?.let { anime -> animeEntry.getProgress(anime) < 100 }
                                 ?: false
