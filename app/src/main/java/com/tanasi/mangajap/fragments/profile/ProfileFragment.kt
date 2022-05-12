@@ -143,16 +143,6 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
-
-        binding.rvProfileUserStats.addItemDecoration(SpacingItemDecoration(
-            spacing = (resources.getDimension(R.dimen.profile_spacing) * 1.2).toInt()
-        ))
-        binding.rvProfileUserLibrary.addItemDecoration(SpacingItemDecoration(
-            spacing = (resources.getDimension(R.dimen.profile_spacing) * 0.6).toInt()
-        ))
-        binding.rvProfileUserLibraryFavorites.addItemDecoration(SpacingItemDecoration(
-            spacing = (resources.getDimension(R.dimen.profile_spacing) * 0.6).toInt()
-        ))
     }
 
     override fun onDestroyView() {
@@ -266,7 +256,18 @@ class ProfileFragment : Fragment() {
         binding.rvProfileUserStats.apply {
             val pagerSnapHelper = PagerSnapHelper()
             pagerSnapHelper.attachToRecyclerView(this)
+            addItemDecoration(SpacingItemDecoration(
+                spacing = (resources.getDimension(R.dimen.profile_spacing) * 1.2).toInt()
+            ))
         }
+
+        binding.rvProfileUserLibrary.addItemDecoration(SpacingItemDecoration(
+            spacing = (resources.getDimension(R.dimen.profile_spacing) * 0.6).toInt()
+        ))
+
+        binding.rvProfileUserLibraryFavorites.addItemDecoration(SpacingItemDecoration(
+            spacing = (resources.getDimension(R.dimen.profile_spacing) * 0.6).toInt()
+        ))
     }
 
 

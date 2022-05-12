@@ -475,7 +475,9 @@ class VhAnime(
     private fun displayFranchises(binding: ItemAnimeFranchisesBinding) {
         binding.rvAnimeFranchises.apply {
             adapter = MangaJapAdapter(anime.franchises)
-            addItemDecoration(SpacingItemDecoration(resources.getDimension(R.dimen.anime_spacing).toInt() / 2))
+            addItemDecoration(SpacingItemDecoration(
+                spacing = (resources.getDimension(R.dimen.anime_spacing) * 0.5).toInt()
+            ))
         }
     }
 }
