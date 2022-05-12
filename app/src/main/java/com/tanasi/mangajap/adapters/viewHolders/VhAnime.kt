@@ -33,6 +33,7 @@ import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Request
 import com.tanasi.mangajap.models.User
+import com.tanasi.mangajap.ui.SpacingItemDecoration
 import com.tanasi.mangajap.ui.dialog.EditTextDialog
 import com.tanasi.mangajap.ui.dialog.MediaEntryDateDialog
 import com.tanasi.mangajap.ui.dialog.MediaEntryProgressionDialog
@@ -472,6 +473,9 @@ class VhAnime(
     }
 
     private fun displayFranchises(binding: ItemAnimeFranchisesBinding) {
-        binding.rvAnimeFranchises.adapter = MangaJapAdapter(anime.franchises)
+        binding.rvAnimeFranchises.apply {
+            adapter = MangaJapAdapter(anime.franchises)
+            addItemDecoration(SpacingItemDecoration(resources.getDimension(R.dimen.anime_spacing).toInt() / 2))
+        }
     }
 }
