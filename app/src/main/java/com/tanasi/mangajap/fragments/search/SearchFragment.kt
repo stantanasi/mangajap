@@ -36,9 +36,9 @@ class SearchFragment : Fragment() {
 
     private enum class SearchTab(
             val stringId: Int,
-            val fragment: RecyclerViewFragment = RecyclerViewFragment(),
-            val list: MutableList<MangaJapAdapter.Item> = mutableListOf(),
-            val loadMore: LoadMore = LoadMore(),
+            var fragment: RecyclerViewFragment = RecyclerViewFragment(),
+            var list: MutableList<MangaJapAdapter.Item> = mutableListOf(),
+            var loadMore: LoadMore = LoadMore(),
             var nextLink: String = "",
     ) {
         Manga(R.string.manga),
@@ -61,6 +61,9 @@ class SearchFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         SearchTab.values().forEach {
+            it.fragment = RecyclerViewFragment()
+            it.list = mutableListOf()
+            it.loadMore = LoadMore()
             it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
             addTab(it)
         }

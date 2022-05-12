@@ -27,8 +27,8 @@ class AgendaFragment : Fragment() {
 
     private enum class AgendaTab(
             val stringId: Int,
-            val fragment: RecyclerViewFragment = RecyclerViewFragment(),
-            val list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+            var fragment: RecyclerViewFragment = RecyclerViewFragment(),
+            var list: MutableList<MangaJapAdapter.Item> = mutableListOf()
     ) {
         ReadList(R.string.read_list),
         WatchList(R.string.watch_list);
@@ -46,6 +46,8 @@ class AgendaFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAgendaBinding.inflate(inflater, container, false)
         AgendaTab.values().forEach {
+            it.fragment = RecyclerViewFragment()
+            it.list = mutableListOf()
             it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
             it.fragment.setPadding(resources.getDimension(R.dimen.agenda_spacing).toInt())
             it.fragment.addItemDecoration(SpacingItemDecoration(
