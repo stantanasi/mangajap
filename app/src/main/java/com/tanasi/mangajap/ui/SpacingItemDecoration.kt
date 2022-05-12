@@ -20,6 +20,17 @@ class SpacingItemDecoration(
         val count = parent.adapter?.itemCount ?: 0
 
         when (val layoutManager = parent.layoutManager) {
+            is GridLayoutManager -> {
+                val spanCount = layoutManager.spanCount / layoutManager.spanSizeLookup.getSpanSize(position)
+                val column = position % spanCount
+
+                outRect.left = column * spacing / spanCount
+                outRect.right = spacing - (column + 1) * spacing / spanCount
+                if (position >= spanCount) {
+                    outRect.top = spacing
+                }
+            }
+
             is LinearLayoutManager -> {
                 if (position != count - 1) {
                     when (layoutManager.orientation) {
@@ -27,9 +38,6 @@ class SpacingItemDecoration(
                         RecyclerView.HORIZONTAL -> outRect.right = spacing
                     }
                 }
-            }
-
-            is GridLayoutManager -> {
             }
         }
     }
