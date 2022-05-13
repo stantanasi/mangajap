@@ -29,6 +29,7 @@ import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Season
 import com.tanasi.mangajap.models.User
+import com.tanasi.mangajap.ui.SpacingItemDecoration
 import com.tanasi.mangajap.utils.extensions.add
 import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.extensions.setToolbar
@@ -72,6 +73,15 @@ class AnimeFragment : Fragment() {
 
         AnimeTab.values().forEach {
             it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
+            when (it) {
+                AnimeTab.About -> {}
+                AnimeTab.Episodes -> {
+                    it.fragment.setPadding(resources.getDimension(R.dimen.anime_spacing).toInt())
+                    it.fragment.addItemDecoration(SpacingItemDecoration(
+                        spacing = resources.getDimension(R.dimen.anime_spacing).toInt()
+                    ))
+                }
+            }
             addTab(it)
         }
 

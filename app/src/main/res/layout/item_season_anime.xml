@@ -4,10 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/anime_spacing"
-    android:layout_marginEnd="@dimen/anime_spacing"
-    android:layout_marginBottom="@dimen/anime_spacing"
-    android:clipToPadding="false"
     app:cardBackgroundColor="?attr/backgroundPrimaryColor"
     app:cardCornerRadius="10dp"
     app:cardElevation="0dp">

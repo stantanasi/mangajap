@@ -30,6 +30,7 @@ import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.models.Volume
+import com.tanasi.mangajap.ui.SpacingItemDecoration
 import com.tanasi.mangajap.utils.extensions.*
 
 class MangaFragment : Fragment() {
@@ -86,8 +87,12 @@ class MangaFragment : Fragment() {
                         }
                     }
                 },
-                7
             )
+            it.fragment.setPadding(resources.getDimension(R.dimen.manga_spacing).toInt())
+            it.fragment.addItemDecoration(SpacingItemDecoration(
+                vertical = (resources.getDimension(R.dimen.manga_spacing) * 1.5).toInt() / 2,
+                horizontal = (resources.getDimension(R.dimen.manga_spacing) * 1.5).toInt(),
+            ))
         }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
@@ -309,7 +314,8 @@ class MangaFragment : Fragment() {
         }
 
         if (MangaTab.Volumes.list.isNotEmpty()) {
-            if (MangaTab.Volumes.fragment.isAdded) MangaTab.Volumes.fragment.mangaJapAdapter?.notifyDataSetChanged()
+            if (MangaTab.Volumes.fragment.isAdded)
+                MangaTab.Volumes.fragment.mangaJapAdapter?.notifyDataSetChanged()
             addTab(MangaTab.Volumes)
         }
     }

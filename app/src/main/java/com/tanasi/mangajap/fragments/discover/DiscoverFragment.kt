@@ -10,11 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.tanasi.jsonapi.JsonApiResponse
+import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentDiscoverBinding
 import com.tanasi.mangajap.models.Ad
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.Manga
+import com.tanasi.mangajap.ui.SpacingItemDecoration
 import com.tanasi.mangajap.utils.extensions.addOrLast
 
 class DiscoverFragment : Fragment() {
@@ -122,14 +124,23 @@ class DiscoverFragment : Fragment() {
         binding.rvDiscoverPeople.apply {
             adapter = peopleAdapter
             snapHelper.attachToRecyclerView(this)
+            addItemDecoration(SpacingItemDecoration(
+                spacing = (resources.getDimension(R.dimen.discover_spacing) * 1).toInt()
+            ))
         }
 
         binding.rvDiscoverRecentManga.apply {
             adapter = mangaRecentAdapter
+            addItemDecoration(SpacingItemDecoration(
+                spacing = (resources.getDimension(R.dimen.discover_spacing) * 0.4).toInt()
+            ))
         }
 
         binding.rvDiscoverRecentAnime.apply {
             adapter = animeRecentAdapter
+            addItemDecoration(SpacingItemDecoration(
+                spacing = (resources.getDimension(R.dimen.discover_spacing) * 0.4).toInt()
+            ))
         }
     }
 }

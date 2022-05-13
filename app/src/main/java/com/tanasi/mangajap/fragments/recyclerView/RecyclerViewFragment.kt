@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.databinding.FragmentRecyclerViewBinding
-import com.tanasi.mangajap.utils.extensions.dpToPx
 
 open class RecyclerViewFragment : Fragment() {
 
@@ -22,11 +21,21 @@ open class RecyclerViewFragment : Fragment() {
 
     private lateinit var list: List<MangaJapAdapter.Item>
     private lateinit var rvLayoutManager: RecyclerView.LayoutManager
-    private var padding: Int = 0
+
     var mangaJapAdapter: MangaJapAdapter? = null
     val recyclerView: RecyclerView? get() = _binding?.recyclerView
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private var paddingLeft: Int = 0
+    private var paddingTop: Int = 0
+    private var paddingRight: Int = 0
+    private var paddingBottom: Int = 0
+    private val decors = mutableListOf<RecyclerView.ItemDecoration>()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentRecyclerViewBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -64,31 +73,52 @@ open class RecyclerViewFragment : Fragment() {
 
 
     private fun displayList() {
-        binding.recyclerView.apply {
-            layoutManager = when (rvLayoutManager) {
-                is GridLayoutManager -> {
-                    GridLayoutManager(requireContext(), (rvLayoutManager as GridLayoutManager).spanCount).also {
-                        it.spanSizeLookup = (rvLayoutManager as GridLayoutManager).spanSizeLookup
-                    }
+        binding.recyclerView.also { recyclerView ->
+            recyclerView.layoutManager = when (rvLayoutManager) {
+                is GridLayoutManager -> GridLayoutManager(
+                    requireContext(),
+                    (rvLayoutManager as GridLayoutManager).spanCount
+                ).also {
+                    it.spanSizeLookup = (rvLayoutManager as GridLayoutManager).spanSizeLookup
                 }
-                is LinearLayoutManager -> LinearLayoutManager(requireContext(), (rvLayoutManager as LinearLayoutManager).orientation, (rvLayoutManager as LinearLayoutManager).reverseLayout)
+
+                is LinearLayoutManager -> LinearLayoutManager(
+                    requireContext(),
+                    (rvLayoutManager as LinearLayoutManager).orientation,
+                    (rvLayoutManager as LinearLayoutManager).reverseLayout
+                )
+
                 else -> LinearLayoutManager(requireContext())
             }
-            adapter = mangaJapAdapter
-            setPadding(
-                padding.dpToPx(requireContext()),
-                padding.dpToPx(requireContext()),
-                padding.dpToPx(requireContext()),
-                padding.dpToPx(requireContext()),
+            recyclerView.adapter = mangaJapAdapter
+
+            recyclerView.setPadding(
+                paddingLeft,
+                paddingTop,
+                paddingRight,
+                paddingBottom,
             )
+
+            decors.forEach { recyclerView.addItemDecoration(it) }
         }
     }
 
-    fun setList(list: List<MangaJapAdapter.Item>, rvLayoutManager: RecyclerView.LayoutManager, padding: Int = 0) {
+
+    fun setList(list: List<MangaJapAdapter.Item>, rvLayoutManager: RecyclerView.LayoutManager) {
         this.list = list
         this.rvLayoutManager = rvLayoutManager
-        this.padding = padding
     }
+
+    fun setPadding(padding: Int) = setPadding(padding, padding, padding, padding)
+    fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
+        paddingLeft = left
+        paddingTop = top
+        paddingRight = right
+        paddingBottom = bottom
+    }
+
+    fun addItemDecoration(decor: RecyclerView.ItemDecoration) = decors.add(decor)
+
 
     fun isLoading(isLoading: Boolean) {
         if (_binding == null) return

@@ -33,6 +33,7 @@ import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Request
 import com.tanasi.mangajap.models.User
+import com.tanasi.mangajap.ui.SpacingItemDecoration
 import com.tanasi.mangajap.ui.dialog.EditTextDialog
 import com.tanasi.mangajap.ui.dialog.MediaEntryDateDialog
 import com.tanasi.mangajap.ui.dialog.MediaEntryProgressionDialog
@@ -56,7 +57,7 @@ class VhAnime(
         when (_binding) {
             is ItemMediaSearchBinding -> displaySearch(_binding)
             is ItemMediaSearchAddBinding -> displaySearchAdd(_binding)
-            is ItemMediaTrendingBinding -> displayTrending(_binding)
+            is ItemMediaDiscoverBinding -> displayTrending(_binding)
 
             is ItemAnimeHeaderBinding -> displayHeader(_binding)
             is ItemAnimeSummaryBinding -> displaySummary(_binding)
@@ -155,7 +156,7 @@ class VhAnime(
         binding.tvSearchAddSubtitle.text = context.getString(R.string.propose_anime_summary)
     }
 
-    private fun displayTrending(binding: ItemMediaTrendingBinding) {
+    private fun displayTrending(binding: ItemMediaDiscoverBinding) {
         binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                     DiscoverFragmentDirections.actionDiscoverToAnime(
@@ -472,6 +473,11 @@ class VhAnime(
     }
 
     private fun displayFranchises(binding: ItemAnimeFranchisesBinding) {
-        binding.rvAnimeFranchises.adapter = MangaJapAdapter(anime.franchises)
+        binding.rvAnimeFranchises.apply {
+            adapter = MangaJapAdapter(anime.franchises)
+            addItemDecoration(SpacingItemDecoration(
+                spacing = (resources.getDimension(R.dimen.anime_spacing) * 0.5).toInt()
+            ))
+        }
     }
 }

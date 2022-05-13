@@ -57,13 +57,10 @@
             android:id="@+id/rv_discover_people"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/discover_spacing"
             android:clipToPadding="false"
             android:nestedScrollingEnabled="false"
             android:orientation="horizontal"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingBottom="8dp"
+            android:padding="@dimen/discover_spacing"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -98,18 +95,15 @@
             android:id="@+id/rv_discover_recent_manga"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/discover_spacing"
             android:clipToPadding="false"
             android:nestedScrollingEnabled="false"
             android:orientation="horizontal"
-            android:paddingStart="13dp"
-            android:paddingEnd="13dp"
-            android:paddingBottom="13dp"
+            android:padding="@dimen/discover_spacing"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_discover_recent_manga_title"
-            tools:listitem="@layout/item_media_trending" />
+            tools:listitem="@layout/item_media_discover" />
 
         <View
             android:id="@+id/divider2"
@@ -139,18 +133,15 @@
             android:id="@+id/rv_discover_recent_anime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/discover_spacing"
             android:clipToPadding="false"
             android:nestedScrollingEnabled="false"
             android:orientation="horizontal"
-            android:paddingStart="13dp"
-            android:paddingEnd="13dp"
-            android:paddingBottom="13dp"
+            android:padding="@dimen/discover_spacing"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_discover_recent_anime_title"
-            tools:listitem="@layout/item_media_trending" />
+            tools:listitem="@layout/item_media_discover" />
 
         <include
             android:id="@+id/is_loading"
