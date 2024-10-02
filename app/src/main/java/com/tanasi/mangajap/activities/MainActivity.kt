@@ -36,9 +36,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_main_fragment)
 
         if (savedInstanceState == null) {
-            navController.graph = navController.graph.also {
-                it.startDestination = generalPreference.savedStartDestination
-            }
+            navController.graph.setStartDestination(generalPreference.savedStartDestination)
         }
 
         binding.bnvMain.setupWithNavController(navController)

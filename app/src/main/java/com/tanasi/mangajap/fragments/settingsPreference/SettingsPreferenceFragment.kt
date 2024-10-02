@@ -86,6 +86,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 Settings.general,
                 Settings.account,
                 Settings.about -> parentFragmentManager.popBackStack()
+                else -> {}
             }
         }
 
@@ -139,6 +140,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 displayAccount()
             }
             Settings.about -> displayAbout()
+            else -> {}
         }
     }
 
