@@ -241,7 +241,7 @@ class MangaFragment : Fragment() {
                 setOnClickListener {
                     viewModel.addMangaEntry(MangaEntry().also {
                         it.isAdd = true
-                        it.status = MangaEntry.Status.reading
+                        it.status = MangaEntry.Status.READING
                         it.user = User(id = Firebase.auth.uid)
                         it.manga = manga
                     })
@@ -284,13 +284,13 @@ class MangaFragment : Fragment() {
     private fun setMangaAboutFragment() {
         MangaTab.About.list.apply {
             clear()
-            add(manga.clone().apply { itemType = AppAdapter.Type.MANGA_HEADER })
-            add(manga.clone().apply { itemType = AppAdapter.Type.MANGA_HEADER_SUMMARY })
+            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_HEADER })
+            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_HEADER_SUMMARY })
             if (manga.mangaEntry != null)
-                add(manga.clone().apply { itemType = AppAdapter.Type.MANGA_HEADER_PROGRESSION })
+                add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_HEADER_PROGRESSION })
             if (manga.franchises.isNotEmpty())
-                add(manga.clone().apply { itemType = AppAdapter.Type.MANGA_HEADER_FRANCHISES })
-            add(manga.clone().apply { itemType = AppAdapter.Type.MANGA_HEADER_REVIEWS })
+                add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_HEADER_FRANCHISES })
+            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_HEADER_REVIEWS })
         }
 
         if (MangaTab.About.fragment.isAdded)
@@ -308,7 +308,7 @@ class MangaFragment : Fragment() {
                 MangaTab.Volumes.list.addOrLast(
                     index = (MANGA_VOLUME_SPAN_COUNT - MangaTab.Volumes.list.indexOf(it) % MANGA_VOLUME_SPAN_COUNT)
                             + MangaTab.Volumes.list.indexOf(it),
-                    it.clone().apply { itemType = AppAdapter.Type.VOLUME_MANGA_DETAILS }
+                    it.copy().apply { itemType = AppAdapter.Type.VOLUME_MANGA_DETAILS }
                 )
             }
         }
@@ -364,7 +364,7 @@ class MangaFragment : Fragment() {
         }
 
 
-        popupMangaBinding.tvPopupMangaStatus.text = getString(manga.mangaEntry?.status?.stringId ?: MangaEntry.Status.reading.stringId)
+        popupMangaBinding.tvPopupMangaStatus.text = getString(manga.mangaEntry?.status?.stringId ?: MangaEntry.Status.READING.stringId)
 
         popupMangaBinding.vPopupMangaDelete.setOnClickListener { _ ->
             manga.mangaEntry?.let { mangaEntry ->

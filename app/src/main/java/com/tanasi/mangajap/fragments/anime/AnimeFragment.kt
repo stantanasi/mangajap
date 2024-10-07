@@ -254,7 +254,7 @@ class AnimeFragment : Fragment() {
                 setOnClickListener { _ ->
                     viewModel.addAnimeEntry(AnimeEntry().also {
                         it.isAdd = true
-                        it.status = AnimeEntry.Status.watching
+                        it.status = AnimeEntry.Status.WATCHING
                         it.user = User(id = Firebase.auth.uid)
                         it.anime = anime
                     })
@@ -289,13 +289,13 @@ class AnimeFragment : Fragment() {
     private fun setAnimeAboutFragment() {
         AnimeTab.About.list.apply {
             clear()
-            add(anime.clone().apply { itemType = AppAdapter.Type.ANIME_HEADER })
-            add(anime.clone().apply { itemType = AppAdapter.Type.ANIME_SUMMARY })
+            add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_HEADER })
+            add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_SUMMARY })
             if (anime.animeEntry != null)
-                add(anime.clone().apply { itemType = AppAdapter.Type.ANIME_PROGRESSION })
+                add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_PROGRESSION })
             if (anime.franchises.isNotEmpty())
-                add(anime.clone().apply { itemType = AppAdapter.Type.ANIME_FRANCHISES })
-            add(anime.clone().apply { itemType = AppAdapter.Type.ANIME_REVIEWS })
+                add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_FRANCHISES })
+            add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_REVIEWS })
         }
 
         if (AnimeTab.About.fragment.isAdded)
@@ -364,7 +364,7 @@ class AnimeFragment : Fragment() {
             showAtLocation(popupAnimeBinding.root, Gravity.TOP or Gravity.END, 100, 200)
         }
 
-        popupAnimeBinding.tvPopupAnimeStatus.text = getString(anime.animeEntry?.status?.stringId ?: AnimeEntry.Status.watching.stringId)
+        popupAnimeBinding.tvPopupAnimeStatus.text = getString(anime.animeEntry?.status?.stringId ?: AnimeEntry.Status.WATCHING.stringId)
 
         popupAnimeBinding.vPopupAnimeDelete.setOnClickListener { _ ->
             anime.animeEntry?.let { animeEntry ->

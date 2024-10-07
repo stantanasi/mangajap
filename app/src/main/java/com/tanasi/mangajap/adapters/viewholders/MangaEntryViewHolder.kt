@@ -85,7 +85,7 @@ class MangaEntryViewHolder(
 
         binding.pbProfileMediaProgress.apply {
             progress = mangaEntry.manga?.let { mangaEntry.getProgress(it) } ?: 0
-            progressTintList = ContextCompat.getColorStateList(context, mangaEntry.manga?.let { mangaEntry.getProgressColor(it) } ?: MangaEntry.Status.reading.colorId)
+            progressTintList = ContextCompat.getColorStateList(context, mangaEntry.manga?.let { mangaEntry.getProgressColor(it) } ?: MangaEntry.Status.READING.colorId)
         }
     }
 
@@ -129,7 +129,7 @@ class MangaEntryViewHolder(
 
         binding.pbLibraryMediaProgress.apply {
             progress = mangaEntry.manga?.let { mangaEntry.getProgress(it) } ?: 0
-            progressTintList = ContextCompat.getColorStateList(context, mangaEntry.manga?.let { mangaEntry.getProgressColor(it) } ?: MangaEntry.Status.reading.colorId)
+            progressTintList = ContextCompat.getColorStateList(context, mangaEntry.manga?.let { mangaEntry.getProgressColor(it) } ?: MangaEntry.Status.READING.colorId)
         }
 
         binding.tvLibraryMediaTitle.text = mangaEntry.manga?.title ?: ""

@@ -81,6 +81,6 @@ class StaffViewHolder(
             }
         }
 
-        binding.tvStaffRole.text = context.getString(staff.role?.stringId ?: Staff.Role.story_and_art.stringId)
+        binding.tvStaffRole.text = context.getString(staff.role?.stringId ?: Staff.Role.STORY_AND_ART.stringId)
     }
 }

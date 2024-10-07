@@ -121,7 +121,7 @@ class AnimeViewHolder(
                     })
                 } ?: createAnimeEntry(AnimeEntry().also {
                     it.isAdd = isChecked
-                    it.status = AnimeEntry.Status.watching
+                    it.status = AnimeEntry.Status.WATCHING
                     it.user = User(id = Firebase.auth.uid)
                     it.anime = anime
                 })
@@ -143,7 +143,7 @@ class AnimeViewHolder(
                     query
             ) { dialog, _, text ->
                 createAnimeRequest(Request().also {
-                    it.requestType = Request.RequestType.anime
+                    it.requestType = Request.RequestType.ANIME
                     it.data = text
                     it.user = User(id = Firebase.auth.uid)
                 })
@@ -194,7 +194,7 @@ class AnimeViewHolder(
                     })
                 } ?: createAnimeEntry(AnimeEntry().also {
                     it.isAdd = isChecked
-                    it.status = AnimeEntry.Status.watching
+                    it.status = AnimeEntry.Status.WATCHING
                     it.user = User(id = Firebase.auth.uid)
                     it.anime = anime
                 })
@@ -301,12 +301,12 @@ class AnimeViewHolder(
         }
 
         binding.tvAnimeSummarySeasonCount.text = when (anime.status) {
-            Anime.Status.airing -> context.resources.getString(R.string.approximatelySeasonCount, anime.seasonCount)
+            Anime.Status.AIRING -> context.resources.getString(R.string.approximatelySeasonCount, anime.seasonCount)
             else -> context.resources.getString(R.string.seasonCount, anime.seasonCount)
         }
 
         binding.tvAnimeSummaryEpisodeCount.text = when (anime.status) {
-            Anime.Status.airing -> context.resources.getString(R.string.approximatelyEpisodeCount, anime.episodeCount)
+            Anime.Status.AIRING -> context.resources.getString(R.string.approximatelyEpisodeCount, anime.episodeCount)
             else -> context.resources.getString(R.string.episodeCount, anime.episodeCount)
         }
 
@@ -315,7 +315,7 @@ class AnimeViewHolder(
 
     private fun displayProgression(binding: ItemAnimeProgressionBinding) {
         binding.spinnerAnimeProgressionStatus.apply {
-            (background as GradientDrawable).setStroke(1.dpToPx(context), ContextCompat.getColor(context, anime.animeEntry?.getProgressColor(anime) ?: AnimeEntry.Status.watching.colorId))
+            (background as GradientDrawable).setStroke(1.dpToPx(context), ContextCompat.getColor(context, anime.animeEntry?.getProgressColor(anime) ?: AnimeEntry.Status.WATCHING.colorId))
 
             adapter = SpinnerAdapter(
                 context,
@@ -324,7 +324,7 @@ class AnimeViewHolder(
                 onView = { position, context, parent ->
                     ItemSpinnerMediaStatusBinding.inflate(LayoutInflater.from(context), parent, false).also {
                         it.root.text = context.getString(AnimeEntry.Status.values()[position].stringId)
-                        it.root.setTextColor(ContextCompat.getColor(context, anime.animeEntry?.getProgressColor(anime) ?: AnimeEntry.Status.watching.colorId))
+                        it.root.setTextColor(ContextCompat.getColor(context, anime.animeEntry?.getProgressColor(anime) ?: AnimeEntry.Status.WATCHING.colorId))
                     }.root
                 }
                 onBind = { position, context, parent ->
@@ -342,11 +342,11 @@ class AnimeViewHolder(
                             updateAnimeEntry(animeEntry.also {
                                 it.status = AnimeEntry.Status.values()[position]
                                 when (AnimeEntry.Status.values()[position]) {
-                                    AnimeEntry.Status.watching ->
+                                    AnimeEntry.Status.WATCHING ->
                                         if (animeEntry.startedAt == null) it.startedAt = Calendar.getInstance()
-                                    AnimeEntry.Status.completed,
-                                    AnimeEntry.Status.on_hold,
-                                    AnimeEntry.Status.dropped ->
+                                    AnimeEntry.Status.COMPLETED,
+                                    AnimeEntry.Status.ON_HOLD,
+                                    AnimeEntry.Status.DROPPED ->
                                         if (animeEntry.finishedAt == null) it.finishedAt = Calendar.getInstance()
                                     else -> {}
                                 }
@@ -365,14 +365,14 @@ class AnimeViewHolder(
             val finishedAt = anime.animeEntry?.finishedAt?.format("dd MMMM yyyy") ?: "-"
 
             visibility = when (anime.animeEntry?.status) {
-                AnimeEntry.Status.planned -> View.GONE
+                AnimeEntry.Status.PLANNED -> View.GONE
                 else -> View.VISIBLE
             }
             text = when (anime.animeEntry?.status) {
-                AnimeEntry.Status.watching -> context.resources.getString(R.string.SinceThe, startedAt)
-                AnimeEntry.Status.completed -> context.resources.getString(R.string.CompletedSinceThe, finishedAt)
-                AnimeEntry.Status.on_hold -> context.resources.getString(R.string.OnHoldSinceThe, finishedAt)
-                AnimeEntry.Status.dropped -> context.resources.getString(R.string.DroppedSinceThe, finishedAt)
+                AnimeEntry.Status.WATCHING -> context.resources.getString(R.string.SinceThe, startedAt)
+                AnimeEntry.Status.COMPLETED -> context.resources.getString(R.string.CompletedSinceThe, finishedAt)
+                AnimeEntry.Status.ON_HOLD -> context.resources.getString(R.string.OnHoldSinceThe, finishedAt)
+                AnimeEntry.Status.DROPPED -> context.resources.getString(R.string.DroppedSinceThe, finishedAt)
                 else -> ""
             }
             setOnClickListener {

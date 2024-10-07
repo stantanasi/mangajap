@@ -121,7 +121,7 @@ class MangaViewHolder(
 
                 } ?: MangaEntry().also {
                     it.isAdd = isChecked
-                    it.status = MangaEntry.Status.reading
+                    it.status = MangaEntry.Status.READING
                     it.user = User(id = Firebase.auth.uid)
                     it.manga = manga
                     createMangaEntry(it)
@@ -144,7 +144,7 @@ class MangaViewHolder(
                     query
             ) { dialog, _, text ->
                 createMangaRequest(Request().also {
-                    it.requestType = Request.RequestType.manga
+                    it.requestType = Request.RequestType.MANGA
                     it.data = text
                     it.user = User(id = Firebase.auth.uid)
                 })
@@ -194,7 +194,7 @@ class MangaViewHolder(
                     updateMangaEntry(it)
                 } ?: MangaEntry().also {
                     it.isAdd = isChecked
-                    it.status = MangaEntry.Status.reading
+                    it.status = MangaEntry.Status.READING
                     it.user = User(id = Firebase.auth.uid)
                     it.manga = manga
                     createMangaEntry(it)
@@ -314,12 +314,12 @@ class MangaViewHolder(
         binding.tvMangaSummaryRank.text = context.getString(R.string.manga_rating, (manga.ratingRank ?: ""))
 
         binding.tvMangaSummaryVolumeCount.text = when (manga.status) {
-            Manga.Status.publishing -> context.resources.getString(R.string.approximatelyVolumeCount, manga.volumeCount)
+            Manga.Status.PUBLISHING -> context.resources.getString(R.string.approximatelyVolumeCount, manga.volumeCount)
             else -> context.resources.getString(R.string.volumeCount, manga.volumeCount)
         }
 
         binding.tvMangaSummaryChapterCount.text = when (manga.status) {
-            Manga.Status.publishing -> context.resources.getString(R.string.approximatelyChapterCount, manga.chapterCount)
+            Manga.Status.PUBLISHING -> context.resources.getString(R.string.approximatelyChapterCount, manga.chapterCount)
             else -> context.resources.getString(R.string.chapterCount, manga.chapterCount)
         }
 
@@ -328,7 +328,7 @@ class MangaViewHolder(
 
     private fun displayProgression(binding: ItemMangaProgressionBinding) {
         binding.spinnerMangaProgressionStatus.apply {
-            (background as GradientDrawable).setStroke(1.dpToPx(context), ContextCompat.getColor(context, manga.mangaEntry?.getProgressColor(manga) ?: MangaEntry.Status.reading.colorId))
+            (background as GradientDrawable).setStroke(1.dpToPx(context), ContextCompat.getColor(context, manga.mangaEntry?.getProgressColor(manga) ?: MangaEntry.Status.READING.colorId))
 
             adapter = SpinnerAdapter(
                 context,
@@ -337,7 +337,7 @@ class MangaViewHolder(
                 onView = { position, context, parent ->
                     ItemSpinnerMediaStatusBinding.inflate(LayoutInflater.from(context), parent, false).also {
                         it.root.text = context.getString(MangaEntry.Status.values()[position].stringId)
-                        it.root.setTextColor(ContextCompat.getColor(context, manga.mangaEntry?.getProgressColor(manga) ?: MangaEntry.Status.reading.colorId))
+                        it.root.setTextColor(ContextCompat.getColor(context, manga.mangaEntry?.getProgressColor(manga) ?: MangaEntry.Status.READING.colorId))
                     }.root
                 }
                 onBind = { position, context, parent ->
@@ -354,11 +354,11 @@ class MangaViewHolder(
                         if (MangaEntry.Status.values()[position] != it.status) {
                             it.status = MangaEntry.Status.values()[position]
                             when (MangaEntry.Status.values()[position]) {
-                                MangaEntry.Status.reading ->
+                                MangaEntry.Status.READING ->
                                     if (it.startedAt == null) it.startedAt = Calendar.getInstance()
-                                MangaEntry.Status.completed,
-                                MangaEntry.Status.on_hold,
-                                MangaEntry.Status.dropped ->
+                                MangaEntry.Status.COMPLETED,
+                                MangaEntry.Status.ON_HOLD,
+                                MangaEntry.Status.DROPPED ->
                                     if (it.finishedAt == null) it.finishedAt = Calendar.getInstance()
                                 else -> {}
                             }
@@ -377,14 +377,14 @@ class MangaViewHolder(
             val finishedAt = manga.mangaEntry?.finishedAt?.format("dd MMMM yyyy") ?: "-"
 
             visibility = when (manga.mangaEntry?.status) {
-                MangaEntry.Status.planned -> View.GONE
+                MangaEntry.Status.PLANNED -> View.GONE
                 else -> View.VISIBLE
             }
             text = when (manga.mangaEntry?.status) {
-                MangaEntry.Status.reading -> context.resources.getString(R.string.SinceThe, startedAt)
-                MangaEntry.Status.completed -> context.resources.getString(R.string.CompletedSinceThe, finishedAt)
-                MangaEntry.Status.on_hold -> context.resources.getString(R.string.OnHoldSinceThe, finishedAt)
-                MangaEntry.Status.dropped -> context.resources.getString(R.string.DroppedSinceThe, finishedAt)
+                MangaEntry.Status.READING -> context.resources.getString(R.string.SinceThe, startedAt)
+                MangaEntry.Status.COMPLETED -> context.resources.getString(R.string.CompletedSinceThe, finishedAt)
+                MangaEntry.Status.ON_HOLD -> context.resources.getString(R.string.OnHoldSinceThe, finishedAt)
+                MangaEntry.Status.DROPPED -> context.resources.getString(R.string.DroppedSinceThe, finishedAt)
                 else -> ""
             }
             setOnClickListener {

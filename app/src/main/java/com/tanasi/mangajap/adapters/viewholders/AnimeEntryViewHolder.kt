@@ -85,7 +85,7 @@ class AnimeEntryViewHolder(
 
         binding.pbProfileMediaProgress.apply {
             progress = animeEntry.anime?.let { animeEntry.getProgress(it) } ?: 0
-            progressTintList = ContextCompat.getColorStateList(context, animeEntry.anime?.let { animeEntry.getProgressColor(it) } ?: AnimeEntry.Status.watching.colorId)
+            progressTintList = ContextCompat.getColorStateList(context, animeEntry.anime?.let { animeEntry.getProgressColor(it) } ?: AnimeEntry.Status.WATCHING.colorId)
         }
     }
 
@@ -131,7 +131,7 @@ class AnimeEntryViewHolder(
 
         binding.pbLibraryMediaProgress.apply {
             progress = animeEntry.anime?.let { animeEntry.getProgress(it) } ?: 0
-            progressTintList = ContextCompat.getColorStateList(context, animeEntry.anime?.let { animeEntry.getProgressColor(it) } ?: AnimeEntry.Status.watching.colorId)
+            progressTintList = ContextCompat.getColorStateList(context, animeEntry.anime?.let { animeEntry.getProgressColor(it) } ?: AnimeEntry.Status.WATCHING.colorId)
         }
     }
 
