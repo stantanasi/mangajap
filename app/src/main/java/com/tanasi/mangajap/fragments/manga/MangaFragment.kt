@@ -22,7 +22,7 @@ import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentMangaBinding
 import com.tanasi.mangajap.databinding.PopupMangaBinding
 import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
@@ -38,7 +38,7 @@ class MangaFragment : Fragment() {
     private enum class MangaTab(
         val stringId: Int,
         var fragment: RecyclerViewFragment = RecyclerViewFragment(),
-        var list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+        var list: MutableList<AppAdapter.Item> = mutableListOf()
     ) {
         About(R.string.about),
         Volumes(R.string.volumes);
@@ -81,7 +81,7 @@ class MangaFragment : Fragment() {
                     spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
                             return when (it.list[position].typeLayout) {
-                                MangaJapAdapter.Type.VOLUME_MANGA_DETAILS -> spanCount
+                                AppAdapter.Type.VOLUME_MANGA_DETAILS -> spanCount
                                 else -> 1
                             }
                         }
@@ -284,38 +284,38 @@ class MangaFragment : Fragment() {
     private fun setMangaAboutFragment() {
         MangaTab.About.list.apply {
             clear()
-            add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER })
-            add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_SUMMARY })
+            add(manga.clone().apply { typeLayout = AppAdapter.Type.MANGA_HEADER })
+            add(manga.clone().apply { typeLayout = AppAdapter.Type.MANGA_HEADER_SUMMARY })
             if (manga.mangaEntry != null)
-                add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_PROGRESSION })
+                add(manga.clone().apply { typeLayout = AppAdapter.Type.MANGA_HEADER_PROGRESSION })
             if (manga.franchises.isNotEmpty())
-                add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_FRANCHISES })
-            add(manga.clone().apply { typeLayout = MangaJapAdapter.Type.MANGA_HEADER_REVIEWS })
+                add(manga.clone().apply { typeLayout = AppAdapter.Type.MANGA_HEADER_FRANCHISES })
+            add(manga.clone().apply { typeLayout = AppAdapter.Type.MANGA_HEADER_REVIEWS })
         }
 
         if (MangaTab.About.fragment.isAdded)
-            MangaTab.About.fragment.mangaJapAdapter?.notifyDataSetChanged()
+            MangaTab.About.fragment.adapter?.notifyDataSetChanged()
     }
 
     private fun setMangaVolumeFragment() {
         MangaTab.Volumes.list.apply {
             clear()
             addAll(manga.volumes.map { volume ->
-                volume.apply { typeLayout  = MangaJapAdapter.Type.VOLUME_MANGA }
+                volume.apply { typeLayout  = AppAdapter.Type.VOLUME_MANGA }
             })
 
             showDetailsVolume?.let {
                 MangaTab.Volumes.list.addOrLast(
                     index = (MANGA_VOLUME_SPAN_COUNT - MangaTab.Volumes.list.indexOf(it) % MANGA_VOLUME_SPAN_COUNT)
                             + MangaTab.Volumes.list.indexOf(it),
-                    it.clone().apply { typeLayout = MangaJapAdapter.Type.VOLUME_MANGA_DETAILS }
+                    it.clone().apply { typeLayout = AppAdapter.Type.VOLUME_MANGA_DETAILS }
                 )
             }
         }
 
         if (MangaTab.Volumes.list.isNotEmpty()) {
             if (MangaTab.Volumes.fragment.isAdded)
-                MangaTab.Volumes.fragment.mangaJapAdapter?.notifyDataSetChanged()
+                MangaTab.Volumes.fragment.adapter?.notifyDataSetChanged()
             addTab(MangaTab.Volumes)
         }
     }

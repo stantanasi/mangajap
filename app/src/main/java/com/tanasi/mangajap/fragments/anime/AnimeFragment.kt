@@ -21,7 +21,7 @@ import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentAnimeBinding
 import com.tanasi.mangajap.databinding.PopupAnimeBinding
 import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
@@ -40,7 +40,7 @@ class AnimeFragment : Fragment() {
     private enum class AnimeTab(
         val stringId: Int,
         var fragment: RecyclerViewFragment = RecyclerViewFragment(),
-        var list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+        var list: MutableList<AppAdapter.Item> = mutableListOf()
     ) {
         About(R.string.about),
         Episodes(R.string.episodes);
@@ -289,35 +289,35 @@ class AnimeFragment : Fragment() {
     private fun setAnimeAboutFragment() {
         AnimeTab.About.list.apply {
             clear()
-            add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_HEADER })
-            add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_SUMMARY })
+            add(anime.clone().apply { typeLayout = AppAdapter.Type.ANIME_HEADER })
+            add(anime.clone().apply { typeLayout = AppAdapter.Type.ANIME_SUMMARY })
             if (anime.animeEntry != null)
-                add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_PROGRESSION })
+                add(anime.clone().apply { typeLayout = AppAdapter.Type.ANIME_PROGRESSION })
             if (anime.franchises.isNotEmpty())
-                add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_FRANCHISES })
-            add(anime.clone().apply { typeLayout = MangaJapAdapter.Type.ANIME_REVIEWS })
+                add(anime.clone().apply { typeLayout = AppAdapter.Type.ANIME_FRANCHISES })
+            add(anime.clone().apply { typeLayout = AppAdapter.Type.ANIME_REVIEWS })
         }
 
         if (AnimeTab.About.fragment.isAdded)
-            AnimeTab.About.fragment.mangaJapAdapter?.notifyDataSetChanged()
+            AnimeTab.About.fragment.adapter?.notifyDataSetChanged()
     }
 
     private fun setAnimeEpisodesFragment() {
         AnimeTab.Episodes.list.apply {
             clear()
-            add(Season("").apply { typeLayout = MangaJapAdapter.Type.SEASON_ANIME_HEADER })
+            add(Season("").apply { typeLayout = AppAdapter.Type.SEASON_ANIME_HEADER })
         }
         for (season in anime.seasons) {
             AnimeTab.Episodes.list.add(season)
             if (season.isShowingEpisodes) {
                 AnimeTab.Episodes.list.addAll(season.episodes.map { episode ->
-                    episode.apply { typeLayout = MangaJapAdapter.Type.EPISODE_ANIME }
+                    episode.apply { typeLayout = AppAdapter.Type.EPISODE_ANIME }
                 })
             }
         }
 
         if (AnimeTab.Episodes.fragment.isAdded)
-            AnimeTab.Episodes.fragment.mangaJapAdapter?.notifyDataSetChanged()
+            AnimeTab.Episodes.fragment.adapter?.notifyDataSetChanged()
 
     }
 

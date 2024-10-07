@@ -15,7 +15,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.adapters.SpinnerAdapter
 import com.tanasi.mangajap.databinding.FragmentLibraryBinding
 import com.tanasi.mangajap.models.AnimeEntry
@@ -65,8 +65,8 @@ class LibraryFragment : Fragment() {
     private lateinit var libraryType: LibraryType
     private var spanCount: Int = 0
 
-    val itemList: MutableList<MangaJapAdapter.Item> = mutableListOf()
-    val mangaJapAdapter: MangaJapAdapter = MangaJapAdapter(itemList)
+    val itemList: MutableList<AppAdapter.Item> = mutableListOf()
+    val adapter: AppAdapter = AppAdapter(itemList)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLibraryBinding.inflate(inflater, container, false)
@@ -109,7 +109,7 @@ class LibraryFragment : Fragment() {
                         addAll(state.itemList)
                     }
                     displayLibrary()
-                    mangaJapAdapter.notifyDataSetChanged()
+                    adapter.notifyDataSetChanged()
                     binding.isLoading.root.visibility = View.GONE
                 }
                 is LibraryViewModel.State.FailedLoading -> when (state.error) {
@@ -145,7 +145,7 @@ class LibraryFragment : Fragment() {
                             } ?: 0
                         else -> 0
                     }
-                    mangaJapAdapter.notifyItemChanged(index)
+                    adapter.notifyItemChanged(index)
                     binding.isUpdating.root.visibility = View.GONE
                 }
                 is LibraryViewModel.State.FailedSaving -> when (state.error) {
@@ -231,7 +231,7 @@ class LibraryFragment : Fragment() {
                     }
                 }
             }
-            adapter = mangaJapAdapter
+            adapter = adapter
             addItemDecoration(SpacingItemDecoration(
                 spacing = resources.getDimension(R.dimen.library_spacing).toInt()
             ))
@@ -292,11 +292,11 @@ class LibraryFragment : Fragment() {
             }
         }
         if (libraryPreference.sortInReverse) itemList.reverse()
-        mangaJapAdapter.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
     }
 
     private fun headerStatus() {
-        val itemListFull: List<MangaJapAdapter.Item> = itemList.toList()
+        val itemListFull: List<AppAdapter.Item> = itemList.toList()
         itemList.clear()
         when (libraryType) {
             LibraryType.MangaFavoritesList, LibraryType.AnimeFavoritesList -> {
@@ -324,8 +324,8 @@ class LibraryFragment : Fragment() {
                             }
                             .map {
                                 when (val media = it.value[0]) {
-                                    is MangaEntry -> itemList.add(Header(getString(media.status.stringId)).apply { typeLayout = MangaJapAdapter.Type.HEADER_LIBRARY_STATUS })
-                                    is AnimeEntry -> itemList.add(Header(getString(media.status.stringId)).apply { typeLayout = MangaJapAdapter.Type.HEADER_LIBRARY_STATUS })
+                                    is MangaEntry -> itemList.add(Header(getString(media.status.stringId)).apply { typeLayout = AppAdapter.Type.HEADER_LIBRARY_STATUS })
+                                    is AnimeEntry -> itemList.add(Header(getString(media.status.stringId)).apply { typeLayout = AppAdapter.Type.HEADER_LIBRARY_STATUS })
                                     else -> {}
                                 }
                                 itemList.addAll(it.value)
@@ -333,6 +333,6 @@ class LibraryFragment : Fragment() {
                 }
             }
         }
-        mangaJapAdapter.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
     }
 }

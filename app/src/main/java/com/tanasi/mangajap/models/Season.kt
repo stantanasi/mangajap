@@ -1,9 +1,8 @@
 package com.tanasi.mangajap.models
 
-import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import org.json.JSONObject
 import kotlin.math.max
 import kotlin.math.min
@@ -18,7 +17,7 @@ class Season(
 
     var anime: Anime? = null,
     val episodes: MutableList<Episode> = mutableListOf(),
-) : MangaJapAdapter.Item {
+) : AppAdapter.Item {
 
     val titles: Titles = Titles.from(titles)
 
@@ -77,5 +76,5 @@ class Season(
     }
 
 
-    override var typeLayout: MangaJapAdapter.Type = MangaJapAdapter.Type.SEASON_ANIME
+    override var typeLayout: AppAdapter.Type = AppAdapter.Type.SEASON_ANIME
 }

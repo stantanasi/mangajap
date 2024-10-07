@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentPeopleBinding
 import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
 import com.tanasi.mangajap.models.People
@@ -26,7 +26,7 @@ class PeopleFragment : Fragment() {
     private enum class PeopleTab(
         val stringId: Int,
         var fragment: RecyclerViewFragment = RecyclerViewFragment(),
-        var list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+        var list: MutableList<AppAdapter.Item> = mutableListOf()
     ) {
         Manga(R.string.manga),
         Anime(R.string.anime);
@@ -127,12 +127,12 @@ class PeopleFragment : Fragment() {
             people.mangaStaff
                     .sortedByDescending { it.manga?.startDate }
                     .map {staff ->
-                        add(staff.also { it.typeLayout = MangaJapAdapter.Type.STAFF_PEOPLE })
+                        add(staff.also { it.typeLayout = AppAdapter.Type.STAFF_PEOPLE })
                     }
         }
 
         if (PeopleTab.Manga.list.isNotEmpty()) {
-            if (PeopleTab.Manga.fragment.isAdded) PeopleTab.Manga.fragment.mangaJapAdapter?.notifyDataSetChanged()
+            if (PeopleTab.Manga.fragment.isAdded) PeopleTab.Manga.fragment.adapter?.notifyDataSetChanged()
             addTab(PeopleTab.Manga)
         }
     }
@@ -143,12 +143,12 @@ class PeopleFragment : Fragment() {
             people.animeStaff
                     .sortedByDescending { it.anime?.startDate }
                     .map {staff ->
-                        add(staff.also { it.typeLayout = MangaJapAdapter.Type.STAFF_PEOPLE })
+                        add(staff.also { it.typeLayout = AppAdapter.Type.STAFF_PEOPLE })
                     }
         }
 
         if (PeopleTab.Anime.list.isNotEmpty()) {
-            if (PeopleTab.Anime.fragment.isAdded) PeopleTab.Anime.fragment.mangaJapAdapter?.notifyDataSetChanged()
+            if (PeopleTab.Anime.fragment.isAdded) PeopleTab.Anime.fragment.adapter?.notifyDataSetChanged()
             addTab(PeopleTab.Anime)
         }
     }

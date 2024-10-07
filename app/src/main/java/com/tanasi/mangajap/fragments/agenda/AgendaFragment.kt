@@ -14,10 +14,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentAgendaBinding
 import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
-import com.tanasi.mangajap.models.Header
 import com.tanasi.mangajap.ui.SpacingItemDecoration
 import com.tanasi.mangajap.utils.extensions.add
 import com.tanasi.mangajap.utils.extensions.contains
@@ -28,7 +27,7 @@ class AgendaFragment : Fragment() {
     private enum class AgendaTab(
             val stringId: Int,
             var fragment: RecyclerViewFragment = RecyclerViewFragment(),
-            var list: MutableList<MangaJapAdapter.Item> = mutableListOf()
+            var list: MutableList<AppAdapter.Item> = mutableListOf()
     ) {
         ReadList(R.string.read_list),
         WatchList(R.string.watch_list);
@@ -81,7 +80,7 @@ class AgendaFragment : Fragment() {
                                 ?: false
                         })
                     }
-                    AgendaTab.values().map { it.fragment.mangaJapAdapter?.notifyDataSetChanged() }
+                    AgendaTab.values().map { it.fragment.adapter?.notifyDataSetChanged() }
                     binding.isLoading.root.visibility = View.GONE
                 }
                 is AgendaViewModel.State.FailedLoading -> when (state.error) {

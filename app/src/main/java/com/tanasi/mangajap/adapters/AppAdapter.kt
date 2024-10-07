@@ -7,7 +7,7 @@ import com.tanasi.mangajap.adapters.viewHolders.*
 import com.tanasi.mangajap.databinding.*
 import com.tanasi.mangajap.models.*
 
-class MangaJapAdapter(
+class AppAdapter(
         private val items: List<Item>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

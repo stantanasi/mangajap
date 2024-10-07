@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
-import com.tanasi.jsonapi.extensions.jsonApiName
-import com.tanasi.jsonapi.extensions.jsonApiType
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.models.*
 import com.tanasi.mangajap.services.MangaJapApiService
 import kotlinx.coroutines.async
@@ -83,17 +81,17 @@ class DiscoverViewModel : ViewModel() {
                     State.SuccessLoading(
                         peopleResponse.body.data!!.map {
                             it.apply {
-                                typeLayout = MangaJapAdapter.Type.PEOPLE_DISCOVER
+                                typeLayout = AppAdapter.Type.PEOPLE_DISCOVER
                             }
                         },
                         mangaRecentResponse.body.data!!.map {
                             it.apply {
-                                typeLayout = MangaJapAdapter.Type.MANGA_DISCOVER
+                                typeLayout = AppAdapter.Type.MANGA_DISCOVER
                             }
                         },
                         animeRecentResponse.body.data!!.map {
                             it.apply {
-                                typeLayout = MangaJapAdapter.Type.ANIME_DISCOVER
+                                typeLayout = AppAdapter.Type.ANIME_DISCOVER
                             }
                         }
                     )

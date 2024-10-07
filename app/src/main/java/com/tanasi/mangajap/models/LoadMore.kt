@@ -1,11 +1,11 @@
 package com.tanasi.mangajap.models
 
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 
 class LoadMore(
     var isLoading: Boolean = false,
     var isMoreDataAvailable: Boolean = true
-) : MangaJapAdapter.Item {
+) : AppAdapter.Item {
 
-    override var typeLayout: MangaJapAdapter.Type = MangaJapAdapter.Type.LOAD_MORE
+    override var typeLayout: AppAdapter.Type = AppAdapter.Type.LOAD_MORE
 }

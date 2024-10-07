@@ -1,9 +1,8 @@
 package com.tanasi.mangajap.models
 
 import com.tanasi.jsonapi.JsonApiRelationship
-import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiType
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.utils.extensions.toCalendar
 import org.json.JSONObject
 import java.util.*
@@ -25,7 +24,7 @@ class Volume(
     val manga: Manga? = null,
     val chapters: List<Chapter> = listOf(),
     @JsonApiRelationship("volume-entry") val volumeEntry: VolumeEntry? = null,
-) : MangaJapAdapter.Item, Cloneable {
+) : AppAdapter.Item, Cloneable {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -62,7 +61,7 @@ class Volume(
     }
 
 
-    override lateinit var typeLayout: MangaJapAdapter.Type
+    override lateinit var typeLayout: AppAdapter.Type
 
     public override fun clone(): Volume {
         return super.clone() as Volume

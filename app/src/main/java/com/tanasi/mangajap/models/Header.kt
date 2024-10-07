@@ -1,10 +1,10 @@
 package com.tanasi.mangajap.models
 
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 
 class Header(
     val title: String
-) : MangaJapAdapter.Item {
+) : AppAdapter.Item {
 
-    override lateinit var typeLayout: MangaJapAdapter.Type
+    override lateinit var typeLayout: AppAdapter.Type
 }

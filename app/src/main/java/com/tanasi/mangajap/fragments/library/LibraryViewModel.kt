@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiResponse
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.services.MangaJapApiService
@@ -22,7 +22,7 @@ class LibraryViewModel : ViewModel() {
 
     sealed class State {
         object Loading: State()
-        data class SuccessLoading(val itemList: List<MangaJapAdapter.Item>): State()
+        data class SuccessLoading(val itemList: List<AppAdapter.Item>): State()
         data class FailedLoading(val error: JsonApiResponse.Error): State()
 
         object Saving: State()
@@ -43,7 +43,7 @@ class LibraryViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.MANGA_ENTRY_LIBRARY } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.MANGA_ENTRY_LIBRARY } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {
@@ -64,7 +64,7 @@ class LibraryViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.ANIME_ENTRY_LIBRARY } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.ANIME_ENTRY_LIBRARY } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {
@@ -85,7 +85,7 @@ class LibraryViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.MANGA_ENTRY_LIBRARY } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.MANGA_ENTRY_LIBRARY } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {
@@ -106,7 +106,7 @@ class LibraryViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.ANIME_ENTRY_LIBRARY } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.ANIME_ENTRY_LIBRARY } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {

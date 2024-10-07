@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentReviewsBinding
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.Manga
@@ -97,7 +97,7 @@ class ReviewsFragment : Fragment() {
                     clear()
                     add(Review().also { review ->
                         review.manga = Manga(id = mediaId)
-                        review.typeLayout = MangaJapAdapter.Type.REVIEW_HEADER
+                        review.typeLayout = AppAdapter.Type.REVIEW_HEADER
                     })
                     addAll(reviews)
                 }
@@ -107,7 +107,7 @@ class ReviewsFragment : Fragment() {
                     clear()
                     add(Review().also { review ->
                         review.anime = Anime(id = mediaId)
-                        review.typeLayout = MangaJapAdapter.Type.REVIEW_HEADER
+                        review.typeLayout = AppAdapter.Type.REVIEW_HEADER
                     })
                     addAll(reviews)
                 }
@@ -115,7 +115,7 @@ class ReviewsFragment : Fragment() {
         }
 
         binding.rvReviews.apply {
-            adapter = MangaJapAdapter(reviewsList)
+            adapter = AppAdapter(reviewsList)
             addItemDecoration(SpacingItemDecoration(
                 spacing = resources.getDimension(R.dimen.reviews_spacing).toInt()
             ))

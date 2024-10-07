@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.services.MangaJapApiService
@@ -59,8 +59,8 @@ class AgendaViewModel : ViewModel() {
             when {
                 mangaResponse is JsonApiResponse.Success &&
                         animeResponse is JsonApiResponse.Success -> State.SuccessLoading(
-                        mangaResponse.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.MANGA_ENTRY_TO_READ } },
-                        animeResponse.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.ANIME_ENTRY_TO_WATCH } }
+                        mangaResponse.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.MANGA_ENTRY_TO_READ } },
+                        animeResponse.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.ANIME_ENTRY_TO_WATCH } }
                 )
 
                 mangaResponse is JsonApiResponse.Error -> State.FailedLoading(mangaResponse)

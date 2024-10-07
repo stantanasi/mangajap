@@ -5,7 +5,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.databinding.ItemEpisodeAnimeBinding
 import com.tanasi.mangajap.fragments.anime.AnimeFragment
 import com.tanasi.mangajap.models.AnimeEntry

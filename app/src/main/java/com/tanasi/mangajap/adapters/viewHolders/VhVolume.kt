@@ -7,7 +7,6 @@ import androidx.viewbinding.ViewBinding
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.databinding.ItemVolumeMangaBinding
 import com.tanasi.mangajap.databinding.ItemVolumeMangaDetailsBinding
 import com.tanasi.mangajap.fragments.manga.MangaFragment

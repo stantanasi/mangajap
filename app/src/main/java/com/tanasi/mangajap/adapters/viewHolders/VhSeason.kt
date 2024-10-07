@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.databinding.ItemSeasonAnimeBinding
 import com.tanasi.mangajap.databinding.ItemSeasonAnimeHeaderBinding
 import com.tanasi.mangajap.fragments.anime.AnimeFragment

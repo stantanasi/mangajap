@@ -3,7 +3,7 @@ package com.tanasi.mangajap.models
 import com.tanasi.jsonapi.JsonApiRelationship
 import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.utils.extensions.toCalendar
 import org.json.JSONObject
 import java.util.Calendar
@@ -44,7 +44,7 @@ class Anime(
     val reviews: List<Review> = listOf(),
     val franchises: List<Franchise> = listOf(),
     @JsonApiRelationship("anime-entry") var animeEntry: AnimeEntry? = null,
-) : Media, MangaJapAdapter.Item, Cloneable {
+) : Media, AppAdapter.Item, Cloneable {
 
     val titles: Titles = Titles.create(titles)
     val startDate: Calendar? = startDate?.toCalendar("yyyy-MM-dd")
@@ -107,7 +107,7 @@ class Anime(
     }
 
 
-    override lateinit var typeLayout: MangaJapAdapter.Type
+    override lateinit var typeLayout: AppAdapter.Type
 
     public override fun clone(): Anime = super.clone() as Anime
 }

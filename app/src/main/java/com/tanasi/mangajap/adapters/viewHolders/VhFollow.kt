@@ -8,7 +8,7 @@ import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.ItemFollowBinding
 import com.tanasi.mangajap.fragments.follow.FollowFragmentDirections
 import com.tanasi.mangajap.models.Follow
@@ -34,8 +34,8 @@ class VhFollow(
             Navigation.findNavController(binding.root).navigate(
                 FollowFragmentDirections.actionFollowToProfile(
                     userId = when (follow.typeLayout) {
-                        MangaJapAdapter.Type.FOLLOWERS -> follow.follower?.id ?: ""
-                        MangaJapAdapter.Type.FOLLOWING -> follow.followed?.id ?: ""
+                        AppAdapter.Type.FOLLOWERS -> follow.follower?.id ?: ""
+                        AppAdapter.Type.FOLLOWING -> follow.followed?.id ?: ""
                         else -> ""
                     }
                 )
@@ -46,8 +46,8 @@ class VhFollow(
             Picasso.get()
                 .load(
                     when (follow.typeLayout) {
-                        MangaJapAdapter.Type.FOLLOWERS -> follow.follower?.avatar?.tiny
-                        MangaJapAdapter.Type.FOLLOWING -> follow.followed?.avatar?.tiny
+                        AppAdapter.Type.FOLLOWERS -> follow.follower?.avatar?.tiny
+                        AppAdapter.Type.FOLLOWING -> follow.followed?.avatar?.tiny
                         else -> null
                     }
                 )
@@ -60,8 +60,8 @@ class VhFollow(
 
         binding.tvFollowUserPseudo.apply {
             text = when (follow.typeLayout) {
-                MangaJapAdapter.Type.FOLLOWERS -> follow.follower?.pseudo ?: ""
-                MangaJapAdapter.Type.FOLLOWING -> follow.followed?.pseudo ?: ""
+                AppAdapter.Type.FOLLOWERS -> follow.follower?.pseudo ?: ""
+                AppAdapter.Type.FOLLOWING -> follow.followed?.pseudo ?: ""
                 else -> ""
             }
         }

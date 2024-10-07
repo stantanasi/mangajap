@@ -18,7 +18,7 @@ import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.adapters.SpinnerAdapter
 import com.tanasi.mangajap.databinding.*
 import com.tanasi.mangajap.fragments.discover.DiscoverFragment
@@ -496,7 +496,7 @@ class VhManga(
 
     private fun displayFranchises(binding: ItemMangaFranchisesBinding) {
         binding.rvMangaFranchises.apply {
-            adapter = MangaJapAdapter(manga.franchises)
+            adapter = AppAdapter(manga.franchises)
             addItemDecoration(SpacingItemDecoration(
                 spacing = (resources.getDimension(R.dimen.manga_spacing) * 0.5).toInt()
             ))

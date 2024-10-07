@@ -3,7 +3,7 @@ package com.tanasi.mangajap.models
 import com.tanasi.jsonapi.JsonApiProperty
 import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiType
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.utils.extensions.toCalendar
 import java.util.*
 import kotlin.reflect.KProperty
@@ -19,7 +19,7 @@ class Review(
     user: User? = null,
     manga: Manga? = null,
     anime: Anime? = null,
-) : JsonApiResource, MangaJapAdapter.Item {
+) : JsonApiResource, AppAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -31,5 +31,5 @@ class Review(
 
 
     override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()
-    override lateinit var typeLayout: MangaJapAdapter.Type
+    override lateinit var typeLayout: AppAdapter.Type
 }

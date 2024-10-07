@@ -1,11 +1,9 @@
 package com.tanasi.mangajap.adapters.viewHolders
 
 import android.content.Context
-import android.view.View
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.ItemFranchiseBinding

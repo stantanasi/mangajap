@@ -12,7 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentFollowBinding
 import com.tanasi.mangajap.models.LoadMore
 import com.tanasi.mangajap.utils.extensions.setToolbar
@@ -36,9 +36,9 @@ class FollowFragment : Fragment() {
     private lateinit var userPseudo: String
     private lateinit var followType: FollowType
 
-    private val followsList: MutableList<MangaJapAdapter.Item> = mutableListOf()
+    private val followsList: MutableList<AppAdapter.Item> = mutableListOf()
     private val loadMore: LoadMore = LoadMore()
-    private val mangaJapAdapter: MangaJapAdapter = MangaJapAdapter(followsList)
+    private val adapter: AppAdapter = AppAdapter(followsList)
 
     private lateinit var nextLink: String
 
@@ -104,7 +104,7 @@ class FollowFragment : Fragment() {
                     nextLink = state.nextLink
                     loadMore.isMoreDataAvailable = nextLink != ""
                     loadMore.isLoading = false
-                    mangaJapAdapter.notifyDataSetChanged()
+                    adapter.notifyDataSetChanged()
                 }
                 is FollowViewModel.State.FailedLoadingMore -> when (state.error) {
                     is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
@@ -149,7 +149,7 @@ class FollowFragment : Fragment() {
                 visibility = View.GONE
             } else {
                 visibility = View.VISIBLE
-                adapter = mangaJapAdapter.also { adapter ->
+                adapter = this@FollowFragment.adapter.also { adapter ->
                     adapter.setOnLoadMoreListener {
                         post {
                             if (nextLink != "") {

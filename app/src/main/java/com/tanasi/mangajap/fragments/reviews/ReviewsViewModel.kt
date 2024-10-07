@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.models.Review
 import com.tanasi.mangajap.services.MangaJapApiService
 import kotlinx.coroutines.launch
@@ -35,7 +35,7 @@ class ReviewsViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.REVIEW } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.REVIEW } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {
@@ -54,7 +54,7 @@ class ReviewsViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.REVIEW } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.REVIEW } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {

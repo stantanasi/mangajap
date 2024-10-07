@@ -23,7 +23,7 @@ import com.squareup.picasso.Picasso
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentProfileBinding
 import com.tanasi.mangajap.fragments.follow.FollowFragment
 import com.tanasi.mangajap.fragments.library.LibraryFragment
@@ -39,8 +39,8 @@ class ProfileFragment : Fragment() {
     private enum class ProfileTab(
         val stringId: Int,
         val statsList: MutableList<User.Stats> = mutableListOf(),
-        val libraryList: MutableList<MangaJapAdapter.Item> = mutableListOf(),
-        val favoritesList: MutableList<MangaJapAdapter.Item> = mutableListOf()
+        val libraryList: MutableList<AppAdapter.Item> = mutableListOf(),
+        val favoritesList: MutableList<AppAdapter.Item> = mutableListOf()
     ) {
         Manga(R.string.manga),
         Anime(R.string.anime);
@@ -356,14 +356,14 @@ class ProfileFragment : Fragment() {
             ProfileTab.Manga -> ProfileTab.Manga.let { tab ->
                 tab.statsList.apply {
                     clear()
-                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_MANGA_FOLLOWED })
-                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_MANGA_VOLUMES })
-                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_MANGA_CHAPTERS })
+                    add(User.Stats(user).also { it.typeLayout = AppAdapter.Type.STATS_PREVIEW_MANGA_FOLLOWED })
+                    add(User.Stats(user).also { it.typeLayout = AppAdapter.Type.STATS_PREVIEW_MANGA_VOLUMES })
+                    add(User.Stats(user).also { it.typeLayout = AppAdapter.Type.STATS_PREVIEW_MANGA_CHAPTERS })
                 }
                 tab.libraryList.apply {
                     clear()
                     addAll(user.mangaLibrary)
-                    addOrLast(2, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_PROFILE })
+                    addOrLast(2, Ad().also { it.typeLayout = AppAdapter.Type.AD_PROFILE })
                 }
                 tab.favoritesList.apply {
                     clear()
@@ -373,14 +373,14 @@ class ProfileFragment : Fragment() {
             ProfileTab.Anime -> ProfileTab.Anime.let { tab ->
                 tab.statsList.apply {
                     clear()
-                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_ANIME_FOLLOWED })
-                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT })
-                    add(User.Stats(user).also { it.typeLayout = MangaJapAdapter.Type.STATS_PREVIEW_ANIME_EPISODES })
+                    add(User.Stats(user).also { it.typeLayout = AppAdapter.Type.STATS_PREVIEW_ANIME_FOLLOWED })
+                    add(User.Stats(user).also { it.typeLayout = AppAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT })
+                    add(User.Stats(user).also { it.typeLayout = AppAdapter.Type.STATS_PREVIEW_ANIME_EPISODES })
                 }
                 tab.libraryList.apply {
                     clear()
                     addAll(user.animeLibrary)
-                    addOrLast(2, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_PROFILE })
+                    addOrLast(2, Ad().also { it.typeLayout = AppAdapter.Type.AD_PROFILE })
                 }
                 tab.favoritesList.apply {
                     clear()
@@ -392,7 +392,7 @@ class ProfileFragment : Fragment() {
 
 
         binding.rvProfileUserStats.apply {
-            adapter = MangaJapAdapter(currentTab.statsList)
+            adapter = AppAdapter(currentTab.statsList)
         }
 
 
@@ -420,11 +420,11 @@ class ProfileFragment : Fragment() {
                 }
                 for (item in currentTab.libraryList) {
                     when (item) {
-                        is MangaEntry -> item.typeLayout = MangaJapAdapter.Type.MANGA_ENTRY_PREVIEW
-                        is AnimeEntry -> item.typeLayout = MangaJapAdapter.Type.ANIME_ENTRY_PREVIEW
+                        is MangaEntry -> item.typeLayout = AppAdapter.Type.MANGA_ENTRY_PREVIEW
+                        is AnimeEntry -> item.typeLayout = AppAdapter.Type.ANIME_ENTRY_PREVIEW
                     }
                 }
-                adapter = MangaJapAdapter(currentTab.libraryList)
+                adapter = AppAdapter(currentTab.libraryList)
             }
         }
 
@@ -458,11 +458,11 @@ class ProfileFragment : Fragment() {
                 }
                 for (item in currentTab.favoritesList) {
                     when (item) {
-                        is MangaEntry -> item.typeLayout = MangaJapAdapter.Type.MANGA_ENTRY_PREVIEW
-                        is AnimeEntry -> item.typeLayout = MangaJapAdapter.Type.ANIME_ENTRY_PREVIEW
+                        is MangaEntry -> item.typeLayout = AppAdapter.Type.MANGA_ENTRY_PREVIEW
+                        is AnimeEntry -> item.typeLayout = AppAdapter.Type.ANIME_ENTRY_PREVIEW
                     }
                 }
-                adapter = MangaJapAdapter(currentTab.favoritesList)
+                adapter = AppAdapter(currentTab.favoritesList)
             }
         }
     }

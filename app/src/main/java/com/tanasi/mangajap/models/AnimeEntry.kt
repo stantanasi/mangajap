@@ -2,7 +2,7 @@ package com.tanasi.mangajap.models
 
 import com.tanasi.jsonapi.*
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.toCalendar
 import java.util.*
@@ -24,7 +24,7 @@ class AnimeEntry(
 
     user: User? = null,
     anime: Anime? = null,
-) : JsonApiResource, MangaJapAdapter.Item {
+) : JsonApiResource, AppAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
@@ -85,5 +85,5 @@ class AnimeEntry(
 
 
     override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()
-    override lateinit var typeLayout: MangaJapAdapter.Type
+    override lateinit var typeLayout: AppAdapter.Type
 }

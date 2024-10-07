@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentRecyclerViewBinding
 
 open class RecyclerViewFragment : Fragment() {
@@ -19,10 +19,10 @@ open class RecyclerViewFragment : Fragment() {
 
     val viewModel: RecyclerViewViewModel by viewModels()
 
-    private lateinit var list: List<MangaJapAdapter.Item>
+    private lateinit var list: List<AppAdapter.Item>
     private lateinit var rvLayoutManager: RecyclerView.LayoutManager
 
-    var mangaJapAdapter: MangaJapAdapter? = null
+    var adapter: AppAdapter? = null
     val recyclerView: RecyclerView? get() = _binding?.recyclerView
 
     private var paddingLeft: Int = 0
@@ -58,7 +58,7 @@ open class RecyclerViewFragment : Fragment() {
 //        }
 
         if (this::list.isInitialized && this::rvLayoutManager.isInitialized) {
-            mangaJapAdapter = MangaJapAdapter(list)
+            adapter = AppAdapter(list)
 
             displayList()
 
@@ -90,7 +90,7 @@ open class RecyclerViewFragment : Fragment() {
 
                 else -> LinearLayoutManager(requireContext())
             }
-            recyclerView.adapter = mangaJapAdapter
+            recyclerView.adapter = adapter
 
             recyclerView.setPadding(
                 paddingLeft,
@@ -104,7 +104,7 @@ open class RecyclerViewFragment : Fragment() {
     }
 
 
-    fun setList(list: List<MangaJapAdapter.Item>, rvLayoutManager: RecyclerView.LayoutManager) {
+    fun setList(list: List<AppAdapter.Item>, rvLayoutManager: RecyclerView.LayoutManager) {
         this.list = list
         this.rvLayoutManager = rvLayoutManager
     }

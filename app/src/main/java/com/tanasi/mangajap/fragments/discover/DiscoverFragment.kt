@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentDiscoverBinding
 import com.tanasi.mangajap.models.Ad
 import com.tanasi.mangajap.models.Anime
@@ -26,13 +26,13 @@ class DiscoverFragment : Fragment() {
 
     val viewModel: DiscoverViewModel by viewModels()
 
-    private val peopleList: MutableList<MangaJapAdapter.Item> = mutableListOf()
+    private val peopleList: MutableList<AppAdapter.Item> = mutableListOf()
     private val mangaRecentList: MutableList<Manga> = mutableListOf()
     private val animeRecentList: MutableList<Anime> = mutableListOf()
 
-    private val peopleAdapter: MangaJapAdapter = MangaJapAdapter(peopleList)
-    private val mangaRecentAdapter: MangaJapAdapter = MangaJapAdapter(mangaRecentList)
-    private val animeRecentAdapter: MangaJapAdapter = MangaJapAdapter(animeRecentList)
+    private val peopleAdapter: AppAdapter = AppAdapter(peopleList)
+    private val mangaRecentAdapter: AppAdapter = AppAdapter(mangaRecentList)
+    private val animeRecentAdapter: AppAdapter = AppAdapter(animeRecentList)
 
     private val snapHelper: LinearSnapHelper = LinearSnapHelper()
 
@@ -59,7 +59,7 @@ class DiscoverFragment : Fragment() {
                     peopleList.apply {
                         clear()
                         addAll(state.peopleList)
-                        addOrLast(1, Ad().also { it.typeLayout = MangaJapAdapter.Type.AD_DISCOVER })
+                        addOrLast(1, Ad().also { it.typeLayout = AppAdapter.Type.AD_DISCOVER })
                     }
                     mangaRecentList.apply {
                         clear()

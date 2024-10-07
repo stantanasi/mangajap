@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
-import com.tanasi.mangajap.adapters.MangaJapAdapter
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.services.MangaJapApiService
 import kotlinx.coroutines.launch
 
@@ -19,11 +19,11 @@ class FollowViewModel : ViewModel() {
 
     sealed class State {
         object Loading: State()
-        data class SuccessLoading(val followList: List<MangaJapAdapter.Item>, val nextLink: String): State()
+        data class SuccessLoading(val followList: List<AppAdapter.Item>, val nextLink: String): State()
         data class FailedLoading(val error: JsonApiResponse.Error): State()
 
         object LoadingMore: State()
-        data class SuccessLoadingMore(val followList: List<MangaJapAdapter.Item>, val nextLink: String): State()
+        data class SuccessLoadingMore(val followList: List<AppAdapter.Item>, val nextLink: String): State()
         data class FailedLoadingMore(val error: JsonApiResponse.Error): State()
     }
 
@@ -41,7 +41,7 @@ class FollowViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoading(
-                    response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWERS } },
+                    response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.FOLLOWERS } },
                     response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoading(response)
@@ -65,7 +65,7 @@ class FollowViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoading(
-                    response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWING } },
+                    response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.FOLLOWING } },
                     response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoading(response)
@@ -84,7 +84,7 @@ class FollowViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoadingMore(
-                    response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWERS } },
+                    response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.FOLLOWERS } },
                     response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoadingMore(response)
@@ -103,7 +103,7 @@ class FollowViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoadingMore(
-                    response.body.data!!.map { it.apply { typeLayout = MangaJapAdapter.Type.FOLLOWING } },
+                    response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.FOLLOWING } },
                     response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoadingMore(response)
