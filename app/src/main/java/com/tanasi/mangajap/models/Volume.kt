@@ -1,5 +1,6 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiRelationship
 import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.adapters.MangaJapAdapter
@@ -15,12 +16,15 @@ class Volume(
     updatedAt: String? = null,
     titles: JSONObject? = null,
     val number: Int = 0,
-    val startChapter: Int? = null,
-    val endChapter: Int? = null,
     published: String? = null,
     val coverImage: String? = null,
+    val chapterCount: Int = 0,
+    val startChapter: Int? = null,
+    val endChapter: Int? = null,
 
     val manga: Manga? = null,
+    val chapters: List<Chapter> = listOf(),
+    @JsonApiRelationship("volume-entry") val volumeEntry: VolumeEntry? = null,
 ) : MangaJapAdapter.Item, Cloneable {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

@@ -36,9 +36,10 @@ class Anime(
     val coverImage: String? = null,
     val bannerImage: String? = null,
 
-    val seasons: List<Season> = listOf(),
     val genres: List<Genre> = listOf(),
     val themes: List<Theme> = listOf(),
+    val seasons: List<Season> = listOf(),
+    val episodes: List<Episode> = listOf(),
     val staff: List<Staff> = listOf(),
     val reviews: List<Review> = listOf(),
     val franchises: List<Franchise> = listOf(),

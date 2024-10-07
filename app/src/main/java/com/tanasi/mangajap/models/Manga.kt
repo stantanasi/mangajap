@@ -34,9 +34,10 @@ class Manga(
     val coverImage: String? = null,
     val bannerImage: String? = null,
 
-    val volumes: List<Volume> = listOf(),
     val genres: List<Genre> = listOf(),
     val themes: List<Theme> = listOf(),
+    val volumes: List<Volume> = listOf(),
+    val chapters: List<Chapter> = listOf(),
     val staff: List<Staff> = listOf(),
     val reviews: List<Review> = listOf(),
     val franchises: List<Franchise> = listOf(),

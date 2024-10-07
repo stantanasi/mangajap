@@ -1,47 +1,31 @@
 package com.tanasi.mangajap.models
 
 import com.tanasi.jsonapi.JsonApiRelationship
-import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiType
-import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.MangaJapAdapter
 import com.tanasi.mangajap.utils.extensions.toCalendar
 import org.json.JSONObject
-import java.util.*
+import java.util.Calendar
 
-@JsonApiType("episodes")
-class Episode(
+@JsonApiType("chapters")
+class Chapter(
     val id: String,
 
     createdAt: String? = null,
     updatedAt: String? = null,
     titles: JSONObject? = null,
-    val relativeNumber: Int = 0,
     val number: Int = 0,
-    airDate: String? = null,
-    episodeType: String = "",
+    publishedAt: String? = null,
 
-    val anime: Anime? = null,
-    var season: Season? = null,
-    @JsonApiRelationship("episode-entry") val episodeEntry: EpisodeEntry? = null,
+    val manga: Manga? = null,
+    val volume: Volume? = null,
+    @JsonApiRelationship("chapter-entry") val chapterEntry: ChapterEntry? = null,
 ) : MangaJapAdapter.Item {
 
     val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val titles: Titles = Titles.create(titles)
-    val airDate: Calendar? = airDate?.toCalendar("yyyy-MM-dd")
-    val episodeType: EpisodeType? = EpisodeType.getByName(episodeType)
-
-
-    val title: String
-        get() = when {
-            titles.fr != "" -> titles.fr
-            titles.en != "" -> titles.en
-            titles.en_jp != "" -> titles.en_jp
-            titles.ja_jp != "" -> titles.ja_jp
-            else -> ""
-        }
-
+    val published: Calendar? = publishedAt?.toCalendar("yyyy-MM-dd")
 
     data class Titles(
         val fr: String,
@@ -55,20 +39,8 @@ class Episode(
                     json?.optString("fr") ?: "",
                     json?.optString("en") ?: "",
                     json?.optString("en_jp") ?: "",
-                    json?.optString("ja_jp") ?: "",
+                    json?.optString("ja_jp") ?: ""
                 )
-            }
-        }
-    }
-
-    enum class EpisodeType(val stringId: Int) {
-        ova(R.string.animeTypeOva);
-
-        companion object {
-            fun getByName(name: String): EpisodeType? = try {
-                valueOf(name)
-            } catch (e: Exception) {
-                null
             }
         }
     }

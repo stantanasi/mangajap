@@ -23,9 +23,9 @@ class MangaEntry(
     status: String = "",
     volumesRead: Int = 0,
     chaptersRead: Int = 0,
+    rating: Int? = null,
     @JsonApiAttribute("startedAt") private var _startedAt: String? = null,
     @JsonApiAttribute("finishedAt") private var _finishedAt: String? = null,
-    rating: Int? = null,
 
     user: User? = null,
     manga: Manga? = null,
