@@ -53,8 +53,8 @@ class MangaEntry(
     val createdAt = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
-    var user by JsonApiProperty(user)
-    var manga by JsonApiProperty(manga)
+    var user by JsonApiProperty<User?>(user)
+    var manga by JsonApiProperty<Manga?>(manga)
 
 
     fun getProgress(manga: Manga): Int {

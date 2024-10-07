@@ -31,12 +31,12 @@ class EpisodeEntry(
             dirtyProperties.add(EpisodeEntry::_watchedDate)
         }
     var watchedCount by JsonApiProperty(watchedCount)
-    var rating by JsonApiProperty(rating)
+    var rating by JsonApiProperty<Int?>(rating)
     val createdAt = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
-    var user by JsonApiProperty(user)
-    var episode by JsonApiProperty(episode)
+    var user by JsonApiProperty<User?>(user)
+    var episode by JsonApiProperty<Episode?>(episode)
 
     override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()
     override lateinit var itemType: AppAdapter.Type

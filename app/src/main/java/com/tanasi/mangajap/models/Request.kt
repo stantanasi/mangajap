@@ -31,7 +31,7 @@ class Request(
     val createdAt = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
-    var user: User? by JsonApiProperty(user)
+    var user: User? by JsonApiProperty<User?>(user)
 
 
     enum class RequestType(val key: String, val stringId: Int) {

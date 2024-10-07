@@ -50,8 +50,8 @@ class AnimeEntry(
     val createdAt = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
-    var user by JsonApiProperty(user)
-    var anime by JsonApiProperty(anime)
+    var user by JsonApiProperty<User?>(user)
+    var anime by JsonApiProperty<Anime?>(anime)
 
 
     fun getProgress(anime: Anime): Int =

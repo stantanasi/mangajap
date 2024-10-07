@@ -22,13 +22,13 @@ class Review(
     anime: Anime? = null,
 ) : JsonApiResource, AppAdapter.Item {
 
-    var content: String by JsonApiProperty(content)
-    val createdAt: Calendar? = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    var content by JsonApiProperty(content)
+    val createdAt = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val updatedAt = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
-    var user: User? by JsonApiProperty(user)
-    var manga: Manga? by JsonApiProperty(manga)
-    var anime: Anime? by JsonApiProperty(anime)
+    var user by JsonApiProperty<User?>(user)
+    var manga by JsonApiProperty<Manga?>(manga)
+    var anime by JsonApiProperty<Anime?>(anime)
 
 
     override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()

@@ -31,12 +31,12 @@ class VolumeEntry(
             dirtyProperties.add(VolumeEntry::_readDate)
         }
     var readCount by JsonApiProperty(readCount)
-    var rating by JsonApiProperty(rating)
+    var rating by JsonApiProperty<Int?>(rating)
     val createdAt = createdAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val updatedAt = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
-    var user by JsonApiProperty(user)
-    var volume by JsonApiProperty(volume)
+    var user by JsonApiProperty<User?>(user)
+    var volume by JsonApiProperty<Volume?>(volume)
 
 
     override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()
