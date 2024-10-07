@@ -81,17 +81,17 @@ class DiscoverViewModel : ViewModel() {
                     State.SuccessLoading(
                         peopleResponse.body.data!!.map {
                             it.apply {
-                                typeLayout = AppAdapter.Type.PEOPLE_DISCOVER
+                                itemType = AppAdapter.Type.PEOPLE_DISCOVER
                             }
                         },
                         mangaRecentResponse.body.data!!.map {
                             it.apply {
-                                typeLayout = AppAdapter.Type.MANGA_DISCOVER
+                                itemType = AppAdapter.Type.MANGA_DISCOVER
                             }
                         },
                         animeRecentResponse.body.data!!.map {
                             it.apply {
-                                typeLayout = AppAdapter.Type.ANIME_DISCOVER
+                                itemType = AppAdapter.Type.ANIME_DISCOVER
                             }
                         }
                     )

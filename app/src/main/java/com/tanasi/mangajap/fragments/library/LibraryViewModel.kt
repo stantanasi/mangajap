@@ -43,7 +43,7 @@ class LibraryViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.MANGA_ENTRY_LIBRARY } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.MANGA_ENTRY_LIBRARY } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {
@@ -64,7 +64,7 @@ class LibraryViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.ANIME_ENTRY_LIBRARY } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.ANIME_ENTRY_LIBRARY } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {
@@ -85,7 +85,7 @@ class LibraryViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.MANGA_ENTRY_LIBRARY } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.MANGA_ENTRY_LIBRARY } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {
@@ -106,7 +106,7 @@ class LibraryViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.ANIME_ENTRY_LIBRARY } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.ANIME_ENTRY_LIBRARY } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {

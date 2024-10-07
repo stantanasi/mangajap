@@ -110,7 +110,7 @@ class Manga(
         }
     }
 
-    override lateinit var typeLayout: AppAdapter.Type
+    override lateinit var itemType: AppAdapter.Type
 
     public override fun clone(): Manga {
         return super.clone() as Manga

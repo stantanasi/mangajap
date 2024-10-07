@@ -31,5 +31,5 @@ class Review(
 
 
     override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()
-    override lateinit var typeLayout: AppAdapter.Type
+    override lateinit var itemType: AppAdapter.Type
 }

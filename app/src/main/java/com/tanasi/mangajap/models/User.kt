@@ -104,10 +104,10 @@ class User(
     class Stats(
         val user: User
     ) : AppAdapter.Item {
-        override lateinit var typeLayout: AppAdapter.Type
+        override lateinit var itemType: AppAdapter.Type
     }
 
 
     override val dirtyProperties: MutableList<KProperty<*>> = mutableListOf()
-    override lateinit var typeLayout: AppAdapter.Type
+    override lateinit var itemType: AppAdapter.Type
 }

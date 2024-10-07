@@ -289,13 +289,13 @@ class AnimeFragment : Fragment() {
     private fun setAnimeAboutFragment() {
         AnimeTab.About.list.apply {
             clear()
-            add(anime.clone().apply { typeLayout = AppAdapter.Type.ANIME_HEADER })
-            add(anime.clone().apply { typeLayout = AppAdapter.Type.ANIME_SUMMARY })
+            add(anime.clone().apply { itemType = AppAdapter.Type.ANIME_HEADER })
+            add(anime.clone().apply { itemType = AppAdapter.Type.ANIME_SUMMARY })
             if (anime.animeEntry != null)
-                add(anime.clone().apply { typeLayout = AppAdapter.Type.ANIME_PROGRESSION })
+                add(anime.clone().apply { itemType = AppAdapter.Type.ANIME_PROGRESSION })
             if (anime.franchises.isNotEmpty())
-                add(anime.clone().apply { typeLayout = AppAdapter.Type.ANIME_FRANCHISES })
-            add(anime.clone().apply { typeLayout = AppAdapter.Type.ANIME_REVIEWS })
+                add(anime.clone().apply { itemType = AppAdapter.Type.ANIME_FRANCHISES })
+            add(anime.clone().apply { itemType = AppAdapter.Type.ANIME_REVIEWS })
         }
 
         if (AnimeTab.About.fragment.isAdded)
@@ -305,13 +305,13 @@ class AnimeFragment : Fragment() {
     private fun setAnimeEpisodesFragment() {
         AnimeTab.Episodes.list.apply {
             clear()
-            add(Season("").apply { typeLayout = AppAdapter.Type.SEASON_ANIME_HEADER })
+            add(Season("").apply { itemType = AppAdapter.Type.SEASON_ANIME_HEADER })
         }
         for (season in anime.seasons) {
             AnimeTab.Episodes.list.add(season)
             if (season.isShowingEpisodes) {
                 AnimeTab.Episodes.list.addAll(season.episodes.map { episode ->
-                    episode.apply { typeLayout = AppAdapter.Type.EPISODE_ANIME }
+                    episode.apply { itemType = AppAdapter.Type.EPISODE_ANIME }
                 })
             }
         }

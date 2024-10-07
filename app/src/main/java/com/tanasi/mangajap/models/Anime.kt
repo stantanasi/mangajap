@@ -107,7 +107,7 @@ class Anime(
     }
 
 
-    override lateinit var typeLayout: AppAdapter.Type
+    override lateinit var itemType: AppAdapter.Type
 
     public override fun clone(): Anime = super.clone() as Anime
 }

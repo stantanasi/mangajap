@@ -26,5 +26,5 @@ class People(
     val updatedAt: Calendar? = updatedAt?.toCalendar("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 
 
-    override lateinit var typeLayout: AppAdapter.Type
+    override lateinit var itemType: AppAdapter.Type
 }

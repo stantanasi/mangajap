@@ -12,7 +12,7 @@ class AppAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface Item {
-        var typeLayout: Type
+        var itemType: Type
     }
 
     enum class Type {
@@ -78,7 +78,7 @@ class AppAdapter(
     private var onLoadMoreListener: (() -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        when (Type.values()[viewType]) {
+        when (Type.entries[viewType]) {
             Type.AD_DISCOVER -> AdViewHolder(ItemAdDiscoverBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             Type.AD_PROFILE -> AdViewHolder(ItemAdProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             Type.AD_SEARCH -> AdViewHolder(ItemAdSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -178,7 +178,7 @@ class AppAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    override fun getItemViewType(position: Int): Int = items[position].typeLayout.ordinal
+    override fun getItemViewType(position: Int): Int = items[position].itemType.ordinal
 
 
     fun setOnLoadMoreListener(onLoadMoreListener: () -> Unit) {

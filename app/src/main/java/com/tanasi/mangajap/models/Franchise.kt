@@ -23,7 +23,7 @@ class Franchise(
     val role: Role = Role.getByName(role)
 
 
-    override var typeLayout: AppAdapter.Type = AppAdapter.Type.FRANCHISE
+    override var itemType: AppAdapter.Type = AppAdapter.Type.FRANCHISE
 
 
     enum class Role(val stringId: Int) {

@@ -324,8 +324,8 @@ class LibraryFragment : Fragment() {
                             }
                             .map {
                                 when (val media = it.value[0]) {
-                                    is MangaEntry -> itemList.add(Header(getString(media.status.stringId)).apply { typeLayout = AppAdapter.Type.HEADER_LIBRARY_STATUS })
-                                    is AnimeEntry -> itemList.add(Header(getString(media.status.stringId)).apply { typeLayout = AppAdapter.Type.HEADER_LIBRARY_STATUS })
+                                    is MangaEntry -> itemList.add(Header(getString(media.status.stringId)).apply { itemType = AppAdapter.Type.HEADER_LIBRARY_STATUS })
+                                    is AnimeEntry -> itemList.add(Header(getString(media.status.stringId)).apply { itemType = AppAdapter.Type.HEADER_LIBRARY_STATUS })
                                     else -> {}
                                 }
                                 itemList.addAll(it.value)

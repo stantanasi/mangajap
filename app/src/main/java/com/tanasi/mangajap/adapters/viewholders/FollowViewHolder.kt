@@ -33,7 +33,7 @@ class FollowViewHolder(
         binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
                 FollowFragmentDirections.actionFollowToProfile(
-                    userId = when (follow.typeLayout) {
+                    userId = when (follow.itemType) {
                         AppAdapter.Type.FOLLOWERS -> follow.follower?.id ?: ""
                         AppAdapter.Type.FOLLOWING -> follow.followed?.id ?: ""
                         else -> ""
@@ -45,7 +45,7 @@ class FollowViewHolder(
         binding.civFollowUserProfilePic.apply {
             Picasso.get()
                 .load(
-                    when (follow.typeLayout) {
+                    when (follow.itemType) {
                         AppAdapter.Type.FOLLOWERS -> follow.follower?.avatar?.tiny
                         AppAdapter.Type.FOLLOWING -> follow.followed?.avatar?.tiny
                         else -> null
@@ -59,7 +59,7 @@ class FollowViewHolder(
         }
 
         binding.tvFollowUserPseudo.apply {
-            text = when (follow.typeLayout) {
+            text = when (follow.itemType) {
                 AppAdapter.Type.FOLLOWERS -> follow.follower?.pseudo ?: ""
                 AppAdapter.Type.FOLLOWING -> follow.followed?.pseudo ?: ""
                 else -> ""

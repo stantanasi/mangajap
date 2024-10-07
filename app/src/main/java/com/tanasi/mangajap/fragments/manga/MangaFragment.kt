@@ -80,7 +80,7 @@ class MangaFragment : Fragment() {
                 GridLayoutManager(requireContext(), MANGA_VOLUME_SPAN_COUNT).apply {
                     spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
-                            return when (it.list[position].typeLayout) {
+                            return when (it.list[position].itemType) {
                                 AppAdapter.Type.VOLUME_MANGA_DETAILS -> spanCount
                                 else -> 1
                             }
@@ -284,13 +284,13 @@ class MangaFragment : Fragment() {
     private fun setMangaAboutFragment() {
         MangaTab.About.list.apply {
             clear()
-            add(manga.clone().apply { typeLayout = AppAdapter.Type.MANGA_HEADER })
-            add(manga.clone().apply { typeLayout = AppAdapter.Type.MANGA_HEADER_SUMMARY })
+            add(manga.clone().apply { itemType = AppAdapter.Type.MANGA_HEADER })
+            add(manga.clone().apply { itemType = AppAdapter.Type.MANGA_HEADER_SUMMARY })
             if (manga.mangaEntry != null)
-                add(manga.clone().apply { typeLayout = AppAdapter.Type.MANGA_HEADER_PROGRESSION })
+                add(manga.clone().apply { itemType = AppAdapter.Type.MANGA_HEADER_PROGRESSION })
             if (manga.franchises.isNotEmpty())
-                add(manga.clone().apply { typeLayout = AppAdapter.Type.MANGA_HEADER_FRANCHISES })
-            add(manga.clone().apply { typeLayout = AppAdapter.Type.MANGA_HEADER_REVIEWS })
+                add(manga.clone().apply { itemType = AppAdapter.Type.MANGA_HEADER_FRANCHISES })
+            add(manga.clone().apply { itemType = AppAdapter.Type.MANGA_HEADER_REVIEWS })
         }
 
         if (MangaTab.About.fragment.isAdded)
@@ -301,14 +301,14 @@ class MangaFragment : Fragment() {
         MangaTab.Volumes.list.apply {
             clear()
             addAll(manga.volumes.map { volume ->
-                volume.apply { typeLayout  = AppAdapter.Type.VOLUME_MANGA }
+                volume.apply { itemType  = AppAdapter.Type.VOLUME_MANGA }
             })
 
             showDetailsVolume?.let {
                 MangaTab.Volumes.list.addOrLast(
                     index = (MANGA_VOLUME_SPAN_COUNT - MangaTab.Volumes.list.indexOf(it) % MANGA_VOLUME_SPAN_COUNT)
                             + MangaTab.Volumes.list.indexOf(it),
-                    it.clone().apply { typeLayout = AppAdapter.Type.VOLUME_MANGA_DETAILS }
+                    it.clone().apply { itemType = AppAdapter.Type.VOLUME_MANGA_DETAILS }
                 )
             }
         }

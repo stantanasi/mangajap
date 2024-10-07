@@ -29,7 +29,7 @@ class UserStatsViewHolder(
 
     private fun displayPreview(binding: ItemStatsPreviewBinding) {
         binding.tvStatsPreviewTitle.apply {
-            text = when (userStats.typeLayout) {
+            text = when (userStats.itemType) {
                 AppAdapter.Type.STATS_PREVIEW_MANGA_FOLLOWED -> context.resources.getString(R.string.mangasFollows)
                 AppAdapter.Type.STATS_PREVIEW_MANGA_VOLUMES -> context.resources.getString(R.string.volumesRead)
                 AppAdapter.Type.STATS_PREVIEW_MANGA_CHAPTERS -> context.resources.getString(R.string.chaptersRead)
@@ -41,7 +41,7 @@ class UserStatsViewHolder(
         }
 
         binding.tvStatsPreviewBody.apply {
-            text = when (userStats.typeLayout) {
+            text = when (userStats.itemType) {
                 AppAdapter.Type.STATS_PREVIEW_MANGA_FOLLOWED -> userStats.user.followedMangaCount.withSuffix()
                 AppAdapter.Type.STATS_PREVIEW_MANGA_VOLUMES -> userStats.user.mangaVolumeRead.withSuffix()
                 AppAdapter.Type.STATS_PREVIEW_MANGA_CHAPTERS -> userStats.user.mangaChapterRead.withSuffix()
@@ -53,32 +53,32 @@ class UserStatsViewHolder(
         }
 
         binding.tvStatsPreviewDetails.apply {
-            text = when (userStats.typeLayout) {
+            text = when (userStats.itemType) {
                 else -> ""
             }
-            visibility = when (userStats.typeLayout) {
+            visibility = when (userStats.itemType) {
                 else -> View.GONE
             }
         }
     }
 
     private fun displayTimeSpentPreview(binding: ItemStatsTimeSpentPreviewBinding) {
-        binding.tvStatsPreviewTitle.text = when (userStats.typeLayout) {
+        binding.tvStatsPreviewTitle.text = when (userStats.itemType) {
             AppAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> context.getString(R.string.timeSpentOnAnime)
             else -> ""
         }
 
-        binding.tvStatsPreviewMonths.text = when (userStats.typeLayout) {
+        binding.tvStatsPreviewMonths.text = when (userStats.itemType) {
             AppAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> userStats.user.timeSpentOnAnime.let { String.format("%02d", it / 43800) }
             else -> ""
         }
 
-        binding.tvStatsPreviewDays.text = when (userStats.typeLayout) {
+        binding.tvStatsPreviewDays.text = when (userStats.itemType) {
             AppAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> userStats.user.timeSpentOnAnime.let { String.format("%02d", it / 1440 % 30) }
             else -> ""
         }
 
-        binding.tvStatsPreviewHours.text = when (userStats.typeLayout) {
+        binding.tvStatsPreviewHours.text = when (userStats.itemType) {
             AppAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT -> userStats.user.timeSpentOnAnime.let { String.format("%02d", it / 60 % 24) }
             else -> ""
         }

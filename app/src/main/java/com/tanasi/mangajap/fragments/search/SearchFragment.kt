@@ -104,8 +104,8 @@ class SearchFragment : Fragment() {
                     SearchTab.Manga.list.apply {
                         clear()
                         addAll(state.mangaList)
-                        if (size < 15) add(Manga("").also { it.typeLayout = AppAdapter.Type.MANGA_SEARCH_ADD })
-                        addOrLast(3, Ad().also { it.typeLayout = AppAdapter.Type.AD_SEARCH })
+                        if (size < 15) add(Manga("").also { it.itemType = AppAdapter.Type.MANGA_SEARCH_ADD })
+                        addOrLast(3, Ad().also { it.itemType = AppAdapter.Type.AD_SEARCH })
                         add(SearchTab.Manga.loadMore)
                     }
                     SearchTab.Manga.nextLink = state.nextLink
@@ -123,8 +123,8 @@ class SearchFragment : Fragment() {
                     SearchTab.Anime.list.apply {
                         clear()
                         addAll(state.animeList)
-                        if (size < 15) add(Anime("").also { it.typeLayout = AppAdapter.Type.ANIME_SEARCH_ADD })
-                        addOrLast(3, Ad().also { it.typeLayout = AppAdapter.Type.AD_SEARCH })
+                        if (size < 15) add(Anime("").also { it.itemType = AppAdapter.Type.ANIME_SEARCH_ADD })
+                        addOrLast(3, Ad().also { it.itemType = AppAdapter.Type.AD_SEARCH })
                         add(SearchTab.Anime.loadMore)
                     }
                     SearchTab.Anime.nextLink = state.nextLink
@@ -142,7 +142,7 @@ class SearchFragment : Fragment() {
                     SearchTab.Users.list.apply {
                         clear()
                         addAll(state.userList)
-                        addOrLast(3, Ad().also { it.typeLayout = AppAdapter.Type.AD_SEARCH })
+                        addOrLast(3, Ad().also { it.itemType = AppAdapter.Type.AD_SEARCH })
                         add(SearchTab.Users.loadMore)
                     }
                     SearchTab.Users.nextLink = state.nextLink

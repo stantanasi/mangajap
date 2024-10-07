@@ -76,5 +76,5 @@ class Season(
     }
 
 
-    override var typeLayout: AppAdapter.Type = AppAdapter.Type.SEASON_ANIME
+    override var itemType: AppAdapter.Type = AppAdapter.Type.SEASON_ANIME
 }

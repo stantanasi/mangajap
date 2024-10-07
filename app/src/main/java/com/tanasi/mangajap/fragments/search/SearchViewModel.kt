@@ -54,7 +54,7 @@ class SearchViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoadingManga(
-                        response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.MANGA_SEARCH } },
+                        response.body.data!!.map { it.apply { itemType = AppAdapter.Type.MANGA_SEARCH } },
                         response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoading(response)
@@ -73,7 +73,7 @@ class SearchViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoadingMoreManga(
-                        response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.MANGA_SEARCH } },
+                        response.body.data!!.map { it.apply { itemType = AppAdapter.Type.MANGA_SEARCH } },
                         response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoadingMore(response)
@@ -138,7 +138,7 @@ class SearchViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoadingAnime(
-                        response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.ANIME_SEARCH } },
+                        response.body.data!!.map { it.apply { itemType = AppAdapter.Type.ANIME_SEARCH } },
                         response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoading(response)
@@ -157,7 +157,7 @@ class SearchViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoadingMoreAnime(
-                        response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.ANIME_SEARCH } },
+                        response.body.data!!.map { it.apply { itemType = AppAdapter.Type.ANIME_SEARCH } },
                         response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoadingMore(response)
@@ -226,7 +226,7 @@ class SearchViewModel : ViewModel() {
 
                 when (response) {
                     is JsonApiResponse.Success -> State.SuccessLoadingUsers(
-                        response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.USER } },
+                        response.body.data!!.map { it.apply { itemType = AppAdapter.Type.USER } },
                         response.body.links?.next ?: ""
                     )
                     is JsonApiResponse.Error -> State.FailedLoading(response)
@@ -246,7 +246,7 @@ class SearchViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoadingMoreUsers(
-                        response.body.data!!.map { it.apply { typeLayout = AppAdapter.Type.USER } },
+                        response.body.data!!.map { it.apply { itemType = AppAdapter.Type.USER } },
                         response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoadingMore(response)
