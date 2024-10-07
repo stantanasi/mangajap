@@ -1,5 +1,6 @@
 package com.tanasi.mangajap.models
 
+import com.tanasi.jsonapi.JsonApiAttribute
 import com.tanasi.jsonapi.JsonApiRelationship
 import com.tanasi.jsonapi.JsonApiType
 import com.tanasi.mangajap.R
@@ -27,6 +28,7 @@ class Anime(
     val youtubeVideoId: String = "",
     val coverImage: String? = null,
     val bannerImage: String? = null,
+    @JsonApiAttribute("links")
     val links: JSONObject? = null,
     val seasonCount: Int = 0,
     val episodeCount: Int = 0,
