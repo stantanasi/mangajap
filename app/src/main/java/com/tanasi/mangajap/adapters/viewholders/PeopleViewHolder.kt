@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import android.widget.ImageView
@@ -13,7 +13,7 @@ import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.People
 
-class VhPeople(
+class PeopleViewHolder(
         private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
         _binding.root

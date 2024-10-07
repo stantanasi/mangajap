@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
@@ -6,7 +6,7 @@ import androidx.viewbinding.ViewBinding
 import com.tanasi.mangajap.databinding.ItemLibraryStatusBinding
 import com.tanasi.mangajap.models.Header
 
-class VhHeader(
+class HeaderViewHolder(
     private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
     _binding.root

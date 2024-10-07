@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import android.content.Intent
@@ -43,7 +43,7 @@ import java.lang.Exception
 import java.text.DecimalFormat
 import java.util.*
 
-class VhAnime(
+class AnimeViewHolder(
         private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
         _binding.root

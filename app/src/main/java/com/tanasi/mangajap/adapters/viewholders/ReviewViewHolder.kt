@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import android.view.View
@@ -18,7 +18,7 @@ import com.tanasi.mangajap.fragments.reviews.ReviewsFragmentDirections
 import com.tanasi.mangajap.models.Review
 import com.tanasi.mangajap.utils.extensions.format
 
-class VhReview(
+class ReviewViewHolder(
         private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
         _binding.root

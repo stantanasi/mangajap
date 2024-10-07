@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import android.graphics.Typeface
@@ -41,7 +41,7 @@ import com.tanasi.mangajap.utils.extensions.*
 import java.text.DecimalFormat
 import java.util.*
 
-class VhManga(
+class MangaViewHolder(
         private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
         _binding.root

@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import android.view.View
@@ -17,7 +17,7 @@ import com.tanasi.mangajap.databinding.ItemAdProfileBinding
 import com.tanasi.mangajap.databinding.ItemAdSearchBinding
 import com.tanasi.mangajap.models.Ad
 
-class VhAd(
+class AdViewHolder(
         private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
         _binding.root

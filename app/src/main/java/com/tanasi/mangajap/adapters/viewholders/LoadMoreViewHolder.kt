@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -6,7 +6,7 @@ import androidx.viewbinding.ViewBinding
 import com.tanasi.mangajap.databinding.ItemLoadMoreBinding
 import com.tanasi.mangajap.models.LoadMore
 
-class VhLoadMore(
+class LoadMoreViewHolder(
         private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
         _binding.root

@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import android.view.View
@@ -9,55 +9,55 @@ import androidx.viewbinding.ViewBinding
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.databinding.ItemAgendaMangaBinding
+import com.tanasi.mangajap.databinding.ItemAgendaAnimeBinding
 import com.tanasi.mangajap.databinding.ItemMediaLibraryBinding
 import com.tanasi.mangajap.databinding.ItemMediaProfilePreviewBinding
 import com.tanasi.mangajap.fragments.agenda.AgendaFragmentDirections
 import com.tanasi.mangajap.fragments.library.LibraryFragment
 import com.tanasi.mangajap.fragments.library.LibraryFragmentDirections
 import com.tanasi.mangajap.fragments.profile.ProfileFragmentDirections
-import com.tanasi.mangajap.models.MangaEntry
+import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
 import com.tanasi.mangajap.utils.extensions.toActivity
 import java.lang.Exception
 
-class VhMangaEntry(
+class AnimeEntryViewHolder(
         private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
         _binding.root
 ) {
 
     private val context: Context = itemView.context
-    private lateinit var mangaEntry: MangaEntry
+    private lateinit var animeEntry: AnimeEntry
 
-    fun setVhMangaEntry(mangaEntry: MangaEntry) {
-        this.mangaEntry = mangaEntry
+    fun setVhAnimeEntry(animeEntry: AnimeEntry) {
+        this.animeEntry = animeEntry
         when (_binding) {
             is ItemMediaProfilePreviewBinding -> displayPreview(_binding)
             is ItemMediaLibraryBinding -> displayLibrary(_binding)
-            is ItemAgendaMangaBinding -> displayToRead(_binding)
+            is ItemAgendaAnimeBinding -> displayToWatch(_binding)
         }
     }
 
-    private fun updateMangaEntry(mangaEntry: MangaEntry) {
+    private fun updateAnimeEntry(animeEntry: AnimeEntry) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is LibraryFragment -> fragment.viewModel.updateMangaEntry(mangaEntry)
+            is LibraryFragment -> fragment.viewModel.updateAnimeEntry(animeEntry)
         }
     }
 
     private fun displayPreview(binding: ItemMediaProfilePreviewBinding) {
         binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
-                    ProfileFragmentDirections.actionProfileToManga(
-                            mangaEntry.manga?.id ?: "",
-                            mangaEntry.manga?.title ?: ""
+                    ProfileFragmentDirections.actionProfileToAnime(
+                            animeEntry.anime?.id ?: "",
+                            animeEntry.anime?.title ?: ""
                     )
             )
         }
 
         binding.ivProfileMediaCover.apply {
             Picasso.get()
-                    .load(mangaEntry.manga?.coverImage)
+                    .load(animeEntry.anime?.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
                     .into(this, object : Callback {
@@ -71,37 +71,37 @@ class VhMangaEntry(
                     })
         }
 
-        binding.tvProfileMediaTitlePlaceholder.text = mangaEntry.manga?.title ?: ""
+        binding.tvProfileMediaTitlePlaceholder.text = animeEntry.anime?.title ?: ""
 
         binding.cbProfileMediaIsAdd.apply {
-            visibility = if (mangaEntry.isAdd) View.GONE else View.VISIBLE
-            isChecked = mangaEntry.isAdd
+            visibility = if (animeEntry.isAdd) View.GONE else View.VISIBLE
+            isChecked = animeEntry.isAdd
             setOnClickListener {
-                updateMangaEntry(mangaEntry.also {
+                updateAnimeEntry(animeEntry.also {
                     it.isAdd = isChecked
                 })
             }
         }
 
         binding.pbProfileMediaProgress.apply {
-            progress = mangaEntry.manga?.let { mangaEntry.getProgress(it) } ?: 0
-            progressTintList = ContextCompat.getColorStateList(context, mangaEntry.manga?.let { mangaEntry.getProgressColor(it) } ?: MangaEntry.Status.reading.colorId)
+            progress = animeEntry.anime?.let { animeEntry.getProgress(it) } ?: 0
+            progressTintList = ContextCompat.getColorStateList(context, animeEntry.anime?.let { animeEntry.getProgressColor(it) } ?: AnimeEntry.Status.watching.colorId)
         }
     }
 
     private fun displayLibrary(binding: ItemMediaLibraryBinding) {
         binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
-                    LibraryFragmentDirections.actionLibraryToManga(
-                            mangaEntry.manga?.id ?: "",
-                            mangaEntry.manga?.title ?: ""
+                    LibraryFragmentDirections.actionLibraryToAnime(
+                            animeEntry.anime?.id ?: "",
+                            animeEntry.anime?.title ?: ""
                     )
             )
         }
 
         binding.ivLibraryMediaCover.apply {
             Picasso.get()
-                    .load(mangaEntry.manga?.coverImage)
+                    .load(animeEntry.anime?.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
                     .into(this, object : Callback {
@@ -115,79 +115,55 @@ class VhMangaEntry(
                     })
         }
 
-        binding.tvLibraryMediaTitlePlaceholder.text = mangaEntry.manga?.title ?: ""
+        binding.tvLibraryMediaTitlePlaceholder.text = animeEntry.anime?.title ?: ""
+
+        binding.tvLibraryMediaTitle.text = animeEntry.anime?.title ?: ""
 
         binding.cbLibraryMediaIsAdd.apply {
-            visibility = if (mangaEntry.isAdd) View.GONE else View.VISIBLE
-            isChecked = mangaEntry.isAdd
+            visibility = if (animeEntry.isAdd) View.GONE else View.VISIBLE
+            isChecked = animeEntry.isAdd
             setOnClickListener {
-                updateMangaEntry(mangaEntry.also {
+                updateAnimeEntry(animeEntry.also {
                     it.isAdd = isChecked
                 })
             }
         }
 
         binding.pbLibraryMediaProgress.apply {
-            progress = mangaEntry.manga?.let { mangaEntry.getProgress(it) } ?: 0
-            progressTintList = ContextCompat.getColorStateList(context, mangaEntry.manga?.let { mangaEntry.getProgressColor(it) } ?: MangaEntry.Status.reading.colorId)
+            progress = animeEntry.anime?.let { animeEntry.getProgress(it) } ?: 0
+            progressTintList = ContextCompat.getColorStateList(context, animeEntry.anime?.let { animeEntry.getProgressColor(it) } ?: AnimeEntry.Status.watching.colorId)
         }
-
-        binding.tvLibraryMediaTitle.text = mangaEntry.manga?.title ?: ""
     }
 
-    private fun displayToRead(binding: ItemAgendaMangaBinding) {
+    private fun displayToWatch(binding: ItemAgendaAnimeBinding) {
         binding.root.setOnClickListener {
             Navigation.findNavController(binding.root).navigate(
-                    AgendaFragmentDirections.actionAgendaToManga(
-                            mangaEntry.manga?.id ?: "",
-                            mangaEntry.manga?.title ?: ""
+                    AgendaFragmentDirections.actionAgendaToAnime(
+                            animeEntry.anime?.id ?: "",
+                            animeEntry.anime?.title ?: ""
                     )
             )
         }
 
-        binding.ivMangaToReadCover.apply {
+        binding.ivAnimeToWatchCover.apply {
             Picasso.get()
-                    .load(mangaEntry.manga?.coverImage)
+                    .load(animeEntry.anime?.coverImage)
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
                     .into(this)
         }
 
-        binding.tvMangaToReadTitle.text = mangaEntry.manga?.title ?: ""
+        binding.tvAnimeToWatchTitle.text = animeEntry.anime?.title ?: ""
 
-        binding.tvMangaToReadNextVolume.apply {
-            if (mangaEntry.volumesRead < mangaEntry.manga?.volumeCount ?: 0) {
-                visibility = View.VISIBLE
-                text = context.getString(R.string.volume, mangaEntry.volumesRead+1)
-            } else {
-                visibility = View.GONE
-            }
+        binding.tvAnimeToWatchNextEpisode.apply {
+            text = context.getString(R.string.episode_number, animeEntry.episodesWatch + 1)
         }
 
-        binding.tvMangaToReadVolumeRemainingCount.apply {
-            val volumeRemainingCount = (mangaEntry.manga?.volumeCount ?: 0) - (mangaEntry.volumesRead + 1)
-            if (volumeRemainingCount > 0) {
+        binding.tvAnimeToWatchEpisodeRemainingCount.apply {
+            val episodeRemainingCount = (animeEntry.anime?.episodeCount ?: 0) - (animeEntry.episodesWatch + 1)
+            if (episodeRemainingCount > 0) {
                 visibility = View.VISIBLE
-                text = " + $volumeRemainingCount"
-            } else {
-                visibility = View.GONE
-            }
-        }
-
-        binding.tvMangaToReadNextChapter.apply {
-            if (mangaEntry.chaptersRead < mangaEntry.manga?.chapterCount ?: 0) {
-                visibility = View.VISIBLE
-                text = context.getString(R.string.chapter, mangaEntry.chaptersRead+1)
-            } else {
-                visibility = View.GONE
-            }
-        }
-
-        binding.tvMangaToReadChapterRemainingCount.apply {
-            val chapterRemainingCount = (mangaEntry.manga?.chapterCount ?: 0) - (mangaEntry.chaptersRead + 1)
-            if (chapterRemainingCount > 0) {
-                visibility = View.VISIBLE
-                text = " + $chapterRemainingCount"
+                text = " + $episodeRemainingCount"
             } else {
                 visibility = View.GONE
             }

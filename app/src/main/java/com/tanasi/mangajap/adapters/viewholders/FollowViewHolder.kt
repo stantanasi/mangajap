@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import androidx.navigation.Navigation
@@ -13,7 +13,7 @@ import com.tanasi.mangajap.databinding.ItemFollowBinding
 import com.tanasi.mangajap.fragments.follow.FollowFragmentDirections
 import com.tanasi.mangajap.models.Follow
 
-class VhFollow(
+class FollowViewHolder(
     private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
     _binding.root

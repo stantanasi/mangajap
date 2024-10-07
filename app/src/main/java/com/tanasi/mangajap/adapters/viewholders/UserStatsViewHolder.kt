@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +10,7 @@ import com.tanasi.mangajap.databinding.ItemStatsTimeSpentPreviewBinding
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.utils.extensions.withSuffix
 
-class VhUserStats(
+class UserStatsViewHolder(
         private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
         _binding.root

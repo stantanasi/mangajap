@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import androidx.navigation.Navigation
@@ -12,7 +12,7 @@ import com.tanasi.mangajap.databinding.ItemUserBinding
 import com.tanasi.mangajap.fragments.search.SearchFragmentDirections
 import com.tanasi.mangajap.models.User
 
-class VhUser(
+class UserViewHolder(
         private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
         _binding.root

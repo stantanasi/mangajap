@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import android.view.View
@@ -14,7 +14,7 @@ import com.tanasi.mangajap.models.Season
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
 import com.tanasi.mangajap.utils.extensions.toActivity
 
-class VhSeason(
+class SeasonViewHolder(
         private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
         _binding.root

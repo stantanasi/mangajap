@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.adapters.viewHolders
+package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import androidx.navigation.Navigation
@@ -17,7 +17,7 @@ import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.utils.extensions.getCurrentFragment
 import com.tanasi.mangajap.utils.extensions.toActivity
 
-class VhFranchise(
+class FranchiseViewHolder(
     private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
     _binding.root
