@@ -1,17 +1,35 @@
 package com.tanasi.mangajap.services
 
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.jsonapi.callAdapter.JsonApiCallAdapterFactory
 import com.tanasi.jsonapi.converter.JsonApiConverterFactory
-import com.tanasi.mangajap.models.*
+import com.tanasi.mangajap.models.Anime
+import com.tanasi.mangajap.models.AnimeEntry
+import com.tanasi.mangajap.models.Episode
+import com.tanasi.mangajap.models.Follow
+import com.tanasi.mangajap.models.Manga
+import com.tanasi.mangajap.models.MangaEntry
+import com.tanasi.mangajap.models.People
+import com.tanasi.mangajap.models.Request
+import com.tanasi.mangajap.models.Review
+import com.tanasi.mangajap.models.User
 import com.tanasi.oauth2.adapter.OAuth2CallAdapterFactory
 import com.tanasi.oauth2.converter.OAuth2ConverterFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.QueryMap
+import retrofit2.http.Url
+import java.util.concurrent.TimeUnit
 
 interface MangaJapApiService {
 
@@ -19,9 +37,18 @@ interface MangaJapApiService {
         fun build(): MangaJapApiService {
             val client = OkHttpClient.Builder().addInterceptor { chain ->
                 val requestBuilder = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${Firebase.auth.uid}")
                     .addHeader("Accept", "application/vnd.api+json")
                     .addHeader("Content-Type", "application/vnd.api+json")
+
+                Firebase.auth.currentUser?.getIdToken(false)
+                    ?.let {
+                        val tokenResult = Tasks.await(it, 10, TimeUnit.SECONDS)
+                        tokenResult.token
+                    }
+                    ?.let { idToken ->
+                        requestBuilder.addHeader("Authorization", idToken)
+                    }
+
 
                 chain.proceed(requestBuilder.build())
             }.build()
