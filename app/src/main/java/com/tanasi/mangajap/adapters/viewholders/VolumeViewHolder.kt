@@ -25,7 +25,7 @@ class VolumeViewHolder(
     private val context: Context = itemView.context
     private lateinit var volume: Volume
 
-    fun setVhVolume(volume: Volume) {
+    fun bind(volume: Volume) {
         this.volume = volume
         when (_binding) {
             is ItemVolumeMangaBinding -> displayVolume(_binding)

@@ -23,7 +23,7 @@ class SeasonViewHolder(
     private val context: Context = itemView.context
     private lateinit var season: Season
 
-    fun setVhSeason(season: Season) {
+    fun bind(season: Season) {
         this.season = season
         when (_binding) {
             is ItemSeasonAnimeHeaderBinding -> displaySeasonHeader(_binding)

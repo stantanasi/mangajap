@@ -59,7 +59,7 @@ class Season(
     var isShowingEpisodes = false
 
 
-    override var itemType: AppAdapter.Type = AppAdapter.Type.SEASON_ANIME
+    override var itemType: AppAdapter.Type = AppAdapter.Type.SEASON_ITEM
 
     fun copy(
         id: String = this.id,

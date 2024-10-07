@@ -21,7 +21,7 @@ class EpisodeViewHolder(
     private val context: Context = itemView.context
     private lateinit var episode: Episode
 
-    fun setVhEpisode(episode: Episode) {
+    fun bind(episode: Episode) {
         this.episode = episode
         when (_binding) {
             is ItemEpisodeAnimeBinding -> displayEpisode(_binding)

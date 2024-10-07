@@ -19,7 +19,7 @@ class StaffViewHolder(
 
     private val context: Context = itemView.context
     private lateinit var staff: Staff
-    fun setVhStaff(staff: Staff) {
+    fun bind(staff: Staff) {
         this.staff = staff
         when (_binding) {
             is ItemStaffPeopleBinding -> displayStaffPeople(_binding)

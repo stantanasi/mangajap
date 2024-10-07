@@ -22,7 +22,7 @@ class FollowViewHolder(
     private val context: Context = itemView.context
     private lateinit var follow: Follow
 
-    fun setVhFollow(follow: Follow) {
+    fun bind(follow: Follow) {
         this.follow = follow
         when (_binding) {
             is ItemFollowBinding -> displayFollow(_binding)
@@ -34,8 +34,8 @@ class FollowViewHolder(
             Navigation.findNavController(binding.root).navigate(
                 FollowFragmentDirections.actionFollowToProfile(
                     userId = when (follow.itemType) {
-                        AppAdapter.Type.FOLLOWERS -> follow.follower?.id ?: ""
-                        AppAdapter.Type.FOLLOWING -> follow.followed?.id ?: ""
+                        AppAdapter.Type.FOLLOWER_ITEM -> follow.follower?.id ?: ""
+                        AppAdapter.Type.FOLLOWING_ITEM -> follow.followed?.id ?: ""
                         else -> ""
                     }
                 )
@@ -46,8 +46,8 @@ class FollowViewHolder(
             Picasso.get()
                 .load(
                     when (follow.itemType) {
-                        AppAdapter.Type.FOLLOWERS -> follow.follower?.avatar?.tiny
-                        AppAdapter.Type.FOLLOWING -> follow.followed?.avatar?.tiny
+                        AppAdapter.Type.FOLLOWER_ITEM -> follow.follower?.avatar?.tiny
+                        AppAdapter.Type.FOLLOWING_ITEM -> follow.followed?.avatar?.tiny
                         else -> null
                     }
                 )
@@ -60,8 +60,8 @@ class FollowViewHolder(
 
         binding.tvFollowUserPseudo.apply {
             text = when (follow.itemType) {
-                AppAdapter.Type.FOLLOWERS -> follow.follower?.pseudo ?: ""
-                AppAdapter.Type.FOLLOWING -> follow.followed?.pseudo ?: ""
+                AppAdapter.Type.FOLLOWER_ITEM -> follow.follower?.pseudo ?: ""
+                AppAdapter.Type.FOLLOWING_ITEM -> follow.followed?.pseudo ?: ""
                 else -> ""
             }
         }

@@ -30,7 +30,7 @@ class AnimeEntryViewHolder(
     private val context: Context = itemView.context
     private lateinit var animeEntry: AnimeEntry
 
-    fun setVhAnimeEntry(animeEntry: AnimeEntry) {
+    fun bind(animeEntry: AnimeEntry) {
         this.animeEntry = animeEntry
         when (_binding) {
             is ItemMediaProfilePreviewBinding -> displayPreview(_binding)

@@ -30,7 +30,7 @@ class MangaEntryViewHolder(
     private val context: Context = itemView.context
     private lateinit var mangaEntry: MangaEntry
 
-    fun setVhMangaEntry(mangaEntry: MangaEntry) {
+    fun bind(mangaEntry: MangaEntry) {
         this.mangaEntry = mangaEntry
         when (_binding) {
             is ItemMediaProfilePreviewBinding -> displayPreview(_binding)

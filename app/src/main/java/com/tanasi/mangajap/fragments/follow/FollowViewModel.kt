@@ -41,7 +41,7 @@ class FollowViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoading(
-                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWERS } },
+                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWER_ITEM } },
                     response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoading(response)
@@ -65,7 +65,7 @@ class FollowViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoading(
-                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWING } },
+                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWING_ITEM } },
                     response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoading(response)
@@ -84,7 +84,7 @@ class FollowViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoadingMore(
-                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWERS } },
+                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWER_ITEM } },
                     response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoadingMore(response)
@@ -103,7 +103,7 @@ class FollowViewModel : ViewModel() {
         _state.value = try {
             when (response) {
                 is JsonApiResponse.Success -> State.SuccessLoadingMore(
-                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWING } },
+                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWING_ITEM } },
                     response.body.links?.next ?: ""
                 )
                 is JsonApiResponse.Error -> State.FailedLoadingMore(response)

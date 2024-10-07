@@ -16,7 +16,7 @@ class HeaderViewHolder(
 
     private lateinit var header: Header
 
-    fun setVhStatusHeader(header: Header) {
+    fun bind(header: Header) {
         this.header = header
         when (_binding) {
             is ItemLibraryStatusBinding -> displayStatus(_binding)

@@ -26,7 +26,7 @@ class FranchiseViewHolder(
     private val context: Context = itemView.context
     private lateinit var franchise: Franchise
 
-    fun setVhFranchise(franchise: Franchise) {
+    fun bind(franchise: Franchise) {
         this.franchise = franchise
         when (_binding) {
             is ItemFranchiseBinding -> displayFranchise(_binding)

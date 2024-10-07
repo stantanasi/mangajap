@@ -7,5 +7,5 @@ class LoadMore(
     var isMoreDataAvailable: Boolean = true
 ) : AppAdapter.Item {
 
-    override var itemType: AppAdapter.Type = AppAdapter.Type.LOAD_MORE
+    override var itemType: AppAdapter.Type = AppAdapter.Type.LOADING_ITEM
 }

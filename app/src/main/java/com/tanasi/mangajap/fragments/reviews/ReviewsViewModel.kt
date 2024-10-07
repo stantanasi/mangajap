@@ -35,7 +35,7 @@ class ReviewsViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.REVIEW } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.REVIEW_ITEM } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {
@@ -54,7 +54,7 @@ class ReviewsViewModel : ViewModel() {
         )
         _state.value = try {
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.REVIEW } })
+                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.REVIEW_ITEM } })
                 is JsonApiResponse.Error -> State.FailedLoading(response)
             }
         } catch (e: Exception) {

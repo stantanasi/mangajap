@@ -81,7 +81,7 @@ class MangaFragment : Fragment() {
                     spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
                             return when (it.list[position].itemType) {
-                                AppAdapter.Type.VOLUME_MANGA_DETAILS -> spanCount
+                                AppAdapter.Type.VOLUME_DETAILS_ITEM -> spanCount
                                 else -> 1
                             }
                         }
@@ -284,13 +284,13 @@ class MangaFragment : Fragment() {
     private fun setMangaAboutFragment() {
         MangaTab.About.list.apply {
             clear()
-            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_HEADER })
-            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_HEADER_SUMMARY })
+            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA })
+            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_SUMMARY })
             if (manga.mangaEntry != null)
-                add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_HEADER_PROGRESSION })
+                add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_PROGRESSION })
             if (manga.franchises.isNotEmpty())
-                add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_HEADER_FRANCHISES })
-            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_HEADER_REVIEWS })
+                add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_FRANCHISES })
+            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_REVIEWS })
         }
 
         if (MangaTab.About.fragment.isAdded)
@@ -301,14 +301,14 @@ class MangaFragment : Fragment() {
         MangaTab.Volumes.list.apply {
             clear()
             addAll(manga.volumes.map { volume ->
-                volume.apply { itemType  = AppAdapter.Type.VOLUME_MANGA }
+                volume.apply { itemType  = AppAdapter.Type.VOLUME_ITEM }
             })
 
             showDetailsVolume?.let {
                 MangaTab.Volumes.list.addOrLast(
                     index = (MANGA_VOLUME_SPAN_COUNT - MangaTab.Volumes.list.indexOf(it) % MANGA_VOLUME_SPAN_COUNT)
                             + MangaTab.Volumes.list.indexOf(it),
-                    it.copy().apply { itemType = AppAdapter.Type.VOLUME_MANGA_DETAILS }
+                    it.copy().apply { itemType = AppAdapter.Type.VOLUME_DETAILS_ITEM }
                 )
             }
         }

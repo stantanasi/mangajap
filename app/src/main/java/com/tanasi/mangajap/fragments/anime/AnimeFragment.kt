@@ -289,7 +289,7 @@ class AnimeFragment : Fragment() {
     private fun setAnimeAboutFragment() {
         AnimeTab.About.list.apply {
             clear()
-            add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_HEADER })
+            add(anime.copy().apply { itemType = AppAdapter.Type.ANIME })
             add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_SUMMARY })
             if (anime.animeEntry != null)
                 add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_PROGRESSION })
@@ -311,7 +311,7 @@ class AnimeFragment : Fragment() {
             AnimeTab.Episodes.list.add(season)
             if (season.isShowingEpisodes) {
                 AnimeTab.Episodes.list.addAll(season.episodes.map { episode ->
-                    episode.apply { itemType = AppAdapter.Type.EPISODE_ANIME }
+                    episode.apply { itemType = AppAdapter.Type.EPISODE_ITEM }
                 })
             }
         }

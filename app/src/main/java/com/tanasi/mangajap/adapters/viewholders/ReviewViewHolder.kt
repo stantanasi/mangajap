@@ -28,7 +28,7 @@ class ReviewViewHolder(
 
     private lateinit var review: Review
 
-    fun setVhReview(review: Review) {
+    fun bind(review: Review) {
         this.review = review
         when (_binding) {
             is ItemReviewHeaderBinding -> displayReviewHeader(_binding)

@@ -26,7 +26,7 @@ class AdViewHolder(
     private val context: Context = itemView.context
     private lateinit var ad: Ad
 
-    fun setVhAd(ad: Ad) {
+    fun bind(ad: Ad) {
         this.ad = ad
 
         val adUnitId = when {

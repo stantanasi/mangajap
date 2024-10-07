@@ -20,7 +20,7 @@ class UserViewHolder(
 
     private val context: Context = itemView.context
     private lateinit var user: User
-    fun setVhUser(user: User) {
+    fun bind(user: User) {
         this.user = user
         when (_binding) {
             is ItemUserBinding -> displayUser(_binding)

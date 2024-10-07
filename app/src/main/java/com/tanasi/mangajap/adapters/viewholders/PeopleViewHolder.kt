@@ -21,7 +21,7 @@ class PeopleViewHolder(
 
     private val context: Context = itemView.context
     private lateinit var people: People
-    fun setVhPeople(people: People) {
+    fun bind(people: People) {
         this.people = people
         when (_binding) {
             is ItemPeopleDiscoverBinding -> displayPeopleDiscover(_binding)

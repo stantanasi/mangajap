@@ -59,8 +59,8 @@ class AgendaViewModel : ViewModel() {
             when {
                 mangaResponse is JsonApiResponse.Success &&
                         animeResponse is JsonApiResponse.Success -> State.SuccessLoading(
-                        mangaResponse.body.data!!.map { it.apply { itemType = AppAdapter.Type.MANGA_ENTRY_TO_READ } },
-                        animeResponse.body.data!!.map { it.apply { itemType = AppAdapter.Type.ANIME_ENTRY_TO_WATCH } }
+                        mangaResponse.body.data!!.map { it.apply { itemType = AppAdapter.Type.MANGA_ENTRY_TO_READ_ITEM } },
+                        animeResponse.body.data!!.map { it.apply { itemType = AppAdapter.Type.ANIME_ENTRY_TO_WATCH_ITEM } }
                 )
 
                 mangaResponse is JsonApiResponse.Error -> State.FailedLoading(mangaResponse)

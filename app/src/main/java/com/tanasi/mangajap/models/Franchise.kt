@@ -40,7 +40,7 @@ class Franchise(
     }
 
 
-    override var itemType: AppAdapter.Type = AppAdapter.Type.FRANCHISE
+    override var itemType: AppAdapter.Type = AppAdapter.Type.FRANCHISE_ITEM
 
     fun copy(
         id: String = this.id,

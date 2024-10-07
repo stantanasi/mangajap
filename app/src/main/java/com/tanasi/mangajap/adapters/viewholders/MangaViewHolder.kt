@@ -51,7 +51,7 @@ class MangaViewHolder(
 
     private lateinit var manga: Manga
 
-    fun setVhManga(manga: Manga) {
+    fun bind(manga: Manga) {
         this.manga = manga
         when (_binding) {
             is ItemMediaSearchBinding -> displaySearch(_binding)

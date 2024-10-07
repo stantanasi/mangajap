@@ -356,14 +356,14 @@ class ProfileFragment : Fragment() {
             ProfileTab.Manga -> ProfileTab.Manga.let { tab ->
                 tab.statsList.apply {
                     clear()
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PREVIEW_MANGA_FOLLOWED })
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PREVIEW_MANGA_VOLUMES })
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PREVIEW_MANGA_CHAPTERS })
+                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_MANGA_FOLLOWED_ITEM })
+                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_MANGA_VOLUMES_ITEM })
+                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_MANGA_CHAPTERS_ITEM })
                 }
                 tab.libraryList.apply {
                     clear()
                     addAll(user.mangaLibrary)
-                    addOrLast(2, Ad().also { it.itemType = AppAdapter.Type.AD_PROFILE })
+                    addOrLast(2, Ad().also { it.itemType = AppAdapter.Type.AD_PROFILE_ITEM })
                 }
                 tab.favoritesList.apply {
                     clear()
@@ -373,14 +373,14 @@ class ProfileFragment : Fragment() {
             ProfileTab.Anime -> ProfileTab.Anime.let { tab ->
                 tab.statsList.apply {
                     clear()
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PREVIEW_ANIME_FOLLOWED })
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PREVIEW_ANIME_TIME_SPENT })
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PREVIEW_ANIME_EPISODES })
+                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_ANIME_FOLLOWED_ITEM })
+                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_ANIME_TIME_SPENT_ITEM })
+                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_ANIME_EPISODES_ITEM })
                 }
                 tab.libraryList.apply {
                     clear()
                     addAll(user.animeLibrary)
-                    addOrLast(2, Ad().also { it.itemType = AppAdapter.Type.AD_PROFILE })
+                    addOrLast(2, Ad().also { it.itemType = AppAdapter.Type.AD_PROFILE_ITEM })
                 }
                 tab.favoritesList.apply {
                     clear()
@@ -422,8 +422,8 @@ class ProfileFragment : Fragment() {
                 }
                 for (item in currentTab.libraryList) {
                     when (item) {
-                        is MangaEntry -> item.itemType = AppAdapter.Type.MANGA_ENTRY_PREVIEW
-                        is AnimeEntry -> item.itemType = AppAdapter.Type.ANIME_ENTRY_PREVIEW
+                        is MangaEntry -> item.itemType = AppAdapter.Type.MANGA_ENTRY_PROFILE_ITEM
+                        is AnimeEntry -> item.itemType = AppAdapter.Type.ANIME_ENTRY_PROFILE_ITEM
                     }
                 }
                 adapter = AppAdapter(currentTab.libraryList)
@@ -460,8 +460,8 @@ class ProfileFragment : Fragment() {
                 }
                 for (item in currentTab.favoritesList) {
                     when (item) {
-                        is MangaEntry -> item.itemType = AppAdapter.Type.MANGA_ENTRY_PREVIEW
-                        is AnimeEntry -> item.itemType = AppAdapter.Type.ANIME_ENTRY_PREVIEW
+                        is MangaEntry -> item.itemType = AppAdapter.Type.MANGA_ENTRY_PROFILE_ITEM
+                        is AnimeEntry -> item.itemType = AppAdapter.Type.ANIME_ENTRY_PROFILE_ITEM
                     }
                 }
                 adapter = AppAdapter(currentTab.favoritesList)

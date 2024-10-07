@@ -65,7 +65,7 @@ class DiscoverFragment : Fragment() {
                     peopleList.apply {
                         clear()
                         addAll(state.peopleList)
-                        addOrLast(1, Ad().also { it.itemType = AppAdapter.Type.AD_DISCOVER })
+                        addOrLast(1, Ad().also { it.itemType = AppAdapter.Type.AD_DISCOVER_ITEM })
                     }
                     mangaRecentList.apply {
                         clear()

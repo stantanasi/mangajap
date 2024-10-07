@@ -52,7 +52,7 @@ class AnimeViewHolder(
     private val context: Context = itemView.context
     private lateinit var anime: Anime
 
-    fun setVhAnime(anime: Anime) {
+    fun bind(anime: Anime) {
         this.anime = anime
         when (_binding) {
             is ItemMediaSearchBinding -> displaySearch(_binding)

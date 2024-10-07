@@ -127,7 +127,7 @@ class PeopleFragment : Fragment() {
             people.mangaStaff
                     .sortedByDescending { it.manga?.startDate }
                     .map {staff ->
-                        add(staff.also { it.itemType = AppAdapter.Type.STAFF_PEOPLE })
+                        add(staff.also { it.itemType = AppAdapter.Type.STAFF_ITEM })
                     }
         }
 
@@ -143,7 +143,7 @@ class PeopleFragment : Fragment() {
             people.animeStaff
                     .sortedByDescending { it.anime?.startDate }
                     .map {staff ->
-                        add(staff.also { it.itemType = AppAdapter.Type.STAFF_PEOPLE })
+                        add(staff.also { it.itemType = AppAdapter.Type.STAFF_ITEM })
                     }
         }
 

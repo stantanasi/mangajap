@@ -11,7 +11,7 @@ import com.tanasi.mangajap.adapters.viewholders.EpisodeViewHolder
 import com.tanasi.mangajap.adapters.viewholders.FollowViewHolder
 import com.tanasi.mangajap.adapters.viewholders.FranchiseViewHolder
 import com.tanasi.mangajap.adapters.viewholders.HeaderViewHolder
-import com.tanasi.mangajap.adapters.viewholders.LoadMoreViewHolder
+import com.tanasi.mangajap.adapters.viewholders.LoadingViewHolder
 import com.tanasi.mangajap.adapters.viewholders.MangaEntryViewHolder
 import com.tanasi.mangajap.adapters.viewholders.MangaViewHolder
 import com.tanasi.mangajap.adapters.viewholders.PeopleViewHolder
@@ -89,63 +89,69 @@ class AppAdapter(
     }
 
     enum class Type {
-        AD_DISCOVER,
-        AD_PROFILE,
-        AD_SEARCH,
+        AD_DISCOVER_ITEM,
+        AD_PROFILE_ITEM,
+        AD_SEARCH_ITEM,
 
-        ANIME_SEARCH,
-        ANIME_SEARCH_ADD,
-        ANIME_DISCOVER,
+        ANIME_SEARCH_ITEM,
+        ANIME_SEARCH_ADD_ITEM,
+        ANIME_DISCOVER_ITEM,
 
-        ANIME_HEADER,
+        ANIME,
         ANIME_SUMMARY,
         ANIME_PROGRESSION,
         ANIME_REVIEWS,
         ANIME_FRANCHISES,
 
-        ANIME_ENTRY_LIBRARY,
-        ANIME_ENTRY_PREVIEW,
-        ANIME_ENTRY_TO_WATCH,
+        ANIME_ENTRY_LIBRARY_ITEM,
+        ANIME_ENTRY_PROFILE_ITEM,
+        ANIME_ENTRY_TO_WATCH_ITEM,
 
-        FRANCHISE,
+        EPISODE_ITEM,
 
-        MANGA_SEARCH,
-        MANGA_SEARCH_ADD,
-        MANGA_DISCOVER,
+        FOLLOWER_ITEM,
+        FOLLOWING_ITEM,
 
-        MANGA_HEADER,
-        MANGA_HEADER_SUMMARY,
-        MANGA_HEADER_PROGRESSION,
-        MANGA_HEADER_REVIEWS,
-        MANGA_HEADER_FRANCHISES,
+        FRANCHISE_ITEM,
 
-        MANGA_ENTRY_LIBRARY,
-        MANGA_ENTRY_PREVIEW,
-        MANGA_ENTRY_TO_READ,
+        LIBRARY_STATUS_HEADER,
+        LOADING_ITEM,
 
-        VOLUME_MANGA,
-        VOLUME_MANGA_DETAILS,
+        MANGA_SEARCH_ITEM,
+        MANGA_SEARCH_ADD_ITEM,
+        MANGA_DISCOVER_ITEM,
 
-        EPISODE_ANIME,
-        SEASON_ANIME,
-        SEASON_ANIME_HEADER,
-        USER,
-        FOLLOWERS,
-        FOLLOWING,
-        PEOPLE_DISCOVER,
-        STAFF_PEOPLE,
+        MANGA,
+        MANGA_SUMMARY,
+        MANGA_PROGRESSION,
+        MANGA_REVIEWS,
+        MANGA_FRANCHISES,
 
-        HEADER_LIBRARY_STATUS,
+        MANGA_ENTRY_LIBRARY_ITEM,
+        MANGA_ENTRY_PROFILE_ITEM,
+        MANGA_ENTRY_TO_READ_ITEM,
 
-        LOAD_MORE,
-        REVIEW,
+        PEOPLE_DISCOVER_ITEM,
+
+        REVIEW_ITEM,
         REVIEW_HEADER,
-        STATS_PREVIEW_MANGA_FOLLOWED,
-        STATS_PREVIEW_MANGA_VOLUMES,
-        STATS_PREVIEW_MANGA_CHAPTERS,
-        STATS_PREVIEW_ANIME_FOLLOWED,
-        STATS_PREVIEW_ANIME_TIME_SPENT,
-        STATS_PREVIEW_ANIME_EPISODES,
+
+        SEASON_ITEM,
+        SEASON_ANIME_HEADER,
+
+        STAFF_ITEM,
+
+        STATS_PROFILE_MANGA_FOLLOWED_ITEM,
+        STATS_PROFILE_MANGA_VOLUMES_ITEM,
+        STATS_PROFILE_MANGA_CHAPTERS_ITEM,
+        STATS_PROFILE_ANIME_FOLLOWED_ITEM,
+        STATS_PROFILE_ANIME_TIME_SPENT_ITEM,
+        STATS_PROFILE_ANIME_EPISODES_ITEM,
+
+        USER_ITEM,
+
+        VOLUME_ITEM,
+        VOLUME_DETAILS_ITEM,
     }
 
     var isLoading = false
@@ -153,7 +159,7 @@ class AppAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (Type.entries[viewType]) {
-            Type.AD_DISCOVER -> AdViewHolder(
+            Type.AD_DISCOVER_ITEM -> AdViewHolder(
                 ItemAdDiscoverBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -161,7 +167,7 @@ class AppAdapter(
                 )
             )
 
-            Type.AD_PROFILE -> AdViewHolder(
+            Type.AD_PROFILE_ITEM -> AdViewHolder(
                 ItemAdProfileBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -169,7 +175,7 @@ class AppAdapter(
                 )
             )
 
-            Type.AD_SEARCH -> AdViewHolder(
+            Type.AD_SEARCH_ITEM -> AdViewHolder(
                 ItemAdSearchBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -177,7 +183,7 @@ class AppAdapter(
                 )
             )
 
-            Type.ANIME_SEARCH -> AnimeViewHolder(
+            Type.ANIME_SEARCH_ITEM -> AnimeViewHolder(
                 ItemMediaSearchBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -185,7 +191,7 @@ class AppAdapter(
                 )
             )
 
-            Type.ANIME_SEARCH_ADD -> AnimeViewHolder(
+            Type.ANIME_SEARCH_ADD_ITEM -> AnimeViewHolder(
                 ItemMediaSearchAddBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -193,7 +199,7 @@ class AppAdapter(
                 )
             )
 
-            Type.ANIME_HEADER -> AnimeViewHolder(
+            Type.ANIME -> AnimeViewHolder(
                 ItemAnimeHeaderBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -233,7 +239,7 @@ class AppAdapter(
                 )
             )
 
-            Type.ANIME_DISCOVER -> AnimeViewHolder(
+            Type.ANIME_DISCOVER_ITEM -> AnimeViewHolder(
                 ItemMediaDiscoverBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -241,7 +247,7 @@ class AppAdapter(
                 )
             )
 
-            Type.ANIME_ENTRY_LIBRARY -> AnimeEntryViewHolder(
+            Type.ANIME_ENTRY_LIBRARY_ITEM -> AnimeEntryViewHolder(
                 ItemMediaLibraryBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -249,7 +255,7 @@ class AppAdapter(
                 )
             )
 
-            Type.ANIME_ENTRY_PREVIEW -> AnimeEntryViewHolder(
+            Type.ANIME_ENTRY_PROFILE_ITEM -> AnimeEntryViewHolder(
                 ItemMediaProfilePreviewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -265,7 +271,7 @@ class AppAdapter(
                 )
             )
 
-            Type.SEASON_ANIME -> SeasonViewHolder(
+            Type.SEASON_ITEM -> SeasonViewHolder(
                 ItemSeasonAnimeBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -273,7 +279,7 @@ class AppAdapter(
                 )
             )
 
-            Type.EPISODE_ANIME -> EpisodeViewHolder(
+            Type.EPISODE_ITEM -> EpisodeViewHolder(
                 ItemEpisodeAnimeBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -281,7 +287,7 @@ class AppAdapter(
                 )
             )
 
-            Type.FRANCHISE -> FranchiseViewHolder(
+            Type.FRANCHISE_ITEM -> FranchiseViewHolder(
                 ItemFranchiseBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -289,7 +295,7 @@ class AppAdapter(
                 )
             )
 
-            Type.MANGA_SEARCH -> MangaViewHolder(
+            Type.MANGA_SEARCH_ITEM -> MangaViewHolder(
                 ItemMediaSearchBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -297,7 +303,7 @@ class AppAdapter(
                 )
             )
 
-            Type.MANGA_SEARCH_ADD -> MangaViewHolder(
+            Type.MANGA_SEARCH_ADD_ITEM -> MangaViewHolder(
                 ItemMediaSearchAddBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -305,7 +311,7 @@ class AppAdapter(
                 )
             )
 
-            Type.MANGA_HEADER -> MangaViewHolder(
+            Type.MANGA -> MangaViewHolder(
                 ItemMangaHeaderBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -313,7 +319,7 @@ class AppAdapter(
                 )
             )
 
-            Type.MANGA_HEADER_SUMMARY -> MangaViewHolder(
+            Type.MANGA_SUMMARY -> MangaViewHolder(
                 ItemMangaSummaryBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -321,7 +327,7 @@ class AppAdapter(
                 )
             )
 
-            Type.MANGA_HEADER_PROGRESSION -> MangaViewHolder(
+            Type.MANGA_PROGRESSION -> MangaViewHolder(
                 ItemMangaProgressionBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -329,7 +335,7 @@ class AppAdapter(
                 )
             )
 
-            Type.MANGA_HEADER_REVIEWS -> MangaViewHolder(
+            Type.MANGA_REVIEWS -> MangaViewHolder(
                 ItemMangaReviewsBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -337,7 +343,7 @@ class AppAdapter(
                 )
             )
 
-            Type.MANGA_HEADER_FRANCHISES -> MangaViewHolder(
+            Type.MANGA_FRANCHISES -> MangaViewHolder(
                 ItemMangaFranchisesBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -345,7 +351,7 @@ class AppAdapter(
                 )
             )
 
-            Type.MANGA_DISCOVER -> MangaViewHolder(
+            Type.MANGA_DISCOVER_ITEM -> MangaViewHolder(
                 ItemMediaDiscoverBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -353,7 +359,7 @@ class AppAdapter(
                 )
             )
 
-            Type.MANGA_ENTRY_LIBRARY -> MangaEntryViewHolder(
+            Type.MANGA_ENTRY_LIBRARY_ITEM -> MangaEntryViewHolder(
                 ItemMediaLibraryBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -361,7 +367,7 @@ class AppAdapter(
                 )
             )
 
-            Type.MANGA_ENTRY_PREVIEW -> MangaEntryViewHolder(
+            Type.MANGA_ENTRY_PROFILE_ITEM -> MangaEntryViewHolder(
                 ItemMediaProfilePreviewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -377,7 +383,7 @@ class AppAdapter(
                 )
             )
 
-            Type.REVIEW -> ReviewViewHolder(
+            Type.REVIEW_ITEM -> ReviewViewHolder(
                 ItemReviewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -386,11 +392,11 @@ class AppAdapter(
             )
 
 
-            Type.STATS_PREVIEW_MANGA_FOLLOWED,
-            Type.STATS_PREVIEW_MANGA_VOLUMES,
-            Type.STATS_PREVIEW_MANGA_CHAPTERS,
-            Type.STATS_PREVIEW_ANIME_FOLLOWED,
-            Type.STATS_PREVIEW_ANIME_EPISODES -> UserStatsViewHolder(
+            Type.STATS_PROFILE_MANGA_FOLLOWED_ITEM,
+            Type.STATS_PROFILE_MANGA_VOLUMES_ITEM,
+            Type.STATS_PROFILE_MANGA_CHAPTERS_ITEM,
+            Type.STATS_PROFILE_ANIME_FOLLOWED_ITEM,
+            Type.STATS_PROFILE_ANIME_EPISODES_ITEM -> UserStatsViewHolder(
                 ItemStatsPreviewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -398,7 +404,7 @@ class AppAdapter(
                 )
             )
 
-            Type.STATS_PREVIEW_ANIME_TIME_SPENT -> UserStatsViewHolder(
+            Type.STATS_PROFILE_ANIME_TIME_SPENT_ITEM -> UserStatsViewHolder(
                 ItemStatsTimeSpentPreviewBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -406,7 +412,7 @@ class AppAdapter(
                 )
             )
 
-            Type.VOLUME_MANGA -> VolumeViewHolder(
+            Type.VOLUME_ITEM -> VolumeViewHolder(
                 ItemVolumeMangaBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -414,7 +420,7 @@ class AppAdapter(
                 )
             )
 
-            Type.VOLUME_MANGA_DETAILS -> VolumeViewHolder(
+            Type.VOLUME_DETAILS_ITEM -> VolumeViewHolder(
                 ItemVolumeMangaDetailsBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -422,7 +428,7 @@ class AppAdapter(
                 )
             )
 
-            Type.USER -> UserViewHolder(
+            Type.USER_ITEM -> UserViewHolder(
                 ItemUserBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -430,7 +436,7 @@ class AppAdapter(
                 )
             )
 
-            Type.FOLLOWERS -> FollowViewHolder(
+            Type.FOLLOWER_ITEM -> FollowViewHolder(
                 ItemFollowBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -438,7 +444,7 @@ class AppAdapter(
                 )
             )
 
-            Type.FOLLOWING -> FollowViewHolder(
+            Type.FOLLOWING_ITEM -> FollowViewHolder(
                 ItemFollowBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -446,7 +452,7 @@ class AppAdapter(
                 )
             )
 
-            Type.PEOPLE_DISCOVER -> PeopleViewHolder(
+            Type.PEOPLE_DISCOVER_ITEM -> PeopleViewHolder(
                 ItemPeopleDiscoverBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -454,7 +460,7 @@ class AppAdapter(
                 )
             )
 
-            Type.STAFF_PEOPLE -> StaffViewHolder(
+            Type.STAFF_ITEM -> StaffViewHolder(
                 ItemStaffPeopleBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -462,7 +468,7 @@ class AppAdapter(
                 )
             )
 
-            Type.LOAD_MORE -> LoadMoreViewHolder(
+            Type.LOADING_ITEM -> LoadingViewHolder(
                 ItemLoadMoreBinding.inflate(
                     LayoutInflater.from(
                         parent.context
@@ -470,7 +476,7 @@ class AppAdapter(
                 )
             )
 
-            Type.HEADER_LIBRARY_STATUS -> HeaderViewHolder(
+            Type.LIBRARY_STATUS_HEADER -> HeaderViewHolder(
                 ItemLibraryStatusBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -478,7 +484,7 @@ class AppAdapter(
                 )
             )
 
-            Type.ANIME_ENTRY_TO_WATCH -> AnimeEntryViewHolder(
+            Type.ANIME_ENTRY_TO_WATCH_ITEM -> AnimeEntryViewHolder(
                 ItemAgendaAnimeBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -486,7 +492,7 @@ class AppAdapter(
                 )
             )
 
-            Type.MANGA_ENTRY_TO_READ -> MangaEntryViewHolder(
+            Type.MANGA_ENTRY_TO_READ_ITEM -> MangaEntryViewHolder(
                 ItemAgendaMangaBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -502,22 +508,22 @@ class AppAdapter(
         }
 
         when (holder) {
-            is AdViewHolder -> holder.setVhAd(items[position] as Ad)
-            is AnimeViewHolder -> holder.setVhAnime(items[position] as Anime)
-            is AnimeEntryViewHolder -> holder.setVhAnimeEntry(items[position] as AnimeEntry)
-            is EpisodeViewHolder -> holder.setVhEpisode(items[position] as Episode)
-            is FollowViewHolder -> holder.setVhFollow(items[position] as Follow)
-            is FranchiseViewHolder -> holder.setVhFranchise(items[position] as Franchise)
-            is MangaViewHolder -> holder.setVhManga(items[position] as Manga)
-            is MangaEntryViewHolder -> holder.setVhMangaEntry(items[position] as MangaEntry)
-            is PeopleViewHolder -> holder.setVhPeople(items[position] as People)
-            is ReviewViewHolder -> holder.setVhReview(items[position] as Review)
-            is SeasonViewHolder -> holder.setVhSeason(items[position] as Season)
-            is StaffViewHolder -> holder.setVhStaff(items[position] as Staff)
-            is HeaderViewHolder -> holder.setVhStatusHeader(items[position] as Header)
-            is UserViewHolder -> holder.setVhUser(items[position] as User)
-            is UserStatsViewHolder -> holder.setVhUserStats(items[position] as User.Stats)
-            is VolumeViewHolder -> holder.setVhVolume(items[position] as Volume)
+            is AdViewHolder -> holder.bind(items[position] as Ad)
+            is AnimeViewHolder -> holder.bind(items[position] as Anime)
+            is AnimeEntryViewHolder -> holder.bind(items[position] as AnimeEntry)
+            is EpisodeViewHolder -> holder.bind(items[position] as Episode)
+            is FollowViewHolder -> holder.bind(items[position] as Follow)
+            is FranchiseViewHolder -> holder.bind(items[position] as Franchise)
+            is HeaderViewHolder -> holder.bind(items[position] as Header)
+            is MangaViewHolder -> holder.bind(items[position] as Manga)
+            is MangaEntryViewHolder -> holder.bind(items[position] as MangaEntry)
+            is PeopleViewHolder -> holder.bind(items[position] as People)
+            is ReviewViewHolder -> holder.bind(items[position] as Review)
+            is SeasonViewHolder -> holder.bind(items[position] as Season)
+            is StaffViewHolder -> holder.bind(items[position] as Staff)
+            is UserViewHolder -> holder.bind(items[position] as User)
+            is UserStatsViewHolder -> holder.bind(items[position] as User.Stats)
+            is VolumeViewHolder -> holder.bind(items[position] as Volume)
         }
     }
 
@@ -527,7 +533,7 @@ class AppAdapter(
     }
 
     override fun getItemViewType(position: Int): Int = items.getOrNull(position)?.itemType?.ordinal
-        ?: Type.LOAD_MORE.ordinal
+        ?: Type.LOADING_ITEM.ordinal
 
 
     fun submitList(list: List<Item>) {
