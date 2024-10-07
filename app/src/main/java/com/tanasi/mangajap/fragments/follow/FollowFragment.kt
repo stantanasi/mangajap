@@ -37,7 +37,6 @@ class FollowFragment : Fragment() {
     private lateinit var followType: FollowType
 
     private val followsList: MutableList<AppAdapter.Item> = mutableListOf()
-    private val loadMore: LoadMore = LoadMore()
     private val adapter: AppAdapter = AppAdapter(followsList)
 
     private lateinit var nextLink: String
@@ -71,10 +70,8 @@ class FollowFragment : Fragment() {
                     followsList.apply {
                         clear()
                         addAll(state.followList)
-                        add(loadMore)
                     }
                     nextLink = state.nextLink
-                    loadMore.isMoreDataAvailable = nextLink != ""
                     displayFollows()
                     binding.isLoading.root.visibility = View.GONE
                 }
@@ -94,16 +91,12 @@ class FollowFragment : Fragment() {
                     ).show()
                 }
 
-                FollowViewModel.State.LoadingMore -> loadMore.isLoading = true
+                FollowViewModel.State.LoadingMore -> adapter.isLoading = true
                 is FollowViewModel.State.SuccessLoadingMore -> {
                     followsList.apply {
                         addAll(state.followList)
-                        remove(loadMore)
-                        add(loadMore)
                     }
                     nextLink = state.nextLink
-                    loadMore.isMoreDataAvailable = nextLink != ""
-                    loadMore.isLoading = false
                     adapter.notifyDataSetChanged()
                 }
                 is FollowViewModel.State.FailedLoadingMore -> when (state.error) {
@@ -146,6 +139,9 @@ class FollowFragment : Fragment() {
 
         binding.rvFollow.apply {
             if (followsList.none { it !is LoadMore } || followsList.isEmpty()) {
+                adapter = this@FollowFragment.adapter.also { adapter ->
+                    adapter.setOnLoadMoreListener(null)
+                }
                 visibility = View.GONE
             } else {
                 visibility = View.VISIBLE

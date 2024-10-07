@@ -474,7 +474,9 @@ class AnimeViewHolder(
 
     private fun displayFranchises(binding: ItemAnimeFranchisesBinding) {
         binding.rvAnimeFranchises.apply {
-            adapter = AppAdapter(anime.franchises)
+            adapter = AppAdapter().apply {
+                submitList(anime.franchises)
+            }
             addItemDecoration(SpacingItemDecoration(
                 spacing = (resources.getDimension(R.dimen.anime_spacing) * 0.5).toInt()
             ))

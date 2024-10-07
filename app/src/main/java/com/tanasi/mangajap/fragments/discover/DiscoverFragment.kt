@@ -30,9 +30,15 @@ class DiscoverFragment : Fragment() {
     private val mangaRecentList: MutableList<Manga> = mutableListOf()
     private val animeRecentList: MutableList<Anime> = mutableListOf()
 
-    private val peopleAdapter: AppAdapter = AppAdapter(peopleList)
-    private val mangaRecentAdapter: AppAdapter = AppAdapter(mangaRecentList)
-    private val animeRecentAdapter: AppAdapter = AppAdapter(animeRecentList)
+    private val peopleAdapter: AppAdapter = AppAdapter().apply {
+        submitList(peopleList)
+    }
+    private val mangaRecentAdapter: AppAdapter = AppAdapter().apply {
+        submitList(mangaRecentList)
+    }
+    private val animeRecentAdapter: AppAdapter = AppAdapter().apply {
+        submitList(animeRecentList)
+    }
 
     private val snapHelper: LinearSnapHelper = LinearSnapHelper()
 

@@ -115,7 +115,9 @@ class ReviewsFragment : Fragment() {
         }
 
         binding.rvReviews.apply {
-            adapter = AppAdapter(reviewsList)
+            adapter = AppAdapter().apply {
+                submitList(reviewsList)
+            }
             addItemDecoration(SpacingItemDecoration(
                 spacing = resources.getDimension(R.dimen.reviews_spacing).toInt()
             ))

@@ -496,7 +496,9 @@ class MangaViewHolder(
 
     private fun displayFranchises(binding: ItemMangaFranchisesBinding) {
         binding.rvMangaFranchises.apply {
-            adapter = AppAdapter(manga.franchises)
+            adapter = AppAdapter().apply {
+                submitList(manga.franchises)
+            }
             addItemDecoration(SpacingItemDecoration(
                 spacing = (resources.getDimension(R.dimen.manga_spacing) * 0.5).toInt()
             ))

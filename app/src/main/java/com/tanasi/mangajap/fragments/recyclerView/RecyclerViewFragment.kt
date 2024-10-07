@@ -58,7 +58,9 @@ open class RecyclerViewFragment : Fragment() {
 //        }
 
         if (this::list.isInitialized && this::rvLayoutManager.isInitialized) {
-            adapter = AppAdapter(list)
+            adapter = AppAdapter().apply {
+                submitList(list)
+            }
 
             displayList()
 

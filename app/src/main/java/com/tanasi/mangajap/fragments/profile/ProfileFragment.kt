@@ -392,7 +392,9 @@ class ProfileFragment : Fragment() {
 
 
         binding.rvProfileUserStats.apply {
-            adapter = AppAdapter(currentTab.statsList)
+            adapter = AppAdapter().apply {
+                submitList(currentTab.statsList)
+            }
         }
 
 

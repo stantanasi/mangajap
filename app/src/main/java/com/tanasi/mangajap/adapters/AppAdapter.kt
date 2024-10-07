@@ -4,12 +4,84 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tanasi.mangajap.adapters.viewholders.*
-import com.tanasi.mangajap.databinding.*
-import com.tanasi.mangajap.models.*
+import com.tanasi.mangajap.adapters.viewholders.AdViewHolder
+import com.tanasi.mangajap.adapters.viewholders.AnimeEntryViewHolder
+import com.tanasi.mangajap.adapters.viewholders.AnimeViewHolder
+import com.tanasi.mangajap.adapters.viewholders.EpisodeViewHolder
+import com.tanasi.mangajap.adapters.viewholders.FollowViewHolder
+import com.tanasi.mangajap.adapters.viewholders.FranchiseViewHolder
+import com.tanasi.mangajap.adapters.viewholders.HeaderViewHolder
+import com.tanasi.mangajap.adapters.viewholders.LoadMoreViewHolder
+import com.tanasi.mangajap.adapters.viewholders.MangaEntryViewHolder
+import com.tanasi.mangajap.adapters.viewholders.MangaViewHolder
+import com.tanasi.mangajap.adapters.viewholders.PeopleViewHolder
+import com.tanasi.mangajap.adapters.viewholders.ReviewViewHolder
+import com.tanasi.mangajap.adapters.viewholders.SeasonViewHolder
+import com.tanasi.mangajap.adapters.viewholders.StaffViewHolder
+import com.tanasi.mangajap.adapters.viewholders.UserStatsViewHolder
+import com.tanasi.mangajap.adapters.viewholders.UserViewHolder
+import com.tanasi.mangajap.adapters.viewholders.VolumeViewHolder
+import com.tanasi.mangajap.databinding.ItemAdDiscoverBinding
+import com.tanasi.mangajap.databinding.ItemAdProfileBinding
+import com.tanasi.mangajap.databinding.ItemAdSearchBinding
+import com.tanasi.mangajap.databinding.ItemAgendaAnimeBinding
+import com.tanasi.mangajap.databinding.ItemAgendaMangaBinding
+import com.tanasi.mangajap.databinding.ItemAnimeFranchisesBinding
+import com.tanasi.mangajap.databinding.ItemAnimeHeaderBinding
+import com.tanasi.mangajap.databinding.ItemAnimeProgressionBinding
+import com.tanasi.mangajap.databinding.ItemAnimeReviewsBinding
+import com.tanasi.mangajap.databinding.ItemAnimeSummaryBinding
+import com.tanasi.mangajap.databinding.ItemEpisodeAnimeBinding
+import com.tanasi.mangajap.databinding.ItemFollowBinding
+import com.tanasi.mangajap.databinding.ItemFranchiseBinding
+import com.tanasi.mangajap.databinding.ItemLibraryStatusBinding
+import com.tanasi.mangajap.databinding.ItemLoadMoreBinding
+import com.tanasi.mangajap.databinding.ItemMangaFranchisesBinding
+import com.tanasi.mangajap.databinding.ItemMangaHeaderBinding
+import com.tanasi.mangajap.databinding.ItemMangaProgressionBinding
+import com.tanasi.mangajap.databinding.ItemMangaReviewsBinding
+import com.tanasi.mangajap.databinding.ItemMangaSummaryBinding
+import com.tanasi.mangajap.databinding.ItemMediaDiscoverBinding
+import com.tanasi.mangajap.databinding.ItemMediaLibraryBinding
+import com.tanasi.mangajap.databinding.ItemMediaProfilePreviewBinding
+import com.tanasi.mangajap.databinding.ItemMediaSearchAddBinding
+import com.tanasi.mangajap.databinding.ItemMediaSearchBinding
+import com.tanasi.mangajap.databinding.ItemPeopleDiscoverBinding
+import com.tanasi.mangajap.databinding.ItemReviewBinding
+import com.tanasi.mangajap.databinding.ItemReviewHeaderBinding
+import com.tanasi.mangajap.databinding.ItemSeasonAnimeBinding
+import com.tanasi.mangajap.databinding.ItemSeasonAnimeHeaderBinding
+import com.tanasi.mangajap.databinding.ItemStaffPeopleBinding
+import com.tanasi.mangajap.databinding.ItemStatsPreviewBinding
+import com.tanasi.mangajap.databinding.ItemStatsTimeSpentPreviewBinding
+import com.tanasi.mangajap.databinding.ItemUserBinding
+import com.tanasi.mangajap.databinding.ItemVolumeMangaBinding
+import com.tanasi.mangajap.databinding.ItemVolumeMangaDetailsBinding
+import com.tanasi.mangajap.models.Ad
+import com.tanasi.mangajap.models.Anime
+import com.tanasi.mangajap.models.AnimeEntry
+import com.tanasi.mangajap.models.Chapter
+import com.tanasi.mangajap.models.ChapterEntry
+import com.tanasi.mangajap.models.Episode
+import com.tanasi.mangajap.models.EpisodeEntry
+import com.tanasi.mangajap.models.Follow
+import com.tanasi.mangajap.models.Franchise
+import com.tanasi.mangajap.models.Genre
+import com.tanasi.mangajap.models.Header
+import com.tanasi.mangajap.models.Manga
+import com.tanasi.mangajap.models.MangaEntry
+import com.tanasi.mangajap.models.People
+import com.tanasi.mangajap.models.Request
+import com.tanasi.mangajap.models.Review
+import com.tanasi.mangajap.models.Season
+import com.tanasi.mangajap.models.Staff
+import com.tanasi.mangajap.models.Theme
+import com.tanasi.mangajap.models.User
+import com.tanasi.mangajap.models.Volume
+import com.tanasi.mangajap.models.VolumeEntry
 
 class AppAdapter(
-    private val items: MutableList<Item>,
+    private val items: MutableList<Item> = mutableListOf(),
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface Item {
@@ -76,6 +148,7 @@ class AppAdapter(
         STATS_PREVIEW_ANIME_EPISODES,
     }
 
+    var isLoading = false
     private var onLoadMoreListener: (() -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -423,15 +496,9 @@ class AppAdapter(
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        onLoadMoreListener?.let { onLoadMoreListener ->
-            when (val loadMore = items.last()) {
-                is LoadMore -> {
-                    if (position >= itemCount - 3 && !loadMore.isLoading && loadMore.isMoreDataAvailable) {
-                        onLoadMoreListener()
-                        loadMore.isLoading = true
-                    }
-                }
-            }
+        if (position >= itemCount - 5 && !isLoading) {
+            onLoadMoreListener?.invoke()
+            isLoading = true
         }
 
         when (holder) {
@@ -441,7 +508,6 @@ class AppAdapter(
             is EpisodeViewHolder -> holder.setVhEpisode(items[position] as Episode)
             is FollowViewHolder -> holder.setVhFollow(items[position] as Follow)
             is FranchiseViewHolder -> holder.setVhFranchise(items[position] as Franchise)
-            is LoadMoreViewHolder -> holder.setLoadMore(items[position] as LoadMore)
             is MangaViewHolder -> holder.setVhManga(items[position] as Manga)
             is MangaEntryViewHolder -> holder.setVhMangaEntry(items[position] as MangaEntry)
             is PeopleViewHolder -> holder.setVhPeople(items[position] as People)
@@ -455,9 +521,13 @@ class AppAdapter(
         }
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = items.size + when {
+        onLoadMoreListener != null -> 1
+        else -> 0
+    }
 
-    override fun getItemViewType(position: Int): Int = items[position].itemType.ordinal
+    override fun getItemViewType(position: Int): Int = items.getOrNull(position)?.itemType?.ordinal
+        ?: Type.LOAD_MORE.ordinal
 
 
     fun submitList(list: List<Item>) {
@@ -481,7 +551,6 @@ class AppAdapter(
                     oldItem is Franchise && newItem is Franchise -> oldItem.id == newItem.id
                     oldItem is Genre && newItem is Genre -> oldItem.id == newItem.id
                     oldItem is Header && newItem is Header -> oldItem.title == newItem.title
-                    oldItem is LoadMore && newItem is LoadMore -> oldItem == newItem
                     oldItem is Manga && newItem is Manga -> oldItem.id == newItem.id
                     oldItem is MangaEntry && newItem is MangaEntry -> oldItem.id == newItem.id
                     oldItem is People && newItem is People -> oldItem.id == newItem.id
@@ -509,7 +578,12 @@ class AppAdapter(
         result.dispatchUpdatesTo(this)
     }
 
-    fun setOnLoadMoreListener(onLoadMoreListener: () -> Unit) {
-        this.onLoadMoreListener = onLoadMoreListener
+    fun setOnLoadMoreListener(onLoadMoreListener: (() -> Unit)?) {
+        if (this.onLoadMoreListener != null && onLoadMoreListener == null) {
+            this.onLoadMoreListener = null
+            notifyItemRemoved(items.size)
+        } else {
+            this.onLoadMoreListener = onLoadMoreListener
+        }
     }
 }
