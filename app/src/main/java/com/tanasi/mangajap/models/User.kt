@@ -107,7 +107,7 @@ class User(
         override fun toString(): String = this.original
     }
 
-    class Stats(
+    data class Stats(
         val user: User
     ) : AppAdapter.Item {
         override lateinit var itemType: AppAdapter.Type

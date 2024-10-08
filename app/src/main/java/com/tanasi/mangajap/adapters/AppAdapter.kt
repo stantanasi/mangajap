@@ -566,6 +566,7 @@ class AppAdapter(
                     oldItem is Staff && newItem is Staff -> oldItem.id == newItem.id
                     oldItem is Theme && newItem is Theme -> oldItem.id == newItem.id
                     oldItem is User && newItem is User -> oldItem.id == newItem.id
+                    oldItem is User.Stats && newItem is User.Stats -> oldItem == newItem
                     oldItem is Volume && newItem is Volume -> oldItem.id == newItem.id
                     oldItem is VolumeEntry && newItem is VolumeEntry -> oldItem.id == newItem.id
                     else -> false
