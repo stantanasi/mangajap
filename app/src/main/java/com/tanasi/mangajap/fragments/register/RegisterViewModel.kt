@@ -6,15 +6,13 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.models.User
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class RegisterViewModel : ViewModel() {
-
-    private val mangaJapApiService = MangaJapApiService.build()
 
     private val _state = MutableStateFlow<State?>(null)
     val state: Flow<State?> = _state
@@ -38,7 +36,7 @@ class RegisterViewModel : ViewModel() {
             }
             val user = result?.user!!
 
-            val response = mangaJapApiService.createUser(User(
+            val response = MangaJapApi.Users.create(User(
                 id = user.uid
             ).also {
                 it.pseudo = pseudo

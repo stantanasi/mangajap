@@ -2,10 +2,9 @@ package com.tanasi.mangajap.fragments.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.models.User
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,17 +13,16 @@ import kotlinx.coroutines.launch
 
 class SearchUsersViewModel : ViewModel() {
 
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
-
     private val _state = MutableStateFlow<State>(State.Loading)
     val state: Flow<State> = _state
 
     private var query = ""
+    private var page = 0
 
     sealed class State {
         data object Loading : State()
         data object LoadingMore : State()
-        data class SuccessLoading(val userList: List<User>, val nextLink: String) : State()
+        data class SuccessLoading(val userList: List<User>, val hasMore: Boolean) : State()
         data class FailedLoading(val error: JsonApiResponse.Error) : State()
     }
 
@@ -37,22 +35,27 @@ class SearchUsersViewModel : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getUsers(
-                JsonApiParams(
-                    sort = listOf("-followersCount"),
-                    limit = 15,
-                    filter = mapOf("query" to listOf(query))
-                )
+            if (query.isEmpty()) {
+                page = 0
+                _state.emit(State.SuccessLoading(userList = listOf(), hasMore = false))
+                return@launch
+            }
+
+            val response = MangaJapApi.Users.list(
+                sort = listOf("-followersCount"),
+                limit = 15,
+                filter = mapOf("query" to listOf(query))
             )
 
             this@SearchUsersViewModel.query = query
+            page = 0
 
             when (response) {
                 is JsonApiResponse.Success -> {
                     _state.emit(
                         State.SuccessLoading(
                             userList = response.body.data!!,
-                            nextLink = response.body.links?.next ?: ""
+                            hasMore = response.body.links?.next != null
                         )
                     )
                 }
@@ -66,22 +69,27 @@ class SearchUsersViewModel : ViewModel() {
         }
     }
 
-    fun loadMore(nextLink: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun loadMore() = viewModelScope.launch(Dispatchers.IO) {
         val currentState = _state.first()
         if (currentState is State.SuccessLoading) {
             _state.emit(State.LoadingMore)
 
             try {
-                val response = mangaJapApiService.loadMoreUser(
-                    nextLink
+                val response = MangaJapApi.Users.list(
+                    sort = listOf("-followersCount"),
+                    limit = 15,
+                    offset = 15 * (page + 1),
+                    filter = mapOf("query" to listOf(query))
                 )
+
+                page += 1
 
                 when (response) {
                     is JsonApiResponse.Success -> {
                         _state.emit(
                             State.SuccessLoading(
                                 userList = currentState.userList + response.body.data!!,
-                                nextLink = response.body.links?.next ?: ""
+                                hasMore = response.body.links?.next != null
                             )
                         )
                     }

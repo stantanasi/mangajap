@@ -5,19 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.models.AnimeEntry
-import com.tanasi.mangajap.models.MangaEntry
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class AgendaAnimeViewModel : ViewModel() {
-
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     val state: Flow<State> = _state
@@ -37,15 +33,13 @@ class AgendaAnimeViewModel : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getUserAnimeLibrary(
+            val response = MangaJapApi.Users.animeLibrary(
                 userId,
-                JsonApiParams(
-                    include = listOf("anime"),
-                    sort = listOf("-updatedAt"),
-                    limit = 500,
-                    filter = mapOf(
-                        "status" to listOf("watching")
-                    )
+                include = listOf("anime"),
+                sort = listOf("-updatedAt"),
+                limit = 500,
+                filter = mapOf(
+                    "status" to listOf("watching")
                 )
             )
 

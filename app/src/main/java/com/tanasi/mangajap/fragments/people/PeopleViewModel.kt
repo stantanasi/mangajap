@@ -2,21 +2,18 @@ package com.tanasi.mangajap.fragments.people
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.jsonapi.extensions.jsonApiName
 import com.tanasi.jsonapi.extensions.jsonApiType
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.People
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class PeopleViewModel(id: String) : ViewModel() {
-
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
     private val _state = MutableStateFlow<State>(State.Loading)
     val state: Flow<State> = _state
@@ -36,22 +33,20 @@ class PeopleViewModel(id: String) : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getPeople(
+            val response = MangaJapApi.Peoples.details(
                 id,
-                JsonApiParams(
-                    include = listOf("manga-staff.manga", "anime-staff.anime"),
-                    fields = mapOf(
-                        Manga::class.jsonApiType to listOf(
-                            Manga::title.jsonApiName(Manga::class),
-                            Manga::coverImage.jsonApiName(Manga::class),
-                            Manga::startDate.jsonApiName(Manga::class),
-                        ),
-                        Anime::class.jsonApiType to listOf(
-                            Anime::title.jsonApiName(Anime::class),
-                            Anime::coverImage.jsonApiName(Anime::class),
-                            Anime::startDate.jsonApiName(Anime::class),
-                        ),
-                    )
+                include = listOf("manga-staff.manga", "anime-staff.anime"),
+                fields = mapOf(
+                    Manga::class.jsonApiType to listOf(
+                        Manga::title.jsonApiName(Manga::class),
+                        Manga::coverImage.jsonApiName(Manga::class),
+                        Manga::startDate.jsonApiName(Manga::class),
+                    ),
+                    Anime::class.jsonApiType to listOf(
+                        Anime::title.jsonApiName(Anime::class),
+                        Anime::coverImage.jsonApiName(Anime::class),
+                        Anime::startDate.jsonApiName(Anime::class),
+                    ),
                 )
             )
 

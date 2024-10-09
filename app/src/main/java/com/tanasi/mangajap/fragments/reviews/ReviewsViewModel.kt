@@ -2,18 +2,15 @@ package com.tanasi.mangajap.fragments.reviews
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.fragments.reviews.ReviewsFragment.ReviewsType
 import com.tanasi.mangajap.models.Review
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class ReviewsViewModel(mediaType: ReviewsType, mediaId: String) : ViewModel() {
-
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
     private val _state = MutableStateFlow<State>(State.Loading)
     val state: Flow<State> = _state
@@ -36,11 +33,9 @@ class ReviewsViewModel(mediaType: ReviewsType, mediaId: String) : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getMangaReviews(
+            val response = MangaJapApi.Manga.reviews(
                 mangaId,
-                JsonApiParams(
-                    include = listOf("user")
-                )
+                include = listOf("user")
             )
 
             when (response) {
@@ -61,11 +56,9 @@ class ReviewsViewModel(mediaType: ReviewsType, mediaId: String) : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getAnimeReviews(
+            val response = MangaJapApi.Anime.reviews(
                 animeId,
-                JsonApiParams(
-                    include = listOf("user")
-                )
+                include = listOf("user")
             )
 
             when (response) {

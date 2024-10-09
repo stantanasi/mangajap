@@ -4,15 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.models.Review
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class ReviewSaveViewModel(id: String?) : ViewModel() {
-
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
     private val _state = MutableStateFlow<State>(State.Loading)
     val state: Flow<State> = _state
@@ -41,9 +39,7 @@ class ReviewSaveViewModel(id: String?) : ViewModel() {
                 return@launch
             }
 
-            val response = mangaJapApiService.getReview(
-                id
-            )
+            val response = MangaJapApi.Reviews.details(id)
 
             when (response) {
                 is JsonApiResponse.Success -> {
@@ -65,15 +61,10 @@ class ReviewSaveViewModel(id: String?) : ViewModel() {
         try {
             val id = review.id
 
-            val response = if (id != null) {
-                mangaJapApiService.updateReview(
-                    id,
-                    review
-                )
+            val response = if (id == null) {
+                MangaJapApi.Reviews.create(review)
             } else {
-                mangaJapApiService.createReview(
-                    review
-                )
+                MangaJapApi.Reviews.update(id, review)
             }
 
             when (response) {

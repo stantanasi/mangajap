@@ -50,7 +50,7 @@ class SearchUsersFragment : Fragment() {
                     SearchUsersViewModel.State.LoadingMore -> appAdapter.isLoading = true
 
                     is SearchUsersViewModel.State.SuccessLoading -> {
-                        displaySearchUser(state.userList, state.nextLink)
+                        displaySearchUser(state.userList, state.hasMore)
                         appAdapter.isLoading = false
                         binding.isLoading.root.visibility = View.GONE
                     }
@@ -91,14 +91,14 @@ class SearchUsersFragment : Fragment() {
         }
     }
 
-    private fun displaySearchUser(userList: List<User>, nextLink: String) {
+    private fun displaySearchUser(userList: List<User>, hasMore: Boolean) {
         appAdapter.submitList(userList.onEach {
             it.itemType = AppAdapter.Type.USER_ITEM
         })
 
-        if (nextLink != "") {
+        if (hasMore) {
             appAdapter.setOnLoadMoreListener {
-                viewModel.loadMore(nextLink)
+                viewModel.loadMore()
             }
         } else {
             appAdapter.setOnLoadMoreListener(null)

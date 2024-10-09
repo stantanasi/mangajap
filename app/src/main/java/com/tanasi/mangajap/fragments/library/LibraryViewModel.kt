@@ -2,14 +2,13 @@ package com.tanasi.mangajap.fragments.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.fragments.library.LibraryFragment.LibraryType
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.MangaEntry
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +16,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class LibraryViewModel(userId: String, libraryType: LibraryType) : ViewModel() {
-
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
     private val _state = MutableStateFlow<State>(State.Loading)
     private val _savingState = MutableStateFlow<SavingState?>(null)
@@ -85,13 +82,11 @@ class LibraryViewModel(userId: String, libraryType: LibraryType) : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getUserMangaLibrary(
+            val response = MangaJapApi.Users.mangaLibrary(
                 userId,
-                JsonApiParams(
-                    include = listOf("manga"),
-                    sort = listOf("-updatedAt"),
-                    limit = 500
-                )
+                include = listOf("manga"),
+                sort = listOf("-updatedAt"),
+                limit = 500
             )
 
             when (response) {
@@ -112,13 +107,11 @@ class LibraryViewModel(userId: String, libraryType: LibraryType) : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getUserAnimeLibrary(
+            val response = MangaJapApi.Users.animeLibrary(
                 userId,
-                JsonApiParams(
-                    include = listOf("anime"),
-                    sort = listOf("-updatedAt"),
-                    limit = 500
-                )
+                include = listOf("anime"),
+                sort = listOf("-updatedAt"),
+                limit = 500
             )
 
             when (response) {
@@ -139,13 +132,11 @@ class LibraryViewModel(userId: String, libraryType: LibraryType) : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getUserMangaFavorites(
+            val response = MangaJapApi.Users.mangaFavorites(
                 userId,
-                JsonApiParams(
-                    include = listOf("manga"),
-                    sort = listOf("-updatedAt"),
-                    limit = 500
-                )
+                include = listOf("manga"),
+                sort = listOf("-updatedAt"),
+                limit = 500
             )
 
             when (response) {
@@ -166,13 +157,11 @@ class LibraryViewModel(userId: String, libraryType: LibraryType) : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getUserAnimeFavorites(
+            val response = MangaJapApi.Users.animeFavorites(
                 userId,
-                JsonApiParams(
-                    include = listOf("anime"),
-                    sort = listOf("-updatedAt"),
-                    limit = 500
-                )
+                include = listOf("anime"),
+                sort = listOf("-updatedAt"),
+                limit = 500
             )
 
             when (response) {
@@ -194,7 +183,7 @@ class LibraryViewModel(userId: String, libraryType: LibraryType) : ViewModel() {
         _savingState.emit(SavingState.Saving)
 
         try {
-            val response = mangaJapApiService.updateMangaEntry(
+            val response = MangaJapApi.MangaEntries.update(
                 mangaEntry.id!!,
                 mangaEntry
             )
@@ -217,7 +206,7 @@ class LibraryViewModel(userId: String, libraryType: LibraryType) : ViewModel() {
         _savingState.emit(SavingState.Saving)
 
         try {
-            val response = mangaJapApiService.updateAnimeEntry(
+            val response = MangaJapApi.AnimeEntries.update(
                 animeEntry.id!!,
                 animeEntry
             )

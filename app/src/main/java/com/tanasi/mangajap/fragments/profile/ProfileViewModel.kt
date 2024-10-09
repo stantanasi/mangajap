@@ -5,12 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.jsonapi.bodies.JsonApiBody
 import com.tanasi.mangajap.models.Follow
 import com.tanasi.mangajap.models.User
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -19,8 +18,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(userId: String) : ViewModel() {
-
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     private val _follow: MutableStateFlow<FollowState?> = MutableStateFlow(null)
@@ -77,30 +74,26 @@ class ProfileViewModel(userId: String) : ViewModel() {
             val selfId = Firebase.auth.uid!!
 
             val userResponseDeferred = async {
-                mangaJapApiService.getUser(
+                MangaJapApi.Users.details(
                     userId,
-                    JsonApiParams(
-                        include = listOf(
-                            "manga-library.manga",
-                            "anime-library.anime",
-                            "manga-favorites.manga",
-                            "anime-favorites.anime"
-                        ),
-                        fields = mapOf(
-                            "manga" to listOf("title", "coverImage", "volumeCount", "chapterCount"),
-                            "anime" to listOf("title", "coverImage", "episodeCount")
-                        ),
-                    )
+                    include = listOf(
+                        "manga-library.manga",
+                        "anime-library.anime",
+                        "manga-favorites.manga",
+                        "anime-favorites.anime"
+                    ),
+                    fields = mapOf(
+                        "manga" to listOf("title", "coverImage", "volumeCount", "chapterCount"),
+                        "anime" to listOf("title", "coverImage", "episodeCount")
+                    ),
                 )
             }
             val followedResponseDeferred = async {
                 if (userId != selfId) {
-                    mangaJapApiService.getFollows(
-                        JsonApiParams(
-                            filter = mapOf(
-                                "follower" to listOf(selfId),
-                                "followed" to listOf(userId)
-                            )
+                    MangaJapApi.Follows.list(
+                        filter = mapOf(
+                            "follower" to listOf(selfId),
+                            "followed" to listOf(userId)
                         )
                     )
                 } else {
@@ -109,12 +102,10 @@ class ProfileViewModel(userId: String) : ViewModel() {
             }
             val followerResponseDeferred = async {
                 if (userId != selfId) {
-                    mangaJapApiService.getFollows(
-                        JsonApiParams(
-                            filter = mapOf(
-                                "follower" to listOf(userId),
-                                "followed" to listOf(selfId)
-                            )
+                    MangaJapApi.Follows.list(
+                        filter = mapOf(
+                            "follower" to listOf(userId),
+                            "followed" to listOf(selfId)
                         )
                     )
                 } else {
@@ -177,9 +168,7 @@ class ProfileViewModel(userId: String) : ViewModel() {
         _follow.emit(FollowState.UpdatingFollowed)
 
         try {
-            val response = mangaJapApiService.createFollow(
-                follow
-            )
+            val response = MangaJapApi.Follows.create(follow)
 
             when (response) {
                 is JsonApiResponse.Success -> {
@@ -200,9 +189,7 @@ class ProfileViewModel(userId: String) : ViewModel() {
         _follow.emit(FollowState.UpdatingFollowed)
 
         try {
-            val response = mangaJapApiService.deleteFollow(
-                follow.id!!
-            )
+            val response = MangaJapApi.Follows.delete(follow.id!!)
 
             when (response) {
                 is JsonApiResponse.Success -> {

@@ -2,30 +2,29 @@ package com.tanasi.mangajap.fragments.follow
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.fragments.follow.FollowFragment.FollowType
 import com.tanasi.mangajap.models.Follow
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class FollowViewModel(userId: String, followType: FollowType) : ViewModel() {
-
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
+class FollowViewModel(private val userId: String, followType: FollowType) : ViewModel() {
 
     private val _state = MutableStateFlow<State>(State.Loading)
     val state: Flow<State> = _state
+
+    private var page = 0
 
     sealed class State {
         data object Loading : State()
         data object LoadingMore : State()
         data class SuccessLoading(
             val followList: List<Follow>,
-            val nextLink: String
+            val hasMore: Boolean
         ) : State()
 
         data class FailedLoading(val error: JsonApiResponse.Error) : State()
@@ -38,17 +37,16 @@ class FollowViewModel(userId: String, followType: FollowType) : ViewModel() {
         }
     }
 
+
     private fun getFollowers(userId: String) = viewModelScope.launch(Dispatchers.IO) {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getUserFollowers(
+            val response = MangaJapApi.Users.followers(
                 userId,
-                JsonApiParams(
-                    include = listOf("follower"),
-                    sort = listOf("-createdAt"),
-                    limit = 15,
-                )
+                include = listOf("follower"),
+                sort = listOf("-createdAt"),
+                limit = 15,
             )
 
             when (response) {
@@ -56,7 +54,7 @@ class FollowViewModel(userId: String, followType: FollowType) : ViewModel() {
                     _state.emit(
                         State.SuccessLoading(
                             followList = response.body.data!!,
-                            nextLink = response.body.links?.next ?: ""
+                            hasMore = response.body.links?.next != null
                         )
                     )
                 }
@@ -74,13 +72,11 @@ class FollowViewModel(userId: String, followType: FollowType) : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getUserFollowing(
+            val response = MangaJapApi.Users.following(
                 userId,
-                JsonApiParams(
-                    include = listOf("followed"),
-                    sort = listOf("-createdAt"),
-                    limit = 15,
-                )
+                include = listOf("followed"),
+                sort = listOf("-createdAt"),
+                limit = 15,
             )
 
             when (response) {
@@ -88,7 +84,7 @@ class FollowViewModel(userId: String, followType: FollowType) : ViewModel() {
                     _state.emit(
                         State.SuccessLoading(
                             followList = response.body.data!!,
-                            nextLink = response.body.links?.next ?: ""
+                            hasMore = response.body.links?.next != null
                         )
                     )
                 }
@@ -102,22 +98,28 @@ class FollowViewModel(userId: String, followType: FollowType) : ViewModel() {
         }
     }
 
-    fun loadMoreFollowers(nextLink: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun loadMoreFollowers() = viewModelScope.launch(Dispatchers.IO) {
         val currentState = _state.first()
         if (currentState is State.SuccessLoading) {
             _state.emit(State.LoadingMore)
 
             try {
-                val response = mangaJapApiService.loadMoreFollows(
-                    nextLink
+                val response = MangaJapApi.Users.followers(
+                    userId,
+                    include = listOf("follower"),
+                    sort = listOf("-createdAt"),
+                    limit = 15,
+                    offset = 15 * (page + 1)
                 )
+
+                page += 1
 
                 when (response) {
                     is JsonApiResponse.Success -> {
                         _state.emit(
                             State.SuccessLoading(
                                 followList = currentState.followList + response.body.data!!,
-                                nextLink = response.body.links?.next ?: ""
+                                hasMore = response.body.links?.next != null
                             )
                         )
                     }
@@ -132,22 +134,28 @@ class FollowViewModel(userId: String, followType: FollowType) : ViewModel() {
         }
     }
 
-    fun loadMoreFollowing(nextLink: String) = viewModelScope.launch(Dispatchers.IO) {
+    fun loadMoreFollowing() = viewModelScope.launch(Dispatchers.IO) {
         val currentState = _state.first()
         if (currentState is State.SuccessLoading) {
             _state.emit(State.LoadingMore)
 
             try {
-                val response = mangaJapApiService.loadMoreFollows(
-                    nextLink
+                val response = MangaJapApi.Users.following(
+                    userId,
+                    include = listOf("followed"),
+                    sort = listOf("-createdAt"),
+                    limit = 15,
+                    offset = 15 * (page + 1)
                 )
+
+                page += 1
 
                 when (response) {
                     is JsonApiResponse.Success -> {
                         _state.emit(
                             State.SuccessLoading(
                                 followList = currentState.followList + response.body.data!!,
-                                nextLink = response.body.links?.next ?: ""
+                                hasMore = response.body.links?.next != null
                             )
                         )
                     }

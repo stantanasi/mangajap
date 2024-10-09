@@ -3,11 +3,10 @@ package com.tanasi.mangajap.fragments.manga
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.MangaEntry
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +14,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class MangaViewModel(id: String) : ViewModel() {
-
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     private val _updating: MutableStateFlow<SavingState?> = MutableStateFlow(null)
@@ -61,17 +58,15 @@ class MangaViewModel(id: String) : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getManga(
+            val response = MangaJapApi.Manga.details(
                 id,
-                JsonApiParams(
-                    include = listOf(
-                        "manga-entry",
-                        "genres",
-                        "themes",
-                        "volumes",
-                        "staff.people",
-                        "franchises.destination"
-                    )
+                include = listOf(
+                    "manga-entry",
+                    "genres",
+                    "themes",
+                    "volumes",
+                    "staff.people",
+                    "franchises.destination"
                 )
             )
 
@@ -95,14 +90,10 @@ class MangaViewModel(id: String) : ViewModel() {
 
         try {
             val id = mangaEntry.id
-
-            val response = if (id != null) {
-                mangaJapApiService.updateMangaEntry(
-                    mangaEntry.id!!,
-                    mangaEntry
-                )
+            val response = if (id == null) {
+                MangaJapApi.MangaEntries.create(mangaEntry)
             } else {
-                mangaJapApiService.createMangaEntry(mangaEntry)
+                MangaJapApi.MangaEntries.update(id, mangaEntry)
             }
 
             when (response) {

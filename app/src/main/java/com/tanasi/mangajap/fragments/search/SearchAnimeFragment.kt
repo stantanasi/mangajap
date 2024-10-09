@@ -52,7 +52,7 @@ class SearchAnimeFragment : Fragment() {
                     SearchAnimeViewModel.State.LoadingMore -> appAdapter.isLoading = true
 
                     is SearchAnimeViewModel.State.SuccessLoading -> {
-                        displaySearchAnime(state.animeList, state.nextLink)
+                        displaySearchAnime(state.animeList, state.hasMore)
                         appAdapter.isLoading = false
                         binding.isLoading.root.visibility = View.GONE
                     }
@@ -93,14 +93,14 @@ class SearchAnimeFragment : Fragment() {
         }
     }
 
-    private fun displaySearchAnime(animeList: List<Anime>, nextLink: String) {
+    private fun displaySearchAnime(animeList: List<Anime>, hasMore: Boolean) {
         appAdapter.submitList(animeList.onEach {
             it.itemType = AppAdapter.Type.ANIME_SEARCH_ITEM
         })
 
-        if (nextLink != "") {
+        if (hasMore) {
             appAdapter.setOnLoadMoreListener {
-                viewModel.loadMore(nextLink)
+                viewModel.loadMore()
             }
         } else {
             appAdapter.setOnLoadMoreListener(null)

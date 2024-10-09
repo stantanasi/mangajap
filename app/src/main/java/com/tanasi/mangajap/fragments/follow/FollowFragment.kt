@@ -61,7 +61,7 @@ class FollowFragment : Fragment() {
                     FollowViewModel.State.LoadingMore -> appAdapter.isLoading = true
 
                     is FollowViewModel.State.SuccessLoading -> {
-                        displayFollows(state.followList, state.nextLink)
+                        displayFollows(state.followList, state.hasMore)
                         appAdapter.isLoading = false
                         binding.isLoading.root.visibility = View.GONE
                     }
@@ -111,7 +111,7 @@ class FollowFragment : Fragment() {
         }
     }
 
-    private fun displayFollows(followsList: List<Follow>, nextLink: String) {
+    private fun displayFollows(followsList: List<Follow>, hasMore: Boolean) {
         binding.tvFollowUserHasAnyFollow.apply {
             text = when (args.followType as FollowType) {
                 FollowType.Followers -> getString(R.string.anyFollowers, args.userPseudo)
@@ -135,11 +135,11 @@ class FollowFragment : Fragment() {
             }
         })
 
-        if (nextLink != "") {
+        if (hasMore) {
             appAdapter.setOnLoadMoreListener {
                 when (args.followType as FollowType) {
-                    FollowType.Followers -> viewModel.loadMoreFollowers(nextLink)
-                    FollowType.Following -> viewModel.loadMoreFollowing(nextLink)
+                    FollowType.Followers -> viewModel.loadMoreFollowers()
+                    FollowType.Following -> viewModel.loadMoreFollowing()
                 }
             }
         } else {

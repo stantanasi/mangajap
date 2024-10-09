@@ -2,18 +2,15 @@ package com.tanasi.mangajap.fragments.settingspreference
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.models.User
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class SettingsPreferenceViewModel : ViewModel() {
-
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
     private val _state = MutableStateFlow<State>(State.Loading)
     val state: Flow<State> = _state
@@ -32,11 +29,9 @@ class SettingsPreferenceViewModel : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getUser(
+            val response = MangaJapApi.Users.details(
                 userId,
-                JsonApiParams(
-                    fields = mapOf("users" to listOf("pseudo")),
-                )
+                fields = mapOf("users" to listOf("pseudo")),
             )
 
             when (response) {
@@ -53,14 +48,11 @@ class SettingsPreferenceViewModel : ViewModel() {
         }
     }
 
-    fun updateUser(user: User) = viewModelScope.launch {
+    fun updateUser(user: User) = viewModelScope.launch(Dispatchers.IO) {
         _state.emit(State.Updating)
 
         try {
-            val response = mangaJapApiService.updateUser(
-                user.id!!,
-                user
-            )
+            val response = MangaJapApi.Users.update(user.id!!, user)
 
             when (response) {
                 is JsonApiResponse.Success -> {

@@ -3,12 +3,11 @@ package com.tanasi.mangajap.fragments.anime
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Season
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,8 +15,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class AnimeViewModel(id: String) : ViewModel() {
-
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     private val _seasonState: MutableStateFlow<SeasonState?> = MutableStateFlow(null)
@@ -81,16 +78,14 @@ class AnimeViewModel(id: String) : ViewModel() {
         _state.emit(State.Loading)
 
         try {
-            val response = mangaJapApiService.getAnime(
+            val response = MangaJapApi.Anime.details(
                 id,
-                JsonApiParams(
-                    include = listOf(
-                        "anime-entry",
-                        "genres",
-                        "themes",
-                        "seasons",
-                        "franchises.destination",
-                    )
+                include = listOf(
+                    "anime-entry",
+                    "genres",
+                    "themes",
+                    "seasons",
+                    "franchises.destination",
                 )
             )
 
@@ -119,12 +114,10 @@ class AnimeViewModel(id: String) : ViewModel() {
         _seasonState.emit(SeasonState.LoadingEpisodes)
 
         try {
-            val response = mangaJapApiService.getAnimeSeasons(
+            val response = MangaJapApi.Anime.seasons(
                 id,
-                JsonApiParams(
-                    include = listOf("episodes"),
-                    limit = 10000
-                )
+                include = listOf("episodes"),
+                limit = 10000,
             )
 
             when (response) {
@@ -147,14 +140,10 @@ class AnimeViewModel(id: String) : ViewModel() {
 
         try {
             val id = animeEntry.id
-
-            val response = if (id != null) {
-                mangaJapApiService.updateAnimeEntry(
-                    animeEntry.id!!,
-                    animeEntry
-                )
+            val response = if (id == null) {
+                MangaJapApi.AnimeEntries.create(animeEntry)
             } else {
-                mangaJapApiService.createAnimeEntry(animeEntry)
+                MangaJapApi.AnimeEntries.update(id, animeEntry)
             }
 
             when (response) {

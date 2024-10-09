@@ -78,7 +78,6 @@ class SearchFragment : Fragment() {
                 private var timer: Timer = Timer()
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    binding.isLoading.root.visibility = View.VISIBLE
                     timer.cancel()
                 }
 

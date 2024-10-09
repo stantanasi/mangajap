@@ -52,7 +52,7 @@ class SearchMangaFragment : Fragment() {
                     SearchMangaViewModel.State.LoadingMore -> appAdapter.isLoading = true
 
                     is SearchMangaViewModel.State.SuccessLoading -> {
-                        displaySearchManga(state.mangaList, state.nextLink)
+                        displaySearchManga(state.mangaList, state.hasMore)
                         appAdapter.isLoading = false
                         binding.isLoading.root.visibility = View.GONE
                     }
@@ -93,14 +93,14 @@ class SearchMangaFragment : Fragment() {
         }
     }
 
-    private fun displaySearchManga(mangaList: List<Manga>, nextLink: String) {
+    private fun displaySearchManga(mangaList: List<Manga>, hasMore: Boolean) {
         appAdapter.submitList(mangaList.onEach {
             it.itemType = AppAdapter.Type.MANGA_SEARCH_ITEM
         })
 
-        if (nextLink != "") {
+        if (hasMore) {
             appAdapter.setOnLoadMoreListener {
-                viewModel.loadMore(nextLink)
+                viewModel.loadMore()
             }
         } else {
             appAdapter.setOnLoadMoreListener(null)

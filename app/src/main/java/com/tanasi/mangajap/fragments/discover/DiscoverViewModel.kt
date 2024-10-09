@@ -3,14 +3,13 @@ package com.tanasi.mangajap.fragments.discover
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.models.People
-import com.tanasi.mangajap.services.MangaJapApiService
+import com.tanasi.mangajap.utils.MangaJapApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -19,8 +18,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class DiscoverViewModel : ViewModel() {
-
-    private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
     private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     private val _updating: MutableStateFlow<UpdatingState?> = MutableStateFlow(null)
@@ -107,34 +104,28 @@ class DiscoverViewModel : ViewModel() {
 
         try {
             val peopleResponseDeferred = async {
-                mangaJapApiService.getPeoples(
-                    JsonApiParams(
-                        include = listOf("staff.manga", "staff.anime"),
-                        fields = mapOf(
-                            "manga" to listOf("title", "coverImage"),
-                            "anime" to listOf("title", "coverImage"),
-                        ),
-                        sort = listOf("random"),
-                        limit = 10
-                    )
+                MangaJapApi.Peoples.list(
+                    include = listOf("staff.manga", "staff.anime"),
+                    fields = mapOf(
+                        "manga" to listOf("title", "coverImage"),
+                        "anime" to listOf("title", "coverImage"),
+                    ),
+                    sort = listOf("random"),
+                    limit = 10
                 )
             }
             val mangaRecentResponseDeferred = async {
-                mangaJapApiService.getManga(
-                    JsonApiParams(
-                        include = listOf("manga-entry"),
-                        sort = listOf("-createdAt"),
-                        limit = 15
-                    )
+                MangaJapApi.Manga.list(
+                    include = listOf("manga-entry"),
+                    sort = listOf("-createdAt"),
+                    limit = 15
                 )
             }
             val animeRecentResponseDeferred = async {
-                mangaJapApiService.getAnime(
-                    JsonApiParams(
-                        include = listOf("anime-entry"),
-                        sort = listOf("-createdAt"),
-                        limit = 15
-                    )
+                MangaJapApi.Anime.list(
+                    include = listOf("anime-entry"),
+                    sort = listOf("-createdAt"),
+                    limit = 15
                 )
             }
 
@@ -185,14 +176,19 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
-    fun createAnimeEntry(anime: Anime, animeEntry: AnimeEntry) =
-        viewModelScope.launch(Dispatchers.IO) {
+    fun saveAnimeEntry(
+        anime: Anime,
+        animeEntry: AnimeEntry,
+    ) = viewModelScope.launch(Dispatchers.IO) {
             _updating.emit(UpdatingState.Updating)
 
             try {
-                val response = mangaJapApiService.createAnimeEntry(
-                    animeEntry
-                )
+                val id = animeEntry.id
+                val response = if (id == null) {
+                    MangaJapApi.AnimeEntries.create(animeEntry)
+                } else {
+                    MangaJapApi.AnimeEntries.update(id, animeEntry)
+                }
 
                 when (response) {
                     is JsonApiResponse.Success -> {
@@ -213,43 +209,19 @@ class DiscoverViewModel : ViewModel() {
             }
         }
 
-    fun updateAnimeEntry(anime: Anime, animeEntry: AnimeEntry) =
-        viewModelScope.launch(Dispatchers.IO) {
+    fun saveMangaEntry(
+        manga: Manga,
+        mangaEntry: MangaEntry,
+    ) = viewModelScope.launch(Dispatchers.IO) {
             _updating.emit(UpdatingState.Updating)
 
             try {
-                val response = mangaJapApiService.updateAnimeEntry(
-                    animeEntry.id!!,
-                    animeEntry
-                )
-
-                when (response) {
-                    is JsonApiResponse.Success -> {
-                        _updating.emit(
-                            UpdatingState.SuccessUpdatingAnimeEntry(
-                                response.body.data!!,
-                                anime
-                            )
-                        )
-                    }
-
-                    is JsonApiResponse.Error -> {
-                        _updating.emit(UpdatingState.FailedUpdating(response))
-                    }
+                val id = mangaEntry.id
+                val response = if (id == null) {
+                    MangaJapApi.MangaEntries.create(mangaEntry)
+                } else {
+                    MangaJapApi.MangaEntries.update(id, mangaEntry)
                 }
-            } catch (e: Exception) {
-                _updating.emit(UpdatingState.FailedUpdating(JsonApiResponse.Error.UnknownError(e)))
-            }
-        }
-
-    fun createMangaEntry(manga: Manga, mangaEntry: MangaEntry) =
-        viewModelScope.launch(Dispatchers.IO) {
-            _updating.emit(UpdatingState.Updating)
-
-            try {
-                val response = mangaJapApiService.createMangaEntry(
-                    mangaEntry
-                )
 
                 when (response) {
                     is JsonApiResponse.Success -> {
@@ -266,37 +238,7 @@ class DiscoverViewModel : ViewModel() {
                     }
                 }
             } catch (e: Exception) {
-                Log.e("DiscoverViewModel", "createMangaEntry: ", e)
-                _updating.emit(UpdatingState.FailedUpdating(JsonApiResponse.Error.UnknownError(e)))
-            }
-        }
-
-    fun updateMangaEntry(manga: Manga, mangaEntry: MangaEntry) =
-        viewModelScope.launch(Dispatchers.IO) {
-            _updating.emit(UpdatingState.Updating)
-
-            try {
-                val response = mangaJapApiService.updateMangaEntry(
-                    mangaEntry.id!!,
-                    mangaEntry
-                )
-
-                when (response) {
-                    is JsonApiResponse.Success -> {
-                        _updating.emit(
-                            UpdatingState.SuccessUpdatingMangaEntry(
-                                response.body.data!!,
-                                manga
-                            )
-                        )
-                    }
-
-                    is JsonApiResponse.Error -> {
-                        _updating.emit(UpdatingState.FailedUpdating(response))
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("DiscoverViewModel", "updateMangaEntry: ", e)
+                Log.e("DiscoverViewModel", "saveMangaEntry: ", e)
                 _updating.emit(UpdatingState.FailedUpdating(JsonApiResponse.Error.UnknownError(e)))
             }
         }
