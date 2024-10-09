@@ -55,7 +55,7 @@ class SearchUsersViewModel : ViewModel() {
                     _state.emit(
                         State.SuccessLoading(
                             userList = response.body.data!!,
-                            hasMore = response.body.links?.next != null
+                            hasMore = response.body.links?.next?.takeIf { it.isNotEmpty() } != null
                         )
                     )
                 }
@@ -89,7 +89,7 @@ class SearchUsersViewModel : ViewModel() {
                         _state.emit(
                             State.SuccessLoading(
                                 userList = currentState.userList + response.body.data!!,
-                                hasMore = response.body.links?.next != null
+                                hasMore = response.body.links?.next?.takeIf { it.isNotEmpty() } != null
                             )
                         )
                     }

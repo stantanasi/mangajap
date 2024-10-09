@@ -87,7 +87,7 @@ class SearchAnimeViewModel : ViewModel() {
                     _state.emit(
                         State.SuccessLoading(
                             animeList = response.body.data!!,
-                            hasMore = response.body.links?.next != null
+                            hasMore = response.body.links?.next?.takeIf { it.isNotEmpty() } != null
                         )
                     )
                 }
@@ -122,7 +122,7 @@ class SearchAnimeViewModel : ViewModel() {
                         _state.emit(
                             State.SuccessLoading(
                                 animeList = currentState.animeList + response.body.data!!,
-                                hasMore = response.body.links?.next != null
+                                hasMore = response.body.links?.next?.takeIf { it.isNotEmpty() } != null
                             )
                         )
                     }

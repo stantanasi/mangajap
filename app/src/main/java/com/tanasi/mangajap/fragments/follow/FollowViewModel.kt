@@ -54,7 +54,7 @@ class FollowViewModel(private val userId: String, followType: FollowType) : View
                     _state.emit(
                         State.SuccessLoading(
                             followList = response.body.data!!,
-                            hasMore = response.body.links?.next != null
+                            hasMore = response.body.links?.next?.takeIf { it.isNotEmpty() } != null
                         )
                     )
                 }
@@ -84,7 +84,7 @@ class FollowViewModel(private val userId: String, followType: FollowType) : View
                     _state.emit(
                         State.SuccessLoading(
                             followList = response.body.data!!,
-                            hasMore = response.body.links?.next != null
+                            hasMore = response.body.links?.next?.takeIf { it.isNotEmpty() } != null
                         )
                     )
                 }
@@ -119,7 +119,7 @@ class FollowViewModel(private val userId: String, followType: FollowType) : View
                         _state.emit(
                             State.SuccessLoading(
                                 followList = currentState.followList + response.body.data!!,
-                                hasMore = response.body.links?.next != null
+                                hasMore = response.body.links?.next?.takeIf { it.isNotEmpty() } != null
                             )
                         )
                     }
@@ -155,7 +155,7 @@ class FollowViewModel(private val userId: String, followType: FollowType) : View
                         _state.emit(
                             State.SuccessLoading(
                                 followList = currentState.followList + response.body.data!!,
-                                hasMore = response.body.links?.next != null
+                                hasMore = response.body.links?.next?.takeIf { it.isNotEmpty() } != null
                             )
                         )
                     }
