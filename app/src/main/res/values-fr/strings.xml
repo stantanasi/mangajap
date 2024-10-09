@@ -223,7 +223,6 @@
     <string name="account_created_but_login_error">Compte correctement créer mais connexion impossible (nos serveurs sont probablement indisponibles, essayer de vous connecter ultérieurement)</string>
     <string name="chapter">Chapitre %d</string>
     <string name="episode_info">S%s | E%s (E%s)</string>
-    <string name="app_name">MangaJap</string>
     <string name="propose_anime_summary">Vous ne trouvez pas votre anime</string>
     <string name="propose_manga">Proposer un manga à ajouter</string>
     <string name="propose_manga_summary">Vous ne trouvez pas votre manga</string>

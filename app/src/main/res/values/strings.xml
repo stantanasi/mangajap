@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MangaJap</string>
+    <string name="app_name" translatable="false">MangaJap</string>
 
     <string name="error">An error has occurred</string>
     <string name="serverError">Our servers are temporarily unavailable</string>
