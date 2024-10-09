@@ -9,10 +9,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.firebase.auth.ktx.auth
@@ -23,53 +24,44 @@ import com.squareup.picasso.Picasso
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
-import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentProfileBinding
 import com.tanasi.mangajap.fragments.follow.FollowFragment
-import com.tanasi.mangajap.fragments.library.LibraryFragment
-import com.tanasi.mangajap.models.*
-import com.tanasi.mangajap.ui.SpacingItemDecoration
-import com.tanasi.mangajap.utils.extensions.add
-import com.tanasi.mangajap.utils.extensions.addOrLast
-import com.tanasi.mangajap.utils.extensions.contains
+import com.tanasi.mangajap.models.Follow
+import com.tanasi.mangajap.models.User
+import com.tanasi.mangajap.utils.extensions.viewModelsFactory
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
+import kotlinx.coroutines.launch
+import java.util.Locale
 
 class ProfileFragment : Fragment() {
 
-    private enum class ProfileTab(
-        val stringId: Int,
-        val statsList: MutableList<User.Stats> = mutableListOf(),
-        val libraryList: MutableList<AppAdapter.Item> = mutableListOf(),
-        val favoritesList: MutableList<AppAdapter.Item> = mutableListOf()
-    ) {
-        Manga(R.string.manga),
-        Anime(R.string.anime);
+    private enum class ProfileTab(val stringId: Int) {
+        MANGA(R.string.manga),
+        ANIME(R.string.anime);
     }
 
     private var _binding: FragmentProfileBinding? = null
-    private val binding: FragmentProfileBinding get() = _binding!!
+    private val binding get() = _binding!!
 
-    private val args: ProfileFragmentArgs by navArgs()
+    private val args by navArgs<ProfileFragmentArgs>()
 
-    private val viewModel: ProfileViewModel by viewModels()
+    private val viewModel by viewModelsFactory {
+        ProfileViewModel(args.userId ?: Firebase.auth.uid!!)
+    }
 
     private lateinit var generalPreference: GeneralPreference
 
-    private var userId: String? = null
-    private var currentTab: ProfileTab = ProfileTab.values().first()
+    private var currentTab = ProfileTab.entries.first()
+    private val mangaFragment by lazy { binding.fProfileManga.getFragment<ProfileMangaFragment>() }
+    private val animeFragment by lazy { binding.fProfileAnime.getFragment<ProfileAnimeFragment>() }
 
-    private lateinit var user: User
-    private var followed: Follow? = null
-    private var follower: Follow? = null
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        userId = args.userId
-        viewModel.getProfile(userId ?: Firebase.auth.uid!!)
-        (requireActivity() as MainActivity).showBottomNavView(userId == null)
-        ProfileTab.values().forEach {
-            addTab(it)
-        }
+        (requireActivity() as MainActivity).showBottomNavView(args.userId == null)
         return binding.root
     }
 
@@ -78,68 +70,40 @@ class ProfileFragment : Fragment() {
 
         generalPreference = GeneralPreference(requireContext())
 
-        currentTab = when (generalPreference.displayFirst) {
-            GeneralPreference.DisplayFirst.Manga -> ProfileTab.Manga
-            GeneralPreference.DisplayFirst.Anime -> ProfileTab.Anime
-        }
+        initializeProfile()
 
-        binding.ivProfileNavigationIcon.apply {
-            setOnClickListener { findNavController().navigateUp() }
-            visibility = when (userId) {
-                null -> View.GONE
-                else -> View.VISIBLE
-            }
-        }
-
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                ProfileViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
-                is ProfileViewModel.State.SuccessLoading -> {
-                    user = state.user
-                    followed = state.followed
-                    follower = state.follower
-
-                    displayProfile()
-                    binding.isLoading.root.visibility = View.GONE
-                }
-                is ProfileViewModel.State.FailedLoading -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
+                when (state) {
+                    ProfileViewModel.State.Loading -> binding.isLoading.apply {
+                        root.visibility = View.VISIBLE
                     }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
 
-                ProfileViewModel.State.UpdatingFollowed -> {
-                    binding.llProfileFollow.setOnClickListener(null)
-                    binding.pbProfileIsFollowing.visibility = View.VISIBLE
-                }
-                is ProfileViewModel.State.SuccessUpdatingFollowed -> {
-                    followed = state.followed
-                    displayFollow()
-                }
-                is ProfileViewModel.State.FailedUpdatingFollowed -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    is ProfileViewModel.State.SuccessLoading -> {
+                        displayProfile(state.user, state.followed, state.follower)
+                        binding.isLoading.root.visibility = View.GONE
                     }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+                    is ProfileViewModel.State.FailedLoading -> {
+                        when (state.error) {
+                            is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                                Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 }
             }
         }
@@ -151,14 +115,35 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun displayProfile() {
+    private fun initializeProfile() {
+        binding.tlProfile.apply {
+            ProfileTab.entries
+                .map { newTab().setText(getString(it.stringId)) }
+                .forEach { addTab(it) }
+        }
+
+        currentTab = when (generalPreference.displayFirst) {
+            GeneralPreference.DisplayFirst.Manga -> ProfileTab.MANGA
+            GeneralPreference.DisplayFirst.Anime -> ProfileTab.ANIME
+        }
+
+        binding.ivProfileNavigationIcon.apply {
+            setOnClickListener { findNavController().navigateUp() }
+            visibility = when {
+                args.userId == null -> View.GONE
+                else -> View.VISIBLE
+            }
+        }
+    }
+
+    private fun displayProfile(user: User, isFollowed: Follow?, isFollowing: Follow?) {
         binding.ivProfileSettings.apply {
             setOnClickListener {
                 findNavController().navigate(
                     ProfileFragmentDirections.actionProfileToSettings()
                 )
             }
-            visibility = when (userId) {
+            visibility = when (args.userId) {
                 null, Firebase.auth.uid -> View.VISIBLE
                 else -> View.GONE
             }
@@ -166,18 +151,18 @@ class ProfileFragment : Fragment() {
 
         binding.civProfileUserPic.apply {
             Picasso.get()
-                    .load(user.avatar?.medium)
-                    .placeholder(R.drawable.default_user_avatar)
-                    .error(R.drawable.default_user_avatar)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .into(this)
+                .load(user.avatar?.medium)
+                .placeholder(R.drawable.default_user_avatar)
+                .error(R.drawable.default_user_avatar)
+                .networkPolicy(NetworkPolicy.NO_CACHE)
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .into(this)
             setOnClickListener {
                 user.avatar?.original?.let { imagePath ->
                     findNavController().navigate(
-                            ProfileFragmentDirections.actionProfileToImage(
-                                    imagePath
-                            )
+                        ProfileFragmentDirections.actionProfileToImage(
+                            imagePath
+                        )
                     )
                 }
             }
@@ -186,28 +171,72 @@ class ProfileFragment : Fragment() {
         binding.tvProfileUserPseudo.text = user.pseudo
 
         binding.tvProfileUserAbout.apply {
-            if (user.about == "") {
-                visibility = View.GONE
-            } else {
-                visibility = View.VISIBLE
-                text = user.about
+            text = user.about
+            visibility = when {
+                user.about.isNotEmpty() -> View.VISIBLE
+                else -> View.GONE
             }
         }
 
         binding.tvProfileUserEdit.apply {
-            if (userId == null || userId == Firebase.auth.uid) {
-                visibility = View.VISIBLE
-                setOnClickListener {
-                    findNavController().navigate(
-                            ProfileFragmentDirections.actionProfileToProfileEdit()
-                    )
-                }
-            } else {
-                visibility = View.GONE
+            setOnClickListener {
+                findNavController().navigate(
+                    ProfileFragmentDirections.actionProfileToProfileEdit()
+                )
+            }
+            visibility = when (args.userId) {
+                null, Firebase.auth.uid -> View.VISIBLE
+                else -> View.GONE
             }
         }
 
-        displayFollow()
+        binding.llProfileFollow.apply {
+            if (isFollowed != null) {
+                setBackgroundResource(R.drawable.bg_btn_follow)
+                setOnClickListener {
+                    viewModel.unfollow(isFollowed)
+                    setOnClickListener(null)
+                    binding.pbProfileIsFollowing.visibility = View.VISIBLE
+                }
+            } else {
+                setBackgroundResource(R.drawable.bg_btn_unfollow)
+                setOnClickListener {
+                    viewModel.follow(Follow().also {
+                        it.follower = User(id = Firebase.auth.uid)
+                        it.followed = user
+                    })
+                    setOnClickListener(null)
+                    binding.pbProfileIsFollowing.visibility = View.VISIBLE
+                }
+            }
+            visibility = when (args.userId) {
+                null, Firebase.auth.uid -> View.GONE
+                else -> View.VISIBLE
+            }
+        }
+
+        binding.pbProfileIsFollowing.apply {
+            indeterminateTintList = when {
+                isFollowed != null -> ColorStateList.valueOf(Color.WHITE)
+                else -> ContextCompat.getColorStateList(context, R.color.color_app)
+            }
+            visibility = View.GONE
+        }
+
+        binding.tvProfileYouFollowUser.apply {
+            if (isFollowed != null) {
+                text = requireContext().resources.getString(R.string.following)
+                setTextColor(Color.WHITE)
+            } else {
+                text = requireContext().resources.getString(R.string.follow)
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.color_app))
+            }
+        }
+
+        binding.tvProfileUserIsFollowingYou.visibility = when {
+            isFollowing == null -> View.GONE
+            else -> View.VISIBLE
+        }
 
         binding.vProfileFollowers.setOnClickListener {
             findNavController().navigate(
@@ -219,7 +248,11 @@ class ProfileFragment : Fragment() {
             )
         }
 
-        binding.tvProfileFollowersCount.text = user.followersCount.toString()
+        binding.tvProfileFollowersCount.text = String.format(
+            Locale.getDefault(),
+            "%d",
+            user.followersCount
+        )
 
         binding.vProfileFollowing.setOnClickListener {
             findNavController().navigate(
@@ -231,17 +264,21 @@ class ProfileFragment : Fragment() {
             )
         }
 
-        binding.tvProfileFollowingCount.text = user.followingCount.toString()
+        binding.tvProfileFollowingCount.text = String.format(
+            Locale.getDefault(),
+            "%d",
+            user.followingCount
+        )
 
         binding.tlProfile.apply {
             addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    currentTab = ProfileTab.values()[tab.position]
+                    currentTab = ProfileTab.entries[tab.position]
                     generalPreference.displayFirst = when (currentTab) {
-                        ProfileTab.Manga -> GeneralPreference.DisplayFirst.Manga
-                        ProfileTab.Anime -> GeneralPreference.DisplayFirst.Anime
+                        ProfileTab.MANGA -> GeneralPreference.DisplayFirst.Manga
+                        ProfileTab.ANIME -> GeneralPreference.DisplayFirst.Anime
                     }
-                    displayList()
+                    showTab(user)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -249,234 +286,32 @@ class ProfileFragment : Fragment() {
             })
             getTabAt(currentTab.ordinal)?.apply {
                 select()
-                displayList()
-            }
-        }
-
-        binding.rvProfileUserStats.apply {
-            val pagerSnapHelper = PagerSnapHelper()
-            pagerSnapHelper.attachToRecyclerView(this)
-            addItemDecoration(SpacingItemDecoration(
-                spacing = (resources.getDimension(R.dimen.profile_spacing) * 1.2).toInt()
-            ))
-        }
-
-        binding.rvProfileUserLibrary.addItemDecoration(SpacingItemDecoration(
-            spacing = (resources.getDimension(R.dimen.profile_spacing) * 0.6).toInt()
-        ))
-
-        binding.rvProfileUserLibraryFavorites.addItemDecoration(SpacingItemDecoration(
-            spacing = (resources.getDimension(R.dimen.profile_spacing) * 0.6).toInt()
-        ))
-    }
-
-
-    private fun displayFollow() {
-        if (userId == null || userId == Firebase.auth.uid) {
-            binding.llProfileFollow.visibility = View.GONE
-            binding.tvProfileUserIsFollowingYou.visibility = View.GONE
-            return
-        }
-
-        binding.llProfileFollow.apply {
-            visibility = View.VISIBLE
-            followed?.let { followed ->
-                setBackgroundResource(R.drawable.bg_btn_follow)
-                setOnClickListener {
-                    viewModel.deleteFollow(followed)
-                }
-            } ?: let {
-                setBackgroundResource(R.drawable.bg_btn_unfollow)
-                setOnClickListener {
-                    viewModel.follow(Follow().also {
-                        it.follower = User(id = Firebase.auth.uid)
-                        it.followed = user
-                    })
-                }
-            }
-        }
-
-        binding.pbProfileIsFollowing.apply {
-            visibility = View.GONE
-            followed?.let {
-                indeterminateTintList = ColorStateList.valueOf(Color.WHITE)
-            } ?: let {
-                indeterminateTintList = ContextCompat.getColorStateList(context, R.color.color_app)
-            }
-        }
-
-        binding.tvProfileYouFollowUser.apply {
-            followed?.let {
-                text = requireContext().resources.getString(R.string.following)
-                setTextColor(Color.WHITE)
-            } ?: let {
-                text = requireContext().resources.getString(R.string.follow)
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.color_app))
-            }
-        }
-
-        if (follower == null) {
-            binding.tvProfileUserIsFollowingYou.visibility = View.GONE
-        } else {
-            binding.tvProfileUserIsFollowingYou.visibility = View.VISIBLE
-        }
-    }
-
-    private fun displayList() {
-        binding.tvProfileMediaFollowed.apply {
-            text = when (currentTab) {
-                ProfileTab.Manga -> getString(R.string.manga)
-                ProfileTab.Anime -> getString(R.string.anime)
-            }
-        }
-
-        binding.tvProfileMediaFollowedCount.apply {
-            text = when (currentTab) {
-                ProfileTab.Manga -> user.followedMangaCount.toString()
-                ProfileTab.Anime -> user.followedAnimeCount.toString()
-            }
-        }
-
-        binding.tvProfileUserLibrary.apply {
-            text = when (currentTab) {
-                ProfileTab.Manga -> getString(R.string.mangaList)
-                ProfileTab.Anime -> getString(R.string.animeList)
-            }
-        }
-
-        binding.tvProfileUserLibraryFavorites.apply {
-            text = when (currentTab) {
-                ProfileTab.Manga -> getString(R.string.favoritesManga)
-                ProfileTab.Anime -> getString(R.string.favoritesAnime)
-            }
-        }
-
-
-        when (currentTab) {
-            ProfileTab.Manga -> ProfileTab.Manga.let { tab ->
-                tab.statsList.apply {
-                    clear()
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_MANGA_FOLLOWED_ITEM })
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_MANGA_VOLUMES_ITEM })
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_MANGA_CHAPTERS_ITEM })
-                }
-                tab.libraryList.apply {
-                    clear()
-                    addAll(user.mangaLibrary)
-                    addOrLast(2, Ad().also { it.itemType = AppAdapter.Type.AD_PROFILE_ITEM })
-                }
-                tab.favoritesList.apply {
-                    clear()
-                    addAll(user.mangaFavorites)
-                }
-            }
-            ProfileTab.Anime -> ProfileTab.Anime.let { tab ->
-                tab.statsList.apply {
-                    clear()
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_ANIME_FOLLOWED_ITEM })
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_ANIME_TIME_SPENT_ITEM })
-                    add(User.Stats(user).also { it.itemType = AppAdapter.Type.STATS_PROFILE_ANIME_EPISODES_ITEM })
-                }
-                tab.libraryList.apply {
-                    clear()
-                    addAll(user.animeLibrary)
-                    addOrLast(2, Ad().also { it.itemType = AppAdapter.Type.AD_PROFILE_ITEM })
-                }
-                tab.favoritesList.apply {
-                    clear()
-                    addAll(user.animeFavorites)
-                }
-            }
-        }
-
-
-
-        binding.rvProfileUserStats.apply {
-            adapter = AppAdapter().apply {
-                submitList(currentTab.statsList)
-            }
-        }
-
-
-
-        binding.llProfileUserLibrary.setOnClickListener {
-            findNavController().navigate(
-                    ProfileFragmentDirections.actionProfileToLibrary(
-                            user.id!!,
-                            user.pseudo,
-                            when (currentTab) {
-                                ProfileTab.Manga -> LibraryFragment.LibraryType.MangaList
-                                ProfileTab.Anime -> LibraryFragment.LibraryType.AnimeList
-                            }
-                    )
-            )
-        }
-
-        binding.rvProfileUserLibrary.apply {
-            if (currentTab.libraryList.isEmpty()) {
-                visibility = View.GONE
-            } else {
-                visibility = View.VISIBLE
-                currentTab.libraryList.apply {
-                    subList(if (size < PREVIEW_SIZE) size else PREVIEW_SIZE, size).clear()
-                }
-                for (item in currentTab.libraryList) {
-                    when (item) {
-                        is MangaEntry -> item.itemType = AppAdapter.Type.MANGA_ENTRY_PROFILE_ITEM
-                        is AnimeEntry -> item.itemType = AppAdapter.Type.ANIME_ENTRY_PROFILE_ITEM
-                    }
-                }
-                adapter = AppAdapter(currentTab.libraryList)
-            }
-        }
-
-
-
-        binding.groupProfileUserLibraryFavorites.visibility = when {
-            currentTab.favoritesList.isEmpty() -> View.GONE
-            else -> View.VISIBLE
-        }
-
-        binding.llProfileUserLibraryFavorites.setOnClickListener {
-            findNavController().navigate(
-                    ProfileFragmentDirections.actionProfileToLibrary(
-                            user.id!!,
-                            user.pseudo,
-                            when (currentTab) {
-                                ProfileTab.Manga -> LibraryFragment.LibraryType.MangaFavoritesList
-                                ProfileTab.Anime -> LibraryFragment.LibraryType.AnimeFavoritesList
-                            }
-                    )
-            )
-        }
-
-        binding.rvProfileUserLibraryFavorites.apply {
-            if (currentTab.favoritesList.isEmpty()) {
-                visibility = View.GONE
-            } else {
-                visibility = View.VISIBLE
-                currentTab.favoritesList.apply {
-                    subList(if (size < PREVIEW_SIZE) size else PREVIEW_SIZE, size).clear()
-                }
-                for (item in currentTab.favoritesList) {
-                    when (item) {
-                        is MangaEntry -> item.itemType = AppAdapter.Type.MANGA_ENTRY_PROFILE_ITEM
-                        is AnimeEntry -> item.itemType = AppAdapter.Type.ANIME_ENTRY_PROFILE_ITEM
-                    }
-                }
-                adapter = AppAdapter(currentTab.favoritesList)
+                showTab(user)
             }
         }
     }
 
-    private fun addTab(profileTab: ProfileTab) {
-        if (!binding.tlProfile.contains(getString(profileTab.stringId))) {
-            binding.tlProfile.add(getString(profileTab.stringId))
+    private fun showTab(user: User) {
+        binding.tvProfileMediaFollowed.text = when (currentTab) {
+            ProfileTab.MANGA -> getString(R.string.manga)
+            ProfileTab.ANIME -> getString(R.string.anime)
         }
-    }
 
+        binding.tvProfileMediaFollowedCount.text = when (currentTab) {
+            ProfileTab.MANGA -> user.followedMangaCount.toString()
+            ProfileTab.ANIME -> user.followedAnimeCount.toString()
+        }
 
-    companion object {
-        private const val PREVIEW_SIZE = 15
+        childFragmentManager.beginTransaction().apply {
+            when (currentTab) {
+                ProfileTab.MANGA -> show(mangaFragment)
+                else -> hide(mangaFragment)
+            }
+            when (currentTab) {
+                ProfileTab.ANIME -> show(animeFragment)
+                else -> hide(animeFragment)
+            }
+            commitAllowingStateLoss()
+        }
     }
 }

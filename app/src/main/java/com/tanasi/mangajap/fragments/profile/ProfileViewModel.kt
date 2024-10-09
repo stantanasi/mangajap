@@ -1,7 +1,6 @@
 package com.tanasi.mangajap.fragments.profile
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
@@ -9,51 +8,91 @@ import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.jsonapi.bodies.JsonApiBody
-import com.tanasi.jsonapi.extensions.jsonApiName
-import com.tanasi.jsonapi.extensions.jsonApiType
-import com.tanasi.mangajap.models.*
+import com.tanasi.mangajap.models.Follow
+import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.services.MangaJapApiService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(userId: String) : ViewModel() {
 
     private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
-    private val _state: MutableLiveData<State> = MutableLiveData(State.Loading)
-    val state: LiveData<State> = _state
+    private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
+    private val _follow: MutableStateFlow<FollowState?> = MutableStateFlow(null)
+    val state: Flow<State> = combine(
+        _state,
+        _follow,
+    ) { state, follow ->
+        when (state) {
+            is State.SuccessLoading -> {
+                when (follow) {
+                    is FollowState.SuccessUpdatingFollowed -> {
+                        State.SuccessLoading(
+                            state.user,
+                            follow.followed,
+                            state.follower,
+                        )
+                    }
 
-    sealed class State {
-        object Loading: State()
-        data class SuccessLoading(val user: User, val followed: Follow?, val follower: Follow?): State()
-        data class FailedLoading(val error: JsonApiResponse.Error): State()
+                    else -> state
+                }
+            }
 
-        object UpdatingFollowed: State()
-        data class SuccessUpdatingFollowed(val followed: Follow?): State()
-        data class FailedUpdatingFollowed(val error: JsonApiResponse.Error): State()
+            else -> state
+        }
     }
 
-    fun getProfile(userId: String) = viewModelScope.launch {
-        _state.value = State.Loading
+    sealed class State {
+        data object Loading : State()
 
-        _state.value = try {
+        data class SuccessLoading(
+            val user: User,
+            val followed: Follow?,
+            val follower: Follow?
+        ) : State()
+
+        data class FailedLoading(val error: JsonApiResponse.Error) : State()
+    }
+
+    sealed class FollowState {
+        data object UpdatingFollowed : FollowState()
+        data class SuccessUpdatingFollowed(val followed: Follow?) : FollowState()
+        data class FailedUpdatingFollowed(val error: JsonApiResponse.Error) : FollowState()
+    }
+
+    init {
+        getProfile(userId)
+    }
+
+
+    private fun getProfile(userId: String) = viewModelScope.launch(Dispatchers.IO) {
+        _state.emit(State.Loading)
+
+        try {
             val selfId = Firebase.auth.uid!!
 
-            val userResponseDeferred = async { mangaJapApiService.getUser(
-                userId,
-                JsonApiParams(
-                    include = listOf(
-                        "manga-library.manga",
-                        "anime-library.anime",
-                        "manga-favorites.manga",
-                        "anime-favorites.anime"
-                    ),
-                    fields = mapOf(
-                        "manga" to listOf("title", "coverImage", "volumeCount", "chapterCount"),
-                        "anime" to listOf("title", "coverImage", "episodeCount")
-                    ),
+            val userResponseDeferred = async {
+                mangaJapApiService.getUser(
+                    userId,
+                    JsonApiParams(
+                        include = listOf(
+                            "manga-library.manga",
+                            "anime-library.anime",
+                            "manga-favorites.manga",
+                            "anime-favorites.anime"
+                        ),
+                        fields = mapOf(
+                            "manga" to listOf("title", "coverImage", "volumeCount", "chapterCount"),
+                            "anime" to listOf("title", "coverImage", "episodeCount")
+                        ),
+                    )
                 )
-            ) }
+            }
             val followedResponseDeferred = async {
                 if (userId != selfId) {
                     mangaJapApiService.getFollows(
@@ -90,58 +129,93 @@ class ProfileViewModel : ViewModel() {
             when {
                 userResponse is JsonApiResponse.Success &&
                         followedResponse is JsonApiResponse.Success &&
-                        followerResponse is JsonApiResponse.Success -> State.SuccessLoading(
-                    userResponse.body.data!!,
-                    followedResponse.body.data?.firstOrNull(),
-                    followerResponse.body.data?.firstOrNull()
-                )
+                        followerResponse is JsonApiResponse.Success -> {
+                    _state.emit(
+                        State.SuccessLoading(
+                            userResponse.body.data!!,
+                            followedResponse.body.data?.firstOrNull(),
+                            followerResponse.body.data?.firstOrNull()
+                        )
+                    )
+                }
 
-                userResponse is JsonApiResponse.Success -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load user data")))
-                userResponse is JsonApiResponse.Error -> State.FailedLoading(userResponse)
+                userResponse is JsonApiResponse.Success -> {
+                    _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load user data"))))
+                }
 
-                followedResponse is JsonApiResponse.Success -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load followed data")))
-                followedResponse is JsonApiResponse.Error -> State.FailedLoading(followedResponse)
+                userResponse is JsonApiResponse.Error -> {
+                    _state.emit(State.FailedLoading(userResponse))
+                }
 
-                followerResponse is JsonApiResponse.Success -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load follower data")))
-                followerResponse is JsonApiResponse.Error -> State.FailedLoading(followerResponse)
+                followedResponse is JsonApiResponse.Success -> {
+                    _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load followed data"))))
+                }
 
-                else -> State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load data")))
+                followedResponse is JsonApiResponse.Error -> {
+                    _state.emit(State.FailedLoading(followedResponse))
+                }
+
+                followerResponse is JsonApiResponse.Success -> {
+                    _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load follower data"))))
+                }
+
+                followerResponse is JsonApiResponse.Error -> {
+                    _state.emit(State.FailedLoading(followerResponse))
+                }
+
+                else -> {
+                    _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(Exception("Unable to load data"))))
+                }
             }
         } catch (e: Exception) {
-            State.FailedLoading(JsonApiResponse.Error.UnknownError(e))
+            Log.e("ProfileViewModel", "getProfile: ", e)
+            _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(e)))
         }
     }
 
-    fun follow(follow: Follow) = viewModelScope.launch {
-        _state.value = State.UpdatingFollowed
+    fun follow(follow: Follow) = viewModelScope.launch(Dispatchers.IO) {
+        _follow.emit(FollowState.UpdatingFollowed)
 
-        val response = mangaJapApiService.createFollow(
+        try {
+            val response = mangaJapApiService.createFollow(
                 follow
-        )
-        _state.value = try {
+            )
+
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessUpdatingFollowed(response.body.data!!)
-                is JsonApiResponse.Error -> State.FailedUpdatingFollowed(response)
+                is JsonApiResponse.Success -> {
+                    _follow.emit(FollowState.SuccessUpdatingFollowed(response.body.data!!))
+                }
+
+                is JsonApiResponse.Error -> {
+                    _follow.emit(FollowState.FailedUpdatingFollowed(response))
+                }
             }
         } catch (e: Exception) {
-            State.FailedUpdatingFollowed(JsonApiResponse.Error.UnknownError(e))
+            Log.e("ProfileViewModel", "follow: ", e)
+            _follow.emit(FollowState.FailedUpdatingFollowed(JsonApiResponse.Error.UnknownError(e)))
         }
     }
 
-    fun deleteFollow(follow: Follow) = viewModelScope.launch {
-        _state.value = State.UpdatingFollowed
+    fun unfollow(follow: Follow) = viewModelScope.launch(Dispatchers.IO) {
+        _follow.emit(FollowState.UpdatingFollowed)
 
-        _state.value = try {
+        try {
             val response = mangaJapApiService.deleteFollow(
                 follow.id!!
             )
 
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessUpdatingFollowed(null)
-                is JsonApiResponse.Error -> State.FailedUpdatingFollowed(response)
+                is JsonApiResponse.Success -> {
+                    _follow.emit(FollowState.SuccessUpdatingFollowed(null))
+                }
+
+                is JsonApiResponse.Error -> {
+                    _follow.emit(FollowState.FailedUpdatingFollowed(response))
+                }
             }
         } catch (e: Exception) {
-            State.FailedUpdatingFollowed(JsonApiResponse.Error.UnknownError(e))
+            Log.e("ProfileViewModel", "unfollow: ", e)
+            _follow.emit(FollowState.FailedUpdatingFollowed(JsonApiResponse.Error.UnknownError(e)))
         }
     }
 }

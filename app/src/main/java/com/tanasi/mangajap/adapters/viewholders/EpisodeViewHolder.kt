@@ -31,7 +31,7 @@ class EpisodeViewHolder(
 
     private fun updateAnimeEntry(animeEntry: AnimeEntry) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is AnimeFragment -> fragment.viewModel.updateAnimeEntry(animeEntry)
+            is AnimeFragment -> fragment.viewModel.saveAnimeEntry(animeEntry)
         }
     }
 

@@ -16,6 +16,7 @@ import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.models.People
 import com.tanasi.mangajap.models.Request
 import com.tanasi.mangajap.models.Review
+import com.tanasi.mangajap.models.Season
 import com.tanasi.mangajap.models.User
 import com.tanasi.oauth2.adapter.OAuth2CallAdapterFactory
 import com.tanasi.oauth2.converter.OAuth2ConverterFactory
@@ -35,23 +36,26 @@ interface MangaJapApiService {
 
     companion object {
         fun build(): MangaJapApiService {
-            val client = OkHttpClient.Builder().addInterceptor { chain ->
-                val requestBuilder = chain.request().newBuilder()
-                    .addHeader("Accept", "application/vnd.api+json")
-                    .addHeader("Content-Type", "application/vnd.api+json")
+            val client = OkHttpClient.Builder()
+                .readTimeout(60, TimeUnit.SECONDS)
+                .addInterceptor { chain ->
+                    val requestBuilder = chain.request().newBuilder()
+                        .addHeader("Accept", "application/vnd.api+json")
+                        .addHeader("Content-Type", "application/vnd.api+json")
 
-                Firebase.auth.currentUser?.getIdToken(false)
-                    ?.let {
-                        val tokenResult = Tasks.await(it, 10, TimeUnit.SECONDS)
-                        tokenResult.token
-                    }
-                    ?.let { idToken ->
-                        requestBuilder.addHeader("Authorization", idToken)
-                    }
+                    Firebase.auth.currentUser?.getIdToken(false)
+                        ?.let {
+                            val tokenResult = Tasks.await(it, 10, TimeUnit.SECONDS)
+                            tokenResult.token
+                        }
+                        ?.let { idToken ->
+                            requestBuilder.addHeader("Authorization", idToken)
+                        }
 
 
-                chain.proceed(requestBuilder.build())
-            }.build()
+                    chain.proceed(requestBuilder.build())
+                }
+                .build()
 
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api-za7rwcomoa-uc.a.run.app/")
@@ -82,6 +86,12 @@ interface MangaJapApiService {
         @Path("id") id: String,
         @QueryMap params: JsonApiParams = JsonApiParams()
     ): JsonApiResponse<Anime>
+
+    @GET("anime/{id}/seasons")
+    suspend fun getAnimeSeasons(
+        @Path("id") animeId: String,
+        @QueryMap params: JsonApiParams = JsonApiParams()
+    ): JsonApiResponse<List<Season>>
 
     @GET("anime/{id}/reviews")
     suspend fun getAnimeReviews(

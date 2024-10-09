@@ -46,11 +46,31 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/fl_search"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/f_search_manga"
+        android:name="com.tanasi.mangajap.fragments.search.SearchMangaFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:descendantFocusability="blocksDescendants"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/f_search_anime"
+        android:name="com.tanasi.mangajap.fragments.search.SearchAnimeFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/f_search_users"
+        android:name="com.tanasi.mangajap.fragments.search.SearchUsersFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

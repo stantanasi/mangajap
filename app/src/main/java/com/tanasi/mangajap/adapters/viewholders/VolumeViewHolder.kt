@@ -35,13 +35,13 @@ class VolumeViewHolder(
 
     private fun displayVolume(binding: ItemVolumeMangaBinding) {
         binding.root.setOnClickListener {
-            when (val fragment = context.toActivity()?.getCurrentFragment()) {
-                is MangaFragment -> fragment.also {
-                    if (it.showDetailsVolume == volume) it.showDetailsVolume = null
-                    else it.showDetailsVolume = volume
-                    it.displayManga()
-                }
-            }
+//            when (val fragment = context.toActivity()?.getCurrentFragment()) {
+//                is MangaFragment -> fragment.also {
+//                    if (it.showDetailsVolume == volume) it.showDetailsVolume = null
+//                    else it.showDetailsVolume = volume
+//                    it.displayManga()
+//                }
+//            }
         }
 
         binding.ivVolumeCover.apply {

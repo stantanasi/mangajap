@@ -12,7 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.messaging.FirebaseMessaging
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.ActivityMainBinding
-import com.tanasi.mangajap.fragments.settingsPreference.SettingsPreferenceFragment
+import com.tanasi.mangajap.fragments.settingspreference.SettingsPreferenceFragment
 import com.tanasi.mangajap.utils.extensions.setNightMode
 import com.tanasi.mangajap.utils.extensions.setLocale
 import com.tanasi.mangajap.utils.preferences.GeneralPreference

@@ -20,7 +20,7 @@ class Season(
     updatedAt: String? = null,
 
     var anime: Anime? = null,
-    val episodes: MutableList<Episode> = mutableListOf(),
+    val episodes: List<Episode> = emptyList(),
 ) : AppAdapter.Item {
 
     val title: String
@@ -69,7 +69,7 @@ class Season(
         createdAt: String? = this.createdAt?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
         updatedAt: String? = this.updatedAt?.format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
         anime: Anime? = this.anime,
-        episodes: MutableList<Episode> = this.episodes.toMutableList(),
+        episodes: List<Episode> = this.episodes,
     ) = Season(
         id = id,
         titles = titles,

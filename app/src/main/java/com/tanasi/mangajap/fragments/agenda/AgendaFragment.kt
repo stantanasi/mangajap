@@ -4,56 +4,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentAgendaBinding
-import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
-import com.tanasi.mangajap.ui.SpacingItemDecoration
-import com.tanasi.mangajap.utils.extensions.add
-import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.preferences.GeneralPreference
 
 class AgendaFragment : Fragment() {
 
-    private enum class AgendaTab(
-            val stringId: Int,
-            var fragment: RecyclerViewFragment = RecyclerViewFragment(),
-            var list: MutableList<AppAdapter.Item> = mutableListOf()
-    ) {
-        ReadList(R.string.read_list),
-        WatchList(R.string.watch_list);
+    private enum class AgendaTab(val stringId: Int) {
+        MANGA(R.string.read_list),
+        ANIME(R.string.watch_list);
     }
 
     private var _binding: FragmentAgendaBinding? = null
-    private val binding: FragmentAgendaBinding get() = _binding!!
-
-    private val viewModel: AgendaViewModel by viewModels()
+    private val binding get() = _binding!!
 
     private lateinit var generalPreference: GeneralPreference
 
-    private lateinit var currentTab: AgendaTab
+    private var currentTab = AgendaTab.entries.first()
+    private val mangaFragment by lazy { binding.fAgendaManga.getFragment<AgendaMangaFragment>() }
+    private val animeFragment by lazy { binding.fAgendaAnime.getFragment<AgendaAnimeFragment>() }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentAgendaBinding.inflate(inflater, container, false)
-        AgendaTab.values().forEach {
-            it.fragment = RecyclerViewFragment()
-            it.list = mutableListOf()
-            it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
-            it.fragment.setPadding(resources.getDimension(R.dimen.agenda_spacing).toInt())
-            it.fragment.addItemDecoration(SpacingItemDecoration(
-                spacing = resources.getDimension(R.dimen.agenda_spacing).toInt()
-            ))
-            addTab(it)
-        }
         return binding.root
     }
 
@@ -62,68 +40,29 @@ class AgendaFragment : Fragment() {
 
         generalPreference = GeneralPreference(requireContext())
 
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                AgendaViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
-                is AgendaViewModel.State.SuccessLoading -> {
-                    AgendaTab.ReadList.list.apply {
-                        clear()
-                        addAll(state.readingManga.filter { mangaEntry ->
-                            mangaEntry.manga?.let { manga -> mangaEntry.getProgress(manga) < 100 }
-                                ?: false
-                        })
-                    }
-                    AgendaTab.WatchList.list.apply {
-                        clear()
-                        addAll(state.watchingAnime.filter { animeEntry ->
-                            animeEntry.anime?.let { anime -> animeEntry.getProgress(anime) < 100 }
-                                ?: false
-                        })
-                    }
-                    AgendaTab.values().map { it.fragment.adapter?.notifyDataSetChanged() }
-                    binding.isLoading.root.visibility = View.GONE
-                }
-                is AgendaViewModel.State.FailedLoading -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
-                    }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
-
-        viewModel.getAgenda(Firebase.auth.uid!!)
-
-        if (!this::currentTab.isInitialized) {
-            currentTab = when (generalPreference.displayFirst) {
-                GeneralPreference.DisplayFirst.Manga -> AgendaTab.ReadList
-                GeneralPreference.DisplayFirst.Anime -> AgendaTab.WatchList
-            }
-        }
-
-        displayAgenda()
+        initializeAgenda()
     }
 
 
-    private fun displayAgenda() {
+    private fun initializeAgenda() {
+        currentTab = when (generalPreference.displayFirst) {
+            GeneralPreference.DisplayFirst.Manga -> AgendaTab.MANGA
+            GeneralPreference.DisplayFirst.Anime -> AgendaTab.ANIME
+        }
+
         binding.tlAgenda.apply {
+            AgendaTab.entries
+                .map { newTab().setText(getString(it.stringId)) }
+                .forEach { addTab(it) }
+
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    currentTab = AgendaTab.values()[tab.position]
+                    currentTab = AgendaTab.entries[tab.position]
                     generalPreference.displayFirst = when (currentTab) {
-                        AgendaTab.ReadList -> GeneralPreference.DisplayFirst.Manga
-                        AgendaTab.WatchList -> GeneralPreference.DisplayFirst.Anime
+                        AgendaTab.MANGA -> GeneralPreference.DisplayFirst.Manga
+                        AgendaTab.ANIME -> GeneralPreference.DisplayFirst.Anime
                     }
-                    showTab(currentTab)
+                    showTab()
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -131,38 +70,22 @@ class AgendaFragment : Fragment() {
             })
             getTabAt(currentTab.ordinal)?.apply {
                 select()
-                showTab(currentTab)
+                showTab()
             }
         }
     }
 
-
-    private fun addTab(agendaTab: AgendaTab) {
-        val ft: FragmentTransaction = childFragmentManager.beginTransaction()
-
-        if (!binding.tlAgenda.contains(getString(agendaTab.stringId))) {
-            binding.tlAgenda.add(getString(agendaTab.stringId))
-            if (agendaTab.fragment.isAdded) {
-                ft.detach(agendaTab.fragment)
-                ft.attach(agendaTab.fragment)
-            } else {
-                ft.add(binding.flAgenda.id, agendaTab.fragment)
+    private fun showTab() {
+        childFragmentManager.beginTransaction().apply {
+            when (currentTab) {
+                AgendaTab.MANGA -> show(mangaFragment)
+                else -> hide(mangaFragment)
             }
-        }
-
-        ft.commitAllowingStateLoss()
-    }
-
-    private fun showTab(agendaTab: AgendaTab) {
-        val ft: FragmentTransaction = childFragmentManager.beginTransaction()
-
-        AgendaTab.values().forEach {
-            when (agendaTab) {
-                it -> ft.show(agendaTab.fragment)
-                else -> ft.hide(it.fragment)
+            when (currentTab) {
+                AgendaTab.ANIME -> show(animeFragment)
+                else -> hide(animeFragment)
             }
+            commitAllowingStateLoss()
         }
-
-        ft.commitAllowingStateLoss()
     }
 }

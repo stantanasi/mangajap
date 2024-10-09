@@ -2,189 +2,104 @@ package com.tanasi.mangajap.fragments.anime
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
-import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentAnimeBinding
 import com.tanasi.mangajap.databinding.PopupAnimeBinding
-import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
-import com.tanasi.mangajap.models.Season
 import com.tanasi.mangajap.models.User
-import com.tanasi.mangajap.ui.SpacingItemDecoration
-import com.tanasi.mangajap.utils.extensions.add
-import com.tanasi.mangajap.utils.extensions.contains
 import com.tanasi.mangajap.utils.extensions.setToolbar
 import com.tanasi.mangajap.utils.extensions.shareText
+import com.tanasi.mangajap.utils.extensions.viewModelsFactory
+import kotlinx.coroutines.launch
 
 class AnimeFragment : Fragment() {
 
-    private enum class AnimeTab(
-        val stringId: Int,
-        var fragment: RecyclerViewFragment = RecyclerViewFragment(),
-        var list: MutableList<AppAdapter.Item> = mutableListOf()
-    ) {
-        About(R.string.about),
-        Episodes(R.string.episodes);
+    private enum class AnimeTab(val stringId: Int) {
+        ABOUT(R.string.about),
+        EPISODES(R.string.episodes);
     }
 
     private var _binding: FragmentAnimeBinding? = null
-    private val binding: FragmentAnimeBinding get() = _binding!!
+    private val binding get() = _binding!!
 
-    private val args: AnimeFragmentArgs by navArgs()
-    val viewModel: AnimeViewModel by viewModels()
+    private val args by navArgs<AnimeFragmentArgs>()
+    val viewModel by viewModelsFactory { AnimeViewModel(args.animeId) }
 
     private lateinit var anime: Anime
+    private val aboutFragment by lazy { binding.fAnimeAbout.getFragment<AnimeAboutFragment>() }
+    private val episodesFragment by lazy { binding.fAnimeEpisodes.getFragment<AnimeEpisodesFragment>() }
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentAnimeBinding.inflate(inflater, container, false)
-        viewModel.getAnime(args.animeId)
-        AnimeTab.values().forEach {
-            it.fragment = RecyclerViewFragment()
-            it.list = mutableListOf()
-        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setToolbar(args.animeTitle, "")
-        setHasOptionsMenu(true)
+        initializeAnime()
 
-        AnimeTab.values().forEach {
-            it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
-            when (it) {
-                AnimeTab.About -> {}
-                AnimeTab.Episodes -> {
-                    it.fragment.setPadding(resources.getDimension(R.dimen.anime_spacing).toInt())
-                    it.fragment.addItemDecoration(SpacingItemDecoration(
-                        spacing = resources.getDimension(R.dimen.anime_spacing).toInt()
-                    ))
-                }
-            }
-            addTab(it)
-        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
+                when (state) {
+                    AnimeViewModel.State.Loading -> binding.isLoading.apply {
+                        root.visibility = View.VISIBLE
+                    }
 
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                AnimeViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
-                is AnimeViewModel.State.SuccessLoading -> {
-                    anime = state.anime
-                    displayAnime()
-                    binding.isLoading.root.visibility = View.GONE
-                }
-                is AnimeViewModel.State.FailedLoading -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    is AnimeViewModel.State.SuccessLoading -> {
+                        displayAnime(state.anime)
+                        binding.isLoading.root.visibility = View.GONE
                     }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
 
-                is AnimeViewModel.State.LoadingEpisodes -> {
-                    state.season.isLoadingEpisodes = true
-                }
-                is AnimeViewModel.State.SuccessLoadingEpisodes -> {
-                    displayAnime()
-                    state.season.isLoadingEpisodes = false
-                }
-                is AnimeViewModel.State.FailedLoadingEpisodes -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
-                    }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                    is AnimeViewModel.State.FailedLoading -> {
+                        when (state.error) {
+                            is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                                Toast.makeText(
+                                    requireContext(),
+                                    it.title,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
 
-                AnimeViewModel.State.AddingEntry -> {
-                    binding.clAnimeProgressionAdd.setOnClickListener(null)
-                    binding.ivAnimeProgressionAdd.visibility = View.GONE
-                    binding.pbAnimeProgressionAdd.visibility = View.VISIBLE
-                }
-                is AnimeViewModel.State.SuccessAddingEntry -> {
-                    binding.ivAnimeProgressionAdd.apply {
-                        visibility = View.VISIBLE
-                        setImageResource(R.drawable.ic_check_black_24dp)
-                    }
-                    binding.pbAnimeProgressionAdd.visibility = View.GONE
-                    binding.tvAnimeProgressionAdd.text = getString(R.string.added_to_library)
-                    anime.animeEntry = state.animeEntry
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        displayAnime()
-                    }, 1 * 1000.toLong())
-                }
-                is AnimeViewModel.State.FailedAddingEntry -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
-                    }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                            is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                AnimeViewModel.State.Updating -> binding.isUpdating.root.visibility = View.VISIBLE
-                is AnimeViewModel.State.SuccessUpdating -> {
-                    anime.animeEntry = state.animeEntry
-                    displayAnime()
-                    binding.isUpdating.root.visibility = View.GONE
-                }
-                is AnimeViewModel.State.FailedUpdating -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                            is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
         }
@@ -213,6 +128,7 @@ class AnimeFragment : Fragment() {
                 displayPopupWindow()
                 return true
             }
+
             R.id.share -> {
                 shareText(getString(R.string.shareAnime, anime.title))
                 return true
@@ -222,136 +138,96 @@ class AnimeFragment : Fragment() {
     }
 
 
-    fun displayAnime() {
-        if (_binding == null) {
-            (requireActivity() as MainActivity).reloadActivity()
-            return
-        }
-
-        activity?.invalidateOptionsMenu()
-
-        binding.pbAnimeProgressionProgress.apply {
-            anime.animeEntry?.let { animeEntry ->
-                progress = animeEntry.getProgress(anime)
-                progressTintList = ContextCompat.getColorStateList(requireContext(), animeEntry.getProgressColor(anime))
-            }
-        }
-
-        binding.clAnimeProgressionAdd.apply {
-            anime.animeEntry?.let { animeEntry ->
-                if (animeEntry.isAdd) {
-                    visibility =  View.GONE
-                } else {
-                    visibility = View.VISIBLE
-                    setOnClickListener { _ ->
-                        viewModel.addAnimeEntry(animeEntry.also {
-                            it.isAdd = true
-                        })
-                    }
-                }
-            } ?: also {
-                visibility = View.VISIBLE
-                setOnClickListener { _ ->
-                    viewModel.addAnimeEntry(AnimeEntry().also {
-                        it.isAdd = true
-                        it.status = AnimeEntry.Status.WATCHING
-                        it.user = User(id = Firebase.auth.uid)
-                        it.anime = anime
-                    })
-                }
-            }
-        }
-
-        binding.ivAnimeProgressionAdd.setImageResource(R.drawable.ic_add_black_24dp)
-
-        binding.pbAnimeProgressionAdd.visibility = View.GONE
-
-        binding.tvAnimeProgressionAdd.text = getString(R.string.add_anime_to_library)
-
-        setAnimeAboutFragment()
-        setAnimeEpisodesFragment()
+    private fun initializeAnime() {
+        setToolbar(args.animeTitle, "")
+        setHasOptionsMenu(true)
 
         binding.tlAnime.apply {
+            AnimeTab.entries
+                .map { newTab().setText(getString(it.stringId)) }
+                .forEach { addTab(it) }
+
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    showTab(AnimeTab.values()[tab.position])
+                    showTab(AnimeTab.entries[tab.position])
                 }
+
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
                 override fun onTabReselected(tab: TabLayout.Tab) {}
             })
             getTabAt(selectedTabPosition)?.apply {
                 select()
-                showTab(AnimeTab.values()[position])
+                showTab(AnimeTab.entries[selectedTabPosition])
             }
         }
     }
 
-    private fun setAnimeAboutFragment() {
-        AnimeTab.About.list.apply {
-            clear()
-            add(anime.copy().apply { itemType = AppAdapter.Type.ANIME })
-            add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_SUMMARY })
-            if (anime.animeEntry != null)
-                add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_PROGRESSION })
-            if (anime.franchises.isNotEmpty())
-                add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_FRANCHISES })
-            add(anime.copy().apply { itemType = AppAdapter.Type.ANIME_REVIEWS })
-        }
+    private fun displayAnime(anime: Anime) {
+        this.anime = anime
+        requireActivity().invalidateOptionsMenu()
 
-        if (AnimeTab.About.fragment.isAdded)
-            AnimeTab.About.fragment.adapter?.notifyDataSetChanged()
-    }
-
-    private fun setAnimeEpisodesFragment() {
-        AnimeTab.Episodes.list.apply {
-            clear()
-            add(Season("").apply { itemType = AppAdapter.Type.SEASON_ANIME_HEADER })
-        }
-        for (season in anime.seasons) {
-            AnimeTab.Episodes.list.add(season)
-            if (season.isShowingEpisodes) {
-                AnimeTab.Episodes.list.addAll(season.episodes.map { episode ->
-                    episode.apply { itemType = AppAdapter.Type.EPISODE_ITEM }
-                })
+        binding.pbAnimeProgressionProgress.apply {
+            progress = anime.animeEntry?.getProgress(anime) ?: 0
+            progressTintList = anime.animeEntry?.let {
+                ContextCompat.getColorStateList(
+                    requireContext(),
+                    it.getProgressColor(anime)
+                )
             }
         }
 
-        if (AnimeTab.Episodes.fragment.isAdded)
-            AnimeTab.Episodes.fragment.adapter?.notifyDataSetChanged()
+        binding.clAnimeProgressionAdd.apply {
+            setOnClickListener {
+                val animeEntry = anime.animeEntry?.also {
+                    it.isAdd = true
+                } ?: AnimeEntry().also {
+                    it.isAdd = true
+                    it.status = AnimeEntry.Status.WATCHING
+                    it.user = User(id = Firebase.auth.uid)
+                    it.anime = anime
+                }
 
-    }
+                viewModel.saveAnimeEntry(animeEntry)
 
-    private fun addTab(animeTab: AnimeTab) {
-        val ft: FragmentTransaction = childFragmentManager.beginTransaction()
+                setOnClickListener(null)
+                binding.ivAnimeProgressionAdd.visibility = View.GONE
+                binding.pbAnimeProgressionAdd.visibility = View.VISIBLE
+            }
 
-        if (!binding.tlAnime.contains(getString(animeTab.stringId))) {
-            binding.tlAnime.add(getString(animeTab.stringId))
-            if (animeTab.fragment.isAdded) {
-                ft.detach(animeTab.fragment)
-                ft.attach(animeTab.fragment)
-            } else {
-                ft.add(binding.flAnime.id, animeTab.fragment)
+            visibility = when {
+                anime.animeEntry?.isAdd == true -> View.GONE
+                else -> View.VISIBLE
             }
         }
 
-        ft.commitAllowingStateLoss()
+        binding.ivAnimeProgressionAdd.visibility = View.VISIBLE
+
+        binding.pbAnimeProgressionAdd.visibility = View.GONE
+
+        binding.tvAnimeProgressionAdd.text = getString(R.string.add_anime_to_library)
+    }
+
+    fun reloadEpisodes() {
+        episodesFragment.reload()
     }
 
     private fun showTab(animeTab: AnimeTab) {
-        val ft: FragmentTransaction = childFragmentManager.beginTransaction()
-
-        AnimeTab.values().forEach {
+        childFragmentManager.beginTransaction().apply {
             when (animeTab) {
-                it -> ft.show(animeTab.fragment)
-                else -> ft.hide(it.fragment)
+                AnimeTab.ABOUT -> show(aboutFragment)
+                else -> hide(aboutFragment)
             }
+            when (animeTab) {
+                AnimeTab.EPISODES -> show(episodesFragment)
+                else -> hide(episodesFragment)
+            }
+            commitAllowingStateLoss()
         }
-
-        ft.commitAllowingStateLoss()
     }
 
     private fun displayPopupWindow() {
-        val layoutInflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layoutInflater =
+            requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupAnimeBinding = PopupAnimeBinding.inflate(layoutInflater)
 
         val popupWindow = PopupWindow(
@@ -364,11 +240,12 @@ class AnimeFragment : Fragment() {
             showAtLocation(popupAnimeBinding.root, Gravity.TOP or Gravity.END, 100, 200)
         }
 
-        popupAnimeBinding.tvPopupAnimeStatus.text = getString(anime.animeEntry?.status?.stringId ?: AnimeEntry.Status.WATCHING.stringId)
+        popupAnimeBinding.tvPopupAnimeStatus.text =
+            getString(anime.animeEntry?.status?.stringId ?: AnimeEntry.Status.WATCHING.stringId)
 
         popupAnimeBinding.vPopupAnimeDelete.setOnClickListener { _ ->
             anime.animeEntry?.let { animeEntry ->
-                viewModel.updateAnimeEntry(animeEntry.apply {
+                viewModel.saveAnimeEntry(animeEntry.apply {
                     isAdd = false
                 })
             }

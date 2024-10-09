@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.ItemReviewBinding
 import com.tanasi.mangajap.databinding.ItemReviewHeaderBinding
-import com.tanasi.mangajap.fragments.reviewSave.ReviewSaveFragment
+import com.tanasi.mangajap.fragments.reviewsave.ReviewSaveFragment
 import com.tanasi.mangajap.fragments.reviews.ReviewsFragmentDirections
 import com.tanasi.mangajap.models.Review
 import com.tanasi.mangajap.utils.extensions.format

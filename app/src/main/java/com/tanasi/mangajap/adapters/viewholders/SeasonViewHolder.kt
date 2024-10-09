@@ -34,16 +34,7 @@ class SeasonViewHolder(
 
     private fun updateAnimeEntry(animeEntry: AnimeEntry) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is AnimeFragment -> fragment.viewModel.updateAnimeEntry(animeEntry)
-        }
-    }
-
-    private fun showEpisodes() {
-        when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is AnimeFragment -> {
-                fragment.viewModel.getSeasonEpisodes(season)
-                fragment.displayAnime()
-            }
+            is AnimeFragment -> fragment.viewModel.saveAnimeEntry(animeEntry)
         }
     }
 
@@ -53,7 +44,12 @@ class SeasonViewHolder(
     private fun displaySeasonAnime(binding: ItemSeasonAnimeBinding) {
         binding.root.setOnClickListener {
             season.isShowingEpisodes = !season.isShowingEpisodes
-            showEpisodes()
+            bindingAdapter?.notifyItemChanged(bindingAdapterPosition)
+            when (val fragment = context.toActivity()?.getCurrentFragment()) {
+                is AnimeFragment -> {
+                    fragment.reloadEpisodes()
+                }
+            }
         }
 
         binding.tvSeasonNumber.text = context.resources.getString(R.string.seasonNumber, season.number)

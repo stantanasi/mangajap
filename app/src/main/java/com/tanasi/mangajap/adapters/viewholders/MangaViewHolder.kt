@@ -69,22 +69,22 @@ class MangaViewHolder(
 
     private fun createMangaEntry(mangaEntry: MangaEntry) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is SearchFragment -> fragment.viewModel.createMangaEntry(manga, mangaEntry)
+            is SearchFragment -> fragment.mangaFragment.saveMangaEntry(manga, mangaEntry)
             is DiscoverFragment -> fragment.viewModel.createMangaEntry(manga, mangaEntry)
         }
     }
 
     private fun updateMangaEntry(mangaEntry: MangaEntry) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is MangaFragment -> fragment.viewModel.updateMangaEntry(mangaEntry)
-            is SearchFragment -> fragment.viewModel.updateMangaEntry(manga, mangaEntry)
+            is MangaFragment -> fragment.viewModel.saveMangaEntry(mangaEntry)
+            is SearchFragment -> fragment.mangaFragment.saveMangaEntry(manga, mangaEntry)
             is DiscoverFragment -> fragment.viewModel.updateMangaEntry(manga, mangaEntry)
         }
     }
 
     private fun createMangaRequest(request: Request) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is SearchFragment -> fragment.viewModel.createRequest(request)
+            is SearchFragment -> fragment.mangaFragment.saveRequest(request)
         }
     }
 
@@ -132,10 +132,7 @@ class MangaViewHolder(
 
     private fun displaySearchAdd(binding: ItemMediaSearchAddBinding) {
         binding.root.setOnClickListener {
-            val query = when (val fragment = context.toActivity()?.getCurrentFragment()) {
-                is SearchFragment -> fragment.query
-                else -> ""
-            }
+            val query = ""
 
             EditTextDialog(
                     context,

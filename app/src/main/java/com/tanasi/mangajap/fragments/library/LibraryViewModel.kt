@@ -1,152 +1,238 @@
 package com.tanasi.mangajap.fragments.library
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResource
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.adapters.AppAdapter
+import com.tanasi.mangajap.fragments.library.LibraryFragment.LibraryType
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.services.MangaJapApiService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-class LibraryViewModel : ViewModel() {
+class LibraryViewModel(userId: String, libraryType: LibraryType) : ViewModel() {
 
     private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
-    private val _state: MutableLiveData<State> = MutableLiveData(State.Loading)
-    val state: LiveData<State> = _state
+    private val _state = MutableStateFlow<State>(State.Loading)
+    private val _savingState = MutableStateFlow<SavingState?>(null)
+    val state: Flow<State> = combine(
+        _state,
+        _savingState,
+    ) { state, savingState ->
+        when (state) {
+            is State.SuccessLoading -> {
+                when (savingState) {
+                    is SavingState.SuccessSaving -> {
+                        State.SuccessLoading(
+                            itemList = state.itemList.map { item ->
+                                when (savingState.entry) {
+                                    is AnimeEntry -> state.itemList
+                                        .filterIsInstance<AnimeEntry>()
+                                        .find { it.id == savingState.entry.id }
+                                        ?.copy()
+                                        ?: item
+
+                                    is MangaEntry -> state.itemList
+                                        .filterIsInstance<MangaEntry>()
+                                        .find { it.id == savingState.entry.id }
+                                        ?.copy()
+                                        ?: item
+
+                                    else -> item
+                                }
+                            }
+                        )
+                    }
+
+                    else -> state
+                }
+            }
+
+            else -> state
+        }
+    }
 
     sealed class State {
-        object Loading: State()
-        data class SuccessLoading(val itemList: List<AppAdapter.Item>): State()
-        data class FailedLoading(val error: JsonApiResponse.Error): State()
-
-        object Saving: State()
-        data class SuccessSaving(val jsonApiResource: JsonApiResource): State()
-        data class FailedSaving(val error: JsonApiResponse.Error): State()
+        data object Loading : State()
+        data class SuccessLoading(val itemList: List<AppAdapter.Item>) : State()
+        data class FailedLoading(val error: JsonApiResponse.Error) : State()
     }
 
-    fun getMangaLibrary(userId: String) = viewModelScope.launch {
-        _state.value = State.Loading
-
-        val response = mangaJapApiService.getUserMangaLibrary(
-                userId,
-                JsonApiParams(
-                        include = listOf("manga"),
-                        sort = listOf("-updatedAt"),
-                        limit = 500
-                )
-        )
-        _state.value = try {
-            when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.MANGA_ENTRY_LIBRARY_ITEM } })
-                is JsonApiResponse.Error -> State.FailedLoading(response)
-            }
-        } catch (e: Exception) {
-            State.FailedLoading(JsonApiResponse.Error.UnknownError(e))
-        }
+    sealed class SavingState {
+        data object Saving : SavingState()
+        data class SuccessSaving(val entry: JsonApiResource) : SavingState()
+        data class FailedSaving(val error: JsonApiResponse.Error) : SavingState()
     }
 
-    fun getAnimeLibrary(userId: String) = viewModelScope.launch {
-        _state.value = State.Loading
-
-        val response = mangaJapApiService.getUserAnimeLibrary(
-                userId,
-                JsonApiParams(
-                        include = listOf("anime"),
-                        sort = listOf("-updatedAt"),
-                        limit = 500
-                )
-        )
-        _state.value = try {
-            when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.ANIME_ENTRY_LIBRARY_ITEM } })
-                is JsonApiResponse.Error -> State.FailedLoading(response)
-            }
-        } catch (e: Exception) {
-            State.FailedLoading(JsonApiResponse.Error.UnknownError(e))
-        }
-    }
-
-    fun getMangaFavorites(userId: String) = viewModelScope.launch {
-        _state.value = State.Loading
-
-        val response = mangaJapApiService.getUserMangaFavorites(
-                userId,
-                JsonApiParams(
-                        include = listOf("manga"),
-                        sort = listOf("-updatedAt"),
-                        limit = 500
-                )
-        )
-        _state.value = try {
-            when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.MANGA_ENTRY_LIBRARY_ITEM } })
-                is JsonApiResponse.Error -> State.FailedLoading(response)
-            }
-        } catch (e: Exception) {
-            State.FailedLoading(JsonApiResponse.Error.UnknownError(e))
-        }
-    }
-
-    fun getAnimeFavorites(userId: String) = viewModelScope.launch {
-        _state.value = State.Loading
-
-        val response = mangaJapApiService.getUserAnimeFavorites(
-                userId,
-                JsonApiParams(
-                        include = listOf("anime"),
-                        sort = listOf("-updatedAt"),
-                        limit = 500
-                )
-        )
-        _state.value = try {
-            when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!.map { it.apply { itemType = AppAdapter.Type.ANIME_ENTRY_LIBRARY_ITEM } })
-                is JsonApiResponse.Error -> State.FailedLoading(response)
-            }
-        } catch (e: Exception) {
-            State.FailedLoading(JsonApiResponse.Error.UnknownError(e))
+    init {
+        when (libraryType) {
+            LibraryType.MangaList -> getMangaLibrary(userId)
+            LibraryType.AnimeList -> getAnimeLibrary(userId)
+            LibraryType.MangaFavoritesList -> getMangaFavorites(userId)
+            LibraryType.AnimeFavoritesList -> getAnimeFavorites(userId)
         }
     }
 
 
-    fun updateMangaEntry(mangaEntry: MangaEntry) = viewModelScope.launch {
-        _state.value = State.Saving
+    private fun getMangaLibrary(userId: String) = viewModelScope.launch(Dispatchers.IO) {
+        _state.emit(State.Loading)
 
-        _state.value = try {
+        try {
+            val response = mangaJapApiService.getUserMangaLibrary(
+                userId,
+                JsonApiParams(
+                    include = listOf("manga"),
+                    sort = listOf("-updatedAt"),
+                    limit = 500
+                )
+            )
+
+            when (response) {
+                is JsonApiResponse.Success -> {
+                    _state.emit(State.SuccessLoading(response.body.data!!))
+                }
+
+                is JsonApiResponse.Error -> {
+                    _state.emit(State.FailedLoading(response))
+                }
+            }
+        } catch (e: Exception) {
+            _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(e)))
+        }
+    }
+
+    private fun getAnimeLibrary(userId: String) = viewModelScope.launch(Dispatchers.IO) {
+        _state.emit(State.Loading)
+
+        try {
+            val response = mangaJapApiService.getUserAnimeLibrary(
+                userId,
+                JsonApiParams(
+                    include = listOf("anime"),
+                    sort = listOf("-updatedAt"),
+                    limit = 500
+                )
+            )
+
+            when (response) {
+                is JsonApiResponse.Success -> {
+                    _state.emit(State.SuccessLoading(response.body.data!!))
+                }
+
+                is JsonApiResponse.Error -> {
+                    _state.emit(State.FailedLoading(response))
+                }
+            }
+        } catch (e: Exception) {
+            _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(e)))
+        }
+    }
+
+    private fun getMangaFavorites(userId: String) = viewModelScope.launch(Dispatchers.IO) {
+        _state.emit(State.Loading)
+
+        try {
+            val response = mangaJapApiService.getUserMangaFavorites(
+                userId,
+                JsonApiParams(
+                    include = listOf("manga"),
+                    sort = listOf("-updatedAt"),
+                    limit = 500
+                )
+            )
+
+            when (response) {
+                is JsonApiResponse.Success -> {
+                    _state.emit(State.SuccessLoading(response.body.data!!))
+                }
+
+                is JsonApiResponse.Error -> {
+                    _state.emit(State.FailedLoading(response))
+                }
+            }
+        } catch (e: Exception) {
+            _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(e)))
+        }
+    }
+
+    private fun getAnimeFavorites(userId: String) = viewModelScope.launch(Dispatchers.IO) {
+        _state.emit(State.Loading)
+
+        try {
+            val response = mangaJapApiService.getUserAnimeFavorites(
+                userId,
+                JsonApiParams(
+                    include = listOf("anime"),
+                    sort = listOf("-updatedAt"),
+                    limit = 500
+                )
+            )
+
+            when (response) {
+                is JsonApiResponse.Success -> {
+                    _state.emit(State.SuccessLoading(response.body.data!!))
+                }
+
+                is JsonApiResponse.Error -> {
+                    _state.emit(State.FailedLoading(response))
+                }
+            }
+        } catch (e: Exception) {
+            _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(e)))
+        }
+    }
+
+
+    fun updateMangaEntry(mangaEntry: MangaEntry) = viewModelScope.launch(Dispatchers.IO) {
+        _savingState.emit(SavingState.Saving)
+
+        try {
             val response = mangaJapApiService.updateMangaEntry(
                 mangaEntry.id!!,
                 mangaEntry
             )
 
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessSaving(response.body.data!!)
-                is JsonApiResponse.Error -> State.FailedSaving(response)
+                is JsonApiResponse.Success -> {
+                    _savingState.emit(SavingState.SuccessSaving(response.body.data!!))
+                }
+
+                is JsonApiResponse.Error -> {
+                    _savingState.emit(SavingState.FailedSaving(response))
+                }
             }
         } catch (e: Exception) {
-            State.FailedSaving(JsonApiResponse.Error.UnknownError(e))
+            _savingState.emit(SavingState.FailedSaving(JsonApiResponse.Error.UnknownError(e)))
         }
     }
 
-    fun updateAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
-        _state.value = State.Saving
+    fun updateAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch(Dispatchers.IO) {
+        _savingState.emit(SavingState.Saving)
 
-        _state.value = try {
+        try {
             val response = mangaJapApiService.updateAnimeEntry(
                 animeEntry.id!!,
                 animeEntry
             )
+
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessSaving(response.body.data!!)
-                is JsonApiResponse.Error -> State.FailedSaving(response)
+                is JsonApiResponse.Success -> {
+                    _savingState.emit(SavingState.SuccessSaving(response.body.data!!))
+                }
+
+                is JsonApiResponse.Error -> {
+                    _savingState.emit(SavingState.FailedSaving(response))
+                }
             }
         } catch (e: Exception) {
-            State.FailedSaving(JsonApiResponse.Error.UnknownError(e))
+            _savingState.emit(SavingState.FailedSaving(JsonApiResponse.Error.UnknownError(e)))
         }
     }
 }

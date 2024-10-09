@@ -1,7 +1,6 @@
 package com.tanasi.mangajap.fragments.anime
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
@@ -10,130 +9,166 @@ import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Season
 import com.tanasi.mangajap.services.MangaJapApiService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-class AnimeViewModel : ViewModel() {
+class AnimeViewModel(id: String) : ViewModel() {
 
     private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
-    private val _state: MutableLiveData<State> = MutableLiveData(State.Loading)
-    val state: LiveData<State> = _state
+    private val _state: MutableStateFlow<State> = MutableStateFlow(State.Loading)
+    private val _seasonState: MutableStateFlow<SeasonState?> = MutableStateFlow(null)
+    private val _savingState: MutableStateFlow<SavingState?> = MutableStateFlow(null)
+    val state: Flow<State> = combine(
+        _state,
+        _seasonState,
+        _savingState,
+    ) { state, seasonState, updatingState ->
+        when (state) {
+            is State.SuccessLoading -> {
+                var anime = state.anime
+                if (seasonState is SeasonState.SuccessLoadingEpisodes) {
+                    anime = anime.copy(
+                        seasons = seasonState.seasons,
+                    )
+                }
+                if (updatingState is SavingState.SuccessSaving) {
+                    anime = anime.copy(
+                        animeEntry = updatingState.animeEntry,
+                    )
+                }
+                anime.seasons.onEach { season ->
+                    season.anime = anime
+                    season.episodes.onEach { episode ->
+                        episode.season = season
+                    }
+                }
+                State.SuccessLoading(anime)
+            }
+
+            else -> state
+        }
+    }
 
     sealed class State {
-        object Loading : State()
+        data object Loading : State()
         data class SuccessLoading(val anime: Anime) : State()
         data class FailedLoading(val error: JsonApiResponse.Error) : State()
+    }
 
-        data class LoadingEpisodes(val season: Season) : State()
-        data class SuccessLoadingEpisodes(val season: Season) : State()
-        data class FailedLoadingEpisodes(val error: JsonApiResponse.Error) : State()
+    sealed class SeasonState {
+        data object LoadingEpisodes : SeasonState()
+        data class SuccessLoadingEpisodes(val seasons: List<Season>) : SeasonState()
+        data class FailedLoadingEpisodes(val error: JsonApiResponse.Error) : SeasonState()
+    }
 
-        object AddingEntry : State()
-        data class SuccessAddingEntry(val animeEntry: AnimeEntry) : State()
-        data class FailedAddingEntry(val error: JsonApiResponse.Error) : State()
+    sealed class SavingState {
+        data object Saving : SavingState()
+        data class SuccessSaving(val animeEntry: AnimeEntry) : SavingState()
+        data class FailedSaving(val error: JsonApiResponse.Error) : SavingState()
+    }
 
-        object Updating : State()
-        data class SuccessUpdating(val animeEntry: AnimeEntry) : State()
-        data class FailedUpdating(val error: JsonApiResponse.Error) : State()
+    init {
+        getAnime(id)
+        getSeasons(id)
     }
 
 
-    fun getAnime(id: String) = viewModelScope.launch {
-        _state.value = State.Loading
+    private fun getAnime(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        _state.emit(State.Loading)
 
-        _state.value = try {
+        try {
             val response = mangaJapApiService.getAnime(
                 id,
                 JsonApiParams(
-                    include = listOf("anime-entry", "genres", "themes", "seasons", "franchises.destination")
+                    include = listOf(
+                        "anime-entry",
+                        "genres",
+                        "themes",
+                        "seasons",
+                        "franchises.destination",
+                    )
                 )
             )
 
             when (response) {
                 is JsonApiResponse.Success -> {
-                    val anime = response.body.data!!
-
-                    anime.seasons.map { season ->
-                        season.anime = anime
-                    }
-
-                    State.SuccessLoading(anime)
-                }
-                is JsonApiResponse.Error -> State.FailedLoading(response)
-            }
-        } catch (e: Exception) {
-            State.FailedLoading(JsonApiResponse.Error.UnknownError(e))
-        }
-    }
-
-
-    fun getSeasonEpisodes(season: Season) = viewModelScope.launch {
-        _state.value = State.LoadingEpisodes(season)
-
-        _state.value = try {
-            if (season.episodes.isEmpty()) {
-                val response = mangaJapApiService.getSeasonEpisodes(
-                    season.id,
-                    JsonApiParams(
-                        limit = 10000
-                    )
-                )
-
-                when (response) {
-                    is JsonApiResponse.Success -> {
-                        season.episodes.run {
-                            clear()
-                            addAll(response.body.data!!)
-                            map { episode ->
-                                episode.season = season
+                    _state.emit(
+                        State.SuccessLoading(
+                            anime = response.body.data!!.also { anime ->
+                                anime.seasons.onEach { it.anime = anime }
                             }
-                        }
-
-                        State.SuccessLoadingEpisodes(season)
-                    }
-                    is JsonApiResponse.Error -> State.FailedLoadingEpisodes(response)
+                        )
+                    )
                 }
-            } else {
-                State.SuccessLoadingEpisodes(season)
+
+                is JsonApiResponse.Error -> {
+                    _state.emit(State.FailedLoading(response))
+                }
             }
         } catch (e: Exception) {
-            State.FailedLoadingEpisodes(JsonApiResponse.Error.UnknownError(e))
+            Log.e("AnimeViewModel", "getAnime: ", e)
+            _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(e)))
         }
     }
 
+    private fun getSeasons(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        _seasonState.emit(SeasonState.LoadingEpisodes)
 
-    fun addAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
-        _state.value = State.AddingEntry
-
-        _state.value = try {
-            val response = animeEntry.id?.let {
-                mangaJapApiService.updateAnimeEntry(it, animeEntry)
-            } ?: mangaJapApiService.createAnimeEntry(animeEntry)
-
-            when (response) {
-                is JsonApiResponse.Success -> State.SuccessAddingEntry(response.body.data!!)
-                is JsonApiResponse.Error -> State.FailedAddingEntry(response)
-            }
-        } catch (e: Exception) {
-            State.FailedAddingEntry(JsonApiResponse.Error.UnknownError(e))
-        }
-    }
-
-    fun updateAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch {
-        _state.value = State.Updating
-
-        _state.value = try {
-            val response = mangaJapApiService.updateAnimeEntry(
-                animeEntry.id!!,
-                animeEntry
+        try {
+            val response = mangaJapApiService.getAnimeSeasons(
+                id,
+                JsonApiParams(
+                    include = listOf("episodes"),
+                    limit = 10000
+                )
             )
 
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessUpdating(response.body.data!!)
-                is JsonApiResponse.Error -> State.FailedUpdating(response)
+                is JsonApiResponse.Success -> {
+                    _seasonState.emit(SeasonState.SuccessLoadingEpisodes(response.body.data!!))
+                }
+
+                is JsonApiResponse.Error -> {
+                    _seasonState.emit(SeasonState.FailedLoadingEpisodes(response))
+                }
             }
         } catch (e: Exception) {
-            State.FailedUpdating(JsonApiResponse.Error.UnknownError(e))
+            Log.e("AnimeViewModel", "getSeasons: ", e)
+            _seasonState.emit(SeasonState.FailedLoadingEpisodes(JsonApiResponse.Error.UnknownError(e)))
+        }
+    }
+
+    fun saveAnimeEntry(animeEntry: AnimeEntry) = viewModelScope.launch(Dispatchers.IO) {
+        _savingState.emit(SavingState.Saving)
+
+        try {
+            val id = animeEntry.id
+
+            val response = if (id != null) {
+                mangaJapApiService.updateAnimeEntry(
+                    animeEntry.id!!,
+                    animeEntry
+                )
+            } else {
+                mangaJapApiService.createAnimeEntry(animeEntry)
+            }
+
+            when (response) {
+                is JsonApiResponse.Success -> {
+                    _savingState.emit(SavingState.SuccessSaving(response.body.data!!))
+                }
+
+                is JsonApiResponse.Error -> {
+                    _savingState.emit(SavingState.FailedSaving(response))
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("AnimeViewModel", "saveAnimeEntry: ", e)
+            _savingState.emit(SavingState.FailedSaving(JsonApiResponse.Error.UnknownError(e)))
         }
     }
 }

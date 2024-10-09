@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
@@ -15,15 +18,20 @@ import com.tanasi.mangajap.databinding.FragmentRegisterBinding
 import com.tanasi.mangajap.utils.extensions.isEmailValid
 import com.tanasi.mangajap.utils.extensions.isPasswordValid
 import com.tanasi.mangajap.utils.extensions.isPseudoValid
+import kotlinx.coroutines.launch
 
 class RegisterFragment : Fragment() {
 
     private var _binding: FragmentRegisterBinding? = null
-    private val binding: FragmentRegisterBinding get() = _binding!!
+    private val binding get() = _binding!!
 
-    private val viewModel: RegisterViewModel by viewModels()
+    private val viewModel by viewModels<RegisterViewModel>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -31,37 +39,47 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                RegisterViewModel.State.Loading -> binding.isUpdating.root.visibility = View.VISIBLE
+        initializeRegister()
 
-                is RegisterViewModel.State.RegisterSucceed -> {
-                    binding.isUpdating.root.visibility = View.GONE
-                    startActivity(Intent(requireContext(), MainActivity::class.java))
-                    requireActivity().finish()
-                }
-                is RegisterViewModel.State.RegisterFailed -> {
-                    when (state.error) {
-                        is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                            Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
-                        }
-                        is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                            requireContext(),
-                            state.error.error.message ?: "",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                            requireContext(),
-                            state.error.error.message ?: "",
-                            Toast.LENGTH_SHORT
-                        ).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
+                when (state) {
+                    RegisterViewModel.State.Loading -> binding.isUpdating.apply {
+                        root.visibility = View.VISIBLE
                     }
-                    binding.isUpdating.root.visibility = View.GONE
+
+                    is RegisterViewModel.State.RegisterSucceed -> {
+                        binding.isUpdating.root.visibility = View.GONE
+                        startActivity(Intent(requireContext(), MainActivity::class.java))
+                        requireActivity().finish()
+                    }
+
+                    is RegisterViewModel.State.RegisterFailed -> {
+                        when (state.error) {
+                            is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                                Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        binding.isUpdating.root.visibility = View.GONE
+                    }
+
+                    else -> {}
                 }
             }
         }
-
-        displayRegister()
     }
 
     override fun onDestroyView() {
@@ -70,8 +88,7 @@ class RegisterFragment : Fragment() {
     }
 
 
-
-    private fun displayRegister() {
+    private fun initializeRegister() {
         binding.btnRegister.setOnClickListener {
             var isValid = true
             binding.tilRegisterPseudo.apply {

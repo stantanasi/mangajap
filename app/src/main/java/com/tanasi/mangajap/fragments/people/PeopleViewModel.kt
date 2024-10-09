@@ -1,7 +1,5 @@
 package com.tanasi.mangajap.fragments.people
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
@@ -12,49 +10,62 @@ import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.People
 import com.tanasi.mangajap.services.MangaJapApiService
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class PeopleViewModel : ViewModel() {
+class PeopleViewModel(id: String) : ViewModel() {
 
     private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
-    private val _state: MutableLiveData<State> = MutableLiveData(State.Loading)
-    val state: LiveData<State> = _state
+    private val _state = MutableStateFlow<State>(State.Loading)
+    val state: Flow<State> = _state
 
     sealed class State {
-        object Loading : State()
+        data object Loading : State()
         data class SuccessLoading(val people: People) : State()
         data class FailedLoading(val error: JsonApiResponse.Error) : State()
     }
 
-    fun getPeople(id: String) = viewModelScope.launch {
-        _state.value = State.Loading
+    init {
+        getPeople(id)
+    }
 
-        val response = mangaJapApiService.getPeople(
-            id,
-            JsonApiParams(
-                include = listOf("manga-staff.manga", "anime-staff.anime"),
-                fields = mapOf(
-                    Manga::class.jsonApiType to listOf(
-                        Manga::title.jsonApiName(Manga::class),
-                        Manga::coverImage.jsonApiName(Manga::class),
-                        Manga::startDate.jsonApiName(Manga::class),
-                    ),
-                    Anime::class.jsonApiType to listOf(
-                        Anime::title.jsonApiName(Anime::class),
-                        Anime::coverImage.jsonApiName(Anime::class),
-                        Anime::startDate.jsonApiName(Anime::class),
-                    ),
+
+    private fun getPeople(id: String) = viewModelScope.launch {
+        _state.emit(State.Loading)
+
+        try {
+            val response = mangaJapApiService.getPeople(
+                id,
+                JsonApiParams(
+                    include = listOf("manga-staff.manga", "anime-staff.anime"),
+                    fields = mapOf(
+                        Manga::class.jsonApiType to listOf(
+                            Manga::title.jsonApiName(Manga::class),
+                            Manga::coverImage.jsonApiName(Manga::class),
+                            Manga::startDate.jsonApiName(Manga::class),
+                        ),
+                        Anime::class.jsonApiType to listOf(
+                            Anime::title.jsonApiName(Anime::class),
+                            Anime::coverImage.jsonApiName(Anime::class),
+                            Anime::startDate.jsonApiName(Anime::class),
+                        ),
+                    )
                 )
             )
-        )
-        _state.value = try {
+
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(response.body.data!!)
-                is JsonApiResponse.Error -> State.FailedLoading(response)
+                is JsonApiResponse.Success -> {
+                    _state.emit(State.SuccessLoading(response.body.data!!))
+                }
+
+                is JsonApiResponse.Error -> {
+                    _state.emit(State.FailedLoading(response))
+                }
             }
         } catch (e: Exception) {
-            State.FailedLoading(JsonApiResponse.Error.UnknownError(e))
+            _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(e)))
         }
     }
 }

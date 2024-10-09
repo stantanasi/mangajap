@@ -5,14 +5,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.MainActivity
-import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
-import com.tanasi.mangajap.fragments.settingsPreference.SettingsPreferenceFragment
+import com.tanasi.mangajap.fragments.settingspreference.SettingsPreferenceFragment
 
 fun AppCompatActivity.getCurrentFragment(): Fragment? = when (this) {
     is MainActivity -> {
         val navHostFragment =
             this.supportFragmentManager.findFragmentById(R.id.nav_main_fragment) as NavHostFragment
-        navHostFragment.childFragmentManager.fragments.firstOrNull { it !is RecyclerViewFragment && it !is SettingsPreferenceFragment }
+        navHostFragment.childFragmentManager.fragments.firstOrNull { it !is SettingsPreferenceFragment }
     }
     else -> null
 }

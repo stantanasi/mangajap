@@ -121,7 +121,7 @@
     </fragment>
     <fragment
         android:id="@+id/profile_edit"
-        android:name="com.tanasi.mangajap.fragments.profileEdit.ProfileEditFragment"
+        android:name="com.tanasi.mangajap.fragments.profileedit.ProfileEditFragment"
         android:label="ProfileEditFragment" />
     <fragment
         android:id="@+id/follow"
@@ -208,11 +208,11 @@
         android:label="SettingsFragment" />
     <fragment
         android:id="@+id/review_save"
-        android:name="com.tanasi.mangajap.fragments.reviewSave.ReviewSaveFragment"
+        android:name="com.tanasi.mangajap.fragments.reviewsave.ReviewSaveFragment"
         android:label="ReviewSaveFragment">
         <argument
             android:name="mediaType"
-            app:argType="com.tanasi.mangajap.fragments.reviewSave.ReviewSaveFragment$ReviewMediaType" />
+            app:argType="com.tanasi.mangajap.fragments.reviewsave.ReviewSaveFragment$ReviewMediaType" />
         <argument
             android:name="mediaId"
             app:argType="string"

@@ -1,115 +1,164 @@
 package com.tanasi.mangajap.fragments.follow
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tanasi.jsonapi.JsonApiParams
 import com.tanasi.jsonapi.JsonApiResponse
-import com.tanasi.mangajap.adapters.AppAdapter
+import com.tanasi.mangajap.fragments.follow.FollowFragment.FollowType
+import com.tanasi.mangajap.models.Follow
 import com.tanasi.mangajap.services.MangaJapApiService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class FollowViewModel : ViewModel() {
+class FollowViewModel(userId: String, followType: FollowType) : ViewModel() {
 
     private val mangaJapApiService: MangaJapApiService = MangaJapApiService.build()
 
-    private val _state: MutableLiveData<State> = MutableLiveData(State.Loading)
-    val state: LiveData<State> = _state
+    private val _state = MutableStateFlow<State>(State.Loading)
+    val state: Flow<State> = _state
 
     sealed class State {
-        object Loading: State()
-        data class SuccessLoading(val followList: List<AppAdapter.Item>, val nextLink: String): State()
-        data class FailedLoading(val error: JsonApiResponse.Error): State()
+        data object Loading : State()
+        data object LoadingMore : State()
+        data class SuccessLoading(
+            val followList: List<Follow>,
+            val nextLink: String
+        ) : State()
 
-        object LoadingMore: State()
-        data class SuccessLoadingMore(val followList: List<AppAdapter.Item>, val nextLink: String): State()
-        data class FailedLoadingMore(val error: JsonApiResponse.Error): State()
+        data class FailedLoading(val error: JsonApiResponse.Error) : State()
     }
 
-    fun getFollowers(userId: String) = viewModelScope.launch {
-        _state.value = State.Loading
+    init {
+        when (followType) {
+            FollowType.Followers -> getFollowers(userId)
+            FollowType.Following -> getFollowing(userId)
+        }
+    }
 
-        val response = mangaJapApiService.getUserFollowers(
-            userId,
-            JsonApiParams(
-                include = listOf("follower"),
-                sort = listOf("-createdAt"),
-                limit = 15,
+    private fun getFollowers(userId: String) = viewModelScope.launch(Dispatchers.IO) {
+        _state.emit(State.Loading)
+
+        try {
+            val response = mangaJapApiService.getUserFollowers(
+                userId,
+                JsonApiParams(
+                    include = listOf("follower"),
+                    sort = listOf("-createdAt"),
+                    limit = 15,
+                )
             )
-        )
-        _state.value = try {
+
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(
-                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWER_ITEM } },
-                    response.body.links?.next ?: ""
-                )
-                is JsonApiResponse.Error -> State.FailedLoading(response)
+                is JsonApiResponse.Success -> {
+                    _state.emit(
+                        State.SuccessLoading(
+                            followList = response.body.data!!,
+                            nextLink = response.body.links?.next ?: ""
+                        )
+                    )
+                }
+
+                is JsonApiResponse.Error -> {
+                    _state.emit(State.FailedLoading(response))
+                }
             }
         } catch (e: Exception) {
-            State.FailedLoading(JsonApiResponse.Error.UnknownError(e))
+            _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(e)))
         }
     }
 
-    fun getFollowing(userId: String) = viewModelScope.launch {
-        _state.value = State.Loading
+    private fun getFollowing(userId: String) = viewModelScope.launch(Dispatchers.IO) {
+        _state.emit(State.Loading)
 
-        val response = mangaJapApiService.getUserFollowing(
-            userId,
-            JsonApiParams(
-                include = listOf("followed"),
-                sort = listOf("-createdAt"),
-                limit = 15,
+        try {
+            val response = mangaJapApiService.getUserFollowing(
+                userId,
+                JsonApiParams(
+                    include = listOf("followed"),
+                    sort = listOf("-createdAt"),
+                    limit = 15,
+                )
             )
-        )
-        _state.value = try {
+
             when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoading(
-                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWING_ITEM } },
-                    response.body.links?.next ?: ""
-                )
-                is JsonApiResponse.Error -> State.FailedLoading(response)
+                is JsonApiResponse.Success -> {
+                    _state.emit(
+                        State.SuccessLoading(
+                            followList = response.body.data!!,
+                            nextLink = response.body.links?.next ?: ""
+                        )
+                    )
+                }
+
+                is JsonApiResponse.Error -> {
+                    _state.emit(State.FailedLoading(response))
+                }
             }
         } catch (e: Exception) {
-            State.FailedLoading(JsonApiResponse.Error.UnknownError(e))
+            _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(e)))
         }
     }
 
-    fun loadMoreFollowers(nextLink: String) = viewModelScope.launch {
-        _state.value = State.LoadingMore
+    fun loadMoreFollowers(nextLink: String) = viewModelScope.launch(Dispatchers.IO) {
+        val currentState = _state.first()
+        if (currentState is State.SuccessLoading) {
+            _state.emit(State.LoadingMore)
 
-        val response = mangaJapApiService.loadMoreFollows(
-            nextLink
-        )
-        _state.value = try {
-            when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoadingMore(
-                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWER_ITEM } },
-                    response.body.links?.next ?: ""
+            try {
+                val response = mangaJapApiService.loadMoreFollows(
+                    nextLink
                 )
-                is JsonApiResponse.Error -> State.FailedLoadingMore(response)
+
+                when (response) {
+                    is JsonApiResponse.Success -> {
+                        _state.emit(
+                            State.SuccessLoading(
+                                followList = currentState.followList + response.body.data!!,
+                                nextLink = response.body.links?.next ?: ""
+                            )
+                        )
+                    }
+
+                    is JsonApiResponse.Error -> {
+                        _state.emit(State.FailedLoading(response))
+                    }
+                }
+            } catch (e: Exception) {
+                _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(e)))
             }
-        } catch (e: Exception) {
-            State.FailedLoadingMore(JsonApiResponse.Error.UnknownError(e))
         }
     }
 
-    fun loadMoreFollowing(nextLink: String) = viewModelScope.launch {
-        _state.value = State.LoadingMore
+    fun loadMoreFollowing(nextLink: String) = viewModelScope.launch(Dispatchers.IO) {
+        val currentState = _state.first()
+        if (currentState is State.SuccessLoading) {
+            _state.emit(State.LoadingMore)
 
-        val response = mangaJapApiService.loadMoreFollows(
-            nextLink
-        )
-        _state.value = try {
-            when (response) {
-                is JsonApiResponse.Success -> State.SuccessLoadingMore(
-                    response.body.data!!.map { it.apply { itemType = AppAdapter.Type.FOLLOWING_ITEM } },
-                    response.body.links?.next ?: ""
+            try {
+                val response = mangaJapApiService.loadMoreFollows(
+                    nextLink
                 )
-                is JsonApiResponse.Error -> State.FailedLoadingMore(response)
+
+                when (response) {
+                    is JsonApiResponse.Success -> {
+                        _state.emit(
+                            State.SuccessLoading(
+                                followList = currentState.followList + response.body.data!!,
+                                nextLink = response.body.links?.next ?: ""
+                            )
+                        )
+                    }
+
+                    is JsonApiResponse.Error -> {
+                        _state.emit(State.FailedLoading(response))
+                    }
+                }
+            } catch (e: Exception) {
+                _state.emit(State.FailedLoading(JsonApiResponse.Error.UnknownError(e)))
             }
-        } catch (e: Exception) {
-            State.FailedLoadingMore(JsonApiResponse.Error.UnknownError(e))
         }
     }
 }

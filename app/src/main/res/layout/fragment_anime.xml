@@ -35,11 +35,21 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/fl_anime"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/f_anime_about"
+        android:name="com.tanasi.mangajap.fragments.anime.AnimeAboutFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:descendantFocusability="blocksDescendants"
+        app:layout_constraintBottom_toTopOf="@id/cl_anime_progression_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/f_anime_episodes"
+        android:name="com.tanasi.mangajap.fragments.anime.AnimeEpisodesFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/cl_anime_progression_add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

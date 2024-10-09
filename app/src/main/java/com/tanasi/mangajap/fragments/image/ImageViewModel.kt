@@ -2,26 +2,31 @@ package com.tanasi.mangajap.fragments.image
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class ImageViewModel : ViewModel() {
+class ImageViewModel(url: String) : ViewModel() {
 
-    private val _state: MutableLiveData<State> = MutableLiveData(State.Loading)
-    val state: LiveData<State> = _state
+    private val _state = MutableStateFlow<State>(State.Loading)
+    val state: Flow<State> = _state
 
     sealed class State {
-        object Loading: State()
-        data class SuccessLoading(val image: Bitmap): State()
-        data class FailedLoading(val error: Throwable): State()
+        data object Loading : State()
+        data class SuccessLoading(val image: Bitmap) : State()
+        data class FailedLoading(val error: Throwable) : State()
     }
 
-    fun getImage(url: String) = viewModelScope.launch {
-        _state.value = State.Loading
+    init {
+        getImage(url)
+    }
+
+
+    private fun getImage(url: String) = viewModelScope.launch {
+        _state.emit(State.Loading)
 
         Picasso.get().load(url).into(object : com.squareup.picasso.Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {

@@ -7,17 +7,20 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentDiscoverBinding
-import com.tanasi.mangajap.models.Ad
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.Manga
+import com.tanasi.mangajap.models.People
 import com.tanasi.mangajap.ui.SpacingItemDecoration
-import com.tanasi.mangajap.utils.extensions.addOrLast
+import kotlinx.coroutines.launch
 
 class DiscoverFragment : Fragment() {
 
@@ -26,95 +29,61 @@ class DiscoverFragment : Fragment() {
 
     val viewModel: DiscoverViewModel by viewModels()
 
-    private val peopleList: MutableList<AppAdapter.Item> = mutableListOf()
-    private val mangaRecentList: MutableList<Manga> = mutableListOf()
-    private val animeRecentList: MutableList<Anime> = mutableListOf()
-
-    private val peopleAdapter: AppAdapter = AppAdapter().apply {
-        submitList(peopleList)
-    }
-    private val mangaRecentAdapter: AppAdapter = AppAdapter().apply {
-        submitList(mangaRecentList)
-    }
-    private val animeRecentAdapter: AppAdapter = AppAdapter().apply {
-        submitList(animeRecentList)
-    }
-
-    private val snapHelper: LinearSnapHelper = LinearSnapHelper()
+    private val peopleAdapter: AppAdapter = AppAdapter()
+    private val mangaRecentAdapter: AppAdapter = AppAdapter()
+    private val animeRecentAdapter: AppAdapter = AppAdapter()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentDiscoverBinding.inflate(inflater, container, false)
-        viewModel.getDiscover()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.llSearch.setOnClickListener {
-            findNavController().navigate(
-                    DiscoverFragmentDirections.actionDiscoverToSearch()
-            )
-        }
+        initializeDiscover()
 
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                DiscoverViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
-                is DiscoverViewModel.State.SuccessLoading -> {
-                    peopleList.apply {
-                        clear()
-                        addAll(state.peopleList)
-                        addOrLast(1, Ad().also { it.itemType = AppAdapter.Type.AD_DISCOVER_ITEM })
-                    }
-                    mangaRecentList.apply {
-                        clear()
-                        addAll(state.mangaRecentList)
-                    }
-                    animeRecentList.apply {
-                        clear()
-                        addAll(state.animeRecentList)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
+                when (state) {
+                    DiscoverViewModel.State.Loading -> binding.isLoading.apply {
+                        root.visibility = View.VISIBLE
                     }
 
-                    displayDiscover()
-                    binding.isLoading.root.visibility = View.GONE
-                }
-                is DiscoverViewModel.State.FailedLoading -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    is DiscoverViewModel.State.SuccessLoading -> {
+                        displayDiscover(
+                            state.peoples,
+                            state.anime,
+                            state.manga,
+                        )
+                        binding.isLoading.root.visibility = View.GONE
                     }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
 
-                DiscoverViewModel.State.Updating -> binding.isUpdating.root.visibility = View.VISIBLE
-                is DiscoverViewModel.State.SuccessUpdating -> {
-                    mangaRecentAdapter.notifyDataSetChanged()
-                    animeRecentAdapter.notifyDataSetChanged()
-                    binding.isUpdating.root.visibility = View.GONE
-                }
-                is DiscoverViewModel.State.FailedUpdating -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    is DiscoverViewModel.State.FailedLoading -> {
+                        when (state.error) {
+                            is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                                Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
         }
@@ -126,27 +95,53 @@ class DiscoverFragment : Fragment() {
     }
 
 
-    private fun displayDiscover() {
+    private fun initializeDiscover() {
+        binding.llSearch.setOnClickListener {
+            findNavController().navigate(
+                DiscoverFragmentDirections.actionDiscoverToSearch()
+            )
+        }
+
         binding.rvDiscoverPeople.apply {
             adapter = peopleAdapter
-            snapHelper.attachToRecyclerView(this)
-            addItemDecoration(SpacingItemDecoration(
-                spacing = (resources.getDimension(R.dimen.discover_spacing) * 1).toInt()
-            ))
+            LinearSnapHelper().attachToRecyclerView(this)
+            addItemDecoration(
+                SpacingItemDecoration(
+                    spacing = (resources.getDimension(R.dimen.discover_spacing) * 1).toInt()
+                )
+            )
         }
 
         binding.rvDiscoverRecentManga.apply {
             adapter = mangaRecentAdapter
-            addItemDecoration(SpacingItemDecoration(
-                spacing = (resources.getDimension(R.dimen.discover_spacing) * 0.4).toInt()
-            ))
+            addItemDecoration(
+                SpacingItemDecoration(
+                    spacing = (resources.getDimension(R.dimen.discover_spacing) * 0.4).toInt()
+                )
+            )
         }
 
         binding.rvDiscoverRecentAnime.apply {
             adapter = animeRecentAdapter
-            addItemDecoration(SpacingItemDecoration(
-                spacing = (resources.getDimension(R.dimen.discover_spacing) * 0.4).toInt()
-            ))
+            addItemDecoration(
+                SpacingItemDecoration(
+                    spacing = (resources.getDimension(R.dimen.discover_spacing) * 0.4).toInt()
+                )
+            )
         }
+    }
+
+    private fun displayDiscover(peoples: List<People>, anime: List<Anime>, manga: List<Manga>) {
+        peopleAdapter.submitList(peoples.onEach {
+            it.itemType = AppAdapter.Type.PEOPLE_DISCOVER_ITEM
+        })
+
+        animeRecentAdapter.submitList(anime.onEach {
+            it.itemType = AppAdapter.Type.ANIME_DISCOVER_ITEM
+        })
+
+        mangaRecentAdapter.submitList(manga.onEach {
+            it.itemType = AppAdapter.Type.MANGA_DISCOVER_ITEM
+        })
     }
 }

@@ -69,22 +69,22 @@ class AnimeViewHolder(
 
     private fun createAnimeEntry(animeEntry: AnimeEntry) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is SearchFragment -> fragment.viewModel.createAnimeEntry(anime, animeEntry)
+            is SearchFragment -> fragment.animeFragment.saveAnimeEntry(anime, animeEntry)
             is DiscoverFragment -> fragment.viewModel.createAnimeEntry(anime, animeEntry)
         }
     }
 
     private fun updateAnimeEntry(animeEntry: AnimeEntry) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is AnimeFragment -> fragment.viewModel.updateAnimeEntry(animeEntry)
-            is SearchFragment -> fragment.viewModel.updateAnimeEntry(anime, animeEntry)
+            is AnimeFragment -> fragment.viewModel.saveAnimeEntry(animeEntry)
+            is SearchFragment -> fragment.animeFragment.saveAnimeEntry(anime, animeEntry)
             is DiscoverFragment -> fragment.viewModel.updateAnimeEntry(anime, animeEntry)
         }
     }
 
     private fun createAnimeRequest(request: Request) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is SearchFragment -> fragment.viewModel.createRequest(request)
+            is SearchFragment -> fragment.animeFragment.saveRequest(request)
         }
     }
 
@@ -131,10 +131,7 @@ class AnimeViewHolder(
 
     private fun displaySearchAdd(binding: ItemMediaSearchAddBinding) {
         binding.root.setOnClickListener {
-            val query: String = when (val fragment = context.toActivity()?.getCurrentFragment()) {
-                is SearchFragment -> fragment.query
-                else -> ""
-            }
+            val query = ""
 
             EditTextDialog(
                     context,

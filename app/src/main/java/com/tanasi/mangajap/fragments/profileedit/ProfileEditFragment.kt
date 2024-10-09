@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.fragments.profileEdit
+package com.tanasi.mangajap.fragments.profileedit
 
 import android.Manifest
 import android.app.Activity
@@ -10,12 +10,20 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
@@ -25,34 +33,57 @@ import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.SpinnerAdapter
 import com.tanasi.mangajap.databinding.FragmentProfileEditBinding
 import com.tanasi.mangajap.models.User
-import com.tanasi.mangajap.utils.extensions.*
-import java.util.*
+import com.tanasi.mangajap.utils.extensions.format
+import com.tanasi.mangajap.utils.extensions.getCountries
+import com.tanasi.mangajap.utils.extensions.isStoragePermissionGranted
+import com.tanasi.mangajap.utils.extensions.setToolbar
+import com.tanasi.mangajap.utils.extensions.toBase64
+import kotlinx.coroutines.launch
+import java.util.Calendar
 
 
 class ProfileEditFragment : Fragment() {
 
     private var _binding: FragmentProfileEditBinding? = null
-    private val binding: FragmentProfileEditBinding get() = _binding!!
+    private val binding get() = _binding!!
 
-    private val viewModel: ProfileEditViewModel by viewModels()
+    private val viewModel by viewModels<ProfileEditViewModel>()
 
-    private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { permission ->
+    private val requestPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { permission ->
         if (permission) {
-            Toast.makeText(requireContext(), getString(R.string.permissionGranted), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.permissionGranted),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
-    private val pickImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val pickImage = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
                 val bitmap = when {
-                    Build.VERSION.SDK_INT >= 29 -> ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireActivity().contentResolver, uri))
+                    Build.VERSION.SDK_INT >= 29 -> ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(
+                            requireActivity().contentResolver,
+                            uri
+                        )
+                    )
+
                     else -> {
                         @Suppress("DEPRECATION")
-                        MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
+                        MediaStore.Images.Media.getBitmap(
+                            requireActivity().contentResolver,
+                            uri
+                        )
                     }
                 }
                 binding.civProfileEditUserProfilePic.setImageBitmap(bitmap)
-                user.avatar = User.Avatar("", "", "", "",
+                user.avatar = User.Avatar(
+                    "", "", "", "",
                     original = bitmap.toBase64()
                 )
             }
@@ -61,60 +92,82 @@ class ProfileEditFragment : Fragment() {
 
     private lateinit var user: User
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentProfileEditBinding.inflate(inflater, container, false)
-        viewModel.getUser()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setToolbar(getString(R.string.editProfile), "")
-        setHasOptionsMenu(true)
+        initializeProfileEdit()
 
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                ProfileEditViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
-                is ProfileEditViewModel.State.SuccessLoading -> {
-                    user = state.user
-                    requireActivity().invalidateOptionsMenu()
-
-                    displayProfile()
-                    binding.isLoading.root.visibility = View.GONE
-                }
-                is ProfileEditViewModel.State.FailedLoading -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
+                when (state) {
+                    ProfileEditViewModel.State.Loading -> binding.isLoading.apply {
+                        root.visibility = View.VISIBLE
                     }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
 
-                ProfileEditViewModel.State.Updating -> binding.isUpdating.root.visibility = View.VISIBLE
-                is ProfileEditViewModel.State.SuccessUpdating -> findNavController().navigateUp()
-                is ProfileEditViewModel.State.FailedUpdating -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    is ProfileEditViewModel.State.SuccessLoading -> {
+                        user = state.user
+                        displayProfile(state.user)
+                        binding.isLoading.root.visibility = View.GONE
                     }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+                    is ProfileEditViewModel.State.FailedLoading -> {
+                        when (state.error) {
+                            is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                                Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    ProfileEditViewModel.State.Updating -> binding.isUpdating.apply {
+                        root.visibility = View.VISIBLE
+                    }
+
+                    is ProfileEditViewModel.State.SuccessUpdating -> {
+                        findNavController().navigateUp()
+                    }
+
+                    is ProfileEditViewModel.State.FailedUpdating -> {
+                        when (state.error) {
+                            is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                                Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 }
             }
         }
@@ -140,12 +193,20 @@ class ProfileEditFragment : Fragment() {
                 }
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
 
 
-    private fun displayProfile() {
+    private fun initializeProfileEdit() {
+        setToolbar(getString(R.string.editProfile), "")
+        setHasOptionsMenu(true)
+    }
+
+    private fun displayProfile(user: User) {
+        requireActivity().invalidateOptionsMenu()
+
         binding.trProfileEditUserProfilePic.setOnClickListener {
             if (requireContext().isStoragePermissionGranted()) {
                 val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -158,12 +219,12 @@ class ProfileEditFragment : Fragment() {
 
         binding.civProfileEditUserProfilePic.apply {
             Picasso.get()
-                    .load(user.avatar?.small)
-                    .placeholder(R.drawable.default_user_avatar)
-                    .error(R.drawable.default_user_avatar)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .into(this)
+                .load(user.avatar?.small)
+                .placeholder(R.drawable.default_user_avatar)
+                .error(R.drawable.default_user_avatar)
+                .networkPolicy(NetworkPolicy.NO_CACHE)
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .into(this)
         }
 
         binding.ivProfileEditDeleteUserProfilePic.setOnClickListener {
@@ -175,7 +236,14 @@ class ProfileEditFragment : Fragment() {
         binding.etProfileEditUserAbout.apply {
             append(user.about)
             addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(
+                    s: CharSequence,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable) {
                     user.about = s.toString()
@@ -186,7 +254,14 @@ class ProfileEditFragment : Fragment() {
         binding.etProfileEditUserFirstName.apply {
             append(user.firstName)
             addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(
+                    s: CharSequence,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable) {
                     user.firstName = s.toString()
@@ -197,7 +272,14 @@ class ProfileEditFragment : Fragment() {
         binding.etProfileEditUserLastName.apply {
             append(user.lastName)
             addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(
+                    s: CharSequence,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable) {
                     user.lastName = s.toString()
@@ -234,7 +316,7 @@ class ProfileEditFragment : Fragment() {
         binding.spinnerProfileEditUserGender.apply {
             adapter = SpinnerAdapter(
                 context,
-                User.Gender.values()
+                User.Gender.entries
                     .map { getString(it.stringId) }
                     .toMutableList()
                     .also {
@@ -243,10 +325,15 @@ class ProfileEditFragment : Fragment() {
             )
             setSelection(user.gender?.ordinal?.let { it + 1 } ?: 0)
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
                     user.gender = when (position) {
                         0 -> null
-                        else -> User.Gender.values()[position-1]
+                        else -> User.Gender.entries[position - 1]
                     }
                 }
 
@@ -261,19 +348,24 @@ class ProfileEditFragment : Fragment() {
             countries.add(context.resources.getString(R.string.none))
             countriesCode.add("")
             requireContext().getCountries()
-                    .toList()
-                    .sortedBy { (_, country) ->
-                        country.toLowerCase(requireContext().locale())
-                    }
-                    .map { (code, country) ->
-                        countries.add(country)
-                        countriesCode.add(code)
-                    }
+                .toList()
+                .sortedBy { (_, country) ->
+                    country.lowercase()
+                }
+                .map { (code, country) ->
+                    countries.add(country)
+                    countriesCode.add(code)
+                }
 
             adapter = SpinnerAdapter(context, countries)
             setSelection(countriesCode.indexOf(user.country))
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
                     user.country = countriesCode[position]
                 }
 

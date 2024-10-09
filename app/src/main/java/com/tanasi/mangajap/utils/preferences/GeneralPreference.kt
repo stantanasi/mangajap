@@ -9,6 +9,8 @@ class GeneralPreference(
         context: Context
 ) {
 
+    object GeneralPreference {}
+
     companion object {
         private const val PREF_NAME = "${MangaJapApplication.PACKAGE_NAME}.general_preferences"
 

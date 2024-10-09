@@ -2,184 +2,109 @@ package com.tanasi.mangajap.fragments.manga
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
-import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentMangaBinding
 import com.tanasi.mangajap.databinding.PopupMangaBinding
-import com.tanasi.mangajap.fragments.recyclerView.RecyclerViewFragment
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.models.User
-import com.tanasi.mangajap.models.Volume
-import com.tanasi.mangajap.ui.SpacingItemDecoration
-import com.tanasi.mangajap.utils.extensions.*
+import com.tanasi.mangajap.utils.extensions.setToolbar
+import com.tanasi.mangajap.utils.extensions.shareText
+import com.tanasi.mangajap.utils.extensions.viewModelsFactory
+import kotlinx.coroutines.launch
 
 class MangaFragment : Fragment() {
 
-    private enum class MangaTab(
-        val stringId: Int,
-        var fragment: RecyclerViewFragment = RecyclerViewFragment(),
-        var list: MutableList<AppAdapter.Item> = mutableListOf()
-    ) {
-        About(R.string.about),
-        Volumes(R.string.volumes);
+    private enum class MangaTab(val stringId: Int) {
+        ABOUT(R.string.about),
+        VOLUMES(R.string.volumes);
     }
 
     private var _binding: FragmentMangaBinding? = null
-    private val binding: FragmentMangaBinding get() = _binding!!
+    private val binding get() = _binding!!
 
-    private val args: MangaFragmentArgs by navArgs()
-    val viewModel: MangaViewModel by viewModels()
+    private val args by navArgs<MangaFragmentArgs>()
+    val viewModel by viewModelsFactory {
+        MangaViewModel(args.mangaId)
+    }
 
     private lateinit var manga: Manga
-    var showDetailsVolume: Volume? = null
+    private val aboutFragment by lazy { binding.fMangaAbout.getFragment<MangaAboutFragment>() }
+    private val volumesFragment by lazy { binding.fMangaVolumes.getFragment<MangaVolumesFragment>() }
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentMangaBinding.inflate(inflater, container, false)
-        viewModel.getManga(args.mangaId)
-        MangaTab.values().forEach {
-            it.fragment = RecyclerViewFragment()
-            it.list = mutableListOf()
-        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setToolbar(args.mangaTitle, "")
-        setHasOptionsMenu(true)
+        initializeManga()
 
-        MangaTab.About.let {
-            it.fragment.setList(it.list, LinearLayoutManager(requireContext()))
-            addTab(it)
-        }
-        MangaTab.Volumes.let {
-            it.fragment.setList(
-                it.list,
-                GridLayoutManager(requireContext(), MANGA_VOLUME_SPAN_COUNT).apply {
-                    spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                        override fun getSpanSize(position: Int): Int {
-                            return when (it.list[position].itemType) {
-                                AppAdapter.Type.VOLUME_DETAILS_ITEM -> spanCount
-                                else -> 1
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
+                when (state) {
+                    MangaViewModel.State.Loading -> binding.isLoading.apply {
+                        root.visibility = View.VISIBLE
+                    }
+
+                    is MangaViewModel.State.SuccessLoading -> {
+                        displayManga(state.manga)
+                        binding.isLoading.root.visibility = View.GONE
+                    }
+
+                    is MangaViewModel.State.FailedLoading -> {
+                        when (state.error) {
+                            is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                                Toast.makeText(
+                                    requireContext(),
+                                    it.title,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
+
+                            is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
-                },
-            )
-            it.fragment.setPadding(resources.getDimension(R.dimen.manga_spacing).toInt())
-            it.fragment.addItemDecoration(SpacingItemDecoration(
-                vertical = (resources.getDimension(R.dimen.manga_spacing) * 1.5).toInt() / 2,
-                horizontal = (resources.getDimension(R.dimen.manga_spacing) * 1.5).toInt(),
-            ))
-        }
-
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                MangaViewModel.State.Loading -> binding.isLoading.root.visibility = View.VISIBLE
-                is MangaViewModel.State.SuccessLoading -> {
-                    manga = state.manga
-                    displayManga()
-                    binding.isLoading.root.visibility = View.GONE
-                }
-                is MangaViewModel.State.FailedLoading -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
-                    }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                MangaViewModel.State.AddingEntry -> {
-                    binding.clMangaProgressionAdd.setOnClickListener(null)
-                    binding.ivMangaProgressionAdd.visibility = View.GONE
-                    binding.pbMangaProgressionAdd.visibility = View.VISIBLE
-                }
-                is MangaViewModel.State.SuccessAddingEntry -> {
-                    manga.mangaEntry = state.mangaEntry
-                    binding.ivMangaProgressionAdd.apply {
-                        visibility = View.VISIBLE
-                        setImageResource(R.drawable.ic_check_black_24dp)
-                    }
-                    binding.pbMangaProgressionAdd.visibility = View.GONE
-                    binding.tvMangaProgressionAdd.text = getString(R.string.added_to_library)
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        displayManga()
-                    }, 1 * 1000.toLong())
-                }
-                is MangaViewModel.State.FailedAddingEntry -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
-                    }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                MangaViewModel.State.Updating -> binding.isUpdating.root.visibility = View.VISIBLE
-                is MangaViewModel.State.SuccessUpdating -> {
-                    manga.mangaEntry = state.mangaEntry
-                    displayManga()
-                    binding.isUpdating.root.visibility = View.GONE
-                }
-                is MangaViewModel.State.FailedUpdating -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
-                    }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -200,6 +125,7 @@ class MangaFragment : Fragment() {
                 displayPopupWindow()
                 return true
             }
+
             R.id.share -> {
                 shareText(getString(R.string.shareManga, manga.title))
                 return true
@@ -208,149 +134,98 @@ class MangaFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-    fun displayManga() {
-        if (_binding == null) {
-            (requireActivity() as MainActivity).reloadActivity()
-            return
-        }
 
-        activity?.invalidateOptionsMenu()
-
-        binding.pbMangaProgressionProgress.apply {
-            manga.mangaEntry?.let { mangaEntry ->
-                progress = mangaEntry.getProgress(manga)
-                progressTintList = ContextCompat.getColorStateList(requireContext(), mangaEntry.getProgressColor(manga))
-            }
-        }
-
-        binding.clMangaProgressionAdd.apply {
-            manga.mangaEntry?.let { mangaEntry ->
-                if (mangaEntry.isAdd) {
-                    visibility =  View.GONE
-                } else {
-                    visibility = View.VISIBLE
-                    setOnClickListener { _ ->
-                        viewModel.addMangaEntry(mangaEntry.also {
-                            it.isAdd = true
-                        })
-                    }
-                }
-            } ?: also {
-                visibility = View.VISIBLE
-                setOnClickListener {
-                    viewModel.addMangaEntry(MangaEntry().also {
-                        it.isAdd = true
-                        it.status = MangaEntry.Status.READING
-                        it.user = User(id = Firebase.auth.uid)
-                        it.manga = manga
-                    })
-                }
-            }
-        }
-
-        binding.ivMangaProgressionAdd.setImageResource(R.drawable.ic_add_black_24dp)
-
-        binding.pbMangaProgressionAdd.visibility = View.GONE
-
-        binding.tvMangaProgressionAdd.text = getString(R.string.add_manga_to_library)
-
-        setMangaAboutFragment()
-        setMangaVolumeFragment()
+    private fun initializeManga() {
+        setToolbar(args.mangaTitle, "")
+        setHasOptionsMenu(true)
 
         binding.tlManga.apply {
+            MangaTab.entries
+                .map { newTab().setText(getString(it.stringId)) }
+                .forEach { addTab(it) }
+
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
-                    MangaTab.values()
-                        .find { getString(it.stringId) == tab.text.toString() }
-                        ?.let {
-                            showTab(it)
-                        }
+                    showTab(MangaTab.entries[tab.position])
                 }
+
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
                 override fun onTabReselected(tab: TabLayout.Tab) {}
             })
             getTabAt(selectedTabPosition)?.apply {
                 select()
-                MangaTab.values()
-                    .find { getString(it.stringId) == text.toString() }
-                    ?.let {
-                        showTab(it)
-                    }
+                showTab(MangaTab.entries[selectedTabPosition])
             }
         }
     }
 
-    private fun setMangaAboutFragment() {
-        MangaTab.About.list.apply {
-            clear()
-            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA })
-            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_SUMMARY })
-            if (manga.mangaEntry != null)
-                add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_PROGRESSION })
-            if (manga.franchises.isNotEmpty())
-                add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_FRANCHISES })
-            add(manga.copy().apply { itemType = AppAdapter.Type.MANGA_REVIEWS })
-        }
+    private fun displayManga(manga: Manga) {
+        this.manga = manga
+        requireActivity().invalidateOptionsMenu()
 
-        if (MangaTab.About.fragment.isAdded)
-            MangaTab.About.fragment.adapter?.notifyDataSetChanged()
-    }
-
-    private fun setMangaVolumeFragment() {
-        MangaTab.Volumes.list.apply {
-            clear()
-            addAll(manga.volumes.map { volume ->
-                volume.apply { itemType  = AppAdapter.Type.VOLUME_ITEM }
-            })
-
-            showDetailsVolume?.let {
-                MangaTab.Volumes.list.addOrLast(
-                    index = (MANGA_VOLUME_SPAN_COUNT - MangaTab.Volumes.list.indexOf(it) % MANGA_VOLUME_SPAN_COUNT)
-                            + MangaTab.Volumes.list.indexOf(it),
-                    it.copy().apply { itemType = AppAdapter.Type.VOLUME_DETAILS_ITEM }
+        binding.pbMangaProgressionProgress.apply {
+            progress = manga.mangaEntry?.getProgress(manga) ?: 0
+            progressTintList = manga.mangaEntry?.let {
+                ContextCompat.getColorStateList(
+                    requireContext(),
+                    it.getProgressColor(manga)
                 )
             }
         }
 
-        if (MangaTab.Volumes.list.isNotEmpty()) {
-            if (MangaTab.Volumes.fragment.isAdded)
-                MangaTab.Volumes.fragment.adapter?.notifyDataSetChanged()
-            addTab(MangaTab.Volumes)
-        }
-    }
+        binding.clMangaProgressionAdd.apply {
+            setOnClickListener { _ ->
+                val mangaEntry = manga.mangaEntry?.also {
+                    it.isAdd = true
+                } ?: MangaEntry().also {
+                    it.isAdd = true
+                    it.status = MangaEntry.Status.READING
+                    it.user = User(id = Firebase.auth.uid)
+                    it.manga = manga
+                }
 
-    private fun addTab(mangaTab: MangaTab) {
-        val ft: FragmentTransaction = childFragmentManager.beginTransaction()
+                viewModel.saveMangaEntry(mangaEntry)
 
-        if (!binding.tlManga.contains(getString(mangaTab.stringId))) {
-            binding.tlManga.add(getString(mangaTab.stringId))
-            if (mangaTab.fragment.isAdded) {
-                ft.detach(mangaTab.fragment)
-                ft.attach(mangaTab.fragment)
-            } else {
-                ft.add(binding.flManga.id, mangaTab.fragment)
+                setOnClickListener(null)
+                binding.ivMangaProgressionAdd.visibility = View.GONE
+                binding.pbMangaProgressionAdd.visibility = View.VISIBLE
+            }
+
+            visibility = when {
+                manga.mangaEntry?.isAdd == true -> View.GONE
+                else -> View.VISIBLE
             }
         }
 
-        ft.commitAllowingStateLoss()
+        binding.ivMangaProgressionAdd.visibility = View.VISIBLE
+
+        binding.pbMangaProgressionAdd.visibility = View.GONE
+
+        binding.tvMangaProgressionAdd.text = getString(R.string.add_manga_to_library)
     }
 
     private fun showTab(mangaTab: MangaTab) {
-        val ft: FragmentTransaction = childFragmentManager.beginTransaction()
-
-        MangaTab.values().forEach {
+        childFragmentManager.beginTransaction().apply {
             when (mangaTab) {
-                it -> ft.show(mangaTab.fragment)
-                else -> ft.hide(it.fragment)
+                MangaTab.ABOUT -> show(aboutFragment)
+                else -> hide(aboutFragment)
             }
+            when (mangaTab) {
+                MangaTab.VOLUMES -> show(volumesFragment)
+                else -> hide(volumesFragment)
+            }
+            commitAllowingStateLoss()
         }
-
-        ft.commitAllowingStateLoss()
     }
 
     private fun displayPopupWindow() {
-        val layoutInflater = requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layoutInflater =
+            requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupMangaBinding = PopupMangaBinding.inflate(layoutInflater)
 
         val popupWindow = PopupWindow(
@@ -364,11 +239,14 @@ class MangaFragment : Fragment() {
         }
 
 
-        popupMangaBinding.tvPopupMangaStatus.text = getString(manga.mangaEntry?.status?.stringId ?: MangaEntry.Status.READING.stringId)
+        popupMangaBinding.tvPopupMangaStatus.text = getString(
+            manga.mangaEntry?.status?.stringId
+                ?: MangaEntry.Status.READING.stringId
+        )
 
         popupMangaBinding.vPopupMangaDelete.setOnClickListener { _ ->
             manga.mangaEntry?.let { mangaEntry ->
-                viewModel.updateMangaEntry(mangaEntry.also {
+                viewModel.saveMangaEntry(mangaEntry.also {
                     it.isAdd = false
                 })
             }
@@ -383,6 +261,5 @@ class MangaFragment : Fragment() {
 
     companion object {
         const val MANGA_SYNOPSIS_MAX_LINES: Int = 3
-        private const val MANGA_VOLUME_SPAN_COUNT: Int = 3
     }
 }

@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.fragments.settingsPreference
+package com.tanasi.mangajap.fragments.settingspreference
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -8,6 +8,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -24,9 +27,18 @@ import com.tanasi.mangajap.ui.dialog.ChangePasswordDialog
 import com.tanasi.mangajap.ui.dialog.EditTextDialog
 import com.tanasi.mangajap.ui.dialog.RadioGroupDialog
 import com.tanasi.mangajap.ui.dialog.VerifyPasswordDialog
-import com.tanasi.mangajap.utils.extensions.*
+import com.tanasi.mangajap.utils.extensions.getAppVersionCode
+import com.tanasi.mangajap.utils.extensions.getAppVersionName
+import com.tanasi.mangajap.utils.extensions.getFragment
+import com.tanasi.mangajap.utils.extensions.isEmailValid
+import com.tanasi.mangajap.utils.extensions.isPasswordValid
+import com.tanasi.mangajap.utils.extensions.isPseudoValid
+import com.tanasi.mangajap.utils.extensions.onBackPressed
+import com.tanasi.mangajap.utils.extensions.setNightMode
+import com.tanasi.mangajap.utils.extensions.setToolbar
 import com.tanasi.mangajap.utils.preferences.SettingsPreference
-import java.util.*
+import kotlinx.coroutines.launch
+import java.util.Calendar
 
 // TODO: faire comme dans Steams, bouton "ANNOUNCEMENTS = annonces" dans les paramètres qui affiche toutes les nouveautés, notes...
 // TODO: faire une préférence pour les titres (pas compliqué fait vraiment !!!!!)
@@ -67,7 +79,11 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             Settings.general -> addPreferencesFromResource(R.xml.preference_settings_general)
             Settings.account -> addPreferencesFromResource(R.xml.preference_settings_account)
             Settings.about -> addPreferencesFromResource(R.xml.preference_settings_about)
-            null -> Toast.makeText(requireContext(), requireContext().resources.getString(R.string.error), Toast.LENGTH_SHORT).show()
+            null -> Toast.makeText(
+                requireContext(),
+                requireContext().resources.getString(R.string.error),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -77,7 +93,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         settingsPreference = SettingsPreference(requireContext())
 
         if (!this::settingsFragment.isInitialized)
-            settingsFragment = (requireActivity() as MainActivity).getFragment(SettingsFragment::class.java)!!
+            settingsFragment =
+                (requireActivity() as MainActivity).getFragment(SettingsFragment::class.java)!!
 
         onBackPressed {
             when (settings) {
@@ -86,48 +103,67 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 Settings.general,
                 Settings.account,
                 Settings.about -> parentFragmentManager.popBackStack()
+
                 else -> {}
             }
         }
 
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                SettingsPreferenceViewModel.State.Loading -> {
-                }
-                is SettingsPreferenceViewModel.State.SuccessLoading -> displayAccount(state.user)
-                is SettingsPreferenceViewModel.State.FailedLoading -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
-                    }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
+                when (state) {
+                    SettingsPreferenceViewModel.State.Loading -> {}
 
-                SettingsPreferenceViewModel.State.Updating -> {
-                }
-                is SettingsPreferenceViewModel.State.SuccessUpdating -> displayAccount(state.user)
-                is SettingsPreferenceViewModel.State.FailedUpdating -> when (state.error) {
-                    is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
-                        Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT).show()
+                    is SettingsPreferenceViewModel.State.SuccessLoading -> {
+                        displayAccount(state.user)
                     }
-                    is JsonApiResponse.Error.NetworkError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    is JsonApiResponse.Error.UnknownError -> Toast.makeText(
-                        requireContext(),
-                        state.error.error.message ?: "",
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+                    is SettingsPreferenceViewModel.State.FailedLoading -> {
+                        when (state.error) {
+                            is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                                Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    SettingsPreferenceViewModel.State.Updating -> {}
+
+                    is SettingsPreferenceViewModel.State.SuccessUpdating -> {
+                        displayAccount(state.user)
+                    }
+
+                    is SettingsPreferenceViewModel.State.FailedUpdating -> {
+                        when (state.error) {
+                            is JsonApiResponse.Error.ServerError -> state.error.body.errors.map {
+                                Toast.makeText(requireContext(), it.title, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                            is JsonApiResponse.Error.NetworkError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            is JsonApiResponse.Error.UnknownError -> Toast.makeText(
+                                requireContext(),
+                                state.error.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 }
             }
         }
@@ -139,15 +175,16 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 viewModel.getUser(Firebase.auth.uid!!)
                 displayAccount()
             }
+
             Settings.about -> displayAbout()
             else -> {}
         }
     }
 
 
-
     private fun displayMain() {
-        settingsFragment.setToolbar(getString(R.string.settings), "").setNavigationOnClickListener { findNavController().navigateUp() }
+        settingsFragment.setToolbar(getString(R.string.settings), "")
+            .setNavigationOnClickListener { findNavController().navigateUp() }
 
         findPreference<Preference>("general")?.setOnPreferenceClickListener {
             settingsFragment.showFragment(Settings.general)
@@ -166,23 +203,28 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     private fun displayGeneral() {
-        settingsFragment.setToolbar(getString(R.string.general), "").setNavigationOnClickListener { parentFragmentManager.popBackStack() }
+        settingsFragment.setToolbar(getString(R.string.general), "")
+            .setNavigationOnClickListener { parentFragmentManager.popBackStack() }
 
         findPreference<Preference>("language")?.apply {
             summary = getString(settingsPreference.language.stringId)
 
             setOnPreferenceClickListener {
                 RadioGroupDialog(
-                        requireContext(),
-                        getString(R.string.defineALanguage),
-                        getString(settingsPreference.language.stringId),
-                        SettingsPreference.Language.values().map { getString(it.stringId) }.sortedBy { it }
+                    requireContext(),
+                    getString(R.string.defineALanguage),
+                    getString(settingsPreference.language.stringId),
+                    SettingsPreference.Language.entries.map { getString(it.stringId) }
+                        .sortedBy { it }
                 ) { position ->
-                    settingsPreference.language = SettingsPreference.Language.values()[position]
+                    settingsPreference.language = SettingsPreference.Language.entries[position]
 
                     startActivity(Intent(requireContext(), MainActivity::class.java))
                     requireActivity().finish()
-                    requireActivity().overridePendingTransition(R.anim.fade_in_activity, R.anim.fade_out_activity)
+                    requireActivity().overridePendingTransition(
+                        R.anim.fade_in_activity,
+                        R.anim.fade_out_activity
+                    )
                 }.show()
                 false
             }
@@ -193,12 +235,12 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
             setOnPreferenceClickListener {
                 RadioGroupDialog(
-                        requireContext(),
-                        getString(R.string.defineATheme),
-                        getString(settingsPreference.theme.stringId),
-                        SettingsPreference.Theme.values().map { getString(it.stringId) }
+                    requireContext(),
+                    getString(R.string.defineATheme),
+                    getString(settingsPreference.theme.stringId),
+                    SettingsPreference.Theme.entries.map { getString(it.stringId) }
                 ) { position ->
-                    settingsPreference.theme = SettingsPreference.Theme.values()[position]
+                    settingsPreference.theme = SettingsPreference.Theme.entries[position]
 
                     summary = getString(settingsPreference.theme.stringId)
 
@@ -217,10 +259,11 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     private fun displayAccount(user: User? = null) {
-        settingsFragment.setToolbar(getString(R.string.account), "").setNavigationOnClickListener { parentFragmentManager.popBackStack() }
+        settingsFragment.setToolbar(getString(R.string.account), "")
+            .setNavigationOnClickListener { parentFragmentManager.popBackStack() }
 
         val firebaseUser = Firebase.auth.currentUser!!
-        if (user == null ) return
+        if (user == null) return
 
         findPreference<Preference>("pseudo")?.apply {
             summary = user.pseudo
@@ -233,9 +276,13 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 ) { dialog, textInputLayout, text ->
                     if (text.isPseudoValid()) {
                         user.pseudo = text
-                        viewModel.updateUser(user.also { it.dirtyProperties.addAll(listOf(
-                            User::pseudo,
-                        )) })
+                        viewModel.updateUser(user.also {
+                            it.dirtyProperties.addAll(
+                                listOf(
+                                    User::pseudo,
+                                )
+                            )
+                        })
                         dialog.dismiss()
                     } else {
                         textInputLayout.error = getString(R.string.pseudoInvalid)
@@ -274,7 +321,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                                                     }
                                                 }
                                         } else {
-                                            textInputLayout.error = requireContext().resources.getString(R.string.emailInvalid)
+                                            textInputLayout.error =
+                                                requireContext().resources.getString(R.string.emailInvalid)
                                         }
 
                                     }.show()
@@ -318,7 +366,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                                                     }
                                                 }
                                         } else {
-                                            etCurrentPassword.error = getString(R.string.passwordIncorrect)
+                                            etCurrentPassword.error =
+                                                getString(R.string.passwordIncorrect)
                                         }
                                     }
 
@@ -339,27 +388,34 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
         findPreference<Preference>("logout")?.apply {
             setOnPreferenceClickListener {
-                AlertDialog.Builder(ContextThemeWrapper(context, R.style.Widget_AppTheme_Dialog_Alert))
-                        .setTitle(getString(R.string.logout))
-                        .setMessage(getString(R.string.logoutConfirmation))
-                        .setPositiveButton(getString(R.string.confirm)) { _, _ ->
-                            Firebase.auth.signOut()
+                AlertDialog.Builder(
+                    ContextThemeWrapper(
+                        context,
+                        R.style.Widget_AppTheme_Dialog_Alert
+                    )
+                )
+                    .setTitle(getString(R.string.logout))
+                    .setMessage(getString(R.string.logoutConfirmation))
+                    .setPositiveButton(getString(R.string.confirm)) { _, _ ->
+                        Firebase.auth.signOut()
 
-                            startActivity(Intent(activity, LauncherActivity::class.java))
-                            requireActivity().finish()
-                        }
-                        .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
-                        .show()
+                        startActivity(Intent(activity, LauncherActivity::class.java))
+                        requireActivity().finish()
+                    }
+                    .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
+                    .show()
                 false
             }
         }
     }
 
     private fun displayAbout() {
-        settingsFragment.setToolbar(getString(R.string.about), "").setNavigationOnClickListener { parentFragmentManager.popBackStack() }
+        settingsFragment.setToolbar(getString(R.string.about), "")
+            .setNavigationOnClickListener { parentFragmentManager.popBackStack() }
 
         findPreference<Preference>("version")?.apply {
-            summary = requireContext().getAppVersionName() + " - " + requireContext().getAppVersionCode()
+            summary =
+                requireContext().getAppVersionName() + " - " + requireContext().getAppVersionCode()
         }
 
         findPreference<Preference>("privacyPolicy")?.setOnPreferenceClickListener {
@@ -373,7 +429,10 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, arrayOf("stantanasi@gmail.com"))
                 putExtra(Intent.EXTRA_SUBJECT, "Help and comments")
-                putExtra(Intent.EXTRA_TEXT, requireContext().resources.getString(R.string.app_name) + ", " + requireContext().getAppVersionName() + " - " + requireContext().getAppVersionCode())
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    requireContext().resources.getString(R.string.app_name) + ", " + requireContext().getAppVersionName() + " - " + requireContext().getAppVersionCode()
+                )
                 startActivity(this)
             }
             false
@@ -386,13 +445,19 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>("copyright")?.apply {
-            summary = getString(R.string.copyright, Calendar.getInstance().get(Calendar.YEAR), getString(R.string.app_name))
+            summary = getString(
+                R.string.copyright,
+                Calendar.getInstance().get(Calendar.YEAR),
+                getString(R.string.app_name)
+            )
         }
     }
 
 
     companion object {
-        const val URL_PRIVACY_POLICY = "https://www.privacypolicies.com/privacy/view/c1e4635a371ace65d48de05aae989c11"
-        const val URL_PLAY_STORE = "https://play.google.com/store/apps/details?id=com.tanasi.mangajap"
+        const val URL_PRIVACY_POLICY =
+            "https://www.privacypolicies.com/privacy/view/c1e4635a371ace65d48de05aae989c11"
+        const val URL_PLAY_STORE =
+            "https://play.google.com/store/apps/details?id=com.tanasi.mangajap"
     }
 }
