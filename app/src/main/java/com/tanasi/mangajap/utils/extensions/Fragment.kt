@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
+import com.tanasi.mangajap.activities.main.MainActivity
 
 fun Fragment.setToolbar(title: String, subtitle: String): Toolbar {
     val toolbar = requireView().findViewById<Toolbar>(R.id.toolbar)

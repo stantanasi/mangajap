@@ -19,7 +19,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
+import com.tanasi.mangajap.activities.main.MainActivity
 import com.tanasi.mangajap.fragments.settings.SettingsFragment
 import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.ui.dialog.ChangePasswordDialog

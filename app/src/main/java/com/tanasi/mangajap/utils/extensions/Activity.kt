@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
+import com.tanasi.mangajap.activities.main.MainActivity
 import com.tanasi.mangajap.fragments.settingspreference.SettingsPreferenceFragment
 
 fun AppCompatActivity.getCurrentFragment(): Fragment? = when (this) {

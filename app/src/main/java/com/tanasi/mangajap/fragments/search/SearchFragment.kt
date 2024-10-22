@@ -9,11 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
+import com.tanasi.mangajap.activities.main.MainActivity
 import com.tanasi.mangajap.databinding.FragmentSearchBinding
 import com.tanasi.mangajap.utils.extensions.runOnUiThread
 import com.tanasi.mangajap.utils.preferences.GeneralPreference

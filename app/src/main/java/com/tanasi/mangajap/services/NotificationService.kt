@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
+import com.tanasi.mangajap.activities.main.MainActivity
 
 class NotificationService : FirebaseMessagingService() {
 

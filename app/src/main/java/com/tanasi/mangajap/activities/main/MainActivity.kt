@@ -1,4 +1,4 @@
-package com.tanasi.mangajap.activities
+package com.tanasi.mangajap.activities.main
 
 import android.app.AlertDialog
 import android.content.Intent

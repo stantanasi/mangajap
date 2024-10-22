@@ -12,7 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
+import com.tanasi.mangajap.activities.main.MainActivity
 import com.tanasi.mangajap.databinding.FragmentLoginBinding
 import com.tanasi.mangajap.ui.dialog.ResetPasswordDialog
 import kotlinx.coroutines.launch

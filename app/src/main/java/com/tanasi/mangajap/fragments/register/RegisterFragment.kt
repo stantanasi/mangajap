@@ -13,7 +13,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.MainActivity
+import com.tanasi.mangajap.activities.main.MainActivity
 import com.tanasi.mangajap.databinding.FragmentRegisterBinding
 import com.tanasi.mangajap.utils.extensions.isEmailValid
 import com.tanasi.mangajap.utils.extensions.isPasswordValid
