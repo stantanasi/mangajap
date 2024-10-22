@@ -1,8 +1,10 @@
 package com.tanasi.mangajap.utils
 
 import com.tanasi.mangajap.models.Category
+import com.tanasi.mangajap.models.Chapter
 import com.tanasi.mangajap.models.Genre
 import com.tanasi.mangajap.models.Manga
+import com.tanasi.mangajap.models.Volume
 import okhttp3.OkHttpClient
 import org.jsoup.nodes.Document
 import retrofit2.Retrofit
@@ -140,6 +142,31 @@ object MangaReader {
                     id = element
                         .attr("href").substringAfterLast("/"),
                     title = element.text(),
+                )
+            },
+            volumes = document.select("div#list-vol div.item").map {
+                Volume(
+                    id = it.selectFirst("a.link-mask")
+                        ?.attr("href")?.substringAfterLast("/")
+                        ?: "",
+//                    title = it.selectFirst("span.tick-vol")
+//                        ?.text(),
+                    number = it.selectFirst("span.tick-vol")
+                        ?.text()?.substringAfter("VOL ")?.toIntOrNull()
+                        ?: 0,
+                    coverImage = it.selectFirst("img.manga-poster-img")
+                        ?.attr("src"),
+                )
+            },
+            chapters = document.select("div#list-chapter li.item").map {
+                Chapter(
+                    id = it.selectFirst("a.item-link")
+                        ?.attr("href")?.substringAfterLast("/")
+                        ?: "",
+//                    title = it.selectFirst("span.name")
+//                        ?.text(),
+                    number = it.attr("data-number").toIntOrNull()
+                        ?: 0,
                 )
             },
         )
