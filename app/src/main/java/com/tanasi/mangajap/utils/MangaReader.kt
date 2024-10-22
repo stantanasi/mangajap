@@ -31,7 +31,7 @@ object MangaReader {
                 list = document.select("div#trending-home div.item").map {
                     Manga(
                         id = it.selectFirst("a.link-mask")
-                            ?.attr("href")?.substringAfter("/")
+                            ?.attr("href")?.substringAfterLast("-")
                             ?: "",
                         title = it.selectFirst("div.anime-name")
                             ?.text()
@@ -49,7 +49,7 @@ object MangaReader {
                 list = document.select("div#featured-03 div.mg-item-basic").map {
                     Manga(
                         id = it.selectFirst("a.link-mask")
-                            ?.attr("href")?.substringAfter("/")
+                            ?.attr("href")?.substringAfterLast("-")
                             ?: "",
                         title = it.selectFirst("h3.manga-name")
                             ?.text()
@@ -75,7 +75,7 @@ object MangaReader {
                 list = document.select("div#featured-04 div.mg-item-basic").map {
                     Manga(
                         id = it.selectFirst("a.link-mask")
-                            ?.attr("href")?.substringAfter("/")
+                            ?.attr("href")?.substringAfterLast("-")
                             ?: "",
                         title = it.selectFirst("h3.manga-name")
                             ?.text()
@@ -108,7 +108,7 @@ object MangaReader {
         val results = document.select("div.manga_list-sbs div.item").map {
             Manga(
                 id = it.selectFirst("a")
-                    ?.attr("href")?.substringAfter("/")
+                    ?.attr("href")?.substringAfterLast("-")
                     ?: "",
                 title = it.selectFirst("h3.manga-name")
                     ?.text()
@@ -237,7 +237,7 @@ object MangaReader {
             @Query("page") page: Int,
         ): Document
 
-        @GET("{id}")
+        @GET("slug-{id}")
         suspend fun getManga(
             @Path("id") id: String,
         ): Document
