@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -14,6 +15,8 @@ class MainActivity : FragmentActivity() {
 
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_MangaJap)
