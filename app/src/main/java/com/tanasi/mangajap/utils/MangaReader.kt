@@ -152,7 +152,7 @@ object MangaReader {
             volumes = document.select("div#list-vol div.item").map {
                 Volume(
                     id = it.selectFirst("a.link-mask")
-                        ?.attr("href")?.substringAfterLast("/")
+                        ?.attr("href")?.substringAfter("/")
                         ?: "",
 //                    title = it.selectFirst("span.tick-vol")
 //                        ?.text(),
@@ -183,6 +183,20 @@ object MangaReader {
         val document = service.getChapter(id)
 
         val pages = document.select("div.ds-item").map {
+            Page(
+                image = it.selectFirst("div.ds-image")
+                    ?.attr("data-url")
+                    ?: "",
+            )
+        }
+
+        return pages
+    }
+
+    suspend fun getVolumePages(id: String): List<Page> {
+        val document = service.getVolume(id)
+
+        val pages = document.select("").map {
             Page(
                 image = it.selectFirst("div.ds-image")
                     ?.attr("data-url")
@@ -230,6 +244,11 @@ object MangaReader {
 
         @GET("{id}")
         suspend fun getChapter(
+            @Path("id", encoded = true) id: String,
+        ): Document
+
+        @GET("{id}")
+        suspend fun getVolume(
             @Path("id", encoded = true) id: String,
         ): Document
     }
