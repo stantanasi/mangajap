@@ -68,7 +68,7 @@ class AnimeViewHolder(
 
     private fun createAnimeEntry(animeEntry: AnimeEntry) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is SearchFragment -> fragment.animeFragment.saveAnimeEntry(anime, animeEntry)
+//            is SearchFragment -> fragment.animeFragment.saveAnimeEntry(anime, animeEntry)
             is DiscoverFragment -> fragment.viewModel.saveAnimeEntry(anime, animeEntry)
         }
     }
@@ -76,14 +76,14 @@ class AnimeViewHolder(
     private fun updateAnimeEntry(animeEntry: AnimeEntry) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
             is AnimeFragment -> fragment.viewModel.saveAnimeEntry(animeEntry)
-            is SearchFragment -> fragment.animeFragment.saveAnimeEntry(anime, animeEntry)
+//            is SearchFragment -> fragment.animeFragment.saveAnimeEntry(anime, animeEntry)
             is DiscoverFragment -> fragment.viewModel.saveAnimeEntry(anime, animeEntry)
         }
     }
 
     private fun createAnimeRequest(request: Request) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is SearchFragment -> fragment.animeFragment.saveRequest(request)
+//            is SearchFragment -> fragment.animeFragment.saveRequest(request)
         }
     }
 

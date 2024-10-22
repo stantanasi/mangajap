@@ -82,7 +82,7 @@ class MangaViewHolder(
 
     private fun createMangaEntry(mangaEntry: MangaEntry) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is SearchFragment -> fragment.mangaFragment.saveMangaEntry(manga, mangaEntry)
+//            is SearchFragment -> fragment.mangaFragment.saveMangaEntry(manga, mangaEntry)
             is DiscoverFragment -> fragment.viewModel.saveMangaEntry(manga, mangaEntry)
         }
     }
@@ -90,14 +90,14 @@ class MangaViewHolder(
     private fun updateMangaEntry(mangaEntry: MangaEntry) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
             is MangaFragment -> fragment.viewModel.saveMangaEntry(mangaEntry)
-            is SearchFragment -> fragment.mangaFragment.saveMangaEntry(manga, mangaEntry)
+//            is SearchFragment -> fragment.mangaFragment.saveMangaEntry(manga, mangaEntry)
             is DiscoverFragment -> fragment.viewModel.saveMangaEntry(manga, mangaEntry)
         }
     }
 
     private fun createMangaRequest(request: Request) {
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is SearchFragment -> fragment.mangaFragment.saveRequest(request)
+//            is SearchFragment -> fragment.mangaFragment.saveRequest(request)
         }
     }
 
