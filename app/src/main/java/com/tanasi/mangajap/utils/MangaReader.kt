@@ -4,6 +4,7 @@ import com.tanasi.mangajap.models.Category
 import com.tanasi.mangajap.models.Chapter
 import com.tanasi.mangajap.models.Genre
 import com.tanasi.mangajap.models.Manga
+import com.tanasi.mangajap.models.Page
 import com.tanasi.mangajap.models.Volume
 import okhttp3.OkHttpClient
 import org.jsoup.nodes.Document
@@ -165,7 +166,7 @@ object MangaReader {
             chapters = document.select("div#list-chapter li.item").map {
                 Chapter(
                     id = it.selectFirst("a.item-link")
-                        ?.attr("href")?.substringAfterLast("/")
+                        ?.attr("href")?.substringAfter("/")
                         ?: "",
 //                    title = it.selectFirst("span.name")
 //                        ?.text(),
@@ -176,6 +177,20 @@ object MangaReader {
         )
 
         return manga
+    }
+
+    suspend fun getChapterPages(id: String): List<Page> {
+        val document = service.getChapter(id)
+
+        val pages = document.select("div.ds-item").map {
+            Page(
+                image = it.selectFirst("div.ds-image")
+                    ?.attr("data-url")
+                    ?: "",
+            )
+        }
+
+        return pages
     }
 
 
@@ -211,6 +226,11 @@ object MangaReader {
         @GET("{id}")
         suspend fun getManga(
             @Path("id") id: String,
+        ): Document
+
+        @GET("{id}")
+        suspend fun getChapter(
+            @Path("id", encoded = true) id: String,
         ): Document
     }
 }
