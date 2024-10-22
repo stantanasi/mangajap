@@ -48,7 +48,7 @@ class MainActivity : FragmentActivity() {
                     R.id.home -> finish()
                     R.id.search -> binding.bnvMain.findViewById<View>(R.id.home).performClick()
                     else -> navController.navigateUp().takeIf { !it }
-                        ?: finish()
+                        ?.let { finish() }
                 }
             }
         })
