@@ -152,27 +152,41 @@ object MangaReader {
                     title = element.text(),
                 )
             },
-            volumes = service.getVolumes(id).html.select("li.volume-item").map {
-                Volume(
-                    id = it.attr("data-id"),
-//                    title = it.selectFirst("span.tick-vol")
-//                        ?.text(),
-                    number = it.attr("data-number").toIntOrNull()
-                        ?: 0,
-                )
-            },
-            chapters = service.getChapters(id).html.select("li.chapter-item").map {
-                Chapter(
-                    id = it.attr("data-id"),
-//                    title = it.selectFirst("span.name")
-//                        ?.text(),
-                    number = it.attr("data-number").toIntOrNull()
-                        ?: 0,
-                )
-            },
         )
 
         return manga
+    }
+
+    suspend fun getChapters(mangaId: String): List<Chapter> {
+        val response = service.getChapters(mangaId)
+
+        val chapters = response.html.select("li.chapter-item").map {
+            Chapter(
+                id = it.attr("data-id"),
+//                    title = it.selectFirst("span.name")
+//                        ?.text(),
+                number = it.attr("data-number").toIntOrNull()
+                    ?: 0,
+            )
+        }
+
+        return chapters
+    }
+
+    suspend fun getVolumes(mangaId: String): List<Volume> {
+        val response = service.getVolumes(mangaId)
+
+        val volumes = response.html.select("li.volume-item").map {
+            Volume(
+                id = it.attr("data-id"),
+//                    title = it.selectFirst("span.tick-vol")
+//                        ?.text(),
+                number = it.attr("data-number").toIntOrNull()
+                    ?: 0,
+            )
+        }
+
+        return volumes
     }
 
     suspend fun getChapterPages(id: String): List<Page> {

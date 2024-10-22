@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -11,7 +12,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentMangaVolumesBinding
-import com.tanasi.mangajap.models.Manga
+import com.tanasi.mangajap.models.Volume
 import kotlinx.coroutines.launch
 
 class MangaVolumesFragment : Fragment() {
@@ -40,13 +41,33 @@ class MangaVolumesFragment : Fragment() {
         initializeMangaVolumes()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
+            viewModel.volumes.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
                 when (state) {
-                    is MangaViewModel.State.SuccessLoading -> {
-                        displayMangaVolumes(state.manga)
+                    MangaViewModel.VolumesState.Loading -> binding.isLoading.apply {
+                        root.visibility = View.VISIBLE
+                        pbIsLoading.visibility = View.VISIBLE
+                        gIsLoadingRetry.visibility = View.GONE
                     }
 
-                    else -> {}
+                    is MangaViewModel.VolumesState.SuccessLoading -> {
+                        displayMangaVolumes(state.volumes)
+                        binding.isLoading.root.visibility = View.GONE
+                    }
+
+                    is MangaViewModel.VolumesState.FailedLoading -> {
+                        Toast.makeText(
+                            requireContext(),
+                            state.error.message ?: "",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        binding.isLoading.apply {
+                            pbIsLoading.visibility = View.GONE
+                            gIsLoadingRetry.visibility = View.VISIBLE
+                            btnIsLoadingRetry.setOnClickListener {
+                                viewModel.getMangaVolumes(viewModel.id)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -64,8 +85,8 @@ class MangaVolumesFragment : Fragment() {
         }
     }
 
-    private fun displayMangaVolumes(manga: Manga) {
-        appAdapter.submitList(manga.volumes.onEach {
+    private fun displayMangaVolumes(volumes: List<Volume>) {
+        appAdapter.submitList(volumes.onEach {
             it.itemType = AppAdapter.Type.VOLUME_ITEM
         })
     }
