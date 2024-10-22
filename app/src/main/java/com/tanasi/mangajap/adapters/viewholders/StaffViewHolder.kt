@@ -30,12 +30,12 @@ class StaffViewHolder(
         binding.root.apply {
             staff.manga?.let {manga ->
                 setOnClickListener {
-                    Navigation.findNavController(binding.root).navigate(
-                            PeopleFragmentDirections.actionPeopleToManga(
-                                    manga.id,
-                                    manga.title
-                            )
-                    )
+//                    Navigation.findNavController(binding.root).navigate(
+//                            PeopleFragmentDirections.actionPeopleToManga(
+//                                    manga.id,
+//                                    manga.title
+//                            )
+//                    )
                 }
             } ?: staff.anime?.let { anime ->
                 setOnClickListener {

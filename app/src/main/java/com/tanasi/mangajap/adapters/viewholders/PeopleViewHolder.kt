@@ -39,12 +39,12 @@ class PeopleViewHolder(
                     .error(R.drawable.placeholder)
                     .into(imageView)
             imageView.setOnClickListener {
-                Navigation.findNavController(binding.root).navigate(
-                        DiscoverFragmentDirections.actionDiscoverToManga(
-                                manga.id,
-                                manga.title
-                        )
-                )
+//                Navigation.findNavController(binding.root).navigate(
+//                        DiscoverFragmentDirections.actionDiscoverToManga(
+//                                manga.id,
+//                                manga.title
+//                        )
+//                )
             }
         }
 

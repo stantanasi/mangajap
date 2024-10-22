@@ -47,12 +47,12 @@ class MangaEntryViewHolder(
 
     private fun displayPreview(binding: ItemMediaProfilePreviewBinding) {
         binding.root.setOnClickListener {
-            Navigation.findNavController(binding.root).navigate(
-                    ProfileFragmentDirections.actionProfileToManga(
-                            mangaEntry.manga?.id ?: "",
-                            mangaEntry.manga?.title ?: ""
-                    )
-            )
+//            Navigation.findNavController(binding.root).navigate(
+//                    ProfileFragmentDirections.actionProfileToManga(
+//                            mangaEntry.manga?.id ?: "",
+//                            mangaEntry.manga?.title ?: ""
+//                    )
+//            )
         }
 
         binding.ivProfileMediaCover.apply {
@@ -91,12 +91,12 @@ class MangaEntryViewHolder(
 
     private fun displayLibrary(binding: ItemMediaLibraryBinding) {
         binding.root.setOnClickListener {
-            Navigation.findNavController(binding.root).navigate(
-                    LibraryFragmentDirections.actionLibraryToManga(
-                            mangaEntry.manga?.id ?: "",
-                            mangaEntry.manga?.title ?: ""
-                    )
-            )
+//            Navigation.findNavController(binding.root).navigate(
+//                    LibraryFragmentDirections.actionLibraryToManga(
+//                            mangaEntry.manga?.id ?: "",
+//                            mangaEntry.manga?.title ?: ""
+//                    )
+//            )
         }
 
         binding.ivLibraryMediaCover.apply {
@@ -137,12 +137,12 @@ class MangaEntryViewHolder(
 
     private fun displayToRead(binding: ItemAgendaMangaBinding) {
         binding.root.setOnClickListener {
-            Navigation.findNavController(binding.root).navigate(
-                    AgendaFragmentDirections.actionAgendaToManga(
-                            mangaEntry.manga?.id ?: "",
-                            mangaEntry.manga?.title ?: ""
-                    )
-            )
+//            Navigation.findNavController(binding.root).navigate(
+//                    AgendaFragmentDirections.actionAgendaToManga(
+//                            mangaEntry.manga?.id ?: "",
+//                            mangaEntry.manga?.title ?: ""
+//                    )
+//            )
         }
 
         binding.ivMangaToReadCover.apply {

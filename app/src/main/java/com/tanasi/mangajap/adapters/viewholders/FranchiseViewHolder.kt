@@ -9,8 +9,6 @@ import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.ItemFranchiseBinding
 import com.tanasi.mangajap.fragments.anime.AnimeFragment
 import com.tanasi.mangajap.fragments.anime.AnimeFragmentDirections
-import com.tanasi.mangajap.fragments.manga.MangaFragment
-import com.tanasi.mangajap.fragments.manga.MangaFragmentDirections
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.Franchise
 import com.tanasi.mangajap.models.Manga
@@ -47,27 +45,27 @@ class FranchiseViewHolder(
                             destination.title
                         )
                     )
-                currentFragment is AnimeFragment && destination is Manga ->
-                    Navigation.findNavController(binding.root).navigate(
-                        AnimeFragmentDirections.actionAnimeToManga(
-                            destination.id,
-                            destination.title
-                        )
-                    )
-                currentFragment is MangaFragment && destination is Anime ->
-                    Navigation.findNavController(binding.root).navigate(
-                        MangaFragmentDirections.actionMangaToAnime(
-                            destination.id,
-                            destination.title
-                        )
-                    )
-                currentFragment is MangaFragment && destination is Manga ->
-                    Navigation.findNavController(binding.root).navigate(
-                        MangaFragmentDirections.actionMangaToManga(
-                            destination.id,
-                            destination.title
-                        )
-                    )
+//                currentFragment is AnimeFragment && destination is Manga ->
+//                    Navigation.findNavController(binding.root).navigate(
+//                        AnimeFragmentDirections.actionAnimeToManga(
+//                            destination.id,
+//                            destination.title
+//                        )
+//                    )
+//                currentFragment is MangaFragment && destination is Anime ->
+//                    Navigation.findNavController(binding.root).navigate(
+//                        MangaFragmentDirections.actionMangaToAnime(
+//                            destination.id,
+//                            destination.title
+//                        )
+//                    )
+//                currentFragment is MangaFragment && destination is Manga ->
+//                    Navigation.findNavController(binding.root).navigate(
+//                        MangaFragmentDirections.actionMangaToManga(
+//                            destination.id,
+//                            destination.title
+//                        )
+//                    )
             }
         }
 
