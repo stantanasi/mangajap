@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name" translatable="false">MangaJap</string>
 
+    <string name="loading_error_title">An error occurred</string>
+    <string name="loading_error_retry">Retry</string>
+
     <string name="main_menu_home">Home</string>
     <string name="main_menu_search">Search</string>
 
