@@ -7,43 +7,34 @@
         android:id="@+id/home"
         android:name="com.tanasi.mangajap.fragments.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home_to_manga"
+            app:destination="@id/manga" />
+    </fragment>
     <fragment
         android:id="@+id/search"
         android:name="com.tanasi.mangajap.fragments.search.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
-
-    <fragment
-        android:id="@+id/manga"
-        android:name="com.tanasi.mangajap.fragments.manga.MangaFragment"
-        android:label="MangaFragment">
-        <argument
-            android:name="mangaId"
-            app:argType="string" />
-        <argument
-            android:name="mangaTitle"
-            app:argType="string" />
+        tools:layout="@layout/fragment_search" >
         <action
-            android:id="@+id/action_manga_to_people"
-            app:destination="@id/people" />
-        <action
-            android:id="@+id/action_manga_to_reviews"
-            app:destination="@id/reviews" />
-        <action
-            android:id="@+id/action_manga_to_image"
-            app:destination="@id/image" />
-        <action
-            android:id="@+id/action_manga_to_anime"
-            app:destination="@id/anime" />
-        <action
-            android:id="@+id/action_manga_to_manga"
+            android:id="@+id/action_search_to_manga"
             app:destination="@id/manga" />
     </fragment>
     <fragment
+        android:id="@+id/manga"
+        android:name="com.tanasi.mangajap.fragments.manga.MangaFragment"
+        android:label="fragment_manga"
+        tools:layout="@layout/fragment_manga" >
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
         android:id="@+id/discover"
         android:name="com.tanasi.mangajap.fragments.discover.DiscoverFragment"
-        android:label="DiscoverFragment" >
+        android:label="DiscoverFragment">
         <action
             android:id="@+id/action_discover_to_manga"
             app:destination="@id/manga" />
@@ -61,7 +52,7 @@
         android:id="@+id/profile"
         android:name="com.tanasi.mangajap.fragments.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profile_to_manga"
             app:destination="@id/manga" />
@@ -82,9 +73,9 @@
             app:destination="@id/image" />
         <argument
             android:name="userId"
+            android:defaultValue="@null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <action
             android:id="@+id/action_profile_to_settings"
             app:destination="@id/settings" />
@@ -92,7 +83,7 @@
     <fragment
         android:id="@+id/anime"
         android:name="com.tanasi.mangajap.fragments.anime.AnimeFragment"
-        android:label="AnimeFragment" >
+        android:label="AnimeFragment">
         <argument
             android:name="animeId"
             app:argType="string" />
@@ -115,7 +106,7 @@
     <fragment
         android:id="@+id/people"
         android:name="com.tanasi.mangajap.fragments.people.PeopleFragment"
-        android:label="PeopleFragment" >
+        android:label="PeopleFragment">
         <argument
             android:name="peopleId"
             app:argType="string" />
@@ -136,7 +127,7 @@
     <fragment
         android:id="@+id/follow"
         android:name="com.tanasi.mangajap.fragments.follow.FollowFragment"
-        android:label="FollowFragment" >
+        android:label="FollowFragment">
         <argument
             android:name="userId"
             app:argType="string" />
@@ -153,7 +144,7 @@
     <fragment
         android:id="@+id/library"
         android:name="com.tanasi.mangajap.fragments.library.LibraryFragment"
-        android:label="LibraryFragment" >
+        android:label="LibraryFragment">
         <argument
             android:name="userId"
             app:argType="string" />
@@ -173,7 +164,7 @@
     <fragment
         android:id="@+id/reviews"
         android:name="com.tanasi.mangajap.fragments.reviews.ReviewsFragment"
-        android:label="ReviewsFragment" >
+        android:label="ReviewsFragment">
         <argument
             android:name="mediaType"
             app:argType="com.tanasi.mangajap.fragments.reviews.ReviewsFragment$ReviewsType" />
@@ -193,7 +184,7 @@
     <fragment
         android:id="@+id/image"
         android:name="com.tanasi.mangajap.fragments.image.ImageFragment"
-        android:label="ImageFragment" >
+        android:label="ImageFragment">
         <argument
             android:name="imagePath"
             app:argType="string" />
@@ -211,9 +202,9 @@
             app:argType="com.tanasi.mangajap.fragments.reviewsave.ReviewSaveFragment$ReviewMediaType" />
         <argument
             android:name="mediaId"
+            android:defaultValue="@null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <argument
             android:name="reviewId"
             android:defaultValue="@null"
@@ -223,7 +214,7 @@
     <fragment
         android:id="@+id/agenda"
         android:name="com.tanasi.mangajap.fragments.agenda.AgendaFragment"
-        android:label="AgendaFragment" >
+        android:label="AgendaFragment">
         <action
             android:id="@+id/action_agenda_to_manga"
             app:destination="@id/manga" />

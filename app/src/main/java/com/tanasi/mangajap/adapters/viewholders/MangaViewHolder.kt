@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
@@ -33,11 +33,10 @@ import com.tanasi.mangajap.databinding.ItemMediaSearchAddBinding
 import com.tanasi.mangajap.databinding.ItemMediaSearchBinding
 import com.tanasi.mangajap.databinding.ItemSpinnerDropdownMediaStatusBinding
 import com.tanasi.mangajap.databinding.ItemSpinnerMediaStatusBinding
-import com.tanasi.mangajap.fragments.discover.DiscoverFragment
-import com.tanasi.mangajap.fragments.discover.DiscoverFragmentDirections
-import com.tanasi.mangajap.fragments.manga.MangaFragment
-import com.tanasi.mangajap.fragments.manga.MangaFragmentDirections
-import com.tanasi.mangajap.fragments.reviews.ReviewsFragment
+import com.tanasi.mangajap.fragments.home.HomeFragment
+import com.tanasi.mangajap.fragments.home.HomeFragmentDirections
+import com.tanasi.mangajap.fragments.search.SearchFragment
+import com.tanasi.mangajap.fragments.search.SearchFragmentDirections
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.models.Request
@@ -50,9 +49,9 @@ import com.tanasi.mangajap.ui.dialog.NumberPickerDialog
 import com.tanasi.mangajap.utils.extensions.dpToPx
 import com.tanasi.mangajap.utils.extensions.format
 import com.tanasi.mangajap.utils.extensions.getAttrColor
-import com.tanasi.mangajap.utils.extensions.getCurrentFragment
 import com.tanasi.mangajap.utils.extensions.locale
-import com.tanasi.mangajap.utils.extensions.toActivity
+import com.tanasi.mangajap.utils.getCurrentFragment
+import com.tanasi.mangajap.utils.toActivity
 import java.text.DecimalFormat
 import java.util.Calendar
 
@@ -85,28 +84,40 @@ class MangaViewHolder(
 
 
     private fun createMangaEntry(mangaEntry: MangaEntry) {
-        when (val fragment = context.toActivity()?.getCurrentFragment()) {
-//            is SearchFragment -> fragment.mangaFragment.saveMangaEntry(manga, mangaEntry)
-            is DiscoverFragment -> fragment.viewModel.saveMangaEntry(manga, mangaEntry)
-        }
+//        when (val fragment = context.toActivity()?.getCurrentFragment()) {
+////            is SearchFragment -> fragment.mangaFragment.saveMangaEntry(manga, mangaEntry)
+//            is DiscoverFragment -> fragment.viewModel.saveMangaEntry(manga, mangaEntry)
+//        }
     }
 
     private fun updateMangaEntry(mangaEntry: MangaEntry) {
-        when (val fragment = context.toActivity()?.getCurrentFragment()) {
-            is MangaFragment -> fragment.viewModel.saveMangaEntry(mangaEntry)
-//            is SearchFragment -> fragment.mangaFragment.saveMangaEntry(manga, mangaEntry)
-            is DiscoverFragment -> fragment.viewModel.saveMangaEntry(manga, mangaEntry)
-        }
+//        when (val fragment = context.toActivity()?.getCurrentFragment()) {
+////            is MangaFragment -> fragment.viewModel.saveMangaEntry(mangaEntry)
+////            is SearchFragment -> fragment.mangaFragment.saveMangaEntry(manga, mangaEntry)
+//            is DiscoverFragment -> fragment.viewModel.saveMangaEntry(manga, mangaEntry)
+//        }
     }
 
     private fun createMangaRequest(request: Request) {
-        when (val fragment = context.toActivity()?.getCurrentFragment()) {
-//            is SearchFragment -> fragment.mangaFragment.saveRequest(request)
-        }
+//        when (val fragment = context.toActivity()?.getCurrentFragment()) {
+////            is SearchFragment -> fragment.mangaFragment.saveRequest(request)
+//        }
     }
 
 
     private fun displayItem(binding: ItemMangaBinding) {
+        binding.root.apply {
+            setOnClickListener {
+                when (context.toActivity()?.getCurrentFragment()) {
+                    is HomeFragment -> findNavController().navigate(
+                        HomeFragmentDirections.actionHomeToManga(
+                            id = manga.id,
+                        )
+                    )
+                }
+            }
+        }
+
         Glide.with(context)
             .load(manga.coverImage)
             .centerCrop()
@@ -116,6 +127,18 @@ class MangaViewHolder(
     }
 
     private fun displayGridItem(binding: ItemMangaGridBinding) {
+        binding.root.apply {
+            setOnClickListener {
+                when (context.toActivity()?.getCurrentFragment()) {
+                    is SearchFragment -> findNavController().navigate(
+                        SearchFragmentDirections.actionSearchToManga(
+                            id = manga.id,
+                        )
+                    )
+                }
+            }
+        }
+
         Glide.with(context)
             .load(manga.coverImage)
             .centerCrop()
@@ -192,12 +215,12 @@ class MangaViewHolder(
 
     private fun displayTrending(binding: ItemMediaDiscoverBinding) {
         binding.root.setOnClickListener {
-            Navigation.findNavController(binding.root).navigate(
-                    DiscoverFragmentDirections.actionDiscoverToManga(
-                            manga.id,
-                            manga.title
-                    )
-            )
+//            Navigation.findNavController(binding.root).navigate(
+//                    DiscoverFragmentDirections.actionDiscoverToManga(
+//                            manga.id,
+//                            manga.title
+//                    )
+//            )
         }
 
         binding.ivTrendingMediaCover.apply {
@@ -254,22 +277,22 @@ class MangaViewHolder(
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .into(this)
             setOnClickListener {
-                Navigation.findNavController(binding.root).navigate(
-                        MangaFragmentDirections.actionMangaToImage(
-                                manga.bannerImage ?: manga.coverImage ?: ""
-                        )
-                )
+//                Navigation.findNavController(binding.root).navigate(
+//                        MangaFragmentDirections.actionMangaToImage(
+//                                manga.bannerImage ?: manga.coverImage ?: ""
+//                        )
+//                )
             }
         }
 
         binding.ivMangaCover.apply {
             Picasso.get().load(manga.coverImage).into(this)
             setOnClickListener {
-                Navigation.findNavController(binding.root).navigate(
-                        MangaFragmentDirections.actionMangaToImage(
-                                manga.coverImage ?: ""
-                        )
-                )
+//                Navigation.findNavController(binding.root).navigate(
+//                        MangaFragmentDirections.actionMangaToImage(
+//                                manga.coverImage ?: ""
+//                        )
+//                )
             }
         }
 
@@ -295,12 +318,12 @@ class MangaViewHolder(
                         textView.setTextColor(context.getAttrColor(R.attr.textSecondaryColor))
                         textView.typeface = Typeface.DEFAULT_BOLD
                         textView.setOnClickListener {
-                            Navigation.findNavController(binding.root).navigate(
-                                MangaFragmentDirections.actionMangaToPeople(
-                                    people.id,
-                                    peopleName
-                                )
-                            )
+//                            Navigation.findNavController(binding.root).navigate(
+//                                MangaFragmentDirections.actionMangaToPeople(
+//                                    people.id,
+//                                    peopleName
+//                                )
+//                            )
                         }
                     }
                 })
@@ -321,10 +344,10 @@ class MangaViewHolder(
         binding.tvMangaSummaryRating.text = manga.averageRating?.let { DecimalFormat("#.#").format(it / 20.0 * 5) + " / 5" } ?: "- / 5"
 
         fun readMoreSynopsis(readMore: Boolean) {
-            binding.tvMangaSummarySynopsis.maxLines = when (readMore) {
-                false -> MangaFragment.MANGA_SYNOPSIS_MAX_LINES
-                true -> Int.MAX_VALUE
-            }
+//            binding.tvMangaSummarySynopsis.maxLines = when (readMore) {
+//                false -> MangaFragment.MANGA_SYNOPSIS_MAX_LINES
+//                true -> Int.MAX_VALUE
+//            }
 
             binding.vMangaSummarySynopsisGradient.visibility = when (readMore) {
                 false -> View.VISIBLE
@@ -515,13 +538,13 @@ class MangaViewHolder(
 
     private fun displayReviews(binding: ItemMangaReviewsBinding) {
         binding.root.setOnClickListener {
-            Navigation.findNavController(binding.root).navigate(
-                    MangaFragmentDirections.actionMangaToReviews(
-                            ReviewsFragment.ReviewsType.Manga,
-                            manga.id,
-                            manga.title
-                    )
-            )
+//            Navigation.findNavController(binding.root).navigate(
+//                    MangaFragmentDirections.actionMangaToReviews(
+//                            ReviewsFragment.ReviewsType.Manga,
+//                            manga.id,
+//                            manga.title
+//                    )
+//            )
         }
 
         binding.tvMangaReviewCount.text = manga.reviewCount.toString()

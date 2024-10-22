@@ -4,17 +4,16 @@ import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.bumptech.glide.Glide
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
+import com.tanasi.mangajap.databinding.ItemVolumeBinding
 import com.tanasi.mangajap.databinding.ItemVolumeMangaBinding
 import com.tanasi.mangajap.databinding.ItemVolumeMangaDetailsBinding
-import com.tanasi.mangajap.fragments.manga.MangaFragment
 import com.tanasi.mangajap.models.Volume
 import com.tanasi.mangajap.utils.extensions.format
-import com.tanasi.mangajap.utils.extensions.getCurrentFragment
-import com.tanasi.mangajap.utils.extensions.toActivity
-import java.lang.Exception
+import java.util.Locale
 
 class VolumeViewHolder(
         private val _binding: ViewBinding
@@ -28,9 +27,20 @@ class VolumeViewHolder(
     fun bind(volume: Volume) {
         this.volume = volume
         when (_binding) {
+            is ItemVolumeBinding -> displayItem(_binding)
             is ItemVolumeMangaBinding -> displayVolume(_binding)
             is ItemVolumeMangaDetailsBinding -> displayVolumeDetails(_binding)
         }
+    }
+
+
+    private fun displayItem(binding: ItemVolumeBinding) {
+        Glide.with(context)
+            .load(volume.coverImage)
+            .centerCrop()
+            .into(binding.ivVolumeCover)
+
+        binding.tvVolumeTitle.text = String.format(Locale.ROOT, "%d", volume.number)
     }
 
     private fun displayVolume(binding: ItemVolumeMangaBinding) {

@@ -9,17 +9,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
-import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.AppAdapter
-import com.tanasi.mangajap.databinding.FragmentRecyclerViewBinding
+import com.tanasi.mangajap.databinding.FragmentMangaVolumesBinding
 import com.tanasi.mangajap.models.Manga
-import com.tanasi.mangajap.ui.SpacingItemDecoration
 import kotlinx.coroutines.launch
 
 class MangaVolumesFragment : Fragment() {
 
-    private var _binding: FragmentRecyclerViewBinding? = null
+    private var _binding: FragmentMangaVolumesBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<MangaViewModel>(
@@ -33,7 +30,7 @@ class MangaVolumesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentRecyclerViewBinding.inflate(inflater, container, false)
+        _binding = FragmentMangaVolumesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -55,52 +52,21 @@ class MangaVolumesFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+
     private fun initializeMangaVolumes() {
-        binding.recyclerView.apply {
+        binding.rvMangaVolumes.apply {
             adapter = appAdapter
-            addItemDecoration(
-                SpacingItemDecoration(
-                    vertical = (resources.getDimension(R.dimen.manga_spacing) * 1.5).toInt() / 2,
-                    horizontal = (resources.getDimension(R.dimen.manga_spacing) * 1.5).toInt(),
-                )
-            )
-            layoutManager = GridLayoutManager(requireContext(), MANGA_VOLUME_SPAN_COUNT)
-            setPadding(
-                resources.getDimension(R.dimen.manga_spacing).toInt(),
-                resources.getDimension(R.dimen.manga_spacing).toInt(),
-                resources.getDimension(R.dimen.manga_spacing).toInt(),
-                resources.getDimension(R.dimen.manga_spacing).toInt(),
-            )
         }
     }
 
     private fun displayMangaVolumes(manga: Manga) {
-        (binding.recyclerView.layoutManager as? GridLayoutManager)?.apply {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return when (manga.volumes[position].itemType) {
-                        AppAdapter.Type.VOLUME_DETAILS_ITEM -> spanCount
-                        else -> 1
-                    }
-                }
-            }
-        }
-
         appAdapter.submitList(manga.volumes.onEach {
             it.itemType = AppAdapter.Type.VOLUME_ITEM
         })
-
-//        showDetailsVolume?.let {
-//            MangaTab.VOLUMES.list.addOrLast(
-//                index = (MangaFragment.MANGA_VOLUME_SPAN_COUNT - MangaTab.VOLUMES.list.indexOf(it) % MangaFragment.MANGA_VOLUME_SPAN_COUNT)
-//                        + MangaTab.VOLUMES.list.indexOf(it),
-//                it.copy().apply { itemType = AppAdapter.Type.VOLUME_DETAILS_ITEM }
-//            )
-//        }
-    }
-
-
-    companion object {
-        private const val MANGA_VOLUME_SPAN_COUNT: Int = 3
     }
 }

@@ -9,15 +9,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tanasi.mangajap.adapters.AppAdapter
-import com.tanasi.mangajap.databinding.FragmentRecyclerViewBinding
+import com.tanasi.mangajap.databinding.FragmentMangaChaptersBinding
 import com.tanasi.mangajap.models.Manga
 import kotlinx.coroutines.launch
 
-class MangaAboutFragment : Fragment() {
+class MangaChaptersFragment : Fragment() {
 
-    private var _binding: FragmentRecyclerViewBinding? = null
+    private var _binding: FragmentMangaChaptersBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<MangaViewModel>(
@@ -31,20 +30,20 @@ class MangaAboutFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentRecyclerViewBinding.inflate(inflater, container, false)
+        _binding = FragmentMangaChaptersBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initializeMangaAbout()
+        initializeMangaChapters()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
                 when (state) {
                     is MangaViewModel.State.SuccessLoading -> {
-                        displayMangaAbout(state.manga)
+                        displayMangaChapters(state.manga)
                     }
 
                     else -> {}
@@ -53,27 +52,21 @@ class MangaAboutFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
-    private fun initializeMangaAbout() {
-        binding.recyclerView.apply {
+
+    private fun initializeMangaChapters() {
+        binding.rvMangaChapters.apply {
             adapter = appAdapter
-            layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
-    private fun displayMangaAbout(manga: Manga) {
-        appAdapter.submitList(
-            listOfNotNull(
-                manga.copy().apply { itemType = AppAdapter.Type.MANGA },
-                manga.copy().apply { itemType = AppAdapter.Type.MANGA_SUMMARY },
-                manga.mangaEntry?.let {
-                    manga.copy().apply { itemType = AppAdapter.Type.MANGA_PROGRESSION }
-                },
-                manga.franchises.isNotEmpty().takeIf { it }.let {
-                    manga.copy().apply { itemType = AppAdapter.Type.MANGA_FRANCHISES }
-                },
-                manga.copy().apply { itemType = AppAdapter.Type.MANGA_REVIEWS },
-            )
-        )
+    private fun displayMangaChapters(manga: Manga) {
+        appAdapter.submitList(manga.chapters.onEach {
+            it.itemType = AppAdapter.Type.CHAPTER_ITEM
+        })
     }
 }

@@ -53,6 +53,17 @@
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
+    <style name="AppTheme.Widget.TabLayout" parent="AppTheme">
+        <item name="tabGravity">fill</item>
+        <item name="tabIndicatorColor">?attr/colorAccent</item>
+        <item name="tabIndicatorHeight">4dp</item>
+        <item name="tabMaxWidth">0dp</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabSelectedTextColor">?attr/textPrimaryColor</item>
+        <item name="tabTextColor">#B9B9B9</item>
+        <item name="android:background">?attr/backgroundPrimaryColor</item>
+    </style>
+
     <style name="Widget.AppTheme.Dialog.Alert" parent="Widget.AppTheme">
         <item name="colorAccent">@color/color_app</item>
         <item name="android:textColorPrimary">?attr/textPrimaryColor</item>
