@@ -7,12 +7,20 @@
         android:id="@+id/home"
         android:name="com.tanasi.mangajap.fragments.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_home_to_manga"
+            app:destination="@id/manga" />
+    </fragment>
     <fragment
         android:id="@+id/search"
         android:name="com.tanasi.mangajap.fragments.search.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_search_to_manga"
+            app:destination="@id/manga" />
+    </fragment>
     <fragment
         android:id="@+id/manga"
         android:name="com.tanasi.mangajap.fragments.manga.MangaFragment"
