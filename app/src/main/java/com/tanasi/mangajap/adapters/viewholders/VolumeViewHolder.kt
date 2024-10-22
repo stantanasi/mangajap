@@ -2,6 +2,7 @@ package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
 import android.view.View
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
@@ -11,6 +12,8 @@ import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.ItemVolumeBinding
 import com.tanasi.mangajap.databinding.ItemVolumeMangaBinding
 import com.tanasi.mangajap.databinding.ItemVolumeMangaDetailsBinding
+import com.tanasi.mangajap.fragments.manga.MangaFragmentDirections
+import com.tanasi.mangajap.fragments.reader.ReaderFragment
 import com.tanasi.mangajap.models.Volume
 import com.tanasi.mangajap.utils.extensions.format
 import java.util.Locale
@@ -35,6 +38,17 @@ class VolumeViewHolder(
 
 
     private fun displayItem(binding: ItemVolumeBinding) {
+        binding.root.apply {
+            setOnClickListener {
+                findNavController().navigate(
+                    MangaFragmentDirections.actionMangaToReader(
+                        id = volume.id,
+                        readerType = ReaderFragment.ReaderType.VOLUME,
+                    )
+                )
+            }
+        }
+
         Glide.with(context)
             .load(volume.coverImage)
             .centerCrop()

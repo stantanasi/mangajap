@@ -1,8 +1,11 @@
 package com.tanasi.mangajap.adapters.viewholders
 
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.tanasi.mangajap.databinding.ItemChapterBinding
+import com.tanasi.mangajap.fragments.manga.MangaFragmentDirections
+import com.tanasi.mangajap.fragments.reader.ReaderFragment
 import com.tanasi.mangajap.models.Chapter
 import java.util.Locale
 
@@ -22,6 +25,17 @@ class ChapterViewHolder(
 
 
     private fun displayItem(binding: ItemChapterBinding) {
+        binding.root.apply {
+            setOnClickListener {
+                findNavController().navigate(
+                    MangaFragmentDirections.actionMangaToReader(
+                        id = chapter.id,
+                        readerType = ReaderFragment.ReaderType.CHAPTER,
+                    )
+                )
+            }
+        }
+
         binding.tvChapterTitle.text = String.format(Locale.ROOT, "%d", chapter.number)
     }
 }
