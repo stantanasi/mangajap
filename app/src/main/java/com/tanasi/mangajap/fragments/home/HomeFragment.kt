@@ -15,6 +15,7 @@ import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentHomeBinding
 import com.tanasi.mangajap.models.Category
 import com.tanasi.mangajap.ui.SpacingItemDecoration
+import com.tanasi.mangajap.utils.dp
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -85,6 +86,9 @@ class HomeFragment : Fragment() {
                 stateRestorationPolicy =
                     RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
+            addItemDecoration(
+                SpacingItemDecoration(20.dp(requireContext()))
+            )
         }
     }
 
@@ -97,6 +101,7 @@ class HomeFragment : Fragment() {
                     category.list.onEach { manga ->
                         manga.itemType = AppAdapter.Type.MANGA_ITEM
                     }
+                    category.itemSpacing = 10.dp(requireContext())
                 }
         )
     }

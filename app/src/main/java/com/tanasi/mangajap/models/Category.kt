@@ -7,5 +7,7 @@ data class Category(
     val list: List<Manga>,
 ) : AppAdapter.Item {
 
+    var itemSpacing = 0
+
     override lateinit var itemType: AppAdapter.Type
 }
