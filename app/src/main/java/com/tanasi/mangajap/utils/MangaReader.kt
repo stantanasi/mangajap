@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import org.jsoup.nodes.Document
 import retrofit2.Retrofit
 import retrofit2.http.GET
+import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 object MangaReader {
@@ -93,6 +94,33 @@ object MangaReader {
         return categories
     }
 
+    suspend fun search(query: String, page: Int = 1): List<Manga> {
+        val document = service.search(query.replace(" ", "+"), page)
+
+        val results = document.select("div.manga_list-sbs div.item").map {
+            Manga(
+                id = it.selectFirst("a")
+                    ?.attr("href")?.substringAfter("/")
+                    ?: "",
+                title = it.selectFirst("h3.manga-name")
+                    ?.text()
+                    ?: "",
+                coverImage = it.selectFirst("img.manga-poster-img")
+                    ?.attr("src"),
+
+                genres = it.select("div.fd-infor a").map { element ->
+                    Genre(
+                        id = element
+                            .attr("href").substringAfterLast("/"),
+                        title = element.text(),
+                    )
+                },
+            )
+        }
+
+        return results
+    }
+
 
     private interface Service {
 
@@ -116,5 +144,11 @@ object MangaReader {
 
         @GET("home")
         suspend fun getHome(): Document
+
+        @GET("search")
+        suspend fun search(
+            @Query("keyword") keyword: String,
+            @Query("page") page: Int,
+        ): Document
     }
 }
