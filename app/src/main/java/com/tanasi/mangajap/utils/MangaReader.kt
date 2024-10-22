@@ -1,5 +1,6 @@
 package com.tanasi.mangajap.utils
 
+import com.google.gson.annotations.SerializedName
 import com.tanasi.mangajap.models.Category
 import com.tanasi.mangajap.models.Chapter
 import com.tanasi.mangajap.models.Genre
@@ -7,8 +8,10 @@ import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.Page
 import com.tanasi.mangajap.models.Volume
 import okhttp3.OkHttpClient
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -149,25 +152,18 @@ object MangaReader {
                     title = element.text(),
                 )
             },
-            volumes = document.select("div#list-vol div.item").map {
+            volumes = service.getVolumes(id).html.select("li.volume-item").map {
                 Volume(
-                    id = it.selectFirst("a.link-mask")
-                        ?.attr("href")?.substringAfter("/")
-                        ?: "",
+                    id = it.attr("data-id"),
 //                    title = it.selectFirst("span.tick-vol")
 //                        ?.text(),
-                    number = it.selectFirst("span.tick-vol")
-                        ?.text()?.substringAfter("VOL ")?.toIntOrNull()
+                    number = it.attr("data-number").toIntOrNull()
                         ?: 0,
-                    coverImage = it.selectFirst("img.manga-poster-img")
-                        ?.attr("src"),
                 )
             },
-            chapters = document.select("div#list-chapter li.item").map {
+            chapters = service.getChapters(id).html.select("li.chapter-item").map {
                 Chapter(
-                    id = it.selectFirst("a.item-link")
-                        ?.attr("href")?.substringAfter("/")
-                        ?: "",
+                    id = it.attr("data-id"),
 //                    title = it.selectFirst("span.name")
 //                        ?.text(),
                     number = it.attr("data-number").toIntOrNull()
@@ -220,6 +216,7 @@ object MangaReader {
                 val retrofit = Retrofit.Builder()
                     .baseUrl(URL)
                     .addConverterFactory(JsoupConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build()
 
@@ -242,6 +239,16 @@ object MangaReader {
             @Path("id") id: String,
         ): Document
 
+        @GET("ajax/manga/reading-list/{mangaId}?readingBy=chap")
+        suspend fun getChapters(
+            @Path("mangaId") mangaId: String,
+        ): AjaxResponse
+
+        @GET("ajax/manga/reading-list/{mangaId}?readingBy=vol")
+        suspend fun getVolumes(
+            @Path("mangaId") mangaId: String,
+        ): AjaxResponse
+
         @GET("{id}")
         suspend fun getChapter(
             @Path("id", encoded = true) id: String,
@@ -251,5 +258,14 @@ object MangaReader {
         suspend fun getVolume(
             @Path("id", encoded = true) id: String,
         ): Document
+
+
+        data class AjaxResponse(
+            val status: Boolean,
+            @SerializedName("html") private val _html: String,
+        ) {
+            val html: Document
+                get() = Jsoup.parse(_html)
+        }
     }
 }
