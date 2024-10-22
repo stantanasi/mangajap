@@ -32,6 +32,7 @@ class MainActivity : FragmentActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
+                R.id.search,
                 R.id.home -> binding.bnvMain.visibility = View.VISIBLE
                 else -> binding.bnvMain.visibility = View.GONE
             }
@@ -41,6 +42,7 @@ class MainActivity : FragmentActivity() {
             override fun handleOnBackPressed() {
                 when (navController.currentDestination?.id) {
                     R.id.home -> finish()
+                    R.id.search -> binding.bnvMain.findViewById<View>(R.id.home).performClick()
                     else -> navController.navigateUp().takeIf { !it }
                         ?: finish()
                 }

@@ -20,14 +20,22 @@ import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.adapters.SpinnerAdapter
-import com.tanasi.mangajap.databinding.*
+import com.tanasi.mangajap.databinding.ItemMangaFranchisesBinding
+import com.tanasi.mangajap.databinding.ItemMangaHeaderBinding
+import com.tanasi.mangajap.databinding.ItemMangaProgressionBinding
+import com.tanasi.mangajap.databinding.ItemMangaReviewsBinding
+import com.tanasi.mangajap.databinding.ItemMangaSummaryBinding
+import com.tanasi.mangajap.databinding.ItemMediaDiscoverBinding
+import com.tanasi.mangajap.databinding.ItemMediaSearchAddBinding
+import com.tanasi.mangajap.databinding.ItemMediaSearchBinding
+import com.tanasi.mangajap.databinding.ItemSpinnerDropdownMediaStatusBinding
+import com.tanasi.mangajap.databinding.ItemSpinnerMediaStatusBinding
 import com.tanasi.mangajap.fragments.discover.DiscoverFragment
 import com.tanasi.mangajap.fragments.discover.DiscoverFragmentDirections
 import com.tanasi.mangajap.fragments.manga.MangaFragment
 import com.tanasi.mangajap.fragments.manga.MangaFragmentDirections
 import com.tanasi.mangajap.fragments.reviews.ReviewsFragment
 import com.tanasi.mangajap.fragments.search.SearchFragment
-import com.tanasi.mangajap.fragments.search.SearchFragmentDirections
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.models.Request
@@ -37,9 +45,14 @@ import com.tanasi.mangajap.ui.dialog.EditTextDialog
 import com.tanasi.mangajap.ui.dialog.MediaEntryDateDialog
 import com.tanasi.mangajap.ui.dialog.MediaEntryProgressionDialog
 import com.tanasi.mangajap.ui.dialog.NumberPickerDialog
-import com.tanasi.mangajap.utils.extensions.*
+import com.tanasi.mangajap.utils.extensions.dpToPx
+import com.tanasi.mangajap.utils.extensions.format
+import com.tanasi.mangajap.utils.extensions.getAttrColor
+import com.tanasi.mangajap.utils.extensions.getCurrentFragment
+import com.tanasi.mangajap.utils.extensions.locale
+import com.tanasi.mangajap.utils.extensions.toActivity
 import java.text.DecimalFormat
-import java.util.*
+import java.util.Calendar
 
 class MangaViewHolder(
         private val _binding: ViewBinding
@@ -90,12 +103,12 @@ class MangaViewHolder(
 
     private fun displaySearch(binding: ItemMediaSearchBinding) {
         binding.root.setOnClickListener {
-            Navigation.findNavController(binding.root).navigate(
-                    SearchFragmentDirections.actionSearchToManga(
-                            manga.id,
-                            manga.title
-                    )
-            )
+//            Navigation.findNavController(binding.root).navigate(
+//                    SearchFragmentDirections.actionSearchToManga(
+//                            manga.id,
+//                            manga.title
+//                    )
+//            )
         }
 
         binding.ivSearchMediaCover.apply {

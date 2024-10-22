@@ -1,7 +1,6 @@
 package com.tanasi.mangajap.adapters.viewholders
 
 import android.content.Context
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.squareup.picasso.MemoryPolicy
@@ -9,7 +8,6 @@ import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.ItemUserBinding
-import com.tanasi.mangajap.fragments.search.SearchFragmentDirections
 import com.tanasi.mangajap.models.User
 
 class UserViewHolder(
@@ -29,11 +27,11 @@ class UserViewHolder(
 
     private fun displayUser(binding: ItemUserBinding) {
         binding.root.setOnClickListener {
-            Navigation.findNavController(binding.root).navigate(
-                    SearchFragmentDirections.actionSearchToProfile(
-                            user.id
-                    )
-            )
+//            Navigation.findNavController(binding.root).navigate(
+//                    SearchFragmentDirections.actionSearchToProfile(
+//                            user.id
+//                    )
+//            )
         }
 
         binding.civUserProfilePic.apply {

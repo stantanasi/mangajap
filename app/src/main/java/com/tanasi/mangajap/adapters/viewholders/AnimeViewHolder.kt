@@ -28,7 +28,6 @@ import com.tanasi.mangajap.fragments.discover.DiscoverFragment
 import com.tanasi.mangajap.fragments.discover.DiscoverFragmentDirections
 import com.tanasi.mangajap.fragments.reviews.ReviewsFragment
 import com.tanasi.mangajap.fragments.search.SearchFragment
-import com.tanasi.mangajap.fragments.search.SearchFragmentDirections
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Request
@@ -90,12 +89,12 @@ class AnimeViewHolder(
 
     private fun displaySearch(binding: ItemMediaSearchBinding) {
         binding.root.setOnClickListener {
-            Navigation.findNavController(binding.root).navigate(
-                    SearchFragmentDirections.actionSearchToAnime(
-                            anime.id,
-                            anime.title
-                    )
-            )
+//            Navigation.findNavController(binding.root).navigate(
+//                    SearchFragmentDirections.actionSearchToAnime(
+//                            anime.id,
+//                            anime.title
+//                    )
+//            )
         }
 
         binding.ivSearchMediaCover.apply {

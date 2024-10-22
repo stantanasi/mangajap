@@ -2,6 +2,7 @@
 <resources>
 
     <string name="main_menu_home">Accueil</string>
+    <string name="main_menu_search">Rechercher</string>
 
     <string name="error">Une erreur est survenue</string>
     <string name="serverError">Nos serveurs sont momentanément indisponibles</string>
