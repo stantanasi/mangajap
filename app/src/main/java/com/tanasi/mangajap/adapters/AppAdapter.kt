@@ -61,6 +61,7 @@ import com.tanasi.mangajap.databinding.ItemStaffPeopleBinding
 import com.tanasi.mangajap.databinding.ItemStatsPreviewBinding
 import com.tanasi.mangajap.databinding.ItemStatsTimeSpentPreviewBinding
 import com.tanasi.mangajap.databinding.ItemUserBinding
+import com.tanasi.mangajap.databinding.ItemVolumeBinding
 import com.tanasi.mangajap.databinding.ItemVolumeMangaBinding
 import com.tanasi.mangajap.databinding.ItemVolumeMangaDetailsBinding
 import com.tanasi.mangajap.models.Ad
@@ -458,10 +459,10 @@ class AppAdapter(
             )
 
             Type.VOLUME_ITEM -> VolumeViewHolder(
-                ItemVolumeMangaBinding.inflate(
-                    LayoutInflater.from(
-                        parent.context
-                    ), parent, false
+                ItemVolumeBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
             )
 
