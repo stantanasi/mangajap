@@ -37,8 +37,7 @@
             android:resource="@xml/gma_ad_services_config"
             tools:replace="android:resource" />
 
-        <activity
-            android:name=".activities.LauncherActivity"
+        <activity android:name=".activities.MainActivity"
             android:exported="true"
             android:theme="@style/AppTheme.SplashScreen">
             <intent-filter>
@@ -57,8 +56,6 @@
                 <data android:host="mangajap.web.app" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activities.MainActivity" />
 
         <service
             android:name=".services.NotificationService"

@@ -19,7 +19,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.tanasi.jsonapi.JsonApiResponse
 import com.tanasi.mangajap.R
-import com.tanasi.mangajap.activities.LauncherActivity
 import com.tanasi.mangajap.activities.MainActivity
 import com.tanasi.mangajap.fragments.settings.SettingsFragment
 import com.tanasi.mangajap.models.User
@@ -398,9 +397,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                     .setMessage(getString(R.string.logoutConfirmation))
                     .setPositiveButton(getString(R.string.confirm)) { _, _ ->
                         Firebase.auth.signOut()
-
-                        startActivity(Intent(activity, LauncherActivity::class.java))
-                        requireActivity().finish()
                     }
                     .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
                     .show()
