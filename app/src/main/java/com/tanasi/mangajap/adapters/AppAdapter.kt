@@ -8,6 +8,7 @@ import com.tanasi.mangajap.adapters.viewholders.AdViewHolder
 import com.tanasi.mangajap.adapters.viewholders.AnimeEntryViewHolder
 import com.tanasi.mangajap.adapters.viewholders.AnimeViewHolder
 import com.tanasi.mangajap.adapters.viewholders.CategoryViewHolder
+import com.tanasi.mangajap.adapters.viewholders.ChapterViewHolder
 import com.tanasi.mangajap.adapters.viewholders.EpisodeViewHolder
 import com.tanasi.mangajap.adapters.viewholders.FollowViewHolder
 import com.tanasi.mangajap.adapters.viewholders.FranchiseViewHolder
@@ -33,6 +34,7 @@ import com.tanasi.mangajap.databinding.ItemAnimeProgressionBinding
 import com.tanasi.mangajap.databinding.ItemAnimeReviewsBinding
 import com.tanasi.mangajap.databinding.ItemAnimeSummaryBinding
 import com.tanasi.mangajap.databinding.ItemCategoryBinding
+import com.tanasi.mangajap.databinding.ItemChapterBinding
 import com.tanasi.mangajap.databinding.ItemEpisodeAnimeBinding
 import com.tanasi.mangajap.databinding.ItemFollowBinding
 import com.tanasi.mangajap.databinding.ItemFranchiseBinding
@@ -113,6 +115,8 @@ class AppAdapter(
         ANIME_ENTRY_TO_WATCH_ITEM,
 
         CATEGORY_ITEM,
+
+        CHAPTER_ITEM,
 
         EPISODE_ITEM,
 
@@ -274,6 +278,14 @@ class AppAdapter(
 
             Type.CATEGORY_ITEM -> CategoryViewHolder(
                 ItemCategoryBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+
+            Type.CHAPTER_ITEM -> ChapterViewHolder(
+                ItemChapterBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -545,6 +557,7 @@ class AppAdapter(
             is AnimeViewHolder -> holder.bind(items[position] as Anime)
             is AnimeEntryViewHolder -> holder.bind(items[position] as AnimeEntry)
             is CategoryViewHolder -> holder.bind(items[position] as Category)
+            is ChapterViewHolder -> holder.bind(items[position] as Chapter)
             is EpisodeViewHolder -> holder.bind(items[position] as Episode)
             is FollowViewHolder -> holder.bind(items[position] as Follow)
             is FranchiseViewHolder -> holder.bind(items[position] as Franchise)
