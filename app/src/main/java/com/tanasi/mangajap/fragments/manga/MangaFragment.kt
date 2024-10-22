@@ -11,6 +11,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayout
+import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.FragmentMangaBinding
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.utils.extensions.viewModelsFactory
@@ -18,11 +20,19 @@ import kotlinx.coroutines.launch
 
 class MangaFragment : Fragment() {
 
+    private enum class MangaTab(val stringId: Int) {
+        CHAPTERS(R.string.manga_tab_chapters),
+        VOLUMES(R.string.manga_tab_volumes);
+    }
+
     private var _binding: FragmentMangaBinding? = null
     private val binding get() = _binding!!
 
     private val args by navArgs<MangaFragmentArgs>()
     private val viewModel by viewModelsFactory { MangaViewModel(args.id) }
+
+    private val chaptersFragment by lazy { binding.fMangaChapters.getFragment<MangaChaptersFragment>() }
+    private val volumesFragment by lazy { binding.fMangaVolumes.getFragment<MangaVolumesFragment>() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,6 +88,24 @@ class MangaFragment : Fragment() {
 
 
     private fun initializeManga() {
+        binding.tlManga.apply {
+            MangaTab.entries
+                .map { newTab().setText(getString(it.stringId)) }
+                .forEach { addTab(it) }
+
+            addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    showTab(MangaTab.entries[tab.position])
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab) {}
+                override fun onTabReselected(tab: TabLayout.Tab) {}
+            })
+            getTabAt(selectedTabPosition)?.apply {
+                select()
+                showTab(MangaTab.entries[selectedTabPosition])
+            }
+        }
     }
 
     private fun displayManga(manga: Manga) {
@@ -92,5 +120,19 @@ class MangaFragment : Fragment() {
         }
 
         binding.tvMangaTitle.text = manga.title
+    }
+
+    private fun showTab(mangaTab: MangaTab) {
+        childFragmentManager.beginTransaction().apply {
+            when (mangaTab) {
+                MangaTab.CHAPTERS -> show(chaptersFragment)
+                else -> hide(chaptersFragment)
+            }
+            when (mangaTab) {
+                MangaTab.VOLUMES -> show(volumesFragment)
+                else -> hide(volumesFragment)
+            }
+            commitAllowingStateLoss()
+        }
     }
 }

@@ -7,6 +7,7 @@
     tools:context=".fragments.manga.MangaFragment">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/apl_manga"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="?attr/backgroundPrimaryColor"
@@ -59,7 +60,33 @@
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tl_manga"
+            style="@style/AppTheme.Widget.TabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/f_manga_chapters"
+        android:name="com.tanasi.mangajap.fragments.manga.MangaChaptersFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/apl_manga" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/f_manga_volumes"
+        android:name="com.tanasi.mangajap.fragments.manga.MangaVolumesFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/apl_manga" />
 
     <include
         android:id="@+id/is_loading"
