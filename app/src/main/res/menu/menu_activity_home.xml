@@ -4,18 +4,8 @@
     tools:showIn="navigation_view">
 
     <item
-        android:id="@+id/agenda"
-        android:icon="@drawable/ic_baseline_access_time_24"
-        android:title="@string/agenda"/>
-
-    <item
-        android:id="@+id/discover"
-        android:icon="@drawable/ic_search_black_24dp"
-        android:title="@string/discover"/>
-
-    <item
-        android:id="@+id/profile"
-        android:icon="@drawable/ic_person_outline_black_24dp"
-        android:title="@string/profile"/>
+        android:id="@id/home"
+        android:icon="@drawable/ic_menu_home"
+        android:title="@string/main_menu_home"/>
 
 </menu>

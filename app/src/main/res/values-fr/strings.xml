@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="main_menu_home">Accueil</string>
+
     <string name="error">Une erreur est survenue</string>
     <string name="serverError">Nos serveurs sont momentanément indisponibles</string>
     <string name="dataNotSave">Les données n\'ont pas pu être sauvegardés</string>
