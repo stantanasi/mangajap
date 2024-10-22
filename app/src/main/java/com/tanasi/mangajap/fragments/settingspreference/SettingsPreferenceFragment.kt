@@ -92,8 +92,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         settingsPreference = SettingsPreference(requireContext())
 
         if (!this::settingsFragment.isInitialized)
-            settingsFragment =
-                (requireActivity() as MainActivity).getFragment(SettingsFragment::class.java)!!
+//            settingsFragment =
+//                (requireActivity() as MainActivity).getFragment(SettingsFragment::class.java)!!
 
         onBackPressed {
             when (settings) {

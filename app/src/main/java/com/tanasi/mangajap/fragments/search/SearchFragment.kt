@@ -64,7 +64,7 @@ class SearchFragment : Fragment() {
         }
 
         binding.toolbar.also {
-            (requireActivity() as MainActivity).setSupportActionBar(it)
+//            (requireActivity() as MainActivity).setSupportActionBar(it)
             it.setNavigationOnClickListener { findNavController().navigateUp() }
         }
 

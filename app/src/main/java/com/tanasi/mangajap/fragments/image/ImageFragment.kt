@@ -116,7 +116,7 @@ class ImageFragment : Fragment() {
 
     private fun fullscreen(isFullScreen: Boolean) {
         if (isFullScreen) {
-            (requireActivity() as MainActivity).supportActionBar?.hide()
+//            (requireActivity() as MainActivity).supportActionBar?.hide()
             binding.vImageGradient.startAnimation(
                 AnimationUtils.loadAnimation(
                     context,
@@ -125,7 +125,7 @@ class ImageFragment : Fragment() {
             )
             binding.vImageGradient.visibility = View.GONE
         } else {
-            (requireActivity() as MainActivity).supportActionBar?.show()
+//            (requireActivity() as MainActivity).supportActionBar?.show()
             binding.vImageGradient.startAnimation(
                 AnimationUtils.loadAnimation(
                     context,
@@ -143,7 +143,7 @@ class ImageFragment : Fragment() {
     private fun initializeImage() {
         binding.toolbar.also {
             it.title = ""
-            (requireActivity() as MainActivity).setSupportActionBar(it)
+//            (requireActivity() as MainActivity).setSupportActionBar(it)
             it.setNavigationOnClickListener { findNavController().navigateUp() }
         }
         setHasOptionsMenu(true)

@@ -15,7 +15,7 @@ import com.tanasi.mangajap.activities.main.MainActivity
 
 fun Fragment.setToolbar(title: String, subtitle: String): Toolbar {
     val toolbar = requireView().findViewById<Toolbar>(R.id.toolbar)
-    (requireActivity() as MainActivity).setSupportActionBar(toolbar)
+//    (requireActivity() as MainActivity).setSupportActionBar(toolbar)
 
     toolbar.findViewById<TextView>(R.id.tv_toolbar_title).apply {
         text = title

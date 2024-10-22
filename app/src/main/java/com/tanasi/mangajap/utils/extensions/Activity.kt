@@ -8,11 +8,11 @@ import com.tanasi.mangajap.activities.main.MainActivity
 import com.tanasi.mangajap.fragments.settingspreference.SettingsPreferenceFragment
 
 fun AppCompatActivity.getCurrentFragment(): Fragment? = when (this) {
-    is MainActivity -> {
-        val navHostFragment =
-            this.supportFragmentManager.findFragmentById(R.id.nav_main_fragment) as NavHostFragment
-        navHostFragment.childFragmentManager.fragments.firstOrNull { it !is SettingsPreferenceFragment }
-    }
+//    is MainActivity -> {
+//        val navHostFragment =
+//            this.supportFragmentManager.findFragmentById(R.id.nav_main_fragment) as NavHostFragment
+//        navHostFragment.childFragmentManager.fragments.firstOrNull { it !is SettingsPreferenceFragment }
+//    }
     else -> null
 }
 
