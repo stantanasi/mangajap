@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="loading_error_title">Une erreur est survenue</string>
+    <string name="loading_error_retry">Réessayer</string>
 
     <string name="main_menu_home">Accueil</string>
     <string name="main_menu_search">Rechercher</string>
