@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Callback
@@ -20,6 +21,7 @@ import com.squareup.picasso.Picasso
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.adapters.SpinnerAdapter
+import com.tanasi.mangajap.databinding.ItemMangaBinding
 import com.tanasi.mangajap.databinding.ItemMangaFranchisesBinding
 import com.tanasi.mangajap.databinding.ItemMangaHeaderBinding
 import com.tanasi.mangajap.databinding.ItemMangaProgressionBinding
@@ -67,6 +69,7 @@ class MangaViewHolder(
     fun bind(manga: Manga) {
         this.manga = manga
         when (_binding) {
+            is ItemMangaBinding -> displayMangaItem(_binding)
             is ItemMediaSearchBinding -> displaySearch(_binding)
             is ItemMediaSearchAddBinding -> displaySearchAdd(_binding)
             is ItemMediaDiscoverBinding -> displayTrending(_binding)
@@ -99,6 +102,16 @@ class MangaViewHolder(
         when (val fragment = context.toActivity()?.getCurrentFragment()) {
 //            is SearchFragment -> fragment.mangaFragment.saveRequest(request)
         }
+    }
+
+
+    private fun displayMangaItem(binding: ItemMangaBinding) {
+        Glide.with(context)
+            .load(manga.coverImage)
+            .centerCrop()
+            .into(binding.ivMangaPoster)
+
+        binding.tvMangaTitle.text = manga.title
     }
 
     private fun displaySearch(binding: ItemMediaSearchBinding) {
