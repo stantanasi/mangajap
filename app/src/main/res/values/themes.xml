@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <style name="SplashScreen">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-    </style>
 
-    <style name="AppTheme.SplashScreen" parent="AppTheme">
         <item name="android:windowBackground">@drawable/bg_splash_screen</item>
 
         <item name="colorPrimary">?attr/colorPrimary</item>
@@ -14,7 +12,10 @@
         <item name="colorAccent">?attr/colorAccent</item>
     </style>
 
-    <style name="AppTheme.MangaJap" parent="AppTheme">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
         <item name="colorPrimary">?attr/backgroundPrimaryColor</item>
         <item name="colorSecondary">?attr/backgroundSecondaryColor</item>
         <item name="colorPrimaryDark">?attr/backgroundPrimaryColor</item>
@@ -35,7 +36,7 @@
 
         <item name="dividerColor">#d7d7d7</item>
 
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightStatusBar">true</item>
 
         <item name="actionMenuTextColor">?attr/textPrimaryColor</item>
     </style>

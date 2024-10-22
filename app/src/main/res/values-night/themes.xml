@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <style name="AppTheme.MangaJap" parent="AppTheme">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="colorPrimary">?attr/backgroundPrimaryColor</item>
         <item name="colorSecondary">?attr/backgroundSecondaryColor</item>
         <item name="colorPrimaryDark">?attr/backgroundPrimaryColor</item>
@@ -21,7 +21,7 @@
 
         <item name="dividerColor">#404040</item>
 
-        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:windowLightStatusBar">false</item>
 
         <item name="actionMenuTextColor">?attr/textPrimaryColor</item>
     </style>
