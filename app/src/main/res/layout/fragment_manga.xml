@@ -4,117 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/backgroundSecondaryColor">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:elevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/view_toolbar" />
-
-        <ProgressBar
-            android:id="@+id/pb_manga_progression_progress"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:progressDrawable="@drawable/progress_bar_drawable"
-            tools:progress="80" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tl_manga"
-            style="@style/Widget.AppTheme.TabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/f_manga_about"
-        android:name="com.tanasi.mangajap.fragments.manga.MangaAboutFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/cl_manga_progression_add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/f_manga_volumes"
-        android:name="com.tanasi.mangajap.fragments.manga.MangaVolumesFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/cl_manga_progression_add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_manga_progression_add"
-        android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/color_app"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="visible">
-
-        <RelativeLayout
-            android:id="@+id/rl_manga_progression_add"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_manga_progression_add"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/iv_manga_progression_add"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/add_manga_to_library"
-                android:src="@drawable/ic_add_black_24dp"
-                app:tint="#FFFFFF" />
-
-            <ProgressBar
-                android:id="@+id/pb_manga_progression_add"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:indeterminateTint="#FFFFFF" />
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_manga_progression_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/manga_spacing"
-            android:text="@string/add_manga_to_library"
-            android:textAllCaps="true"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/font_size_medium"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/rl_manga_progression_add"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    tools:context=".fragments.manga.MangaFragment">
 
     <include
         android:id="@+id/is_loading"
-        layout="@layout/layout_is_loading" />
-
-    <include
-        android:id="@+id/is_updating"
-        layout="@layout/layout_is_updating" />
+        layout="@layout/layout_is_loading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
