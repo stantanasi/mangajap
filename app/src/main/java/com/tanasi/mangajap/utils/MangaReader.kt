@@ -98,6 +98,10 @@ object MangaReader {
     }
 
     suspend fun search(query: String, page: Int = 1): List<Manga> {
+        if (query.isEmpty()) {
+            return emptyList()
+        }
+
         val document = service.search(query.replace(" ", "+"), page)
 
         val results = document.select("div.manga_list-sbs div.item").map {
