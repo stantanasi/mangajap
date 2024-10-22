@@ -29,6 +29,10 @@ class MainActivity : FragmentActivity() {
         val navController = navHostFragment.navController
 
         binding.bnvMain.setupWithNavController(navController)
+        binding.bnvMain.setOnItemReselectedListener { item ->
+            navController.popBackStack(item.itemId, inclusive = true)
+            navController.navigate(item.itemId)
+        }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
