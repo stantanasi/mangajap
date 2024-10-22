@@ -597,6 +597,7 @@ class AppAdapter(
                     oldItem is Ad && newItem is Ad -> oldItem == newItem
                     oldItem is Anime && newItem is Anime -> oldItem.id == newItem.id
                     oldItem is AnimeEntry && newItem is AnimeEntry -> oldItem.id == newItem.id
+                    oldItem is Category && newItem is Category -> oldItem.name == newItem.name
                     oldItem is Chapter && newItem is Chapter -> oldItem.id == newItem.id
                     oldItem is ChapterEntry && newItem is ChapterEntry -> oldItem.id == newItem.id
                     oldItem is Episode && newItem is Episode -> oldItem.id == newItem.id
