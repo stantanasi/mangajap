@@ -176,13 +176,11 @@ object MangaReader {
     }
 
     suspend fun getChapterPages(id: String): List<Page> {
-        val document = service.getChapter(id)
+        val response = service.getChapterPages(id)
 
-        val pages = document.select("div.ds-item").map {
+        val pages = response.html.select("div.iv-card").map {
             Page(
-                image = it.selectFirst("div.ds-image")
-                    ?.attr("data-url")
-                    ?: "",
+                image = it.attr("data-url"),
             )
         }
 
@@ -190,13 +188,11 @@ object MangaReader {
     }
 
     suspend fun getVolumePages(id: String): List<Page> {
-        val document = service.getVolume(id)
+        val response = service.getVolumePages(id)
 
-        val pages = document.select("").map {
+        val pages = response.html.select("div.iv-card").map {
             Page(
-                image = it.selectFirst("div.ds-image")
-                    ?.attr("data-url")
-                    ?: "",
+                image = it.attr("data-url"),
             )
         }
 
@@ -249,15 +245,15 @@ object MangaReader {
             @Path("mangaId") mangaId: String,
         ): AjaxResponse
 
-        @GET("{id}")
-        suspend fun getChapter(
-            @Path("id", encoded = true) id: String,
-        ): Document
+        @GET("ajax/image/list/chap/{chapterId}")
+        suspend fun getChapterPages(
+            @Path("chapterId", encoded = true) chapterId: String,
+        ): AjaxResponse
 
-        @GET("{id}")
-        suspend fun getVolume(
-            @Path("id", encoded = true) id: String,
-        ): Document
+        @GET("ajax/image/list/chap/{volumeId}")
+        suspend fun getVolumePages(
+            @Path("volumeId", encoded = true) volumeId: String,
+        ): AjaxResponse
 
 
         data class AjaxResponse(
