@@ -23,6 +23,7 @@ import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.adapters.SpinnerAdapter
 import com.tanasi.mangajap.databinding.ItemMangaBinding
 import com.tanasi.mangajap.databinding.ItemMangaFranchisesBinding
+import com.tanasi.mangajap.databinding.ItemMangaGridBinding
 import com.tanasi.mangajap.databinding.ItemMangaHeaderBinding
 import com.tanasi.mangajap.databinding.ItemMangaProgressionBinding
 import com.tanasi.mangajap.databinding.ItemMangaReviewsBinding
@@ -37,7 +38,6 @@ import com.tanasi.mangajap.fragments.discover.DiscoverFragmentDirections
 import com.tanasi.mangajap.fragments.manga.MangaFragment
 import com.tanasi.mangajap.fragments.manga.MangaFragmentDirections
 import com.tanasi.mangajap.fragments.reviews.ReviewsFragment
-import com.tanasi.mangajap.fragments.search.SearchFragment
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.MangaEntry
 import com.tanasi.mangajap.models.Request
@@ -69,7 +69,8 @@ class MangaViewHolder(
     fun bind(manga: Manga) {
         this.manga = manga
         when (_binding) {
-            is ItemMangaBinding -> displayMangaItem(_binding)
+            is ItemMangaBinding -> displayItem(_binding)
+            is ItemMangaGridBinding -> displayGridItem(_binding)
             is ItemMediaSearchBinding -> displaySearch(_binding)
             is ItemMediaSearchAddBinding -> displaySearchAdd(_binding)
             is ItemMediaDiscoverBinding -> displayTrending(_binding)
@@ -105,7 +106,16 @@ class MangaViewHolder(
     }
 
 
-    private fun displayMangaItem(binding: ItemMangaBinding) {
+    private fun displayItem(binding: ItemMangaBinding) {
+        Glide.with(context)
+            .load(manga.coverImage)
+            .centerCrop()
+            .into(binding.ivMangaPoster)
+
+        binding.tvMangaTitle.text = manga.title
+    }
+
+    private fun displayGridItem(binding: ItemMangaGridBinding) {
         Glide.with(context)
             .load(manga.coverImage)
             .centerCrop()

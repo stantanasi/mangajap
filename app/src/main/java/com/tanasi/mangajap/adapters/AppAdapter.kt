@@ -40,6 +40,7 @@ import com.tanasi.mangajap.databinding.ItemLibraryStatusBinding
 import com.tanasi.mangajap.databinding.ItemLoadMoreBinding
 import com.tanasi.mangajap.databinding.ItemMangaBinding
 import com.tanasi.mangajap.databinding.ItemMangaFranchisesBinding
+import com.tanasi.mangajap.databinding.ItemMangaGridBinding
 import com.tanasi.mangajap.databinding.ItemMangaHeaderBinding
 import com.tanasi.mangajap.databinding.ItemMangaProgressionBinding
 import com.tanasi.mangajap.databinding.ItemMangaReviewsBinding
@@ -124,6 +125,7 @@ class AppAdapter(
         LOADING_ITEM,
 
         MANGA_ITEM,
+        MANGA_GRID_ITEM,
         MANGA_SEARCH_ITEM,
         MANGA_SEARCH_ADD_ITEM,
         MANGA_DISCOVER_ITEM,
@@ -312,6 +314,14 @@ class AppAdapter(
 
             Type.MANGA_ITEM -> MangaViewHolder(
                 ItemMangaBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+
+            Type.MANGA_GRID_ITEM -> MangaViewHolder(
+                ItemMangaGridBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
