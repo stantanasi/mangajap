@@ -6,7 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentMangaVolumesBinding
+import com.tanasi.mangajap.models.Manga
+import kotlinx.coroutines.launch
 
 class MangaVolumesFragment : Fragment() {
 
@@ -16,6 +22,8 @@ class MangaVolumesFragment : Fragment() {
     private val viewModel by viewModels<MangaViewModel>(
         ownerProducer = { requireParentFragment() }
     )
+
+    private val appAdapter = AppAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,10 +36,37 @@ class MangaVolumesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initializeMangaVolumes()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.state.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
+                when (state) {
+                    is MangaViewModel.State.SuccessLoading -> {
+                        displayMangaVolumes(state.manga)
+                    }
+
+                    else -> {}
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    private fun initializeMangaVolumes() {
+        binding.rvMangaVolumes.apply {
+            adapter = appAdapter
+        }
+    }
+
+    private fun displayMangaVolumes(manga: Manga) {
+        appAdapter.submitList(manga.volumes.onEach {
+            it.itemType = AppAdapter.Type.VOLUME_ITEM
+        })
     }
 }
