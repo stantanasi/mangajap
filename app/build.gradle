@@ -77,6 +77,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6'
     implementation 'com.github.stantanasi:retrofit-jsonapi-converter:2.1.0'
     implementation 'com.github.stantanasi:retrofit-oauth2-converter:1.0.0'
+    implementation 'org.jsoup:jsoup:1.17.2'
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:33.4.0')
