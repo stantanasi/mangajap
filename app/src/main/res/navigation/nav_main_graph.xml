@@ -29,6 +29,21 @@
         <argument
             android:name="id"
             app:argType="string" />
+        <action
+            android:id="@+id/action_manga_to_reader"
+            app:destination="@id/reader" />
+    </fragment>
+    <fragment
+        android:id="@+id/reader"
+        android:name="com.tanasi.mangajap.fragments.reader.ReaderFragment"
+        android:label="fragment_reader"
+        tools:layout="@layout/fragment_reader" >
+        <argument
+            android:name="id"
+            app:argType="string" />
+        <argument
+            android:name="readerType"
+            app:argType="com.tanasi.mangajap.fragments.reader.ReaderFragment$ReaderType" />
     </fragment>
 
     <fragment
