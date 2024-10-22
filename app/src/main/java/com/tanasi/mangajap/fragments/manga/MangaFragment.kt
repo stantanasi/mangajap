@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.tanasi.mangajap.databinding.FragmentMangaBinding
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.utils.extensions.viewModelsFactory
@@ -80,5 +81,16 @@ class MangaFragment : Fragment() {
     }
 
     private fun displayManga(manga: Manga) {
+        binding.ivMangaPoster.run {
+            Glide.with(context)
+                .load(manga.coverImage)
+                .into(this)
+            visibility = when {
+                manga.coverImage.isNullOrEmpty() -> View.GONE
+                else -> View.VISIBLE
+            }
+        }
+
+        binding.tvMangaTitle.text = manga.title
     }
 }
