@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tanasi.mangajap.adapters.viewholders.AdViewHolder
 import com.tanasi.mangajap.adapters.viewholders.AnimeEntryViewHolder
 import com.tanasi.mangajap.adapters.viewholders.AnimeViewHolder
+import com.tanasi.mangajap.adapters.viewholders.CategoryViewHolder
 import com.tanasi.mangajap.adapters.viewholders.EpisodeViewHolder
 import com.tanasi.mangajap.adapters.viewholders.FollowViewHolder
 import com.tanasi.mangajap.adapters.viewholders.FranchiseViewHolder
@@ -31,6 +32,7 @@ import com.tanasi.mangajap.databinding.ItemAnimeHeaderBinding
 import com.tanasi.mangajap.databinding.ItemAnimeProgressionBinding
 import com.tanasi.mangajap.databinding.ItemAnimeReviewsBinding
 import com.tanasi.mangajap.databinding.ItemAnimeSummaryBinding
+import com.tanasi.mangajap.databinding.ItemCategoryBinding
 import com.tanasi.mangajap.databinding.ItemEpisodeAnimeBinding
 import com.tanasi.mangajap.databinding.ItemFollowBinding
 import com.tanasi.mangajap.databinding.ItemFranchiseBinding
@@ -61,6 +63,7 @@ import com.tanasi.mangajap.databinding.ItemVolumeMangaDetailsBinding
 import com.tanasi.mangajap.models.Ad
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
+import com.tanasi.mangajap.models.Category
 import com.tanasi.mangajap.models.Chapter
 import com.tanasi.mangajap.models.ChapterEntry
 import com.tanasi.mangajap.models.Episode
@@ -107,6 +110,8 @@ class AppAdapter(
         ANIME_ENTRY_LIBRARY_ITEM,
         ANIME_ENTRY_PROFILE_ITEM,
         ANIME_ENTRY_TO_WATCH_ITEM,
+
+        CATEGORY_ITEM,
 
         EPISODE_ITEM,
 
@@ -259,6 +264,14 @@ class AppAdapter(
 
             Type.ANIME_ENTRY_PROFILE_ITEM -> AnimeEntryViewHolder(
                 ItemMediaProfilePreviewBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+
+            Type.CATEGORY_ITEM -> CategoryViewHolder(
+                ItemCategoryBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -521,6 +534,7 @@ class AppAdapter(
             is AdViewHolder -> holder.bind(items[position] as Ad)
             is AnimeViewHolder -> holder.bind(items[position] as Anime)
             is AnimeEntryViewHolder -> holder.bind(items[position] as AnimeEntry)
+            is CategoryViewHolder -> holder.bind(items[position] as Category)
             is EpisodeViewHolder -> holder.bind(items[position] as Episode)
             is FollowViewHolder -> holder.bind(items[position] as Follow)
             is FranchiseViewHolder -> holder.bind(items[position] as Franchise)
