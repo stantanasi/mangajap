@@ -111,7 +111,198 @@ object MangaReader {
                                     .attr("href").substringAfterLast("/"),
                                 title = element.text(),
                             )
-                        }
+                        },
+                    )
+                }
+            )
+        )
+
+        categories.add(
+            Category(
+                name = "Latest Chapter Updates",
+                list = document.select("div#latest-chap div.item").map {
+                    Manga(
+                        id = it.selectFirst("a")
+                            ?.attr("href")?.substringAfterLast("-")
+                            ?: "",
+                        title = it.selectFirst("h3.manga-name")
+                            ?.text()
+                            ?: "",
+                        poster = it.selectFirst("img.manga-poster-img")
+                            ?.attr("src"),
+
+                        genres = it.select("div.fd-infor a").map { element ->
+                            Genre(
+                                id = element
+                                    .attr("href").substringAfterLast("/"),
+                                title = element.text(),
+                            )
+                        },
+                        chapters = it.select("div.fdl-item").map { element ->
+                            Chapter(
+                                id = "",
+                                number = element.selectFirst("a")
+                                    ?.text()?.substringAfter("Chap ")?.substringBefore(" [")
+                                    ?.toDoubleOrNull()
+                                    ?: 0.0,
+                                language = element.selectFirst("a")
+                                    ?.attr("href")?.split("/")?.getOrNull(3),
+                            )
+                        },
+                    )
+                }
+            )
+        )
+
+        categories.add(
+            Category(
+                name = "Latest Volume Updates",
+                list = document.select("div#latest-vol div.item").map {
+                    Manga(
+                        id = it.selectFirst("a")
+                            ?.attr("href")?.substringAfterLast("-")
+                            ?: "",
+                        title = it.selectFirst("h3.manga-name")
+                            ?.text()
+                            ?: "",
+                        poster = it.selectFirst("img.manga-poster-img")
+                            ?.attr("src"),
+
+                        genres = it.select("div.fd-infor a").map { element ->
+                            Genre(
+                                id = element
+                                    .attr("href").substringAfterLast("/"),
+                                title = element.text(),
+                            )
+                        },
+                        volumes = it.select("div.fdl-item").map { element ->
+                            Volume(
+                                id = "",
+                                number = element.selectFirst("a")
+                                    ?.text()?.substringAfter("Chap ")?.substringBefore(" [")
+                                    ?.toDoubleOrNull()
+                                    ?: 0.0,
+                                language = element.selectFirst("a")
+                                    ?.attr("href")?.split("/")?.getOrNull(3),
+                            )
+                        },
+                    )
+                }
+            )
+        )
+
+        categories.add(
+            Category(
+                name = "Most Viewed Today",
+                list = document.select("div#chart-today ul li").map {
+                    Manga(
+                        id = it.selectFirst("a")
+                            ?.attr("href")?.substringAfterLast("-")
+                            ?: "",
+                        title = it.selectFirst("h3.manga-name")
+                            ?.text()
+                            ?: "",
+                        poster = it.selectFirst("img.manga-poster-img")
+                            ?.attr("src"),
+
+                        volumes = it.select("span.fdi-chapter").getOrNull(1)?.let { element ->
+                            listOf(
+                                Volume(
+                                    id = "",
+                                    number = element.selectFirst("a")
+                                        ?.text()?.substringAfter("Vol ")?.toDoubleOrNull()
+                                        ?: 0.0,
+                                )
+                            )
+                        } ?: emptyList(),
+                        chapters = it.select("span.fdi-chapter").getOrNull(0)?.let { element ->
+                            listOf(
+                                Chapter(
+                                    id = "",
+                                    number = element.selectFirst("a")
+                                        ?.text()?.substringAfter("Chap ")?.toDoubleOrNull()
+                                        ?: 0.0,
+                                )
+                            )
+                        } ?: emptyList(),
+                    )
+                }
+            )
+        )
+
+        categories.add(
+            Category(
+                name = "Most Viewed This Week",
+                list = document.select("div#chart-week ul li").map {
+                    Manga(
+                        id = it.selectFirst("a")
+                            ?.attr("href")?.substringAfterLast("-")
+                            ?: "",
+                        title = it.selectFirst("h3.manga-name")
+                            ?.text()
+                            ?: "",
+                        poster = it.selectFirst("img.manga-poster-img")
+                            ?.attr("src"),
+
+                        volumes = it.select("span.fdi-chapter").getOrNull(1)?.let { element ->
+                            listOf(
+                                Volume(
+                                    id = "",
+                                    number = element.selectFirst("a")
+                                        ?.text()?.substringAfter("Vol ")?.toDoubleOrNull()
+                                        ?: 0.0,
+                                )
+                            )
+                        } ?: emptyList(),
+                        chapters = it.select("span.fdi-chapter").getOrNull(0)?.let { element ->
+                            listOf(
+                                Chapter(
+                                    id = "",
+                                    number = element.selectFirst("a")
+                                        ?.text()?.substringAfter("Chap ")?.toDoubleOrNull()
+                                        ?: 0.0,
+                                )
+                            )
+                        } ?: emptyList(),
+                    )
+                }
+            )
+        )
+
+        categories.add(
+            Category(
+                name = "Most Viewed This Month",
+                list = document.select("div#chart-month ul li").map {
+                    Manga(
+                        id = it.selectFirst("a")
+                            ?.attr("href")?.substringAfterLast("-")
+                            ?: "",
+                        title = it.selectFirst("h3.manga-name")
+                            ?.text()
+                            ?: "",
+                        poster = it.selectFirst("img.manga-poster-img")
+                            ?.attr("src"),
+
+                        volumes = it.select("span.fdi-chapter").getOrNull(1)?.let { element ->
+                            listOf(
+                                Volume(
+                                    id = "",
+                                    number = element.selectFirst("a")
+                                        ?.text()?.substringAfter("Vol ")?.toDoubleOrNull()
+                                        ?: 0.0,
+                                )
+                            )
+                        } ?: emptyList(),
+                        chapters = it.select("span.fdi-chapter").getOrNull(0)?.let { element ->
+                            listOf(
+                                Chapter(
+                                    id = "",
+                                    number = element.selectFirst("a")
+                                        ?.text()?.substringAfter("Chap ")?.toDoubleOrNull()
+                                        ?: 0.0,
+                                )
+                            )
+                        } ?: emptyList(),
                     )
                 }
             )
@@ -137,7 +328,7 @@ object MangaReader {
                                     .attr("href").substringAfterLast("/"),
                                 title = element.text(),
                             )
-                        }
+                        },
                     )
                 }
             )
