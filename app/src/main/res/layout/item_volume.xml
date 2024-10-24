@@ -9,7 +9,6 @@
         android:id="@+id/iv_volume_cover"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/bg_rounded_corners"
         android:scaleType="centerCrop"
         app:layout_constraintDimensionRatio="2:3"
         app:layout_constraintLeft_toLeftOf="parent"
