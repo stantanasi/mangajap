@@ -190,8 +190,9 @@ object MangaReader {
                 number = it.attr("data-number").toDoubleOrNull()
                     ?: 0.0,
                 title = it.selectFirst("span.name")
-                    ?.text()
-                    ?: "",
+                    ?.text(),
+                language = it.selectFirst("a")
+                    ?.attr("href")?.split("/")?.getOrNull(3),
             )
         }
 
