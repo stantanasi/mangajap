@@ -18,9 +18,9 @@ import com.tanasi.mangajap.databinding.ItemAdSearchBinding
 import com.tanasi.mangajap.models.Ad
 
 class AdViewHolder(
-        private val _binding: ViewBinding
+    private val _binding: ViewBinding
 ) : RecyclerView.ViewHolder(
-        _binding.root
+    _binding.root
 ) {
 
     private val context: Context = itemView.context
@@ -35,19 +35,19 @@ class AdViewHolder(
         }
 
         val adLoader = AdLoader.Builder(context, adUnitId)
-                .forNativeAd {  nativeAd ->
-                    when (_binding) {
-                        is ItemAdDiscoverBinding -> displayDiscover(_binding, nativeAd)
-                        is ItemAdProfileBinding -> displayProfile(_binding, nativeAd)
-                        is ItemAdSearchBinding -> displaySearch(_binding, nativeAd)
-                    }
+            .forNativeAd { nativeAd ->
+                when (_binding) {
+                    is ItemAdDiscoverBinding -> displayDiscover(_binding, nativeAd)
+                    is ItemAdProfileBinding -> displayProfile(_binding, nativeAd)
+                    is ItemAdSearchBinding -> displaySearch(_binding, nativeAd)
                 }
-                .withAdListener(object : AdListener() {
-                    override fun onAdFailedToLoad(adError: LoadAdError) {
-                    }
-                })
-                .withNativeAdOptions(NativeAdOptions.Builder().build())
-                .build()
+            }
+            .withAdListener(object : AdListener() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                }
+            })
+            .withNativeAdOptions(NativeAdOptions.Builder().build())
+            .build()
         adLoader.loadAd(AdRequest.Builder().build())
     }
 
