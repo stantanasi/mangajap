@@ -14,29 +14,11 @@ import com.tanasi.mangajap.databinding.ItemLoadMoreBinding
 import com.tanasi.mangajap.databinding.ItemMangaBinding
 import com.tanasi.mangajap.databinding.ItemMangaGridBinding
 import com.tanasi.mangajap.databinding.ItemVolumeBinding
-import com.tanasi.mangajap.models.Ad
-import com.tanasi.mangajap.models.Anime
-import com.tanasi.mangajap.models.AnimeEntry
 import com.tanasi.mangajap.models.Category
 import com.tanasi.mangajap.models.Chapter
-import com.tanasi.mangajap.models.ChapterEntry
-import com.tanasi.mangajap.models.Episode
-import com.tanasi.mangajap.models.EpisodeEntry
-import com.tanasi.mangajap.models.Follow
-import com.tanasi.mangajap.models.Franchise
 import com.tanasi.mangajap.models.Genre
-import com.tanasi.mangajap.models.Header
 import com.tanasi.mangajap.models.Manga
-import com.tanasi.mangajap.models.MangaEntry
-import com.tanasi.mangajap.models.People
-import com.tanasi.mangajap.models.Request
-import com.tanasi.mangajap.models.Review
-import com.tanasi.mangajap.models.Season
-import com.tanasi.mangajap.models.Staff
-import com.tanasi.mangajap.models.Theme
-import com.tanasi.mangajap.models.User
 import com.tanasi.mangajap.models.Volume
-import com.tanasi.mangajap.models.VolumeEntry
 
 class AppAdapter(
     private val items: MutableList<Item> = mutableListOf(),
@@ -47,75 +29,16 @@ class AppAdapter(
     }
 
     enum class Type {
-        AD_DISCOVER_ITEM,
-        AD_PROFILE_ITEM,
-        AD_SEARCH_ITEM,
-
-        ANIME_SEARCH_ITEM,
-        ANIME_SEARCH_ADD_ITEM,
-        ANIME_DISCOVER_ITEM,
-
-        ANIME,
-        ANIME_SUMMARY,
-        ANIME_PROGRESSION,
-        ANIME_REVIEWS,
-        ANIME_FRANCHISES,
-
-        ANIME_ENTRY_LIBRARY_ITEM,
-        ANIME_ENTRY_PROFILE_ITEM,
-        ANIME_ENTRY_TO_WATCH_ITEM,
-
         CATEGORY_ITEM,
 
         CHAPTER_ITEM,
 
-        EPISODE_ITEM,
-
-        FOLLOWER_ITEM,
-        FOLLOWING_ITEM,
-
-        FRANCHISE_ITEM,
-
-        LIBRARY_STATUS_HEADER,
         LOADING_ITEM,
 
         MANGA_ITEM,
         MANGA_GRID_ITEM,
-        MANGA_SEARCH_ITEM,
-        MANGA_SEARCH_ADD_ITEM,
-        MANGA_DISCOVER_ITEM,
-
-        MANGA,
-        MANGA_SUMMARY,
-        MANGA_PROGRESSION,
-        MANGA_REVIEWS,
-        MANGA_FRANCHISES,
-
-        MANGA_ENTRY_LIBRARY_ITEM,
-        MANGA_ENTRY_PROFILE_ITEM,
-        MANGA_ENTRY_TO_READ_ITEM,
-
-        PEOPLE_DISCOVER_ITEM,
-
-        REVIEW_ITEM,
-        REVIEW_HEADER,
-
-        SEASON_ITEM,
-        SEASON_ANIME_HEADER,
-
-        STAFF_ITEM,
-
-        STATS_PROFILE_MANGA_FOLLOWED_ITEM,
-        STATS_PROFILE_MANGA_VOLUMES_ITEM,
-        STATS_PROFILE_MANGA_CHAPTERS_ITEM,
-        STATS_PROFILE_ANIME_FOLLOWED_ITEM,
-        STATS_PROFILE_ANIME_TIME_SPENT_ITEM,
-        STATS_PROFILE_ANIME_EPISODES_ITEM,
-
-        USER_ITEM,
 
         VOLUME_ITEM,
-        VOLUME_DETAILS_ITEM,
     }
 
     var isLoading = false
@@ -170,8 +93,6 @@ class AppAdapter(
                     false
                 )
             )
-
-            else -> TODO()
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -207,30 +128,11 @@ class AppAdapter(
                 val oldItem = items[oldItemPosition]
                 val newItem = list[newItemPosition]
                 return when {
-                    oldItem is Ad && newItem is Ad -> oldItem == newItem
-                    oldItem is Anime && newItem is Anime -> oldItem.id == newItem.id
-                    oldItem is AnimeEntry && newItem is AnimeEntry -> oldItem.id == newItem.id
                     oldItem is Category && newItem is Category -> oldItem.name == newItem.name
                     oldItem is Chapter && newItem is Chapter -> oldItem.id == newItem.id
-                    oldItem is ChapterEntry && newItem is ChapterEntry -> oldItem.id == newItem.id
-                    oldItem is Episode && newItem is Episode -> oldItem.id == newItem.id
-                    oldItem is EpisodeEntry && newItem is EpisodeEntry -> oldItem.id == newItem.id
-                    oldItem is Follow && newItem is Follow -> oldItem.id == newItem.id
-                    oldItem is Franchise && newItem is Franchise -> oldItem.id == newItem.id
                     oldItem is Genre && newItem is Genre -> oldItem.id == newItem.id
-                    oldItem is Header && newItem is Header -> oldItem.title == newItem.title
                     oldItem is Manga && newItem is Manga -> oldItem.id == newItem.id
-                    oldItem is MangaEntry && newItem is MangaEntry -> oldItem.id == newItem.id
-                    oldItem is People && newItem is People -> oldItem.id == newItem.id
-                    oldItem is Request && newItem is Request -> oldItem.id == newItem.id
-                    oldItem is Review && newItem is Review -> oldItem.id == newItem.id
-                    oldItem is Season && newItem is Season -> oldItem.id == newItem.id
-                    oldItem is Staff && newItem is Staff -> oldItem.id == newItem.id
-                    oldItem is Theme && newItem is Theme -> oldItem.id == newItem.id
-                    oldItem is User && newItem is User -> oldItem.id == newItem.id
-                    oldItem is User.Stats && newItem is User.Stats -> oldItem == newItem
                     oldItem is Volume && newItem is Volume -> oldItem.id == newItem.id
-                    oldItem is VolumeEntry && newItem is VolumeEntry -> oldItem.id == newItem.id
                     else -> false
                 } && oldItem.itemType.ordinal == newItem.itemType.ordinal
             }
