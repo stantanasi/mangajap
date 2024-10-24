@@ -95,15 +95,16 @@ class MangaFragment : Fragment() {
 
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
+                    viewModel.selectedTabPosition = tab.position
                     showTab(MangaTab.entries[tab.position])
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
                 override fun onTabReselected(tab: TabLayout.Tab) {}
             })
-            getTabAt(selectedTabPosition)?.apply {
-                select()
-                showTab(MangaTab.entries[selectedTabPosition])
+            getTabAt(viewModel.selectedTabPosition)?.also { tab ->
+                tab.select()
+                showTab(MangaTab.entries[tab.position])
             }
         }
     }

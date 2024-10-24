@@ -23,6 +23,8 @@ class MangaViewModel(val id: String) : ViewModel() {
     private val _volumes: MutableStateFlow<VolumesState> = MutableStateFlow(VolumesState.Loading)
     val volumes: Flow<VolumesState> = _volumes
 
+    var selectedTabPosition = 0
+
     sealed class State {
         data object Loading : State()
         data class SuccessLoading(val manga: Manga) : State()
