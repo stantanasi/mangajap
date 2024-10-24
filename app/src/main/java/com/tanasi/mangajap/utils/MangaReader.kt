@@ -86,6 +86,9 @@ object MangaReader {
                             ?: "",
                         poster = it.selectFirst("img.manga-poster-img")
                             ?.attr("src"),
+                        languages = it.selectFirst("span.tick-lang")
+                            ?.text()?.split("/")
+                            ?: emptyList(),
                     )
                 }
             )
@@ -104,6 +107,9 @@ object MangaReader {
                             ?: "",
                         poster = it.selectFirst("img.manga-poster-img")
                             ?.attr("src"),
+                        languages = it.selectFirst("span.tick-lang")
+                            ?.text()?.split("/")
+                            ?: emptyList(),
 
                         genres = it.select("div.fd-infor a").map { element ->
                             Genre(
@@ -130,6 +136,9 @@ object MangaReader {
                             ?: "",
                         poster = it.selectFirst("img.manga-poster-img")
                             ?.attr("src"),
+                        languages = it.selectFirst("span.tick-lang")
+                            ?.text()?.split("/")
+                            ?: emptyList(),
 
                         genres = it.select("div.fd-infor a").map { element ->
                             Genre(
@@ -167,6 +176,9 @@ object MangaReader {
                             ?: "",
                         poster = it.selectFirst("img.manga-poster-img")
                             ?.attr("src"),
+                        languages = it.selectFirst("span.tick-lang")
+                            ?.text()?.split("/")
+                            ?: emptyList(),
 
                         genres = it.select("div.fd-infor a").map { element ->
                             Genre(
@@ -204,6 +216,9 @@ object MangaReader {
                             ?: "",
                         poster = it.selectFirst("img.manga-poster-img")
                             ?.attr("src"),
+                        languages = it.select("div.fd-infor span.fdi-item").getOrNull(0)
+                            ?.text()?.split("/")
+                            ?: emptyList(),
 
                         volumes = it.select("span.fdi-chapter").getOrNull(1)?.let { element ->
                             listOf(
@@ -243,6 +258,9 @@ object MangaReader {
                             ?: "",
                         poster = it.selectFirst("img.manga-poster-img")
                             ?.attr("src"),
+                        languages = it.select("div.fd-infor span.fdi-item").getOrNull(0)
+                            ?.text()?.split("/")
+                            ?: emptyList(),
 
                         volumes = it.select("span.fdi-chapter").getOrNull(1)?.let { element ->
                             listOf(
@@ -282,6 +300,9 @@ object MangaReader {
                             ?: "",
                         poster = it.selectFirst("img.manga-poster-img")
                             ?.attr("src"),
+                        languages = it.select("div.fd-infor span.fdi-item").getOrNull(0)
+                            ?.text()?.split("/")
+                            ?: emptyList(),
 
                         volumes = it.select("span.fdi-chapter").getOrNull(1)?.let { element ->
                             listOf(
@@ -321,6 +342,9 @@ object MangaReader {
                             ?: "",
                         poster = it.selectFirst("img.manga-poster-img")
                             ?.attr("src"),
+                        languages = it.selectFirst("span.tick-lang")
+                            ?.text()?.split("/")
+                            ?: emptyList(),
 
                         genres = it.select("div.fd-infor a").map { element ->
                             Genre(
@@ -354,6 +378,9 @@ object MangaReader {
                     ?: "",
                 poster = it.selectFirst("img.manga-poster-img")
                     ?.attr("src"),
+                languages = it.selectFirst("span.tick-lang")
+                    ?.text()?.split("/")
+                    ?: emptyList(),
 
                 genres = it.select("div.fd-infor a").map { element ->
                     Genre(

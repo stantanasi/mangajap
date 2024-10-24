@@ -7,6 +7,7 @@ data class Manga(
     val title: String,
     val overview: String? = null,
     val poster: String? = null,
+    val languages: List<String> = emptyList(),
 
     val genres: List<Genre> = emptyList(),
     val volumes: List<Volume> = emptyList(),

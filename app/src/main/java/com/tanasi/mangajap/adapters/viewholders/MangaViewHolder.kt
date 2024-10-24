@@ -54,6 +54,8 @@ class MangaViewHolder(
             .centerCrop()
             .into(binding.ivMangaPoster)
 
+        binding.tvMovieLanguages.text = manga.languages.joinToString("/")
+
         binding.tvMangaTitle.text = manga.title
     }
 
@@ -74,6 +76,8 @@ class MangaViewHolder(
             .load(manga.poster)
             .centerCrop()
             .into(binding.ivMangaPoster)
+
+        binding.tvMovieLanguages.text = manga.languages.joinToString("/")
 
         binding.tvMangaTitle.text = manga.title
     }
