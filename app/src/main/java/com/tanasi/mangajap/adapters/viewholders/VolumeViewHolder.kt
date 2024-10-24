@@ -41,10 +41,13 @@ class VolumeViewHolder(
         }
 
         Glide.with(context)
-            .load(volume.coverImage)
+            .load(volume.poster)
             .centerCrop()
             .into(binding.ivVolumeCover)
 
-        binding.tvVolumeTitle.text = String.format(Locale.ROOT, "%d", volume.number)
+        binding.tvVolumeTitle.text = when {
+            volume.number % 1.0 == 0.0 -> String.format(Locale.ROOT, "%.0f", volume.number)
+            else -> String.format(Locale.ROOT, "%.1f", volume.number)
+        }
     }
 }

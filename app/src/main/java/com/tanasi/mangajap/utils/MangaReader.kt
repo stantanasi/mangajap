@@ -39,7 +39,7 @@ object MangaReader {
                         title = it.selectFirst("div.anime-name")
                             ?.text()
                             ?: "",
-                        coverImage = it.selectFirst("img.manga-poster-img")
+                        poster = it.selectFirst("img.manga-poster-img")
                             ?.attr("src"),
                     )
                 }
@@ -57,7 +57,7 @@ object MangaReader {
                         title = it.selectFirst("h3.manga-name")
                             ?.text()
                             ?: "",
-                        coverImage = it.selectFirst("img.manga-poster-img")
+                        poster = it.selectFirst("img.manga-poster-img")
                             ?.attr("src"),
 
                         genres = it.select("div.fd-infor a").map { element ->
@@ -83,7 +83,7 @@ object MangaReader {
                         title = it.selectFirst("h3.manga-name")
                             ?.text()
                             ?: "",
-                        coverImage = it.selectFirst("img.manga-poster-img")
+                        poster = it.selectFirst("img.manga-poster-img")
                             ?.attr("src"),
 
                         genres = it.select("div.fd-infor a").map { element ->
@@ -116,7 +116,7 @@ object MangaReader {
                 title = it.selectFirst("h3.manga-name")
                     ?.text()
                     ?: "",
-                coverImage = it.selectFirst("img.manga-poster-img")
+                poster = it.selectFirst("img.manga-poster-img")
                     ?.attr("src"),
 
                 genres = it.select("div.fd-infor a").map { element ->
@@ -140,9 +140,9 @@ object MangaReader {
             title = document.selectFirst("h2.manga-name")
                 ?.text()
                 ?: "",
-            synopsis = document.selectFirst("div.description")
+            overview = document.selectFirst("div.description")
                 ?.text(),
-            coverImage = document.selectFirst("img.manga-poster-img")
+            poster = document.selectFirst("img.manga-poster-img")
                 ?.attr("src"),
 
             genres = document.select("div.genres a").map { element ->
@@ -163,10 +163,11 @@ object MangaReader {
         val chapters = response.html.select("li.chapter-item").map {
             Chapter(
                 id = it.attr("data-id"),
-//                    title = it.selectFirst("span.name")
-//                        ?.text(),
-                number = it.attr("data-number").toIntOrNull()
-                    ?: 0,
+                number = it.attr("data-number").toDoubleOrNull()
+                    ?: 0.0,
+                title = it.selectFirst("span.name")
+                    ?.text()
+                    ?: "",
             )
         }
 
@@ -179,10 +180,11 @@ object MangaReader {
         val volumes = response.html.select("li.volume-item").map {
             Volume(
                 id = it.attr("data-id"),
-//                    title = it.selectFirst("span.tick-vol")
-//                        ?.text(),
-                number = it.attr("data-number").toIntOrNull()
-                    ?: 0,
+                number = it.attr("data-number").toDoubleOrNull()
+                    ?: 0.0,
+                title = it.selectFirst("span.tick-vol")
+                    ?.text()
+                    ?: "",
             )
         }
 

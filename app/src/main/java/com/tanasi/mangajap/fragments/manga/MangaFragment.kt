@@ -111,10 +111,10 @@ class MangaFragment : Fragment() {
     private fun displayManga(manga: Manga) {
         binding.ivMangaPoster.run {
             Glide.with(context)
-                .load(manga.coverImage)
+                .load(manga.poster)
                 .into(this)
             visibility = when {
-                manga.coverImage.isNullOrEmpty() -> View.GONE
+                manga.poster.isNullOrEmpty() -> View.GONE
                 else -> View.VISIBLE
             }
         }

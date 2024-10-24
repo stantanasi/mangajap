@@ -48,7 +48,7 @@ class MangaViewHolder(
         }
 
         Glide.with(context)
-            .load(manga.coverImage)
+            .load(manga.poster)
             .centerCrop()
             .into(binding.ivMangaPoster)
 
@@ -69,7 +69,7 @@ class MangaViewHolder(
         }
 
         Glide.with(context)
-            .load(manga.coverImage)
+            .load(manga.poster)
             .centerCrop()
             .into(binding.ivMangaPoster)
 
