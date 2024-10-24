@@ -1,10 +1,14 @@
 package com.tanasi.mangajap.fragments.reader
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tanasi.mangajap.databinding.ItemPageBinding
 import com.tanasi.mangajap.models.Page
 
@@ -67,9 +71,24 @@ class ReaderAdapter(
 
         private fun displayItem() {
             Glide.with(context)
+                .asBitmap()
                 .load(page.image)
                 .fitCenter()
-                .into(binding.ivPage)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        val image = when {
+                            page.isShuffle -> page.unshuffle(resource)
+                            else -> resource
+                        }
+
+                        binding.ivPage.setImageBitmap(image)
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {}
+                })
         }
     }
 }
