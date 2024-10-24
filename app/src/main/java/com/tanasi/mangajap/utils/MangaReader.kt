@@ -182,7 +182,7 @@ object MangaReader {
                 id = it.attr("data-id"),
                 number = it.attr("data-number").toDoubleOrNull()
                     ?: 0.0,
-                title = it.selectFirst("span.tick-vol")
+                title = it.selectFirst("span.name")
                     ?.text()
                     ?: "",
             )

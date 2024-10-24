@@ -17,17 +17,28 @@
         tools:ignore="ContentDescription" />
 
     <TextView
-        android:id="@+id/tv_volume_title"
+        android:id="@+id/tv_volume_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:ellipsize="end"
         android:gravity="center"
-        android:maxLines="1"
-        android:textColor="?attr/textPrimaryColor"
+        android:textColor="?attr/textSecondaryColor"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_volume_cover"
+        tools:text="Volume #" />
+
+    <TextView
+        android:id="@+id/tv_volume_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="?attr/textPrimaryColor"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_volume_number"
         tools:text="Title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

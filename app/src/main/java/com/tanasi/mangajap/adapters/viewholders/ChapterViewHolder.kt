@@ -36,9 +36,11 @@ class ChapterViewHolder(
             }
         }
 
-        binding.tvChapterTitle.text = when {
+        binding.tvChapterNumber.text = when {
             chapter.number % 1.0 == 0.0 -> String.format(Locale.ROOT, "%.0f", chapter.number)
             else -> String.format(Locale.ROOT, "%.1f", chapter.number)
         }
+
+        binding.tvChapterTitle.text = chapter.title
     }
 }

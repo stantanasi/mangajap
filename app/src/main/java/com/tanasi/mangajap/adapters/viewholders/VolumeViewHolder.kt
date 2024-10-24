@@ -45,9 +45,11 @@ class VolumeViewHolder(
             .centerCrop()
             .into(binding.ivVolumeCover)
 
-        binding.tvVolumeTitle.text = when {
+        binding.tvVolumeNumber.text = when {
             volume.number % 1.0 == 0.0 -> String.format(Locale.ROOT, "%.0f", volume.number)
             else -> String.format(Locale.ROOT, "%.1f", volume.number)
         }
+
+        binding.tvVolumeTitle.text = volume.title
     }
 }
