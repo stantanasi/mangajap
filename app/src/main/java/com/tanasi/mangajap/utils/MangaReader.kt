@@ -195,6 +195,7 @@ object MangaReader {
         val pages = response.html.select("div.iv-card").map {
             Page(
                 image = it.attr("data-url"),
+                isShuffle = it.hasClass("shuffled"),
             )
         }
 
@@ -207,6 +208,7 @@ object MangaReader {
         val pages = response.html.select("div.iv-card").map {
             Page(
                 image = it.attr("data-url"),
+                isShuffle = it.hasClass("shuffled"),
             )
         }
 
