@@ -3,7 +3,6 @@ package com.tanasi.mangajap.utils.preferences
 import android.content.Context
 import android.content.SharedPreferences
 import com.tanasi.mangajap.MangaJapApplication
-import com.tanasi.mangajap.fragments.library.LibraryFragment
 
 class LibraryPreference(
         context: Context
@@ -21,12 +20,6 @@ class LibraryPreference(
     private var editor: SharedPreferences.Editor = prefs.edit().also { it.apply() }
 
 
-    var sortBy: LibraryFragment.SortBy
-        get() = LibraryFragment.SortBy.getByName(prefs.getString(SORT_BY, null))
-        set(value) {
-            editor.putString(SORT_BY, value.name)
-            editor.commit()
-        }
 
     var sortInReverse: Boolean
         get() = prefs.getBoolean(ORDER_REVERSE, false)

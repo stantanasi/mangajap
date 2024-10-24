@@ -23,41 +23,4 @@ class GeneralPreference(
     private var editor: SharedPreferences.Editor = prefs.edit().also { it.apply() }
 
 
-    var savedStartDestination: Int
-        get() = when (val id = prefs.getInt(START_DESTINATION, R.id.discover)) {
-            R.id.agenda,
-            R.id.discover,
-            R.id.profile -> id
-            else -> R.id.discover
-        }
-        set(id) {
-            editor.putInt(START_DESTINATION, id)
-            editor.commit()
-        }
-
-    enum class DisplayFirst(val stringId: Int) {
-        Manga(R.string.manga),
-        Anime(R.string.anime);
-
-        companion object {
-            fun getByName(name: String?): DisplayFirst = try {
-                valueOf(name!!)
-            } catch (e: Exception) {
-                Manga
-            }
-        }
-    }
-    var displayFirst: DisplayFirst
-        get() = DisplayFirst.getByName(prefs.getString(DISPLAY_FIRST, null))
-        set(value) {
-            editor.putString(DISPLAY_FIRST, value.name)
-            editor.commit()
-        }
-
-    var launchCount: Int
-        get() = prefs.getInt(LAUNCH_COUNT, 0)
-        set(value) {
-            editor.putInt(LAUNCH_COUNT, value)
-            editor.commit()
-        }
 }
