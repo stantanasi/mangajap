@@ -98,11 +98,23 @@ class MangaVolumesFragment : Fragment() {
             .distinctBy { it.language }
             .mapNotNull { it.language }
             .map {
-                val locale = Locale(it)
+                val locale = when {
+                    it.contains("-") -> {
+                        val (language, country) = it.split("-")
+                        Locale(language, country)
+                    }
+
+                    else -> Locale(it)
+                }
 
                 Language(
                     code = it,
-                    name = locale.getDisplayLanguage(locale),
+                    name = listOfNotNull(
+                        locale.getDisplayLanguage(Locale.ENGLISH),
+                        locale.getDisplayCountry(Locale.ENGLISH)
+                            .takeIf { country -> country.isNotEmpty() }
+                            ?.let { country -> "($country)" },
+                    ).joinToString(" "),
                 )
             }
 
