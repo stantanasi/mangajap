@@ -1,5 +1,8 @@
 package com.tanasi.mangajap.utils
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Rect
 import com.google.gson.annotations.SerializedName
 import com.tanasi.mangajap.models.Category
 import com.tanasi.mangajap.models.Chapter
@@ -16,6 +19,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
+import kotlin.math.min
 
 object MangaReader {
 
@@ -197,7 +203,7 @@ object MangaReader {
         val pages = response.html.select("div.iv-card").map {
             Page(
                 image = it.attr("data-url"),
-                isShuffle = it.hasClass("shuffled"),
+                isShuffled = it.hasClass("shuffled"),
             )
         }
 
@@ -210,11 +216,106 @@ object MangaReader {
         val pages = response.html.select("div.iv-card").map {
             Page(
                 image = it.attr("data-url"),
-                isShuffle = it.hasClass("shuffled"),
+                isShuffled = it.hasClass("shuffled"),
             )
         }
 
         return pages
+    }
+
+
+    // https://github.com/Howard20181/tachiyomi-extensions
+    object ImageUnshuffler {
+
+        private const val PIECE_SIZE = 200
+
+        private val memo = hashMapOf<Int, IntArray>()
+
+        fun unshuffle(bitmap: Bitmap): Bitmap {
+            val width = bitmap.width
+            val height = bitmap.height
+
+            val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(result)
+
+            val pieces = ArrayList<Piece>()
+            for (y in 0 until height step PIECE_SIZE) {
+                for (x in 0 until width step PIECE_SIZE) {
+                    val w = min(PIECE_SIZE, width - x)
+                    val h = min(PIECE_SIZE, height - y)
+                    pieces.add(Piece(x, y, w, h))
+                }
+            }
+
+            val groups = pieces.groupBy { it.w shl 16 or it.h }
+
+            for (group in groups.values) {
+                val size = group.size
+
+                val permutation = memo.getOrPut(size) {
+                    // The key is actually "stay", but it's padded here in case the code is run in
+                    // Oracle's JDK, where RC4 key is required to be at least 5 bytes
+                    val random = SeedRandom("staystay")
+
+                    // https://github.com/webcaetano/shuffle-seed
+                    val indices = (0 until size).toMutableList()
+                    IntArray(size) { indices.removeAt((random.nextDouble() * indices.size).toInt()) }
+                }
+
+                for ((i, original) in permutation.withIndex()) {
+                    val src = group[i]
+                    val dst = group[original]
+
+                    val srcRect = Rect(src.x, src.y, src.x + src.w, src.y + src.h)
+                    val dstRect = Rect(dst.x, dst.y, dst.x + dst.w, dst.y + dst.h)
+
+                    canvas.drawBitmap(bitmap, srcRect, dstRect, null)
+                }
+            }
+
+            return result
+        }
+
+        private class Piece(val x: Int, val y: Int, val w: Int, val h: Int)
+
+        // https://github.com/davidbau/seedrandom
+        private class SeedRandom(key: String) {
+
+            private val input = ByteArray(RC4_WIDTH)
+            private val buffer = ByteArray(RC4_WIDTH)
+            private var pos = RC4_WIDTH
+
+            private val rc4 = Cipher.getInstance("RC4").apply {
+                init(Cipher.ENCRYPT_MODE, SecretKeySpec(key.toByteArray(), "RC4"))
+                update(input, 0, RC4_WIDTH, buffer) // RC4-drop[256]
+            }
+
+            fun nextDouble(): Double {
+                var num = nextByte()
+                var exp = 8
+                while (num < 1L shl 52) {
+                    num = num shl 8 or nextByte()
+                    exp += 8
+                }
+                while (num >= 1L shl 53) {
+                    num = num ushr 1
+                    exp--
+                }
+                return Math.scalb(num.toDouble(), -exp)
+            }
+
+            private fun nextByte(): Long {
+                if (pos == RC4_WIDTH) {
+                    rc4.update(input, 0, RC4_WIDTH, buffer)
+                    pos = 0
+                }
+                return buffer[pos++].toLong() and 0xFF
+            }
+
+            companion object {
+                private const val RC4_WIDTH = 256
+            }
+        }
     }
 
 

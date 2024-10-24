@@ -11,6 +11,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tanasi.mangajap.databinding.ItemPageBinding
 import com.tanasi.mangajap.models.Page
+import com.tanasi.mangajap.utils.MangaReader
 
 class ReaderAdapter(
     private val pages: MutableList<Page> = mutableListOf()
@@ -80,7 +81,7 @@ class ReaderAdapter(
                         transition: Transition<in Bitmap>?
                     ) {
                         val image = when {
-                            page.isShuffle -> page.unshuffle(resource)
+                            page.isShuffled -> MangaReader.ImageUnshuffler.unshuffle(resource)
                             else -> resource
                         }
 
