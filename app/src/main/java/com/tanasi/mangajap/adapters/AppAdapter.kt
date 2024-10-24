@@ -9,6 +9,7 @@ import com.tanasi.mangajap.adapters.viewholders.ChapterViewHolder
 import com.tanasi.mangajap.adapters.viewholders.MangaViewHolder
 import com.tanasi.mangajap.adapters.viewholders.VolumeViewHolder
 import com.tanasi.mangajap.databinding.ItemCategoryBinding
+import com.tanasi.mangajap.databinding.ItemCategorySwiperBinding
 import com.tanasi.mangajap.databinding.ItemChapterBinding
 import com.tanasi.mangajap.databinding.ItemLoadMoreBinding
 import com.tanasi.mangajap.databinding.ItemMangaBinding
@@ -37,6 +38,7 @@ class AppAdapter(
 
         MANGA_ITEM,
         MANGA_GRID_ITEM,
+        MANGA_SWIPER_ITEM,
 
         VOLUME_ITEM,
     }
@@ -80,6 +82,14 @@ class AppAdapter(
 
             Type.MANGA_GRID_ITEM -> MangaViewHolder(
                 ItemMangaGridBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+
+            Type.MANGA_SWIPER_ITEM -> MangaViewHolder(
+                ItemCategorySwiperBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

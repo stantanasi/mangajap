@@ -5,6 +5,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
+import com.tanasi.mangajap.databinding.ItemCategorySwiperBinding
 import com.tanasi.mangajap.databinding.ItemMangaBinding
 import com.tanasi.mangajap.databinding.ItemMangaGridBinding
 import com.tanasi.mangajap.fragments.home.HomeFragment
@@ -30,6 +31,7 @@ class MangaViewHolder(
         when (_binding) {
             is ItemMangaBinding -> displayItem(_binding)
             is ItemMangaGridBinding -> displayGridItem(_binding)
+            is ItemCategorySwiperBinding -> displaySwiperItem(_binding)
         }
     }
 
@@ -74,5 +76,26 @@ class MangaViewHolder(
             .into(binding.ivMangaPoster)
 
         binding.tvMangaTitle.text = manga.title
+    }
+
+    private fun displaySwiperItem(binding: ItemCategorySwiperBinding) {
+        Glide.with(context)
+            .load(manga.poster)
+            .centerCrop()
+            .into(binding.ivSwiperBackground)
+
+        binding.tvSwiperTitle.text = manga.title
+
+        binding.tvSwiperOverview.text = manga.overview
+
+        binding.btnSwiperReadNow.apply {
+            setOnClickListener {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeToManga(
+                        id = manga.id,
+                    )
+                )
+            }
+        }
     }
 }

@@ -7,6 +7,8 @@
     <string name="main_menu_home">Home</string>
     <string name="main_menu_search">Search</string>
 
+    <string name="home_swiper_read_now">Read now</string>
+
     <string name="search_input_hint">Search</string>
 
     <string name="manga_tab_chapters">Chapters</string>
