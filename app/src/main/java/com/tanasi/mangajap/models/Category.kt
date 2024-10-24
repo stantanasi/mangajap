@@ -10,4 +10,9 @@ data class Category(
     var itemSpacing = 0
 
     override lateinit var itemType: AppAdapter.Type
+
+
+    companion object {
+        const val FEATURED = "Featured"
+    }
 }
