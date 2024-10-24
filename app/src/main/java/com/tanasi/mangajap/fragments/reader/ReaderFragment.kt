@@ -13,7 +13,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.tanasi.mangajap.databinding.FragmentReaderBinding
 import com.tanasi.mangajap.models.Page
-import com.tanasi.mangajap.utils.extensions.viewModelsFactory
+import com.tanasi.mangajap.utils.viewModelsFactory
 import kotlinx.coroutines.launch
 
 class ReaderFragment : Fragment() {

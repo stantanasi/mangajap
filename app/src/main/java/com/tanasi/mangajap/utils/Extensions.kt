@@ -4,6 +4,9 @@ import android.content.Context
 import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.main.MainActivity
@@ -26,4 +29,15 @@ fun FragmentActivity.getCurrentFragment(): Fragment? = when (this) {
     }
 
     else -> null
+}
+
+inline fun <reified T : ViewModel> Fragment.viewModelsFactory(crossinline viewModelInitialization: () -> T): Lazy<T> {
+    return viewModels {
+        object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return viewModelInitialization.invoke() as T
+            }
+        }
+    }
 }
