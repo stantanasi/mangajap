@@ -268,7 +268,7 @@ object MangaReader {
             @Path("chapterId", encoded = true) chapterId: String,
         ): AjaxResponse
 
-        @GET("ajax/image/list/chap/{volumeId}")
+        @GET("ajax/image/list/vol/{volumeId}")
         suspend fun getVolumePages(
             @Path("volumeId", encoded = true) volumeId: String,
         ): AjaxResponse
