@@ -93,13 +93,26 @@ class HomeFragment : Fragment() {
     }
 
     private fun displayHome(categories: List<Category>) {
+        categories
+            .find { it.name == Category.FEATURED }
+            ?.also {
+                it.list.forEach { manga ->
+                    manga.itemType = AppAdapter.Type.MANGA_SWIPER_ITEM
+                }
+            }
+
         appAdapter.submitList(
             categories
                 .filter { it.list.isNotEmpty() }
                 .onEach { category ->
-                    category.itemType = AppAdapter.Type.CATEGORY_ITEM
-                    category.list.onEach { manga ->
-                        manga.itemType = AppAdapter.Type.MANGA_ITEM
+                    if (category.name != Category.FEATURED) {
+                        category.list.onEach { manga ->
+                            manga.itemType = AppAdapter.Type.MANGA_ITEM
+                        }
+                    }
+                    category.itemType = when (category.name) {
+                        Category.FEATURED -> AppAdapter.Type.CATEGORY_SWIPER
+                        else -> AppAdapter.Type.CATEGORY_ITEM
                     }
                     category.itemSpacing = 10.dp(requireContext())
                 }
