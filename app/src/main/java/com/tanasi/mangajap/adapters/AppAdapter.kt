@@ -8,7 +8,9 @@ import com.tanasi.mangajap.adapters.viewholders.CategoryViewHolder
 import com.tanasi.mangajap.adapters.viewholders.ChapterViewHolder
 import com.tanasi.mangajap.adapters.viewholders.MangaViewHolder
 import com.tanasi.mangajap.adapters.viewholders.VolumeViewHolder
+import com.tanasi.mangajap.databinding.ContentCategorySwiperBinding
 import com.tanasi.mangajap.databinding.ItemCategoryBinding
+import com.tanasi.mangajap.databinding.ItemCategorySwiperBinding
 import com.tanasi.mangajap.databinding.ItemChapterBinding
 import com.tanasi.mangajap.databinding.ItemLoadMoreBinding
 import com.tanasi.mangajap.databinding.ItemMangaBinding
@@ -29,6 +31,7 @@ class AppAdapter(
     }
 
     enum class Type {
+        CATEGORY_SWIPER,
         CATEGORY_ITEM,
 
         CHAPTER_ITEM,
@@ -37,6 +40,7 @@ class AppAdapter(
 
         MANGA_ITEM,
         MANGA_GRID_ITEM,
+        MANGA_SWIPER_ITEM,
 
         VOLUME_ITEM,
     }
@@ -46,6 +50,14 @@ class AppAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (Type.entries[viewType]) {
+            Type.CATEGORY_SWIPER -> CategoryViewHolder(
+                ContentCategorySwiperBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+
             Type.CATEGORY_ITEM -> CategoryViewHolder(
                 ItemCategoryBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -80,6 +92,14 @@ class AppAdapter(
 
             Type.MANGA_GRID_ITEM -> MangaViewHolder(
                 ItemMangaGridBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+
+            Type.MANGA_SWIPER_ITEM -> MangaViewHolder(
+                ItemCategorySwiperBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

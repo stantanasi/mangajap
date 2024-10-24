@@ -36,6 +36,45 @@ object MangaReader {
 
         categories.add(
             Category(
+                name = Category.FEATURED,
+                list = document.select("div#slider div.deslide-item").map {
+                    Manga(
+                        id = it.selectFirst("a")
+                            ?.attr("href")?.substringAfterLast("-")
+                            ?: "",
+                        title = it.selectFirst("div.desi-head-title a")
+                            ?.text()
+                            ?: "",
+                        overview = it.selectFirst("div.sc-detail div.mb-3")
+                            ?.text(),
+                        poster = it.selectFirst("img.manga-poster-img")
+                            ?.attr("src"),
+
+                        genres = it.select("div.scd-genres span").map { element ->
+                            Genre(
+                                id = "",
+                                title = element.text(),
+                            )
+                        },
+                        chapters = it.selectFirst("div.desi-sub-text")
+                            ?.text()?.substringAfter("Chapter: ")?.substringBefore(" [")
+                            ?.toDoubleOrNull()
+                            ?.let { chapterNumber ->
+                                listOf(
+                                    Chapter(
+                                        id = "",
+                                        number = chapterNumber,
+                                    )
+                                )
+                            }
+                            ?: emptyList(),
+                    )
+                }
+            )
+        )
+
+        categories.add(
+            Category(
                 name = "Trending",
                 list = document.select("div#trending-home div.item").map {
                     Manga(
