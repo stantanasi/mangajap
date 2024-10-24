@@ -3,33 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/backgroundSecondaryColor"
-    tools:context=".activities.main.MainActivity">
+    android:layout_height="wrap_content">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_main_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <ImageView
+        android:id="@+id/iv_manga_poster"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@+id/bnv_main"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="2:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/nav_main_graph" />
+        tools:ignore="ContentDescription" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bnv_main"
+    <TextView
+        android:id="@+id/tv_manga_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?attr/backgroundPrimaryColor"
-        app:itemIconTint="@color/bottom_nav_item"
-        app:itemTextColor="@color/bottom_nav_item"
-        app:labelVisibilityMode="labeled"
+        android:layout_margin="8dp"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:lines="2"
+        android:textColor="?attr/textPrimaryColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/menu_main_activity" />
+        app:layout_constraintTop_toBottomOf="@id/iv_manga_poster"
+        tools:text="Title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

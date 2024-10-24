@@ -13,14 +13,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.tanasi.mangajap.adapters.AppAdapter
-import com.tanasi.mangajap.databinding.FragmentMangaVolumesBinding
-import com.tanasi.mangajap.models.Volume
+import com.tanasi.mangajap.databinding.FragmentMangaChaptersBinding
+import com.tanasi.mangajap.models.Chapter
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-class MangaVolumesFragment : Fragment() {
+class MangaChaptersFragment : Fragment() {
 
-    private var _binding: FragmentMangaVolumesBinding? = null
+    private var _binding: FragmentMangaChaptersBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<MangaViewModel>(
@@ -34,45 +34,46 @@ class MangaVolumesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMangaVolumesBinding.inflate(inflater, container, false)
+        _binding = FragmentMangaChaptersBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initializeMangaVolumes()
+        initializeMangaChapters()
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.volumes.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collect { state ->
-                when (state) {
-                    MangaViewModel.VolumesState.Loading -> binding.isLoading.apply {
-                        root.visibility = View.VISIBLE
-                        pbIsLoading.visibility = View.VISIBLE
-                        gIsLoadingRetry.visibility = View.GONE
-                    }
+            viewModel.chapters.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect { state ->
+                    when (state) {
+                        MangaViewModel.ChaptersState.Loading -> binding.isLoading.apply {
+                            root.visibility = View.VISIBLE
+                            pbIsLoading.visibility = View.VISIBLE
+                            gIsLoadingRetry.visibility = View.GONE
+                        }
 
-                    is MangaViewModel.VolumesState.SuccessLoading -> {
-                        displayMangaVolumes(state.volumes)
-                        binding.isLoading.root.visibility = View.GONE
-                    }
+                        is MangaViewModel.ChaptersState.SuccessLoading -> {
+                            displayMangaChapters(state.chapters)
+                            binding.isLoading.root.visibility = View.GONE
+                        }
 
-                    is MangaViewModel.VolumesState.FailedLoading -> {
-                        Toast.makeText(
-                            requireContext(),
-                            state.error.message ?: "",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        binding.isLoading.apply {
-                            pbIsLoading.visibility = View.GONE
-                            gIsLoadingRetry.visibility = View.VISIBLE
-                            btnIsLoadingRetry.setOnClickListener {
-                                viewModel.getMangaVolumes(viewModel.id)
+                        is MangaViewModel.ChaptersState.FailedLoading -> {
+                            Toast.makeText(
+                                requireContext(),
+                                state.error.message ?: "",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            binding.isLoading.apply {
+                                pbIsLoading.visibility = View.GONE
+                                gIsLoadingRetry.visibility = View.VISIBLE
+                                btnIsLoadingRetry.setOnClickListener {
+                                    viewModel.getMangaChapters(viewModel.id)
+                                }
                             }
                         }
                     }
                 }
-            }
         }
     }
 
@@ -82,19 +83,19 @@ class MangaVolumesFragment : Fragment() {
     }
 
 
-    private fun initializeMangaVolumes() {
-        binding.rvMangaVolumes.apply {
+    private fun initializeMangaChapters() {
+        binding.rvMangaChapters.apply {
             adapter = appAdapter
         }
     }
 
-    private fun displayMangaVolumes(volumes: List<Volume>) {
+    private fun displayMangaChapters(chapters: List<Chapter>) {
         class Language(
             val code: String,
             val name: String,
         )
 
-        val languages = volumes
+        val languages = chapters
             .distinctBy { it.language }
             .mapNotNull { it.language }
             .map {
@@ -106,7 +107,7 @@ class MangaVolumesFragment : Fragment() {
                 )
             }
 
-        binding.sMangaVolumesLanguage.apply {
+        binding.sMangaChaptersLanguage.apply {
             adapter = ArrayAdapter(
                 requireContext(),
                 android.R.layout.simple_spinner_item,
@@ -123,9 +124,9 @@ class MangaVolumesFragment : Fragment() {
                     id: Long
                 ) {
                     appAdapter.submitList(
-                        volumes
+                        chapters
                             .filter { it.language == languages[position].code }
-                            .onEach { it.itemType = AppAdapter.Type.VOLUME_ITEM }
+                            .onEach { it.itemType = AppAdapter.Type.CHAPTER_ITEM }
                     )
                 }
 
@@ -137,9 +138,9 @@ class MangaVolumesFragment : Fragment() {
         }
 
         appAdapter.submitList(
-            volumes
+            chapters
                 .filter { it.language == languages.firstOrNull()?.code }
-                .onEach { it.itemType = AppAdapter.Type.VOLUME_ITEM }
+                .onEach { it.itemType = AppAdapter.Type.CHAPTER_ITEM }
         )
     }
 }

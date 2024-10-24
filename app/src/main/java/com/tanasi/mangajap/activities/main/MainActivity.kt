@@ -1,6 +1,5 @@
 package com.tanasi.mangajap.activities.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -29,6 +28,10 @@ class MainActivity : FragmentActivity() {
         val navController = navHostFragment.navController
 
         binding.bnvMain.setupWithNavController(navController)
+        binding.bnvMain.setOnItemReselectedListener { item ->
+            navController.popBackStack(item.itemId, inclusive = true)
+            navController.navigate(item.itemId)
+        }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
@@ -44,21 +47,9 @@ class MainActivity : FragmentActivity() {
                     R.id.home -> finish()
                     R.id.search -> binding.bnvMain.findViewById<View>(R.id.home).performClick()
                     else -> navController.navigateUp().takeIf { !it }
-                        ?: finish()
+                        ?.let { finish() }
                 }
             }
         })
-    }
-
-
-    fun showBottomNavView(show: Boolean) {
-        _binding?.let {
-            binding.bnvMain.visibility = if (show) View.VISIBLE else View.GONE
-        } ?: reloadActivity()
-    }
-
-    fun reloadActivity() {
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
     }
 }

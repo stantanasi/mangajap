@@ -1,10 +1,16 @@
 <resources>
     <string name="app_name" translatable="false">MangaJap</string>
 
+    <string name="loading_error_title">An error occurred</string>
+    <string name="loading_error_retry">Retry</string>
+
     <string name="main_menu_home">Home</string>
     <string name="main_menu_search">Search</string>
 
     <string name="search_input_hint">Search</string>
+
+    <string name="manga_tab_chapters">Chapters</string>
+    <string name="manga_tab_volumes">Volumes</string>
 
     <string name="error">An error has occurred</string>
     <string name="serverError">Our servers are temporarily unavailable</string>
