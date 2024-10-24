@@ -25,6 +25,17 @@ class CategoryViewHolder(
     private val context = itemView.context
     private lateinit var category: Category
 
+    val childRecyclerView: RecyclerView?
+        get() = when (_binding) {
+            is ContentCategorySwiperBinding -> _binding.vpCategorySwiper.javaClass
+                .getDeclaredField("mRecyclerView").let {
+                    it.isAccessible = true
+                    it.get(_binding.vpCategorySwiper) as RecyclerView
+                }
+            is ItemCategoryBinding -> _binding.rvCategory
+            else -> null
+        }
+
     fun bind(category: Category) {
         this.category = category
         when (_binding) {

@@ -1,5 +1,6 @@
 package com.tanasi.mangajap.adapters
 
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -44,6 +45,8 @@ class AppAdapter(
 
         VOLUME_ITEM,
     }
+
+    private val states = mutableMapOf<Int, Parcelable?>()
 
     var isLoading = false
     private var onLoadMoreListener: (() -> Unit)? = null
@@ -127,6 +130,13 @@ class AppAdapter(
             is MangaViewHolder -> holder.bind(items[position] as Manga)
             is VolumeViewHolder -> holder.bind(items[position] as Volume)
         }
+
+        val state = states[holder.layoutPosition]
+        if (state != null) {
+            when (holder) {
+                is CategoryViewHolder -> holder.childRecyclerView?.layoutManager?.onRestoreInstanceState(state)
+            }
+        }
     }
 
     override fun getItemCount(): Int = items.size + when {
@@ -136,6 +146,26 @@ class AppAdapter(
 
     override fun getItemViewType(position: Int): Int = items.getOrNull(position)?.itemType?.ordinal
         ?: Type.LOADING_ITEM.ordinal
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+
+        states[holder.layoutPosition] = when (holder) {
+            is CategoryViewHolder -> holder.childRecyclerView?.layoutManager?.onSaveInstanceState()
+            else -> null
+        }
+    }
+
+    fun onSaveInstanceState(recyclerView: RecyclerView) {
+        for (position in items.indices) {
+            val holder = recyclerView.findViewHolderForAdapterPosition(position) ?: continue
+
+            states[position] = when (holder) {
+                is CategoryViewHolder -> holder.childRecyclerView?.layoutManager?.onSaveInstanceState()
+                else -> null
+            }
+        }
+    }
 
 
     fun submitList(list: List<Item>) {
