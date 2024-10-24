@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,6 +16,7 @@ import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentMangaVolumesBinding
 import com.tanasi.mangajap.models.Volume
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MangaVolumesFragment : Fragment() {
 
@@ -86,8 +89,57 @@ class MangaVolumesFragment : Fragment() {
     }
 
     private fun displayMangaVolumes(volumes: List<Volume>) {
-        appAdapter.submitList(volumes.onEach {
-            it.itemType = AppAdapter.Type.VOLUME_ITEM
-        })
+        class Language(
+            val code: String,
+            val name: String,
+        )
+
+        val languages = volumes
+            .distinctBy { it.language }
+            .mapNotNull { it.language }
+            .map {
+                val locale = Locale(it)
+
+                Language(
+                    code = it,
+                    name = locale.getDisplayLanguage(locale),
+                )
+            }
+
+        binding.sMangaVolumesLanguage.apply {
+            adapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                languages.map { it.name }.toTypedArray(),
+            ).also {
+                it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    appAdapter.submitList(
+                        volumes
+                            .filter { it.language == languages[position].code }
+                            .onEach { it.itemType = AppAdapter.Type.VOLUME_ITEM }
+                    )
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+            }
+
+            setSelection(0)
+        }
+
+        appAdapter.submitList(
+            volumes
+                .filter { it.language == languages.firstOrNull()?.code }
+                .onEach { it.itemType = AppAdapter.Type.VOLUME_ITEM }
+        )
     }
 }
