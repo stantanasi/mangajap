@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tanasi.mangajap.adapters.viewholders.AdViewHolder
 import com.tanasi.mangajap.adapters.viewholders.CategoryViewHolder
 import com.tanasi.mangajap.adapters.viewholders.ChapterViewHolder
-import com.tanasi.mangajap.adapters.viewholders.LoadingViewHolder
 import com.tanasi.mangajap.adapters.viewholders.MangaViewHolder
 import com.tanasi.mangajap.adapters.viewholders.VolumeViewHolder
 import com.tanasi.mangajap.databinding.ItemAdDiscoverBinding
@@ -17,17 +16,8 @@ import com.tanasi.mangajap.databinding.ItemCategoryBinding
 import com.tanasi.mangajap.databinding.ItemChapterBinding
 import com.tanasi.mangajap.databinding.ItemLoadMoreBinding
 import com.tanasi.mangajap.databinding.ItemMangaBinding
-import com.tanasi.mangajap.databinding.ItemMangaFranchisesBinding
 import com.tanasi.mangajap.databinding.ItemMangaGridBinding
-import com.tanasi.mangajap.databinding.ItemMangaHeaderBinding
-import com.tanasi.mangajap.databinding.ItemMangaProgressionBinding
-import com.tanasi.mangajap.databinding.ItemMangaReviewsBinding
-import com.tanasi.mangajap.databinding.ItemMangaSummaryBinding
-import com.tanasi.mangajap.databinding.ItemMediaDiscoverBinding
-import com.tanasi.mangajap.databinding.ItemMediaSearchAddBinding
-import com.tanasi.mangajap.databinding.ItemMediaSearchBinding
 import com.tanasi.mangajap.databinding.ItemVolumeBinding
-import com.tanasi.mangajap.databinding.ItemVolumeMangaDetailsBinding
 import com.tanasi.mangajap.models.Ad
 import com.tanasi.mangajap.models.Anime
 import com.tanasi.mangajap.models.AnimeEntry
@@ -294,4 +284,9 @@ class AppAdapter(
             this.onLoadMoreListener = onLoadMoreListener
         }
     }
+
+
+    private class LoadingViewHolder(
+        binding: ItemLoadMoreBinding,
+    ) : RecyclerView.ViewHolder(binding.root)
 }
