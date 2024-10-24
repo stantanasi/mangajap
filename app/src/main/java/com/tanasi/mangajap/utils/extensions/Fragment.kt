@@ -13,25 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.main.MainActivity
 
-fun Fragment.setToolbar(title: String, subtitle: String): Toolbar {
-    val toolbar = requireView().findViewById<Toolbar>(R.id.toolbar)
-//    (requireActivity() as MainActivity).setSupportActionBar(toolbar)
-
-    toolbar.findViewById<TextView>(R.id.tv_toolbar_title).apply {
-        text = title
-        maxLines = if (subtitle == "") 2 else 1
-    }
-
-    toolbar.findViewById<TextView>(R.id.tv_toolbar_subtitle).apply {
-        text = subtitle
-        visibility = if (subtitle == "") View.GONE else View.VISIBLE
-    }
-
-    toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
-
-    return toolbar
-}
-
 fun Fragment.onBackPressed(callable: () -> Unit) {
     this.requireActivity()
             .onBackPressedDispatcher
