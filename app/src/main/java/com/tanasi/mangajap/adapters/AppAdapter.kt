@@ -4,14 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tanasi.mangajap.adapters.viewholders.AdViewHolder
 import com.tanasi.mangajap.adapters.viewholders.CategoryViewHolder
 import com.tanasi.mangajap.adapters.viewholders.ChapterViewHolder
 import com.tanasi.mangajap.adapters.viewholders.MangaViewHolder
 import com.tanasi.mangajap.adapters.viewholders.VolumeViewHolder
-import com.tanasi.mangajap.databinding.ItemAdDiscoverBinding
-import com.tanasi.mangajap.databinding.ItemAdProfileBinding
-import com.tanasi.mangajap.databinding.ItemAdSearchBinding
 import com.tanasi.mangajap.databinding.ItemCategoryBinding
 import com.tanasi.mangajap.databinding.ItemChapterBinding
 import com.tanasi.mangajap.databinding.ItemLoadMoreBinding
@@ -127,30 +123,6 @@ class AppAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (Type.entries[viewType]) {
-            Type.AD_DISCOVER_ITEM -> AdViewHolder(
-                ItemAdDiscoverBinding.inflate(
-                    LayoutInflater.from(
-                        parent.context
-                    ), parent, false
-                )
-            )
-
-            Type.AD_PROFILE_ITEM -> AdViewHolder(
-                ItemAdProfileBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-
-            Type.AD_SEARCH_ITEM -> AdViewHolder(
-                ItemAdSearchBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-
             Type.CATEGORY_ITEM -> CategoryViewHolder(
                 ItemCategoryBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -209,7 +181,6 @@ class AppAdapter(
         }
 
         when (holder) {
-            is AdViewHolder -> holder.bind(items[position] as Ad)
             is CategoryViewHolder -> holder.bind(items[position] as Category)
             is ChapterViewHolder -> holder.bind(items[position] as Chapter)
             is MangaViewHolder -> holder.bind(items[position] as Manga)
