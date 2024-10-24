@@ -441,6 +441,12 @@ object MangaReader {
     suspend fun getVolumes(mangaId: String): List<Volume> {
         val response = service.getVolumes(mangaId)
 
+        val posters = service.getManga(mangaId).select("div#list-vol div.item").map {
+            val href = it.selectFirst("a.link-mask")?.attr("href")
+            val poster = it.selectFirst("img.manga-poster-img")?.attr("src")
+            href to poster
+        }.toMap()
+
         val volumes = response.html.select("li.volume-item").map {
             Volume(
                 id = it.attr("data-id"),
@@ -448,6 +454,8 @@ object MangaReader {
                     ?: 0.0,
                 title = it.selectFirst("span.name")
                     ?.text(),
+                poster = it.selectFirst("a")
+                    ?.attr("href")?.let { href -> posters[href] },
                 language = it.selectFirst("a")
                     ?.attr("href")?.split("/")?.getOrNull(3),
             )
