@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
 
-class Page(
+data class Page(
     val image: String,
     val isShuffle: Boolean = false,
 ) {

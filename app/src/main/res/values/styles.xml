@@ -1,49 +1,5 @@
 <resources>
 
-    <!-- TextAppearance -->
-    <style name="Base.TextAppearance" parent="">
-        <item name="android:textSize">@dimen/font_size_small</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="TextAppearance.Media.Title" parent="Base.TextAppearance">
-        <item name="android:textColor">?attr/textPrimaryColor</item>
-        <item name="android:textSize">@dimen/font_size_large</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TextAppearance.Media.PartTitle" parent="Base.TextAppearance">
-        <item name="android:textColor">?attr/textPrimaryColor</item>
-        <item name="android:textSize">18sp</item>
-    </style>
-
-
-    <!-- Style -->
-    <style name="Widget.AppTheme" parent="" />
-
-    <style name="Widget.AppTheme.Button.Login" parent="Widget.AppTheme">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/bg_btn</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:gravity">center</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="Widget.AppTheme.Button.SeeAll" parent="Widget.AppTheme">
-        <item name="android:background">@drawable/bg_btn2</item>
-        <item name="android:gravity">center</item>
-        <item name="android:text">@string/seeAll</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">11sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="AppTheme.Widget.Button" parent="AppTheme">
         <item name="android:background">@drawable/bg_button</item>
         <item name="android:paddingTop">6dp</item>
@@ -62,79 +18,6 @@
         <item name="tabSelectedTextColor">?attr/textPrimaryColor</item>
         <item name="tabTextColor">#B9B9B9</item>
         <item name="android:background">?attr/backgroundPrimaryColor</item>
-    </style>
-
-    <style name="Widget.AppTheme.Dialog.Alert" parent="Widget.AppTheme">
-        <item name="colorAccent">@color/color_app</item>
-        <item name="android:textColorPrimary">?attr/textPrimaryColor</item>
-        <item name="android:background">?attr/backgroundPrimaryColor</item>
-    </style>
-
-    <style name="Widget.AppTheme.Dialog.Picker.Number" parent="Widget.AppTheme">
-        <item name="android:textColorPrimary">?attr/textPrimaryColor</item>
-        <item name="android:colorControlNormal">?attr/textPrimaryColor</item>
-    </style>
-
-    <style name="Widget.AppTheme.Image.Toolbar" parent="Widget.AppTheme">
-        <item name="iconTint">#ffffff</item>
-        <item name="android:editTextColor">#ffffff</item>
-        <item name="android:textColorHint">#ffffff</item>
-        <item name="android:textColorSecondary">#ffffff</item>
-    </style>
-
-    <style name="Widget.AppTheme.Image.Toolbar.Popup" parent="Widget.AppTheme">
-        <item name="android:colorBackground">?attr/backgroundPrimaryColor</item>
-        <item name="android:textColorPrimary">?attr/textPrimaryColor</item>
-    </style>
-
-    <style name="Widget.AppTheme.Spinner" parent="Widget.AppTheme">
-        <item name="android:backgroundTint">?attr/textSecondaryColor</item>
-        <item name="android:popupBackground">?attr/backgroundPrimaryColor</item>
-    </style>
-
-    <style name="Widget.AppTheme.TabLayout" parent="Widget.AppTheme">
-        <item name="tabGravity">fill</item>
-        <item name="tabIndicatorColor">?attr/colorAccent</item>
-        <item name="tabIndicatorHeight">4dp</item>
-        <item name="tabMaxWidth">0dp</item>
-        <item name="tabMode">fixed</item>
-        <item name="tabSelectedTextColor">?attr/textPrimaryColor</item>
-        <item name="tabTextColor">#B9B9B9</item>
-        <item name="android:background">?attr/backgroundPrimaryColor</item>
-    </style>
-
-    <style name="Widget.AppTheme.TextView.Ad.Attribution" parent="Widget.AppTheme">
-        <item name="android:background">#FFB829</item>
-        <item name="android:paddingStart">4dp</item>
-        <item name="android:paddingEnd">4dp</item>
-        <item name="android:text">@string/ad</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">@dimen/font_size_micro</item>
-    </style>
-
-    <style name="Widget.AppTheme.Toolbar" parent="Widget.AppTheme">
-        <item name="iconTint">?attr/textPrimaryColor</item>
-        <item name="android:editTextColor">?attr/textPrimaryColor</item>
-        <item name="android:textColorHint">?attr/textPrimaryColor</item>
-        <item name="android:textColorSecondary">?attr/textPrimaryColor</item>
-    </style>
-
-    <style name="Widget.AppTheme.Toolbar.Popup" parent="Widget.AppTheme">
-        <item name="android:colorBackground">?attr/backgroundPrimaryColor</item>
-        <item name="android:textColorPrimary">?attr/textPrimaryColor</item>
-    </style>
-
-    <!-- TODO: Add Widget.Divider.Horizontal -->
-    <style name="Widget.AppTheme.Horizontal" parent="Widget.AppTheme">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:background">?attr/dividerColor</item>
-    </style>
-
-    <style name="Widget.AppTheme.Vertical" parent="Widget.AppTheme">
-        <item name="android:layout_width">1dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:background">?attr/dividerColor</item>
     </style>
 
 </resources>

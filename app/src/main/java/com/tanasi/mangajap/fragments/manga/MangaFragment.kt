@@ -15,7 +15,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.FragmentMangaBinding
 import com.tanasi.mangajap.models.Manga
-import com.tanasi.mangajap.utils.extensions.viewModelsFactory
+import com.tanasi.mangajap.utils.viewModelsFactory
 import kotlinx.coroutines.launch
 
 class MangaFragment : Fragment() {
