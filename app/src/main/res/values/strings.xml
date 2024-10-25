@@ -13,5 +13,6 @@
 
     <string name="manga_tab_chapters">Chapters</string>
     <string name="manga_tab_volumes">Volumes</string>
+    <string name="manga_chapters_search_hint">Number of chapter</string>
 
 </resources>

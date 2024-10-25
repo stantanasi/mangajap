@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -147,6 +148,16 @@ class MangaChaptersFragment : Fragment() {
             }
 
             setSelection(0)
+        }
+
+        binding.etMangaChaptersSearch.addTextChangedListener { s ->
+            val number = s.toString().toDoubleOrNull()
+                ?: chapters.maxOf { it.number }
+            val chapterIndex = chapters.indexOfFirst { it.number == number }
+
+            if (chapterIndex != -1) {
+                binding.rvMangaChapters.scrollToPosition(chapterIndex)
+            }
         }
 
         appAdapter.submitList(
