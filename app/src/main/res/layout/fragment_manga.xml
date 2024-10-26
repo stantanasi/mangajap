@@ -52,6 +52,121 @@
                     app:layout_goneMarginTop="64dp"
                     tools:text="Title" />
 
+                <TextView
+                    android:id="@+id/tv_manga_alternative_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    android:textColor="?attr/textSecondaryColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_manga_title"
+                    app:layout_goneMarginTop="64dp"
+                    tools:text="Title" />
+
+                <ImageView
+                    android:id="@+id/iv_manga_score_icon"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/ic_score"
+                    android:tint="#C0C0C0"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_manga_score"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toStartOf="@id/tv_manga_score"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_manga_score"
+                    tools:ignore="ContentDescription,UseAppTint" />
+
+                <TextView
+                    android:id="@+id/tv_manga_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintBottom_toTopOf="@id/barrier1"
+                    app:layout_constraintEnd_toStartOf="@id/tv_manga_released"
+                    app:layout_constraintStart_toEndOf="@id/iv_manga_score_icon"
+                    app:layout_constraintTop_toBottomOf="@id/tv_manga_alternative_title"
+                    tools:text="#.#" />
+
+                <TextView
+                    android:id="@+id/tv_manga_released"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintBottom_toTopOf="@id/barrier1"
+                    app:layout_constraintEnd_toStartOf="@id/tv_manga_status"
+                    app:layout_constraintStart_toEndOf="@id/tv_manga_score"
+                    app:layout_constraintTop_toBottomOf="@id/tv_manga_alternative_title"
+                    tools:text="yyyy"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tv_manga_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintBottom_toTopOf="@id/barrier1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_manga_released"
+                    app:layout_constraintTop_toBottomOf="@id/tv_manga_alternative_title"
+                    tools:text="Status"
+                    tools:visibility="visible" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrier1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="tv_manga_score,tv_manga_released,tv_manga_status" />
+
+                <TextView
+                    android:id="@+id/tv_manga_genres"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/barrier1"
+                    tools:text="Genres" />
+
+                <TextView
+                    android:id="@+id/tv_manga_overview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_manga_genres"
+                    tools:text="Overview" />
+
+                <TextView
+                    android:id="@+id/btn_manga_overview_read_more"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_button_read_more"
+                    android:gravity="end"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:text="@string/manga_read_more"
+                    android:textColor="?attr/textPrimaryColor"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_manga_overview"
+                    app:layout_constraintEnd_toEndOf="@id/tv_manga_overview"
+                    app:layout_constraintStart_toStartOf="@id/tv_manga_overview"
+                    tools:visibility="visible" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -61,6 +176,7 @@
             style="@style/AppTheme.Widget.TabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             app:tabMode="scrollable" />
 
     </com.google.android.material.appbar.AppBarLayout>

@@ -15,8 +15,10 @@ import com.google.android.material.tabs.TabLayout
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.databinding.FragmentMangaBinding
 import com.tanasi.mangajap.models.Manga
+import com.tanasi.mangajap.utils.format
 import com.tanasi.mangajap.utils.viewModelsFactory
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MangaFragment : Fragment() {
 
@@ -121,6 +123,60 @@ class MangaFragment : Fragment() {
         }
 
         binding.tvMangaTitle.text = manga.title
+
+        binding.tvMangaAlternativeTitle.apply {
+            text = manga.alternativeTitle
+            visibility = when {
+                text.isNullOrEmpty() -> View.GONE
+                else -> View.VISIBLE
+            }
+        }
+
+        binding.tvMangaScore.text = manga.score?.let { String.format(Locale.ROOT, "%.1f", it) }
+            ?: "N/A"
+
+        binding.tvMangaReleased.apply {
+            text = manga.startDate?.format("yyyy")
+            visibility = when {
+                text.isNullOrEmpty() -> View.GONE
+                else -> View.VISIBLE
+            }
+        }
+
+        binding.tvMangaStatus.apply {
+            text = manga.status
+            visibility = when {
+                text.isNullOrEmpty() -> View.GONE
+                else -> View.VISIBLE
+            }
+        }
+
+        binding.tvMangaGenres.apply {
+            text = manga.genres.joinToString(", ") { it.title }
+            visibility = when {
+                manga.genres.isEmpty() -> View.GONE
+                else -> View.VISIBLE
+            }
+        }
+
+        binding.tvMangaOverview.apply {
+            maxLines = 5
+            text = manga.overview
+        }
+
+        binding.btnMangaOverviewReadMore.apply {
+            setOnClickListener {
+                binding.tvMangaOverview.maxLines = Int.MAX_VALUE
+                binding.btnMangaOverviewReadMore.visibility = View.GONE
+            }
+
+            binding.tvMangaOverview.post {
+                visibility = when {
+                    binding.tvMangaOverview.lineCount > binding.tvMangaOverview.maxLines -> View.VISIBLE
+                    else -> View.GONE
+                }
+            }
+        }
     }
 
     private fun showTab(mangaTab: MangaTab) {
