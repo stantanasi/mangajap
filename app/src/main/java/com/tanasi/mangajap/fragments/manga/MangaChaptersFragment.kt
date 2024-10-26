@@ -13,9 +13,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentMangaChaptersBinding
 import com.tanasi.mangajap.models.Chapter
+import com.tanasi.mangajap.ui.SpacingItemDecoration
+import com.tanasi.mangajap.utils.dp
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -86,7 +89,12 @@ class MangaChaptersFragment : Fragment() {
 
     private fun initializeMangaChapters() {
         binding.rvMangaChapters.apply {
-            adapter = appAdapter
+            adapter = appAdapter.apply {
+                stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            }
+            addItemDecoration(
+                SpacingItemDecoration(10.dp(requireContext()))
+            )
         }
     }
 
