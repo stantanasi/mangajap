@@ -10,6 +10,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.tanasi.mangajap.R
 import com.tanasi.mangajap.activities.main.MainActivity
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 fun Int.dp(context: Context): Int {
     return TypedValue.applyDimension(
@@ -39,5 +42,26 @@ inline fun <reified T : ViewModel> Fragment.viewModelsFactory(crossinline viewMo
                 return viewModelInitialization.invoke() as T
             }
         }
+    }
+}
+
+fun String.toCalendar(): Calendar? {
+    val patterns = listOf(
+        SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH),
+    )
+    patterns.forEach { sdf ->
+        try {
+            return Calendar.getInstance().also { it.time = sdf.parse(this)!! }
+        } catch (_: Exception) {
+        }
+    }
+    return null
+}
+
+fun Calendar.format(pattern: String): String? {
+    return try {
+        SimpleDateFormat(pattern, Locale.ENGLISH).format(this.time)
+    } catch (e: Exception) {
+        null
     }
 }

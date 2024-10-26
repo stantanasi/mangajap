@@ -7,8 +7,11 @@ import com.google.gson.annotations.SerializedName
 import com.tanasi.mangajap.models.Category
 import com.tanasi.mangajap.models.Chapter
 import com.tanasi.mangajap.models.Genre
+import com.tanasi.mangajap.models.Magazine
 import com.tanasi.mangajap.models.Manga
 import com.tanasi.mangajap.models.Page
+import com.tanasi.mangajap.models.People
+import com.tanasi.mangajap.models.Staff
 import com.tanasi.mangajap.models.Volume
 import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
@@ -403,18 +406,61 @@ object MangaReader {
             title = document.selectFirst("h2.manga-name")
                 ?.text()
                 ?: "",
+            alternativeTitle = document.selectFirst("div.manga-name-or")
+                ?.text(),
             overview = document.selectFirst("div.description")
                 ?.text(),
             poster = document.selectFirst("img.manga-poster-img")
                 ?.attr("src"),
+            type = document.select("div.anisc-info div.item")
+                .find { it.selectFirst("span.item-head")?.text() == "Type:" }
+                ?.selectFirst("a.name")
+                ?.text(),
+            status = document.select("div.anisc-info div.item")
+                .find { it.selectFirst("span.item-head")?.text() == "Status:" }
+                ?.selectFirst("span.name")
+                ?.text(),
+            startDate = document.select("div.anisc-info div.item")
+                .find { it.selectFirst("span.item-head")?.text() == "Published:" }
+                ?.selectFirst("span.name")
+                ?.text()?.substringBefore(" to"),
+            endDate = document.select("div.anisc-info div.item")
+                .find { it.selectFirst("span.item-head")?.text() == "Published:" }
+                ?.selectFirst("span.name")
+                ?.text()?.substringAfter("to "),
+            score = document.select("div.anisc-info div.item")
+                .find { it.selectFirst("span.item-head")?.text() == "Score:" }
+                ?.selectFirst("span.name")
+                ?.text()?.toDoubleOrNull(),
 
-            genres = document.select("div.genres a").map { element ->
+            genres = document.select("div.genres a").map {
                 Genre(
-                    id = element
-                        .attr("href").substringAfterLast("/"),
-                    title = element.text(),
+                    id = it.attr("href").substringAfterLast("/"),
+                    title = it.text(),
                 )
             },
+            staff = document.select("div.anisc-info div.item")
+                .find { it.selectFirst("span.item-head")?.text() == "Authors:" }
+                ?.select("a")?.map {
+                    Staff(
+                        id = "",
+                        role = it.nextSibling()
+                            ?.toString()?.substringAfter("(")?.substringBefore(")")
+                            ?: "",
+                        person = People(
+                            id = it.attr("href").substringAfterLast("/"),
+                            name = it.text(),
+                        )
+                    )
+                } ?: emptyList(),
+            magazines = document.select("div.anisc-info div.item")
+                .find { it.selectFirst("span.item-head")?.text() == "Magazines:" }
+                ?.select("a")?.map {
+                    Magazine(
+                        id = it.attr("href").substringAfterLast("/"),
+                        name = it.text(),
+                    )
+                } ?: emptyList(),
         )
 
         return manga
@@ -441,11 +487,11 @@ object MangaReader {
     suspend fun getVolumes(mangaId: String): List<Volume> {
         val response = service.getVolumes(mangaId)
 
-        val posters = service.getManga(mangaId).select("div#list-vol div.item").map {
+        val posters = service.getManga(mangaId).select("div#list-vol div.item").associate {
             val href = it.selectFirst("a.link-mask")?.attr("href")
             val poster = it.selectFirst("img.manga-poster-img")?.attr("src")
             href to poster
-        }.toMap()
+        }
 
         val volumes = response.html.select("li.volume-item").map {
             Volume(

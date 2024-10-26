@@ -7,14 +7,18 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.tanasi.mangajap.adapters.AppAdapter
 import com.tanasi.mangajap.databinding.FragmentMangaChaptersBinding
 import com.tanasi.mangajap.models.Chapter
+import com.tanasi.mangajap.ui.SpacingItemDecoration
+import com.tanasi.mangajap.utils.dp
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -85,7 +89,12 @@ class MangaChaptersFragment : Fragment() {
 
     private fun initializeMangaChapters() {
         binding.rvMangaChapters.apply {
-            adapter = appAdapter
+            adapter = appAdapter.apply {
+                stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            }
+            addItemDecoration(
+                SpacingItemDecoration(10.dp(requireContext()))
+            )
         }
     }
 
@@ -147,6 +156,16 @@ class MangaChaptersFragment : Fragment() {
             }
 
             setSelection(0)
+        }
+
+        binding.etMangaChaptersSearch.addTextChangedListener { s ->
+            val number = s.toString().toDoubleOrNull()
+                ?: chapters.maxOf { it.number }
+            val chapterIndex = chapters.indexOfFirst { it.number == number }
+
+            if (chapterIndex != -1) {
+                binding.rvMangaChapters.scrollToPosition(chapterIndex)
+            }
         }
 
         appAdapter.submitList(

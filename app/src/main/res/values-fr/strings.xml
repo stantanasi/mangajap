@@ -10,7 +10,9 @@
 
     <string name="search_input_hint">Rechercher</string>
 
+    <string name="manga_read_more">Lire plus ></string>
     <string name="manga_tab_chapters">Chapitres</string>
     <string name="manga_tab_volumes">Volumes</string>
+    <string name="manga_chapters_search_hint">Numéro de chapitre</string>
 
 </resources>
