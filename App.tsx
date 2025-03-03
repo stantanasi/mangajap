@@ -2,8 +2,19 @@ import { createStaticNavigation, StaticParamList } from '@react-navigation/nativ
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import HomeScreen from './screens/home/HomeScreen';
 
-const RootStack = createNativeStackNavigator();
+const RootStack = createNativeStackNavigator({
+  initialRouteName: 'Home',
+  screenOptions: {
+    header: () => null,
+  },
+  screens: {
+    Home: {
+      screen: HomeScreen,
+    },
+  },
+});
 
 type RootStackParamList = StaticParamList<typeof RootStack>;
 
