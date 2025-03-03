@@ -1,18 +1,18 @@
-<h1 align="center">MangaJap: Android App</h1>
+<h1 align="center">MangaJap</h1>
 
 <p align="center">
   <img src="./app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="100px" />
   <br />
   MangaJap is an app that lets you organize yourself among all the manga and anime you love.
   <br />
-  <a href="https://play.google.com/store/apps/details?id=com.tanasi.mangajap">
+  <a href="https://github.com/stantanasi/mangajap/releases/latest">
     <strong>Download app »</strong>
   </a>
   <br />
   <br />
-  <a href="https://github.com/mangajap/mangajap-android/issues">Report Bug</a>
+  <a href="https://github.com/stantanasi/mangajap/issues">Report Bug</a>
   ·
-  <a href="https://github.com/mangajap/mangajap-android/issues">Request Feature</a>
+  <a href="https://github.com/stantanasi/mangajap/issues">Request Feature</a>
 </p>
 
 <details>
@@ -26,6 +26,7 @@
   - [Setup](#setup)
 - [Development](#development)
 - [Contributing](#contributing)
+- [Disclaimer](#disclaimer)
 - [Author](#author)
 - [License](#license)
 </details>
@@ -66,7 +67,7 @@ Install [Android Studio](https://developer.android.com/studio)
 1. Clone the project to your local machine
 
 ```bash
-git clone https://github.com/mangajap/mangajap-android.git
+git clone https://github.com/stantanasi/mangajap.git
 ```
 
 2. Open the project in Android Studio
@@ -86,6 +87,18 @@ Contributions are what make the open source community such an amazing place to b
 3. Commit your changes (`git commit -m 'feat: add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a pull request
+
+## Disclaimer
+
+Any legal issues regarding the content on this application should be taken up with the actual file hosts and providers themselves as we are not affiliated with them.
+
+In case of copyright infringement, please directly contact the responsible parties or the streaming websites.
+
+The app is purely for educational and personal use.
+
+It is the responsibility of user to avoid any actions that might violate the laws governing his/her locality.
+
+MangaJap does not host any content on the app, and has no control over what media is put up or taken down. MangaJap functions like any other search engine, such as Google. MangaJap does not host, upload or manage any videos, films or content. It simply crawls, aggregates and displayes links in a convenient, user-friendly interface.
 
 ## Author
 
