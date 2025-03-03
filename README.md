@@ -1,6 +1,8 @@
 <h1 align="center">MangaJap</h1>
 
 <p align="center">
+  <img src="./assets/icon.png" height="100px" />
+  <br />
   MangaJap is an app that lets you organize yourself among all the manga and anime you love.
   <br />
   <a href="https://github.com/stantanasi/mangajap/releases/latest">
