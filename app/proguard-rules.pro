@@ -14,21 +14,8 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-dontobfuscate
 #-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
-# hide the original source folder_File name.
+# hide the original source file name.
 #-renamesourcefileattribute SourceFile
-
--keepnames enum * { *; }
--keep class com.tanasi.mangajap.models.* { *; }
-#-keep class com.tanasi.mangajap.models.** { *; }
-
--assumenosideeffects class android.util.Log {
-  public static *** v(...);
-  public static *** d(...);
-  public static *** i(...);
-  public static *** w(...);
-  public static *** e(...);
-}
