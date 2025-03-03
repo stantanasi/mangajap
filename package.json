@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "compile": "tsc --noEmit"
+    "compile": "tsc --noEmit",
+    "prepare": "husky"
   },
   "dependencies": {
     "expo": "~52.0.37",
