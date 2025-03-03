@@ -6,7 +6,9 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "compile": "tsc --noEmit",
+    "prepare": "husky"
   },
   "dependencies": {
     "expo": "~52.0.37",
@@ -17,6 +19,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~18.3.12",
+    "husky": "^9.1.7",
     "typescript": "^5.3.3"
   },
   "private": true
