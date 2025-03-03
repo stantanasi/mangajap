@@ -14,8 +14,8 @@ android {
         applicationId "com.tanasi.mangajap"
         minSdk 23
         targetSdk 34
-        versionCode 85
-        versionName "2.13.0"
+        versionCode 86
+        versionName "2.14.0"
     }
 
     compileOptions {
