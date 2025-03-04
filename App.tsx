@@ -1,6 +1,8 @@
 import { createStaticNavigation, StaticParamList } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { useCallback, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import HomeScreen from './screens/home/HomeScreen';
 
@@ -26,9 +28,27 @@ declare global {
 
 const Navigation = createStaticNavigation(RootStack);
 
+SplashScreen.preventAutoHideAsync();
+
 export default function App() {
+  const [isAppReady, setIsAppReady] = useState(false);
+
+  useEffect(() => {
+    setIsAppReady(true);
+  }, []);
+
+  const onLayoutRootView = useCallback(() => {
+    if (isAppReady) {
+      SplashScreen.hide();
+    }
+  }, [isAppReady]);
+
+  if (!isAppReady) {
+    return null;
+  }
+
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider onLayout={onLayoutRootView}>
       <Navigation />
       <StatusBar style="auto" />
     </SafeAreaProvider>
