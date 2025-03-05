@@ -2,8 +2,9 @@ import { createStaticNavigation, StaticParamList } from '@react-navigation/nativ
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import HomeScreen from './screens/home/HomeScreen';
 
 const RootStack = createNativeStackNavigator({
@@ -30,7 +31,8 @@ const Navigation = createStaticNavigation(RootStack);
 
 SplashScreen.preventAutoHideAsync();
 
-export default function App() {
+function AppContent() {
+  const { isReady: isAuthReady } = useContext(AuthContext)
   const [isAppReady, setIsAppReady] = useState(false);
 
   useEffect(() => {
@@ -38,12 +40,12 @@ export default function App() {
   }, []);
 
   const onLayoutRootView = useCallback(() => {
-    if (isAppReady) {
+    if (isAuthReady && isAppReady) {
       SplashScreen.hide();
     }
-  }, [isAppReady]);
+  }, [isAuthReady, isAppReady]);
 
-  if (!isAppReady) {
+  if (!isAuthReady || !isAppReady) {
     return null;
   }
 
@@ -52,5 +54,13 @@ export default function App() {
       <Navigation />
       <StatusBar style="auto" />
     </SafeAreaProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
