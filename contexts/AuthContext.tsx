@@ -1,9 +1,11 @@
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import React, { createContext, PropsWithChildren, useEffect, useState } from 'react';
+import { auth } from "../firebaseConfig";
 
 interface IAuthContext {
   isReady: boolean;
   isAuthenticated: boolean;
-  user: {} | null;
+  user: { id: string } | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -21,12 +23,19 @@ export default function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<IAuthContext['user']>(null);
 
   useEffect(() => {
-    async function prepare() {
-    };
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser({
+          id: user.uid,
+        });
+      } else {
+        setUser(null);
+      }
 
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsReady(true));
+      setIsReady(true);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -37,9 +46,11 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         user: user,
 
         login: async (email, password) => {
+          await signInWithEmailAndPassword(auth, email, password);
         },
 
         logout: async () => {
+          await signOut(auth);
         },
       }}
     >
