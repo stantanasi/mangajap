@@ -6,6 +6,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import HomeScreen from './screens/home/HomeScreen';
+import ProfileScreen from './screens/profile/ProfileScreen';
 
 const RootStack = createNativeStackNavigator({
   initialRouteName: 'Home',
@@ -15,6 +16,9 @@ const RootStack = createNativeStackNavigator({
   screens: {
     Home: {
       screen: HomeScreen,
+    },
+    Profile: {
+      screen: ProfileScreen,
     },
   },
 });
