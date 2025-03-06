@@ -1,3 +1,5 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStaticNavigation, StaticParamList } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SplashScreen from 'expo-splash-screen';
@@ -6,15 +8,50 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import HomeScreen from './screens/home/HomeScreen';
+import ProfileScreen from './screens/profile/ProfileScreen';
 
-const RootStack = createNativeStackNavigator({
-  initialRouteName: 'Home',
+const MainTabs = createBottomTabNavigator({
   screenOptions: {
     header: () => null,
   },
   screens: {
     Home: {
       screen: HomeScreen,
+      options: {
+        tabBarShowLabel: false,
+        tabBarIcon: ({ color, size }) => (
+          <MaterialIcons
+            name="home"
+            size={size}
+            color={color}
+          />
+        ),
+      },
+    },
+    Profile: {
+      screen: ProfileScreen,
+      options: {
+        tabBarShowLabel: false,
+        tabBarIcon: ({ color, size }) => (
+          <MaterialIcons
+            name="person"
+            size={size}
+            color={color}
+          />
+        ),
+      },
+    },
+  },
+});
+
+const RootStack = createNativeStackNavigator({
+  initialRouteName: 'Main',
+  screenOptions: {
+    header: () => null,
+  },
+  screens: {
+    Main: {
+      screen: MainTabs,
     },
   },
 });
