@@ -19,7 +19,10 @@ export default function MangaCard({ manga, style, ...props }: Props) {
         style={styles.image}
       />
 
-      <Text style={styles.title}>
+      <Text
+        numberOfLines={2}
+        style={styles.title}
+      >
         {manga.title}
       </Text>
     </Pressable>
@@ -27,10 +30,12 @@ export default function MangaCard({ manga, style, ...props }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    width: 130,
+  },
   image: {
-    width: 200 * 2 / 3,
-    height: 200,
+    width: '100%',
+    aspectRatio: 2 / 3,
   },
   title: {
     textAlign: 'center',
