@@ -1,6 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MangaCard from '../../components/molecules/MangaCard';
 import { Manga } from '../../models';
@@ -9,7 +9,7 @@ type Props = StaticScreenProps<{}>;
 
 export default function HomeScreen({ route }: Props) {
   const navigation = useNavigation();
-  const [mangas, setMangas] = useState<Manga[]>([]);
+  const [mangas, setMangas] = useState<Manga[]>();
 
   useEffect(() => {
     Manga.find()
@@ -18,6 +18,24 @@ export default function HomeScreen({ route }: Props) {
       })
       .then((mangas) => setMangas(mangas));
   }, []);
+
+  if (!mangas) {
+    return (
+      <SafeAreaView
+        style={{
+          alignItems: 'center',
+          flex: 1,
+          justifyContent: 'center',
+        }}
+      >
+        <ActivityIndicator
+          animating
+          color="#000"
+          size="large"
+        />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
