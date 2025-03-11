@@ -1,3 +1,4 @@
+import { connect } from "@stantanasi/jsonapi-client";
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import React, { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import { auth } from "../firebaseConfig";
@@ -5,7 +6,10 @@ import { auth } from "../firebaseConfig";
 interface IAuthContext {
   isReady: boolean;
   isAuthenticated: boolean;
-  user: { id: string } | null;
+  user: {
+    id: string;
+    token: string;
+  } | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -23,14 +27,20 @@ export default function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<IAuthContext['user']>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser({
-          id: user.uid,
-        });
-      } else {
-        setUser(null);
-      }
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      const token = await user?.getIdToken();
+
+      connect({
+        baseURL: 'https://api-za7rwcomoa-uc.a.run.app',
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      setUser(user ? {
+        id: user.uid,
+        token: token!,
+      } : null);
 
       setIsReady(true);
     });
