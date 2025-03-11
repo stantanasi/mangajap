@@ -46,6 +46,7 @@ export default function HomeScreen({ route }: Props) {
         renderItem={({ item }) => (
           <MangaCard
             manga={item}
+            onPress={() => navigation.navigate('Manga', { id: item.id })}
           />
         )}
         ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
