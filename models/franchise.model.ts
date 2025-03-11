@@ -1,4 +1,6 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import Anime from "./anime.model";
+import Manga from "./manga.model";
 
 enum FranchiseRole {
   Adaptation = "adaptation",
@@ -21,6 +23,9 @@ export interface IFranchise {
   role: FranchiseRole;
   createdAt: Date;
   updatedAt: Date;
+
+  source?: Anime | Manga;
+  destination?: Anime | Manga;
 }
 
 export const FranchiseSchema = new Schema<IFranchise>({
@@ -47,6 +52,9 @@ export const FranchiseSchema = new Schema<IFranchise>({
   },
 
   relationships: {
+    source: {},
+
+    destination: {},
   },
 });
 

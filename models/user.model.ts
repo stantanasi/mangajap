@@ -1,4 +1,9 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import AnimeEntry from "./anime-entry.model";
+import Follow from "./follow.model";
+import MangaEntry from "./manga-entry.model";
+import Request from "./request.model";
+import Review from "./review.model";
 
 enum UserGender {
   Men = "men",
@@ -27,6 +32,15 @@ export interface IUser {
   timeSpentOnAnime: number;
   createdAt: Date;
   updatedAt: Date;
+
+  followers?: Follow[];
+  following?: Follow[];
+  "anime-library"?: AnimeEntry[];
+  "manga-library"?: MangaEntry[];
+  "anime-favorites"?: AnimeEntry[];
+  "manga-favorites"?: MangaEntry[];
+  reviews?: Review[];
+  requests?: Request[];
 }
 
 export const UserSchema = new Schema<IUser>({
@@ -90,6 +104,21 @@ export const UserSchema = new Schema<IUser>({
   },
 
   relationships: {
+    followers: {},
+
+    following: {},
+
+    "anime-library": {},
+
+    "manga-library": {},
+
+    "anime-favorites": {},
+
+    "manga-favorites": {},
+
+    reviews: {},
+
+    requests: {},
   },
 });
 

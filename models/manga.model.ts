@@ -1,4 +1,12 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import Chapter from "./chapter.model";
+import Franchise from "./franchise.model";
+import Genre from "./genre.model";
+import MangaEntry from "./manga-entry.model";
+import Review from "./review.model";
+import Staff from "./staff.model";
+import Theme from "./theme.model";
+import Volume from "./volume.model";
 
 enum MangaType {
   Bd = "bd",
@@ -47,6 +55,15 @@ export interface IManga {
   reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
+
+  genres?: Genre[];
+  themes?: Theme[];
+  volumes?: Volume[];
+  chapters?: Chapter[];
+  staff?: Staff[];
+  reviews?: Review[];
+  franchises?: Franchise[];
+  "manga-entry"?: MangaEntry | null;
 }
 
 export const MangaSchema = new Schema<IManga>({
@@ -121,6 +138,21 @@ export const MangaSchema = new Schema<IManga>({
   },
 
   relationships: {
+    genres: {},
+
+    themes: {},
+
+    volumes: {},
+
+    chapters: {},
+
+    staff: {},
+
+    reviews: {},
+
+    franchises: {},
+
+    "manga-entry": {},
   },
 });
 

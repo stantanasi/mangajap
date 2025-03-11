@@ -1,4 +1,12 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import AnimeEntry from "./anime-entry.model";
+import Episode from "./episode.model";
+import Franchise from "./franchise.model";
+import Genre from "./genre.model";
+import Review from "./review.model";
+import Season from "./season.model";
+import Staff from "./staff.model";
+import Theme from "./theme.model";
 
 enum AnimeStatus {
   Airing = "airing",
@@ -44,6 +52,15 @@ export interface IAnime {
   reviewCount: number;
   createdAt: Date;
   updatedAt: Date;
+
+  genres?: Genre[];
+  themes?: Theme[];
+  seasons?: Season[];
+  episodes?: Episode[];
+  staff?: Staff[];
+  reviews?: Review[];
+  franchises?: Franchise[];
+  "anime-entry"?: AnimeEntry | null;
 }
 
 export const AnimeSchema = new Schema<IAnime>({
@@ -124,6 +141,21 @@ export const AnimeSchema = new Schema<IAnime>({
   },
 
   relationships: {
+    genres: {},
+
+    themes: {},
+
+    seasons: {},
+
+    episodes: {},
+
+    staff: {},
+
+    reviews: {},
+
+    franchises: {},
+
+    "anime-entry": {},
   },
 });
 

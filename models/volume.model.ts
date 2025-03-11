@@ -1,4 +1,7 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import Chapter from "./chapter.model";
+import Manga from "./manga.model";
+import VolumeEntry from "./volume-entry.model";
 
 export interface IVolume {
   id: string;
@@ -13,6 +16,10 @@ export interface IVolume {
   endChapter: number | null;
   createdAt: Date;
   updatedAt: Date;
+
+  manga?: Manga;
+  chapters?: Chapter[];
+  "volume-entry"?: VolumeEntry | null;
 }
 
 export const VolumeSchema = new Schema<IVolume>({
@@ -60,6 +67,11 @@ export const VolumeSchema = new Schema<IVolume>({
   },
 
   relationships: {
+    manga: {},
+
+    chapters: {},
+
+    "volume-entry": {},
   },
 });
 

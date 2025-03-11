@@ -1,4 +1,5 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import Staff from "./staff.model";
 
 export interface IPeople {
   id: string;
@@ -7,6 +8,10 @@ export interface IPeople {
   portrait: string | null;
   createdAt: Date;
   updatedAt: Date;
+
+  staff?: Staff[];
+  "anime-staff"?: Staff[];
+  "manga-staff"?: Staff[];
 }
 
 export const PeopleSchema = new Schema<IPeople>({
@@ -35,6 +40,11 @@ export const PeopleSchema = new Schema<IPeople>({
   },
 
   relationships: {
+    staff: {},
+
+    "anime-staff": {},
+
+    "manga-staff": {},
   },
 });
 

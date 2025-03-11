@@ -1,4 +1,7 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import Anime from "./anime.model";
+import Manga from "./manga.model";
+import User from "./user.model";
 
 export interface IReview {
   id: string;
@@ -6,6 +9,10 @@ export interface IReview {
   content: string;
   createdAt: Date;
   updatedAt: Date;
+
+  user?: User;
+  anime?: Anime;
+  manga?: Manga;
 }
 
 export const ReviewSchema = new Schema<IReview>({
@@ -32,6 +39,11 @@ export const ReviewSchema = new Schema<IReview>({
   },
 
   relationships: {
+    user: {},
+
+    anime: {},
+
+    manga: {},
   },
 });
 

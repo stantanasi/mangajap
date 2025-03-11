@@ -1,4 +1,5 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import User from "./user.model";
 
 export interface IRequest {
   id: string;
@@ -9,6 +10,8 @@ export interface IRequest {
   userHasRead: boolean;
   createdAt: Date;
   updatedAt: Date;
+
+  user?: User;
 }
 
 export const RequestSchema = new Schema<IRequest>({
@@ -41,6 +44,7 @@ export const RequestSchema = new Schema<IRequest>({
   },
 
   relationships: {
+    user: {},
   },
 });
 

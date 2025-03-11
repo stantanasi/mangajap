@@ -1,4 +1,7 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import Anime from "./anime.model";
+import EpisodeEntry from "./episode-entry.model";
+import Season from "./season.model";
 
 enum EpisodeType {
   None = "",
@@ -17,6 +20,10 @@ export interface IEpisode {
   poster: string | null;
   createdAt: Date;
   updatedAt: Date;
+
+  anime?: Anime;
+  season?: Season;
+  "episode-entry"?: EpisodeEntry | null;
 
 }
 
@@ -63,6 +70,11 @@ export const EpisodeSchema = new Schema<IEpisode>({
   },
 
   relationships: {
+    anime: {},
+
+    season: {},
+
+    "episode-entry": {},
   },
 });
 

@@ -1,4 +1,6 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import Manga from "./manga.model";
+import User from "./user.model";
 
 enum MangaEntryStatus {
   Reading = "reading",
@@ -21,6 +23,9 @@ export interface IMangaEntry {
   finishedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
+
+  user?: User;
+  manga?: Manga;
 }
 
 export const MangaEntrySchema = new Schema<IMangaEntry>({
@@ -75,6 +80,9 @@ export const MangaEntrySchema = new Schema<IMangaEntry>({
   },
 
   relationships: {
+    user: {},
+
+    manga: {},
   },
 });
 

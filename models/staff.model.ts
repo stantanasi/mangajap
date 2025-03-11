@@ -1,4 +1,7 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import Anime from "./anime.model";
+import Manga from "./manga.model";
+import People from "./people.model";
 
 enum StaffRole {
   Author = "author",
@@ -16,6 +19,10 @@ export interface IStaff {
   role: StaffRole;
   createdAt: Date;
   updatedAt: Date;
+
+  people?: People;
+  anime?: Anime;
+  manga?: Manga;
 }
 
 export const StaffSchema = new Schema<IStaff>({
@@ -42,6 +49,11 @@ export const StaffSchema = new Schema<IStaff>({
   },
 
   relationships: {
+    people: {},
+
+    anime: {},
+
+    manga: {},
   },
 });
 

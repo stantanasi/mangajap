@@ -1,4 +1,6 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import Chapter from "./chapter.model";
+import User from "./user.model";
 
 export interface IChapterEntry {
   id: string;
@@ -8,6 +10,9 @@ export interface IChapterEntry {
   rating: number | null;
   createdAt: Date;
   updatedAt: Date;
+
+  user?: User;
+  chapter?: Chapter;
 }
 
 export const ChapterEntrySchema = new Schema<IChapterEntry>({
@@ -38,6 +43,9 @@ export const ChapterEntrySchema = new Schema<IChapterEntry>({
   },
 
   relationships: {
+    user: {},
+
+    chapter: {},
   },
 });
 

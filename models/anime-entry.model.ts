@@ -1,4 +1,6 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import Anime from "./anime.model";
+import User from "./user.model";
 
 enum AnimeEntryStatus {
   Watching = "watching",
@@ -20,6 +22,9 @@ export interface IAnimeEntry {
   finishedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
+
+  user?: User;
+  anime?: Anime;
 }
 
 export const AnimeEntrySchema = new Schema<IAnimeEntry>({
@@ -58,6 +63,9 @@ export const AnimeEntrySchema = new Schema<IAnimeEntry>({
   },
 
   relationships: {
+    user: {},
+
+    anime: {},
   },
 });
 

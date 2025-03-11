@@ -1,4 +1,6 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import Anime from "./anime.model";
+import Episode from "./episode.model";
 
 export interface ISeason {
   id: string;
@@ -11,6 +13,9 @@ export interface ISeason {
   episodeCount: number;
   createdAt: Date;
   updatedAt: Date;
+
+  anime?: Anime;
+  episodes?: Episode[];
 }
 
 export const SeasonSchema = new Schema<ISeason>({
@@ -54,6 +59,9 @@ export const SeasonSchema = new Schema<ISeason>({
   },
 
   relationships: {
+    anime: {},
+
+    episodes: {},
   },
 });
 

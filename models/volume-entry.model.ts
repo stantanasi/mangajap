@@ -1,4 +1,6 @@
 import { model, Schema } from "@stantanasi/jsonapi-client";
+import User from "./user.model";
+import Volume from "./volume.model";
 
 export interface IVolumeEntry {
   id: string;
@@ -8,6 +10,9 @@ export interface IVolumeEntry {
   rating: number | null;
   createdAt: Date;
   updatedAt: Date;
+
+  user?: User;
+  volume?: Volume;
 }
 
 export const VolumeEntrySchema = new Schema<IVolumeEntry>({
@@ -45,6 +50,9 @@ export const VolumeEntrySchema = new Schema<IVolumeEntry>({
   },
 
   relationships: {
+    user: {},
+
+    volume: {},
   },
 });
 
