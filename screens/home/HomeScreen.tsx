@@ -1,5 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = StaticScreenProps<{}>;
 
@@ -7,9 +8,9 @@ export default function HomeScreen({ route }: Props) {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>Home Screen</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 
