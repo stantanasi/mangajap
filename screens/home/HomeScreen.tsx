@@ -2,16 +2,24 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
-import { Manga } from '../../models';
+import { Anime, Manga } from '../../models';
 
 type Props = StaticScreenProps<{}>;
 
 export default function HomeScreen({ route }: Props) {
   const navigation = useNavigation();
+  const [animes, setAnimes] = useState<Anime[]>();
   const [mangas, setMangas] = useState<Manga[]>();
 
   useEffect(() => {
+    Anime.find()
+      .sort({
+        createdAt: 'desc',
+      })
+      .then((animes) => setAnimes(animes));
+
     Manga.find()
       .sort({
         createdAt: 'desc',
@@ -19,7 +27,7 @@ export default function HomeScreen({ route }: Props) {
       .then((mangas) => setMangas(mangas));
   }, []);
 
-  if (!mangas) {
+  if (!animes || !mangas) {
     return (
       <SafeAreaView
         style={{
@@ -39,6 +47,21 @@ export default function HomeScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <FlatList
+        horizontal
+        data={animes}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <AnimeCard
+            anime={item}
+            onPress={() => navigation.navigate('Anime', { id: item.id })}
+          />
+        )}
+        ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
+        ListHeaderComponent={() => <View style={{ width: 16 }} />}
+        ListFooterComponent={() => <View style={{ width: 16 }} />}
+      />
+
       <FlatList
         horizontal
         data={mangas}
