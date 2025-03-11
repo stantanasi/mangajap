@@ -7,6 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
+import AnimeScreen from './screens/anime/AnimeScreen';
 import HomeScreen from './screens/home/HomeScreen';
 import MangaScreen from './screens/manga/MangaScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
@@ -53,6 +54,9 @@ const RootStack = createNativeStackNavigator({
   screens: {
     Main: {
       screen: MainTabs,
+    },
+    Anime: {
+      screen: AnimeScreen,
     },
     Manga: {
       screen: MangaScreen,
