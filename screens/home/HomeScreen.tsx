@@ -1,15 +1,39 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text } from 'react-native';
+import { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import MangaCard from '../../components/molecules/MangaCard';
+import { Manga } from '../../models';
 
 type Props = StaticScreenProps<{}>;
 
 export default function HomeScreen({ route }: Props) {
   const navigation = useNavigation();
+  const [mangas, setMangas] = useState<Manga[]>([]);
+
+  useEffect(() => {
+    Manga.find()
+      .sort({
+        createdAt: 'desc',
+      })
+      .then((mangas) => setMangas(mangas));
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Home Screen</Text>
+      <FlatList
+        horizontal
+        data={mangas}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <MangaCard
+            manga={item}
+          />
+        )}
+        ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
+        ListHeaderComponent={() => <View style={{ width: 16 }} />}
+        ListFooterComponent={() => <View style={{ width: 16 }} />}
+      />
     </SafeAreaView>
   );
 }
@@ -17,8 +41,5 @@ export default function HomeScreen({ route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
