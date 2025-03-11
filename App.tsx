@@ -8,6 +8,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import HomeScreen from './screens/home/HomeScreen';
+import MangaScreen from './screens/manga/MangaScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
 
 const MainTabs = createBottomTabNavigator({
@@ -52,6 +53,9 @@ const RootStack = createNativeStackNavigator({
   screens: {
     Main: {
       screen: MainTabs,
+    },
+    Manga: {
+      screen: MangaScreen,
     },
   },
 });
