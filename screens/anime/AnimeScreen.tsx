@@ -1,8 +1,10 @@
 import { StaticScreenProps } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Anime } from '../../models';
+import EpisodeCard from '../../components/molecules/EpisodeCard';
+import SeasonCard from '../../components/molecules/SeasonCard';
+import { Anime, Episode, Season } from '../../models';
 
 type Props = StaticScreenProps<{
   id: string;
@@ -13,6 +15,7 @@ export default function AnimeScreen({ route }: Props) {
 
   useEffect(() => {
     Anime.findById(route.params.id)
+      .include(['seasons.episodes'])
       .then((anime) => setAnime(anime));
   }, []);
 
@@ -37,6 +40,22 @@ export default function AnimeScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Text>{anime.title}</Text>
+
+      <FlatList
+        data={anime.seasons?.flatMap((season) => [season, ...(season.episodes ?? [])])}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          item.type === Season.type ? (
+            <SeasonCard
+              season={item as Season}
+            />
+          ) : (
+            <EpisodeCard
+              episode={item as Episode}
+            />
+          )
+        )}
+      />
     </SafeAreaView>
   );
 }
