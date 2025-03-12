@@ -11,6 +11,7 @@ import AnimeScreen from './screens/anime/AnimeScreen';
 import HomeScreen from './screens/home/HomeScreen';
 import MangaScreen from './screens/manga/MangaScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
+import SearchScreen from './screens/search/SearchScreen';
 
 const MainTabs = createBottomTabNavigator({
   screenOptions: {
@@ -60,6 +61,9 @@ const RootStack = createNativeStackNavigator({
     },
     Manga: {
       screen: MangaScreen,
+    },
+    Search: {
+      screen: SearchScreen,
     },
   },
 });
