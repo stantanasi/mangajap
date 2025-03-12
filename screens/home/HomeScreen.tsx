@@ -1,6 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
@@ -47,6 +47,13 @@ export default function HomeScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text
+        onPress={() => navigation.navigate('Search', {})}
+        style={styles.search}
+      >
+        Rechercher
+      </Text>
+
       <FlatList
         horizontal
         data={animes}
@@ -82,4 +89,12 @@ export default function HomeScreen({ route }: Props) {
 
 const styles = StyleSheet.create({
   container: {},
+  search: {
+    alignItems: 'center',
+    borderColor: '#d1d5db',
+    borderWidth: 1,
+    borderRadius: 8,
+    margin: 16,
+    padding: 8,
+  },
 });
