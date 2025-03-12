@@ -1,7 +1,9 @@
 import { StaticScreenProps } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AutoHeightImage from '../../components/atoms/AutoHeightImage';
+import ChapterCard from '../../components/molecules/ChapterCard';
 import { Manga } from '../../models';
 
 type Props = StaticScreenProps<{
@@ -13,6 +15,11 @@ export default function MangaScreen({ route }: Props) {
 
   useEffect(() => {
     Manga.findById(route.params.id)
+      .include([
+        'genres',
+        'themes',
+        'chapters',
+      ])
       .then((manga) => setManga(manga));
   }, []);
 
@@ -36,11 +43,80 @@ export default function MangaScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>{manga.title}</Text>
+      <FlatList
+        data={manga.chapters}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <ChapterCard
+            chapter={item}
+          />
+        )}
+        ListHeaderComponent={() => (
+          <View style={styles.header}>
+            <AutoHeightImage
+              source={{ uri: manga.poster ?? undefined }}
+              style={styles.poster}
+            />
+
+            <Text style={styles.title}>
+              {manga.title}
+            </Text>
+
+            <View style={styles.genres}>
+              {manga.genres?.map((genre) => (
+                <Text
+                  key={genre.id}
+                  style={styles.genre}
+                >
+                  {genre.name}
+                </Text>
+              ))}
+            </View>
+
+            <View style={styles.themes}>
+              {manga.themes?.map((theme) => (
+                <Text
+                  key={theme.id}
+                  style={styles.theme}
+                >
+                  {theme.name}
+                </Text>
+              ))}
+            </View>
+
+            <Text style={styles.overview}>
+              {manga.overview}
+            </Text>
+          </View>
+        )}
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {},
+  header: {},
+  poster: {
+    width: '80%',
+    alignSelf: 'center',
+  },
+  title: {
+    textAlign: 'center',
+  },
+  genres: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    justifyContent: 'center',
+  },
+  genre: {},
+  themes: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    justifyContent: 'center',
+  },
+  theme: {},
+  overview: {},
 });
