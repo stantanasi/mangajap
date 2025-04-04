@@ -47,8 +47,8 @@ export default function MangaScreen({ route }: Props) {
     <SafeAreaView style={styles.container}>
       <FlatList
         data={[
-          ...manga.volumes!.flatMap((volume) => [volume, ...volume.chapters!]),
-          ...manga.chapters!.filter((chapter) => !manga.volumes!.some(v => v.chapters!.some(vc => vc.id === chapter.id))),
+          ...manga.volumes!,
+          ...manga.chapters!.filter((chapter) => !manga.volumes!.some((v) => v.chapters!.some((c) => c.id === chapter.id))),
         ]}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
