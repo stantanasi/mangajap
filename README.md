@@ -47,20 +47,21 @@ MangaJap is a modern platform that helps you track the anime you're watching and
 
 ### Built with
 
-- [Android Studio](https://developer.android.com/studio)
-- [Kotlin](https://kotlinlang.org)
-- [Retrofit](https://square.github.io/retrofit)
+- [Expo](https://expo.dev)
+- [React Native](https://reactnative.dev)
+- [React Navigation](https://reactnavigation.org)
 - [JSON:API](https://jsonapi.org)
-- Coroutines
-- MVVM Architecture
-- Android Architecture Components
-
 
 ## Getting started
 
 ### Prerequisites
 
-Install [Android Studio](https://developer.android.com/studio)
+Install [Node.js](https://nodejs.org) which includes [Node Package Manager](https://www.npmjs.com/get-npm)
+
+Install the [Expo CLI](https://www.npmjs.com/package/expo-cli) globally:
+```bash
+npm install -g expo-cli
+```
 
 ### Setup
 
@@ -68,15 +69,22 @@ Install [Android Studio](https://developer.android.com/studio)
 
 ```bash
 git clone https://github.com/stantanasi/mangajap.git
+cd mangajap
 ```
 
-2. Open the project in Android Studio
+2. Install the packages required
+
+```bash
+npm install
+```
 
 ## Development
 
-1. Select the device that you want to run the app
+Run development mode
 
-2. Click **Run**
+```bash
+npm run start
+```
 
 ## Contributing
 
