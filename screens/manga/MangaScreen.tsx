@@ -4,7 +4,8 @@ import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AutoHeightImage from '../../components/atoms/AutoHeightImage';
 import ChapterCard from '../../components/molecules/ChapterCard';
-import { Manga } from '../../models';
+import VolumeCard from '../../components/molecules/VolumeCard';
+import { Manga, Volume } from '../../models';
 
 type Props = StaticScreenProps<{
   id: string;
@@ -18,6 +19,7 @@ export default function MangaScreen({ route }: Props) {
       .include([
         'genres',
         'themes',
+        'volumes.chapters',
         'chapters',
       ])
       .then((manga) => setManga(manga));
@@ -44,12 +46,21 @@ export default function MangaScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={manga.chapters}
+        data={[
+          ...manga.volumes!.flatMap((volume) => [volume, ...volume.chapters!]),
+          ...manga.chapters!.filter((chapter) => !manga.volumes!.some(v => v.chapters!.some(vc => vc.id === chapter.id))),
+        ]}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ChapterCard
-            chapter={item}
-          />
+          item instanceof Volume ? (
+            <VolumeCard
+              volume={item}
+            />
+          ) : (
+            <ChapterCard
+              chapter={item}
+            />
+          )
         )}
         ListHeaderComponent={() => (
           <View style={styles.header}>
