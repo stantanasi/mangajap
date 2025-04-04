@@ -49,4 +49,8 @@ export const RequestSchema = new Schema<IRequest>({
 });
 
 
-export default class Request extends model<IRequest>("requests", RequestSchema) { }
+class Request extends model<IRequest>(RequestSchema) { }
+
+Request.register("requests");
+
+export default Request;

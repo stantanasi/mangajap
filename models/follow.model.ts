@@ -40,4 +40,8 @@ export const FollowSchema = new Schema<IFollow>({
 });
 
 
-export default class Follow extends model<IFollow>("Follow", FollowSchema) { }
+class Follow extends model<IFollow>(FollowSchema) { }
+
+Follow.register("Follow");
+
+export default Follow;

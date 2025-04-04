@@ -66,4 +66,8 @@ export const SeasonSchema = new Schema<ISeason>({
 });
 
 
-export default class Season extends model<ISeason>("seasons", SeasonSchema) { }
+class Season extends model<ISeason>(SeasonSchema) { }
+
+Season.register("seasons");
+
+export default Season;

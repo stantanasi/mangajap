@@ -59,4 +59,8 @@ export const FranchiseSchema = new Schema<IFranchise>({
 });
 
 
-export default class Franchise extends model<IFranchise>("franchises", FranchiseSchema) { }
+class Franchise extends model<IFranchise>(FranchiseSchema) { }
+
+Franchise.register("franchises");
+
+export default Franchise;

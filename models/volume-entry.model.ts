@@ -57,4 +57,8 @@ export const VolumeEntrySchema = new Schema<IVolumeEntry>({
 });
 
 
-export default class VolumeEntry extends model<IVolumeEntry>("volume-entries", VolumeEntrySchema) { }
+class VolumeEntry extends model<IVolumeEntry>(VolumeEntrySchema) { }
+
+VolumeEntry.register("volume-entries");
+
+export default VolumeEntry;

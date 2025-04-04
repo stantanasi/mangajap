@@ -123,4 +123,8 @@ export const UserSchema = new Schema<IUser>({
 });
 
 
-export default class User extends model<IUser>("users", UserSchema) { }
+class User extends model<IUser>(UserSchema) { }
+
+User.register("users");
+
+export default User;

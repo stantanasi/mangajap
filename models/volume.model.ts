@@ -76,4 +76,8 @@ export const VolumeSchema = new Schema<IVolume>({
 });
 
 
-export default class Volume extends model<IVolume>("volumes", VolumeSchema) { }
+class Volume extends model<IVolume>(VolumeSchema) { }
+
+Volume.register("volumes");
+
+export default Volume;

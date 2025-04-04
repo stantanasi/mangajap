@@ -87,4 +87,8 @@ export const MangaEntrySchema = new Schema<IMangaEntry>({
 });
 
 
-export default class MangaEntry extends model<IMangaEntry>("manga-entries", MangaEntrySchema) { }
+class MangaEntry extends model<IMangaEntry>(MangaEntrySchema) { }
+
+MangaEntry.register("manga-entries");
+
+export default MangaEntry;

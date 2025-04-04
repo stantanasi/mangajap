@@ -67,4 +67,8 @@ export const ChapterSchema = new Schema<IChapter>({
 });
 
 
-export default class Chapter extends model<IChapter>("chapters", ChapterSchema) { }
+class Chapter extends model<IChapter>(ChapterSchema) { }
+
+Chapter.register("chapters");
+
+export default Chapter;

@@ -157,4 +157,8 @@ export const MangaSchema = new Schema<IManga>({
 });
 
 
-export default class Manga extends model<IManga>("manga", MangaSchema) { }
+class Manga extends model<IManga>(MangaSchema) { }
+
+Manga.register("manga");
+
+export default Manga;

@@ -44,4 +44,8 @@ export const ThemeSchema = new Schema<ITheme>({
 });
 
 
-export default class Theme extends model<ITheme>("themes", ThemeSchema) { }
+class Theme extends model<ITheme>(ThemeSchema) { }
+
+Theme.register("themes");
+
+export default Theme;

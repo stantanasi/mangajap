@@ -48,4 +48,8 @@ export const ReviewSchema = new Schema<IReview>({
 });
 
 
-export default class Review extends model<IReview>("reviews", ReviewSchema) { }
+class Review extends model<IReview>(ReviewSchema) { }
+
+Review.register("reviews");
+
+export default Review;

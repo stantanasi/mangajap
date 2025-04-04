@@ -50,4 +50,8 @@ export const ChapterEntrySchema = new Schema<IChapterEntry>({
 });
 
 
-export default class ChapterEntry extends model<IChapterEntry>("chapter-entries", ChapterEntrySchema) { }
+class ChapterEntry extends model<IChapterEntry>(ChapterEntrySchema) { }
+
+ChapterEntry.register("chapter-entries");
+
+export default ChapterEntry;

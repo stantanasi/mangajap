@@ -44,4 +44,8 @@ export const GenreSchema = new Schema<IGenre>({
 });
 
 
-export default class Genre extends model<IGenre>("genres", GenreSchema) { }
+class Genre extends model<IGenre>(GenreSchema) { }
+
+Genre.register("genres");
+
+export default Genre;

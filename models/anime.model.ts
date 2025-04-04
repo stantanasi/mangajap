@@ -160,5 +160,8 @@ export const AnimeSchema = new Schema<IAnime>({
 });
 
 
+class Anime extends model<IAnime>(AnimeSchema) { }
 
-export default class Anime extends model<IAnime>("anime", AnimeSchema) { }
+Anime.register("anime");
+
+export default Anime;

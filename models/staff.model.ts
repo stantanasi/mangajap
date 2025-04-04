@@ -58,4 +58,8 @@ export const StaffSchema = new Schema<IStaff>({
 });
 
 
-export default class Staff extends model<IStaff>("staff", StaffSchema) { }
+class Staff extends model<IStaff>(StaffSchema) { }
+
+Staff.register("staff");
+
+export default Staff;

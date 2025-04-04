@@ -57,4 +57,8 @@ export const EpisodeEntrySchema = new Schema<IEpisodeEntry>({
 });
 
 
-export default class EpisodeEntry extends model<IEpisodeEntry>("episodes", EpisodeEntrySchema) { }
+class EpisodeEntry extends model<IEpisodeEntry>(EpisodeEntrySchema) { }
+
+EpisodeEntry.register("episode-entries");
+
+export default EpisodeEntry;
