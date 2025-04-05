@@ -7,6 +7,48 @@ import ChapterCard from '../../components/molecules/ChapterCard';
 import VolumeCard from '../../components/molecules/VolumeCard';
 import { Manga, Volume } from '../../models';
 
+const Header = ({ manga }: { manga: Manga }) => {
+  return (
+    <View style={styles.header}>
+      <AutoHeightImage
+        source={{ uri: manga.poster ?? undefined }}
+        style={styles.poster}
+      />
+
+      <Text style={styles.title}>
+        {manga.title}
+      </Text>
+
+      <View style={styles.genres}>
+        {manga.genres?.map((genre) => (
+          <Text
+            key={genre.id}
+            style={styles.genre}
+          >
+            {genre.name}
+          </Text>
+        ))}
+      </View>
+
+      <View style={styles.themes}>
+        {manga.themes?.map((theme) => (
+          <Text
+            key={theme.id}
+            style={styles.theme}
+          >
+            {theme.name}
+          </Text>
+        ))}
+      </View>
+
+      <Text style={styles.overview}>
+        {manga.overview}
+      </Text>
+    </View>
+  );
+};
+
+
 type Props = StaticScreenProps<{
   id: string;
 }>;
@@ -62,44 +104,9 @@ export default function MangaScreen({ route }: Props) {
             />
           )
         )}
-        ListHeaderComponent={() => (
-          <View style={styles.header}>
-            <AutoHeightImage
-              source={{ uri: manga.poster ?? undefined }}
-              style={styles.poster}
-            />
-
-            <Text style={styles.title}>
-              {manga.title}
-            </Text>
-
-            <View style={styles.genres}>
-              {manga.genres?.map((genre) => (
-                <Text
-                  key={genre.id}
-                  style={styles.genre}
-                >
-                  {genre.name}
-                </Text>
-              ))}
-            </View>
-
-            <View style={styles.themes}>
-              {manga.themes?.map((theme) => (
-                <Text
-                  key={theme.id}
-                  style={styles.theme}
-                >
-                  {theme.name}
-                </Text>
-              ))}
-            </View>
-
-            <Text style={styles.overview}>
-              {manga.overview}
-            </Text>
-          </View>
-        )}
+        ListHeaderComponent={Header({
+          manga: manga,
+        })}
       />
     </SafeAreaView>
   );
