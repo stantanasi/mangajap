@@ -103,6 +103,14 @@ export default function MangaScreen({ route }: Props) {
           ) : (
             <ChapterCard
               chapter={item}
+              onChapterChange={(chapter) => {
+                setManga((prev) => prev?.copy({
+                  chapters: prev.chapters?.map((c) => c.id === chapter.id ? chapter : c),
+                }));
+              }}
+              style={{
+                marginHorizontal: 10,
+              }}
             />
           )
         )}

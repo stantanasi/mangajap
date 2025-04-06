@@ -24,6 +24,7 @@ export default function VolumeCard({ volume }: Props) {
         <ChapterCard
           key={chapter.id}
           chapter={chapter}
+          onChapterChange={(chapter) => { }}
         />
       ))}
     </View>
