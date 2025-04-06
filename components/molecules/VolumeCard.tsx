@@ -3,7 +3,7 @@ import Checkbox from 'expo-checkbox';
 import React, { useContext, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
-import { ChapterEntry, User, Volume } from '../../models';
+import { ChapterEntry, User, Volume, VolumeEntry } from '../../models';
 import ProgressBar from '../atoms/ProgressBar';
 import ChapterCard from './ChapterCard';
 
@@ -20,7 +20,7 @@ export default function VolumeCard({ volume, onVolumeChange, style }: Props) {
   const chaptersReadCount = volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0;
   const chaptersCount = volume.chapters?.length ?? 0;
 
-  const isRead = chaptersCount > 0 && chaptersReadCount == chaptersCount;
+  const isRead = !!volume['volume-entry'] || chaptersCount > 0 && chaptersReadCount == chaptersCount;
   const progress = chaptersCount > 0
     ? (chaptersReadCount / chaptersCount) * 100
     : isRead ? 100 : 0;
@@ -83,6 +83,24 @@ export default function VolumeCard({ volume, onVolumeChange, style }: Props) {
             <Checkbox
               value={isRead}
               onValueChange={async (value) => {
+                if (value) {
+                  const volumeEntry = new VolumeEntry({
+                    user: new User({ id: user.id }),
+                    volume: volume,
+                  });
+                  await volumeEntry.save();
+
+                  onVolumeChange(volume.copy({
+                    'volume-entry': volumeEntry,
+                  }));
+                } else {
+                  await volume['volume-entry']?.delete();
+
+                  onVolumeChange(volume.copy({
+                    'volume-entry': null,
+                  }));
+                }
+
                 onVolumeChange(volume.copy({
                   chapters: await Promise.all(volume.chapters?.map(async (chapter) => {
                     if (value && chapter['chapter-entry'] || !value && !chapter['chapter-entry']) {

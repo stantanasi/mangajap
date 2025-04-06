@@ -63,6 +63,7 @@ export default function MangaScreen({ route }: Props) {
       .include([
         'genres',
         'themes',
+        `volumes${isAuthenticated ? '.volume-entry' : ''}`,
         `volumes.chapters${isAuthenticated ? '.chapter-entry' : ''}`,
         `chapters${isAuthenticated ? '.chapter-entry' : ''}`,
       ])
