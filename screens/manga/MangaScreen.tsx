@@ -1,10 +1,11 @@
 import { StaticScreenProps } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AutoHeightImage from '../../components/atoms/AutoHeightImage';
 import ChapterCard from '../../components/molecules/ChapterCard';
 import VolumeCard from '../../components/molecules/VolumeCard';
+import { AuthContext } from '../../contexts/AuthContext';
 import { Manga, Volume } from '../../models';
 
 const Header = ({ manga }: { manga: Manga }) => {
@@ -54,6 +55,7 @@ type Props = StaticScreenProps<{
 }>;
 
 export default function MangaScreen({ route }: Props) {
+  const { isAuthenticated } = useContext(AuthContext);
   const [manga, setManga] = useState<Manga>();
 
   useEffect(() => {
@@ -61,8 +63,8 @@ export default function MangaScreen({ route }: Props) {
       .include([
         'genres',
         'themes',
-        'volumes.chapters',
-        'chapters',
+        `volumes.chapters${isAuthenticated ? '.chapter-entry' : ''}`,
+        `chapters${isAuthenticated ? '.chapter-entry' : ''}`,
       ])
       .then((manga) => setManga(manga));
   }, []);
