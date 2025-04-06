@@ -3,9 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AutoHeightImage from '../../components/atoms/AutoHeightImage';
-import EpisodeCard from '../../components/molecules/EpisodeCard';
 import SeasonCard from '../../components/molecules/SeasonCard';
-import { Anime, Episode, Season } from '../../models';
+import { Anime } from '../../models';
 
 const Header = ({ anime }: { anime: Anime }) => {
   return (
@@ -87,22 +86,20 @@ export default function AnimeScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={anime.seasons?.flatMap((season) => [season, ...(season.episodes ?? [])])}
+        data={anime.seasons}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          item.type === Season.type ? (
-            <SeasonCard
-              season={item as Season}
-            />
-          ) : (
-            <EpisodeCard
-              episode={item as Episode}
-            />
-          )
+          <SeasonCard
+            season={item}
+            style={{
+              marginHorizontal: 10,
+            }}
+          />
         )}
         ListHeaderComponent={Header({
           anime: anime,
         })}
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
       />
     </SafeAreaView>
   );
@@ -110,7 +107,9 @@ export default function AnimeScreen({ route }: Props) {
 
 const styles = StyleSheet.create({
   container: {},
-  header: {},
+  header: {
+    marginBottom: 16,
+  },
   poster: {
     width: '80%',
     alignSelf: 'center',
