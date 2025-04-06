@@ -27,9 +27,7 @@ export const SeasonSchema = new Schema<ISeason>({
     overview: {},
 
     airDate: {
-      get: function (value: string) {
-        return new Date(value);
-      },
+      type: Date,
       transform: function (val) {
         return val.toISOString().slice(0, 10);
       },
@@ -40,21 +38,11 @@ export const SeasonSchema = new Schema<ISeason>({
     episodeCount: {},
 
     createdAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     updatedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
   },
 

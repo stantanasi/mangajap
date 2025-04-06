@@ -73,18 +73,14 @@ export const MangaSchema = new Schema<IManga>({
     overview: {},
 
     startDate: {
-      get: function (value: string) {
-        return new Date(value);
-      },
+      type: Date,
       transform: function (val) {
         return val.toISOString().slice(0, 10);
       },
     },
 
     endDate: {
-      get: function (value: string) {
-        return new Date(value);
-      },
+      type: Date,
       transform: function (val) {
         return val?.toISOString().slice(0, 10) ?? val;
       },
@@ -119,21 +115,11 @@ export const MangaSchema = new Schema<IManga>({
     reviewCount: {},
 
     createdAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     updatedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
   },
 

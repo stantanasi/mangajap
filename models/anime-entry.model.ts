@@ -39,26 +39,20 @@ export const AnimeEntrySchema = new Schema<IAnimeEntry>({
 
     rating: {},
 
-    startedAt: {},
+    startedAt: {
+      type: Date,
+    },
 
-    finishedAt: {},
+    finishedAt: {
+      type: Date,
+    },
 
     createdAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     updatedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
   },
 

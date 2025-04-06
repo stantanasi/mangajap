@@ -17,28 +17,20 @@ export interface IChapterEntry {
 
 export const ChapterEntrySchema = new Schema<IChapterEntry>({
   attributes: {
-    readDate: {},
+    readDate: {
+      type: Date,
+    },
 
     readCount: {},
 
     rating: {},
 
     createdAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     updatedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
   },
 
