@@ -1,13 +1,20 @@
-import React from 'react';
+import Checkbox from 'expo-checkbox';
+import React, { useContext } from 'react';
 import { Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { Episode } from '../../models';
+import { AuthContext } from '../../contexts/AuthContext';
+import { Episode, EpisodeEntry, User } from '../../models';
 
 type Props = {
   episode: Episode;
+  onEpisodeChange: (episode: Episode) => void;
   style?: ViewStyle;
 }
 
-export default function EpisodeCard({ episode, style }: Props) {
+export default function EpisodeCard({ episode, onEpisodeChange, style }: Props) {
+  const { user } = useContext(AuthContext);
+
+  const isWatched = !!episode['episode-entry'];
+
   return (
     <View style={[styles.container, style]}>
       <Image
@@ -24,6 +31,34 @@ export default function EpisodeCard({ episode, style }: Props) {
           {episode.title}
         </Text>
       </View>
+
+      {user ? (
+        <Checkbox
+          value={isWatched}
+          onValueChange={async (value) => {
+            if (value) {
+              const episodeEntry = new EpisodeEntry({
+                user: new User({ id: user.id }),
+                episode: episode,
+              });
+              await episodeEntry.save();
+
+              onEpisodeChange(episode.copy({
+                'episode-entry': episodeEntry,
+              }));
+            } else {
+              await episode['episode-entry']?.delete();
+
+              onEpisodeChange(episode.copy({
+                'episode-entry': null,
+              }));
+            }
+          }}
+          style={{
+            marginRight: 10,
+          }}
+        />
+      ) : null}
     </View>
   );
 }

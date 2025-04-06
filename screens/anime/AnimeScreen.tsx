@@ -1,9 +1,10 @@
 import { StaticScreenProps } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AutoHeightImage from '../../components/atoms/AutoHeightImage';
 import SeasonCard from '../../components/molecules/SeasonCard';
+import { AuthContext } from '../../contexts/AuthContext';
 import { Anime } from '../../models';
 
 const Header = ({ anime }: { anime: Anime }) => {
@@ -53,6 +54,7 @@ type Props = StaticScreenProps<{
 }>;
 
 export default function AnimeScreen({ route }: Props) {
+  const { isAuthenticated } = useContext(AuthContext);
   const [anime, setAnime] = useState<Anime>();
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export default function AnimeScreen({ route }: Props) {
       .include([
         'genres',
         'themes',
-        'seasons.episodes',
+        `seasons.episodes${isAuthenticated ? '.episode-entry' : ''}`,
       ])
       .then((anime) => setAnime(anime));
   }, []);
@@ -91,6 +93,11 @@ export default function AnimeScreen({ route }: Props) {
         renderItem={({ item }) => (
           <SeasonCard
             season={item}
+            onSeasonChange={(season) => {
+              setAnime((prev) => prev?.copy({
+                seasons: prev.seasons?.map((s) => s.id === season.id ? season : s),
+              }));
+            }}
             style={{
               marginHorizontal: 10,
             }}

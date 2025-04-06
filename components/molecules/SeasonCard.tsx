@@ -1,16 +1,29 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useState } from 'react';
+import Checkbox from 'expo-checkbox';
+import React, { useContext, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { Season } from '../../models';
+import { AuthContext } from '../../contexts/AuthContext';
+import { EpisodeEntry, Season, User } from '../../models';
+import ProgressBar from '../atoms/ProgressBar';
 import EpisodeCard from './EpisodeCard';
 
 type Props = {
   season: Season;
+  onSeasonChange: (season: Season) => void;
   style?: ViewStyle;
 }
 
-export default function SeasonCard({ season, style }: Props) {
+export default function SeasonCard({ season, onSeasonChange, style }: Props) {
+  const { user } = useContext(AuthContext);
   const [showEpisodes, setShowEpisodes] = useState(false);
+
+  const episodesReadCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
+  const episodesCount = season.episodes?.length ?? 0;
+
+  const isWatched = episodesCount > 0 && episodesReadCount == episodesCount;
+  const progress = episodesCount > 0
+    ? (episodesReadCount / episodesCount) * 100
+    : isWatched ? 100 : 0;
 
   return (
     <View style={[styles.container, style]}>
@@ -49,7 +62,55 @@ export default function SeasonCard({ season, style }: Props) {
               marginRight: 14,
             }}
           />
+
+          <Text
+            style={{
+              marginRight: 12,
+            }}
+          >
+            {episodesReadCount} / {episodesCount}
+          </Text>
+
+          {user ? (
+            <Checkbox
+              value={isWatched}
+              onValueChange={async (value) => {
+                onSeasonChange(season.copy({
+                  episodes: await Promise.all(season.episodes?.map(async (episode) => {
+                    if (value && episode['episode-entry'] || !value && !episode['episode-entry']) {
+                      return episode;
+                    }
+
+                    if (value) {
+                      const episodeEntry = new EpisodeEntry({
+                        user: new User({ id: user.id }),
+                        episode: episode,
+                      });
+                      await episodeEntry.save();
+
+                      return episode.copy({
+                        'episode-entry': episodeEntry,
+                      });
+                    } else {
+                      await episode['episode-entry']?.delete();
+
+                      return episode.copy({
+                        'episode-entry': null,
+                      });
+                    }
+                  }) ?? []),
+                }));
+              }}
+              style={{
+                marginRight: 10,
+              }}
+            />
+          ) : null}
         </View>
+
+        <ProgressBar
+          progress={progress}
+        />
       </Pressable>
 
       <View style={{ gap: 6 }}>
@@ -57,6 +118,11 @@ export default function SeasonCard({ season, style }: Props) {
           <EpisodeCard
             key={episode.id}
             episode={episode}
+            onEpisodeChange={(episode) => {
+              onSeasonChange(season.copy({
+                episodes: season.episodes?.map((e) => e.id === episode.id ? episode : e),
+              }));
+            }}
           />
         ))}
       </View>
