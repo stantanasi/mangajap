@@ -1,17 +1,29 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useState } from 'react';
+import Checkbox from 'expo-checkbox';
+import React, { useContext, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { Volume } from '../../models';
+import { AuthContext } from '../../contexts/AuthContext';
+import { ChapterEntry, User, Volume } from '../../models';
 import ProgressBar from '../atoms/ProgressBar';
 import ChapterCard from './ChapterCard';
 
 type Props = {
   volume: Volume;
+  onVolumeChange: (volume: Volume) => void;
   style?: ViewStyle;
 }
 
-export default function VolumeCard({ volume, style }: Props) {
+export default function VolumeCard({ volume, onVolumeChange, style }: Props) {
+  const { user } = useContext(AuthContext);
   const [showChapters, setShowChapters] = useState(false);
+
+  const chaptersReadCount = volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0;
+  const chaptersCount = volume.chapters?.length ?? 0;
+
+  const isRead = chaptersCount > 0 && chaptersReadCount == chaptersCount;
+  const progress = chaptersCount > 0
+    ? (chaptersReadCount / chaptersCount) * 100
+    : isRead ? 100 : 0;
 
   return (
     <View style={[styles.container, style]}>
@@ -64,12 +76,48 @@ export default function VolumeCard({ volume, style }: Props) {
               marginRight: 12,
             }}
           >
-            {volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0} / {volume.chapters?.length ?? 0}
+            {chaptersReadCount} / {chaptersCount}
           </Text>
+
+          {user ? (
+            <Checkbox
+              value={isRead}
+              onValueChange={async (value) => {
+                onVolumeChange(volume.copy({
+                  chapters: await Promise.all(volume.chapters?.map(async (chapter) => {
+                    if (value && chapter['chapter-entry'] || !value && !chapter['chapter-entry']) {
+                      return chapter;
+                    }
+
+                    if (value) {
+                      const chapterEntry = new ChapterEntry({
+                        user: new User({ id: user.id }),
+                        chapter: chapter,
+                      });
+                      await chapterEntry.save();
+
+                      return chapter.copy({
+                        'chapter-entry': chapterEntry,
+                      });
+                    } else {
+                      await chapter['chapter-entry']?.delete();
+
+                      return chapter.copy({
+                        'chapter-entry': null,
+                      });
+                    }
+                  }) ?? []),
+                }));
+              }}
+              style={{
+                marginRight: 10,
+              }}
+            />
+          ) : null}
         </View>
 
         <ProgressBar
-          progress={100 * (volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0) / (volume.chapters?.length ?? 0)}
+          progress={progress}
         />
       </Pressable>
 
@@ -78,7 +126,11 @@ export default function VolumeCard({ volume, style }: Props) {
           <ChapterCard
             key={chapter.id}
             chapter={chapter}
-            onChapterChange={(chapter) => { }}
+            onChapterChange={(chapter) => {
+              onVolumeChange(volume.copy({
+                chapters: volume.chapters?.map((c) => c.id === chapter.id ? chapter : c),
+              }));
+            }}
           />
         ))}
       </View>

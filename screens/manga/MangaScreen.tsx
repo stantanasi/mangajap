@@ -99,6 +99,14 @@ export default function MangaScreen({ route }: Props) {
           item instanceof Volume ? (
             <VolumeCard
               volume={item}
+              onVolumeChange={(volume) => {
+                setManga((prev) => prev?.copy({
+                  volumes: prev.volumes?.map((v) => v.id === volume.id ? volume : v),
+                }));
+              }}
+              style={{
+                marginHorizontal: 10,
+              }}
             />
           ) : (
             <ChapterCard
