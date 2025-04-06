@@ -56,9 +56,7 @@ export const UserSchema = new Schema<IUser>({
     gender: {},
 
     birthday: {
-      get: function (value: string) {
-        return new Date(value);
-      },
+      type: Date,
       transform: function (val) {
         return val?.toISOString().slice(0, 10) ?? val;
       },
@@ -85,21 +83,11 @@ export const UserSchema = new Schema<IUser>({
     timeSpentOnAnime: {},
 
     createdAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     updatedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
   },
 

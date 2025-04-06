@@ -9,7 +9,7 @@ export interface IChapter {
   number: number;
   title: string;
   overview: string;
-  publishedDate: Date;
+  publishedDate: Date | null;
   cover: string | null;
   createdAt: Date;
   updatedAt: Date;
@@ -28,32 +28,20 @@ export const ChapterSchema = new Schema<IChapter>({
     overview: {},
 
     publishedDate: {
-      get: function (value: string) {
-        return new Date(value);
-      },
+      type: Date,
       transform: function (val) {
-        return val.toISOString().slice(0, 10);
+        return val?.toISOString().slice(0, 10) ?? null;
       },
     },
 
     cover: {},
 
     createdAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     updatedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
   },
 

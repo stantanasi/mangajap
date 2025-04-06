@@ -43,39 +43,19 @@ export const MangaEntrySchema = new Schema<IMangaEntry>({
     rating: {},
 
     startedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val?.toISOString() ?? val;
-      },
+      type: Date,
     },
 
     finishedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val?.toISOString() ?? val;
-      },
+      type: Date,
     },
 
     createdAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     updatedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
   },
 

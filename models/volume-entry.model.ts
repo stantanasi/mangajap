@@ -18,12 +18,7 @@ export interface IVolumeEntry {
 export const VolumeEntrySchema = new Schema<IVolumeEntry>({
   attributes: {
     readDate: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     readCount: {},
@@ -31,21 +26,11 @@ export const VolumeEntrySchema = new Schema<IVolumeEntry>({
     rating: {},
 
     createdAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     updatedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
   },
 

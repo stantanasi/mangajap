@@ -30,21 +30,11 @@ export const StaffSchema = new Schema<IStaff>({
     role: {},
 
     createdAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     updatedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
   },
 

@@ -9,7 +9,7 @@ export interface IVolume {
   number: number;
   title: string;
   overview: string;
-  publishedDate: Date;
+  publishedDate: Date | null;
   cover: string | null;
   chapterCount: number;
   startChapter: number | null;
@@ -31,11 +31,9 @@ export const VolumeSchema = new Schema<IVolume>({
     overview: {},
 
     publishedDate: {
-      get: function (value: string) {
-        return new Date(value);
-      },
+      type: Date,
       transform: function (val) {
-        return val.toISOString().slice(0, 10);
+        return val?.toISOString().slice(0, 10) ?? null;
       },
     },
 
@@ -48,21 +46,11 @@ export const VolumeSchema = new Schema<IVolume>({
     endChapter: {},
 
     createdAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     updatedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
   },
 

@@ -18,12 +18,7 @@ export interface IEpisodeEntry {
 export const EpisodeEntrySchema = new Schema<IEpisodeEntry>({
   attributes: {
     watchedDate: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     watchedCount: {},
@@ -31,21 +26,11 @@ export const EpisodeEntrySchema = new Schema<IEpisodeEntry>({
     rating: {},
 
     createdAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
 
     updatedAt: {
-      get: function (value: string) {
-        return new Date(value);
-      },
-      transform: function (val) {
-        return val.toISOString();
-      },
+      type: Date,
     },
   },
 
