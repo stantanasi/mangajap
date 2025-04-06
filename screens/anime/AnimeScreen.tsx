@@ -1,17 +1,60 @@
 import { StaticScreenProps } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AutoHeightImage from '../../components/atoms/AutoHeightImage';
-import EpisodeCard from '../../components/molecules/EpisodeCard';
 import SeasonCard from '../../components/molecules/SeasonCard';
-import { Anime, Episode, Season } from '../../models';
+import { AuthContext } from '../../contexts/AuthContext';
+import { Anime } from '../../models';
+
+const Header = ({ anime }: { anime: Anime }) => {
+  return (
+    <View style={styles.header}>
+      <AutoHeightImage
+        source={{ uri: anime.poster ?? undefined }}
+        style={styles.poster}
+      />
+
+      <Text style={styles.title}>
+        {anime.title}
+      </Text>
+
+      <View style={styles.genres}>
+        {anime.genres?.map((genre) => (
+          <Text
+            key={genre.id}
+            style={styles.genre}
+          >
+            {genre.name}
+          </Text>
+        ))}
+      </View>
+
+      <View style={styles.themes}>
+        {anime.themes?.map((theme) => (
+          <Text
+            key={theme.id}
+            style={styles.theme}
+          >
+            {theme.name}
+          </Text>
+        ))}
+      </View>
+
+      <Text style={styles.overview}>
+        {anime.overview}
+      </Text>
+    </View>
+  );
+};
+
 
 type Props = StaticScreenProps<{
   id: string;
 }>;
 
 export default function AnimeScreen({ route }: Props) {
+  const { isAuthenticated } = useContext(AuthContext);
   const [anime, setAnime] = useState<Anime>();
 
   useEffect(() => {
@@ -19,7 +62,7 @@ export default function AnimeScreen({ route }: Props) {
       .include([
         'genres',
         'themes',
-        'seasons.episodes',
+        `seasons.episodes${isAuthenticated ? '.episode-entry' : ''}`,
       ])
       .then((anime) => setAnime(anime));
   }, []);
@@ -45,57 +88,25 @@ export default function AnimeScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={anime.seasons?.flatMap((season) => [season, ...(season.episodes ?? [])])}
+        data={anime.seasons}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          item.type === Season.type ? (
-            <SeasonCard
-              season={item as Season}
-            />
-          ) : (
-            <EpisodeCard
-              episode={item as Episode}
-            />
-          )
+          <SeasonCard
+            season={item}
+            onSeasonChange={(season) => {
+              setAnime((prev) => prev?.copy({
+                seasons: prev.seasons?.map((s) => s.id === season.id ? season : s),
+              }));
+            }}
+            style={{
+              marginHorizontal: 10,
+            }}
+          />
         )}
-        ListHeaderComponent={() => (
-          <View style={styles.header}>
-            <AutoHeightImage
-              source={{ uri: anime.poster ?? undefined }}
-              style={styles.poster}
-            />
-
-            <Text style={styles.title}>
-              {anime.title}
-            </Text>
-
-            <View style={styles.genres}>
-              {anime.genres?.map((genre) => (
-                <Text
-                  key={genre.id}
-                  style={styles.genre}
-                >
-                  {genre.name}
-                </Text>
-              ))}
-            </View>
-
-            <View style={styles.themes}>
-              {anime.themes?.map((theme) => (
-                <Text
-                  key={theme.id}
-                  style={styles.theme}
-                >
-                  {theme.name}
-                </Text>
-              ))}
-            </View>
-
-            <Text style={styles.overview}>
-              {anime.overview}
-            </Text>
-          </View>
-        )}
+        ListHeaderComponent={Header({
+          anime: anime,
+        })}
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
       />
     </SafeAreaView>
   );
@@ -103,7 +114,9 @@ export default function AnimeScreen({ route }: Props) {
 
 const styles = StyleSheet.create({
   container: {},
-  header: {},
+  header: {
+    marginBottom: 16,
+  },
   poster: {
     width: '80%',
     alignSelf: 'center',
