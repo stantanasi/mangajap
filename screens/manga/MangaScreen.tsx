@@ -109,6 +109,7 @@ export default function MangaScreen({ route }: Props) {
         ListHeaderComponent={Header({
           manga: manga,
         })}
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
       />
     </SafeAreaView>
   );
@@ -116,7 +117,9 @@ export default function MangaScreen({ route }: Props) {
 
 const styles = StyleSheet.create({
   container: {},
-  header: {},
+  header: {
+    marginBottom: 16,
+  },
   poster: {
     width: '80%',
     alignSelf: 'center',
