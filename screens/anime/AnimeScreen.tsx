@@ -7,6 +7,48 @@ import EpisodeCard from '../../components/molecules/EpisodeCard';
 import SeasonCard from '../../components/molecules/SeasonCard';
 import { Anime, Episode, Season } from '../../models';
 
+const Header = ({ anime }: { anime: Anime }) => {
+  return (
+    <View style={styles.header}>
+      <AutoHeightImage
+        source={{ uri: anime.poster ?? undefined }}
+        style={styles.poster}
+      />
+
+      <Text style={styles.title}>
+        {anime.title}
+      </Text>
+
+      <View style={styles.genres}>
+        {anime.genres?.map((genre) => (
+          <Text
+            key={genre.id}
+            style={styles.genre}
+          >
+            {genre.name}
+          </Text>
+        ))}
+      </View>
+
+      <View style={styles.themes}>
+        {anime.themes?.map((theme) => (
+          <Text
+            key={theme.id}
+            style={styles.theme}
+          >
+            {theme.name}
+          </Text>
+        ))}
+      </View>
+
+      <Text style={styles.overview}>
+        {anime.overview}
+      </Text>
+    </View>
+  );
+};
+
+
 type Props = StaticScreenProps<{
   id: string;
 }>;
@@ -58,44 +100,9 @@ export default function AnimeScreen({ route }: Props) {
             />
           )
         )}
-        ListHeaderComponent={() => (
-          <View style={styles.header}>
-            <AutoHeightImage
-              source={{ uri: anime.poster ?? undefined }}
-              style={styles.poster}
-            />
-
-            <Text style={styles.title}>
-              {anime.title}
-            </Text>
-
-            <View style={styles.genres}>
-              {anime.genres?.map((genre) => (
-                <Text
-                  key={genre.id}
-                  style={styles.genre}
-                >
-                  {genre.name}
-                </Text>
-              ))}
-            </View>
-
-            <View style={styles.themes}>
-              {anime.themes?.map((theme) => (
-                <Text
-                  key={theme.id}
-                  style={styles.theme}
-                >
-                  {theme.name}
-                </Text>
-              ))}
-            </View>
-
-            <Text style={styles.overview}>
-              {anime.overview}
-            </Text>
-          </View>
-        )}
+        ListHeaderComponent={Header({
+          anime: anime,
+        })}
       />
     </SafeAreaView>
   );
