@@ -1,7 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Checkbox from 'expo-checkbox';
 import React, { useContext, useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { EpisodeEntry, Season, User } from '../../models';
 import ProgressBar from '../atoms/ProgressBar';
@@ -15,6 +14,7 @@ type Props = {
 
 export default function SeasonCard({ season, onSeasonChange, style }: Props) {
   const { user } = useContext(AuthContext);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [showEpisodes, setShowEpisodes] = useState(false);
 
   const episodesReadCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
@@ -72,37 +72,57 @@ export default function SeasonCard({ season, onSeasonChange, style }: Props) {
           </Text>
 
           {user ? (
-            <Checkbox
-              value={isWatched}
-              onValueChange={async (value) => {
-                onSeasonChange(season.copy({
-                  episodes: await Promise.all(season.episodes?.map(async (episode) => {
-                    if (value && !episode['episode-entry']) {
-                      const episodeEntry = new EpisodeEntry({
-                        user: new User({ id: user.id }),
-                        episode: episode,
-                      });
-                      await episodeEntry.save();
-
-                      return episode.copy({
-                        'episode-entry': episodeEntry,
-                      });
-                    } else if (!value && episode['episode-entry']) {
-                      await episode['episode-entry'].delete();
-
-                      return episode.copy({
-                        'episode-entry': null,
-                      });
-                    }
-
-                    return episode;
-                  }) ?? []),
-                }));
-              }}
+            <View
               style={{
+                backgroundColor: !isWatched ? '#e5e5e5' : '#4281f5',
+                borderRadius: 360,
+                padding: 8,
                 marginRight: 10,
               }}
-            />
+            >
+              {!isUpdating ? (
+                <MaterialIcons
+                  name="check"
+                  size={20}
+                  color={!isWatched ? '#7e7e7e' : '#fff'}
+                  onPress={async () => {
+                    setIsUpdating(true);
+
+                    onSeasonChange(season.copy({
+                      episodes: await Promise.all(season.episodes?.map(async (episode) => {
+                        if (!isWatched && !episode['episode-entry']) {
+                          const episodeEntry = new EpisodeEntry({
+                            user: new User({ id: user.id }),
+                            episode: episode,
+                          });
+                          await episodeEntry.save();
+
+                          return episode.copy({
+                            'episode-entry': episodeEntry,
+                          });
+                        } else if (isWatched && episode['episode-entry']) {
+                          await episode['episode-entry'].delete();
+
+                          return episode.copy({
+                            'episode-entry': null,
+                          });
+                        }
+
+                        return episode;
+                      }) ?? []),
+                    }));
+
+                    setIsUpdating(false);
+                  }}
+                />
+              ) : (
+                <ActivityIndicator
+                  animating
+                  color="#fff"
+                  size={20}
+                />
+              )}
+            </View>
           ) : null}
         </View>
 
@@ -121,6 +141,7 @@ export default function SeasonCard({ season, onSeasonChange, style }: Props) {
                 episodes: season.episodes?.map((e) => e.id === episode.id ? episode : e),
               }));
             }}
+            updating={isUpdating}
           />
         ))}
       </View>
