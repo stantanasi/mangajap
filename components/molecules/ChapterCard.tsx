@@ -36,7 +36,7 @@ export default function ChapterCard({ chapter, onChapterChange, style }: Props) 
         <Checkbox
           value={isRead}
           onValueChange={async (value) => {
-            if (value) {
+            if (value && !chapter['chapter-entry']) {
               const chapterEntry = new ChapterEntry({
                 user: new User({ id: user.id }),
                 chapter: chapter,
@@ -46,8 +46,8 @@ export default function ChapterCard({ chapter, onChapterChange, style }: Props) 
               onChapterChange(chapter.copy({
                 'chapter-entry': chapterEntry,
               }));
-            } else {
-              await chapter['chapter-entry']?.delete();
+            } else if (!value && chapter['chapter-entry']) {
+              await chapter['chapter-entry'].delete();
 
               onChapterChange(chapter.copy({
                 'chapter-entry': null,

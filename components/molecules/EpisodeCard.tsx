@@ -36,7 +36,7 @@ export default function EpisodeCard({ episode, onEpisodeChange, style }: Props) 
         <Checkbox
           value={isWatched}
           onValueChange={async (value) => {
-            if (value) {
+            if (value && !episode['episode-entry']) {
               const episodeEntry = new EpisodeEntry({
                 user: new User({ id: user.id }),
                 episode: episode,
@@ -46,8 +46,8 @@ export default function EpisodeCard({ episode, onEpisodeChange, style }: Props) 
               onEpisodeChange(episode.copy({
                 'episode-entry': episodeEntry,
               }));
-            } else {
-              await episode['episode-entry']?.delete();
+            } else if (!value && episode['episode-entry']) {
+              await episode['episode-entry'].delete();
 
               onEpisodeChange(episode.copy({
                 'episode-entry': null,

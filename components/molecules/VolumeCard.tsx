@@ -83,7 +83,7 @@ export default function VolumeCard({ volume, onVolumeChange, style }: Props) {
             <Checkbox
               value={isRead}
               onValueChange={async (value) => {
-                if (value) {
+                if (value && !volume['volume-entry']) {
                   const volumeEntry = new VolumeEntry({
                     user: new User({ id: user.id }),
                     volume: volume,
@@ -93,8 +93,8 @@ export default function VolumeCard({ volume, onVolumeChange, style }: Props) {
                   onVolumeChange(volume.copy({
                     'volume-entry': volumeEntry,
                   }));
-                } else {
-                  await volume['volume-entry']?.delete();
+                } else if (!value && volume['volume-entry']) {
+                  await volume['volume-entry'].delete();
 
                   onVolumeChange(volume.copy({
                     'volume-entry': null,
@@ -103,11 +103,7 @@ export default function VolumeCard({ volume, onVolumeChange, style }: Props) {
 
                 onVolumeChange(volume.copy({
                   chapters: await Promise.all(volume.chapters?.map(async (chapter) => {
-                    if (value && chapter['chapter-entry'] || !value && !chapter['chapter-entry']) {
-                      return chapter;
-                    }
-
-                    if (value) {
+                    if (value && !chapter['chapter-entry']) {
                       const chapterEntry = new ChapterEntry({
                         user: new User({ id: user.id }),
                         chapter: chapter,
@@ -117,13 +113,15 @@ export default function VolumeCard({ volume, onVolumeChange, style }: Props) {
                       return chapter.copy({
                         'chapter-entry': chapterEntry,
                       });
-                    } else {
-                      await chapter['chapter-entry']?.delete();
+                    } else if (!value && chapter['chapter-entry']) {
+                      await chapter['chapter-entry'].delete();
 
                       return chapter.copy({
                         'chapter-entry': null,
                       });
                     }
+
+                    return chapter;
                   }) ?? []),
                 }));
               }}

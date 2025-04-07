@@ -77,11 +77,7 @@ export default function SeasonCard({ season, onSeasonChange, style }: Props) {
               onValueChange={async (value) => {
                 onSeasonChange(season.copy({
                   episodes: await Promise.all(season.episodes?.map(async (episode) => {
-                    if (value && episode['episode-entry'] || !value && !episode['episode-entry']) {
-                      return episode;
-                    }
-
-                    if (value) {
+                    if (value && !episode['episode-entry']) {
                       const episodeEntry = new EpisodeEntry({
                         user: new User({ id: user.id }),
                         episode: episode,
@@ -91,13 +87,15 @@ export default function SeasonCard({ season, onSeasonChange, style }: Props) {
                       return episode.copy({
                         'episode-entry': episodeEntry,
                       });
-                    } else {
-                      await episode['episode-entry']?.delete();
+                    } else if (!value && episode['episode-entry']) {
+                      await episode['episode-entry'].delete();
 
                       return episode.copy({
                         'episode-entry': null,
                       });
                     }
+
+                    return episode;
                   }) ?? []),
                 }));
               }}
