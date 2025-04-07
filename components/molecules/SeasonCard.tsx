@@ -85,34 +85,43 @@ export default function SeasonCard({ season, onSeasonChange, style }: Props) {
                   name="check"
                   size={20}
                   color={!isWatched ? '#7e7e7e' : '#fff'}
-                  onPress={async () => {
+                  onPress={() => {
                     setIsUpdating(true);
 
-                    onSeasonChange(season.copy({
-                      episodes: await Promise.all(season.episodes?.map(async (episode) => {
+                    const updateSeasonEpisodesEntries = async () => {
+                      const episodes = await Promise.all(season.episodes?.map(async (episode) => {
                         if (!isWatched && !episode['episode-entry']) {
                           const episodeEntry = new EpisodeEntry({
                             user: new User({ id: user.id }),
                             episode: episode,
                           });
-                          await episodeEntry.save();
 
-                          return episode.copy({
-                            'episode-entry': episodeEntry,
-                          });
+                          return episodeEntry.save()
+                            .then((entry) => episode.copy({ 'episode-entry': entry }))
+                            .catch((err) => {
+                              console.error(err);
+                              return episode;
+                            });
                         } else if (isWatched && episode['episode-entry']) {
-                          await episode['episode-entry'].delete();
-
-                          return episode.copy({
-                            'episode-entry': null,
-                          });
+                          return episode['episode-entry'].delete()
+                            .then(() => episode.copy({ 'episode-entry': null }))
+                            .catch((err) => {
+                              console.error(err);
+                              return episode;
+                            });
                         }
 
                         return episode;
-                      }) ?? []),
-                    }));
+                      }) ?? []);
 
-                    setIsUpdating(false);
+                      onSeasonChange(season.copy({
+                        episodes: episodes,
+                      }));
+                    };
+
+                    updateSeasonEpisodesEntries()
+                      .catch((err) => console.error(err))
+                      .finally(() => setIsUpdating(false));
                   }}
                 />
               ) : (

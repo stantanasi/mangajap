@@ -52,28 +52,32 @@ export default function EpisodeCard({ episode, onEpisodeChange, updating = false
               name="check"
               size={20}
               color={!isWatched ? '#7e7e7e' : '#fff'}
-              onPress={async () => {
+              onPress={() => {
                 setIsUpdating(true);
 
-                if (!isWatched && !episode['episode-entry']) {
-                  const episodeEntry = new EpisodeEntry({
-                    user: new User({ id: user.id }),
-                    episode: episode,
-                  });
-                  await episodeEntry.save();
+                const updateEpisodeEntry = async () => {
+                  if (!isWatched && !episode['episode-entry']) {
+                    const episodeEntry = new EpisodeEntry({
+                      user: new User({ id: user.id }),
+                      episode: episode,
+                    });
+                    await episodeEntry.save();
 
-                  onEpisodeChange(episode.copy({
-                    'episode-entry': episodeEntry,
-                  }));
-                } else if (isWatched && episode['episode-entry']) {
-                  await episode['episode-entry'].delete();
+                    onEpisodeChange(episode.copy({
+                      'episode-entry': episodeEntry,
+                    }));
+                  } else if (isWatched && episode['episode-entry']) {
+                    await episode['episode-entry'].delete();
 
-                  onEpisodeChange(episode.copy({
-                    'episode-entry': null,
-                  }));
-                }
+                    onEpisodeChange(episode.copy({
+                      'episode-entry': null,
+                    }));
+                  }
+                };
 
-                setIsUpdating(false);
+                updateEpisodeEntry()
+                  .catch((err) => console.error(err))
+                  .finally(() => setIsUpdating(false));
               }}
             />
           ) : (

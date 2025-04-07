@@ -93,52 +93,64 @@ export default function VolumeCard({ volume, onVolumeChange, style }: Props) {
                   name="check"
                   size={20}
                   color={!isRead ? '#7e7e7e' : '#fff'}
-                  onPress={async () => {
+                  onPress={() => {
                     setIsUpdating(true);
 
-                    if (!isRead && !volume['volume-entry']) {
-                      const volumeEntry = new VolumeEntry({
-                        user: new User({ id: user.id }),
-                        volume: volume,
-                      });
-                      await volumeEntry.save();
+                    const updateVolumeEntry = async () => {
+                      if (!isRead && !volume['volume-entry']) {
+                        const volumeEntry = new VolumeEntry({
+                          user: new User({ id: user.id }),
+                          volume: volume,
+                        });
+                        await volumeEntry.save();
 
-                      onVolumeChange(volume.copy({
-                        'volume-entry': volumeEntry,
-                      }));
-                    } else if (isRead && volume['volume-entry']) {
-                      await volume['volume-entry'].delete();
+                        onVolumeChange(volume.copy({
+                          'volume-entry': volumeEntry,
+                        }));
+                      } else if (isRead && volume['volume-entry']) {
+                        await volume['volume-entry'].delete();
 
-                      onVolumeChange(volume.copy({
-                        'volume-entry': null,
-                      }));
-                    }
+                        onVolumeChange(volume.copy({
+                          'volume-entry': null,
+                        }));
+                      }
+                    };
 
-                    onVolumeChange(volume.copy({
-                      chapters: await Promise.all(volume.chapters?.map(async (chapter) => {
+                    const updateVolumeChaptersEntries = async () => {
+                      const chapters = await Promise.all(volume.chapters?.map(async (chapter, i) => {
                         if (!isRead && !chapter['chapter-entry']) {
                           const chapterEntry = new ChapterEntry({
                             user: new User({ id: user.id }),
                             chapter: chapter,
                           });
-                          await chapterEntry.save();
 
-                          return chapter.copy({
-                            'chapter-entry': chapterEntry,
-                          });
+                          return chapterEntry.save()
+                            .then((entry) => chapter.copy({ 'chapter-entry': entry }))
+                            .catch((err) => {
+                              console.error(err);
+                              return chapter;
+                            });
                         } else if (isRead && chapter['chapter-entry']) {
-                          await chapter['chapter-entry'].delete();
-
-                          return chapter.copy({
-                            'chapter-entry': null,
-                          });
+                          return chapter['chapter-entry'].delete()
+                            .then(() => chapter.copy({ 'chapter-entry': null }))
+                            .catch((err) => {
+                              console.error(err);
+                              return chapter;
+                            });
                         }
 
                         return chapter;
-                      }) ?? []),
-                    }));
+                      }) ?? []);
 
-                    setIsUpdating(false);
+                      onVolumeChange(volume.copy({
+                        chapters: chapters,
+                      }));
+                    };
+
+                    updateVolumeEntry()
+                      .then(() => updateVolumeChaptersEntries())
+                      .catch((err) => console.error(err))
+                      .finally(() => setIsUpdating(false));
                   }}
                 />
               ) : (

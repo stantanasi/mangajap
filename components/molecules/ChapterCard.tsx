@@ -52,28 +52,32 @@ export default function ChapterCard({ chapter, onChapterChange, updating = false
               name="check"
               size={20}
               color={!isRead ? '#7e7e7e' : '#fff'}
-              onPress={async () => {
+              onPress={() => {
                 setIsUpdating(true);
 
-                if (!isRead && !chapter['chapter-entry']) {
-                  const chapterEntry = new ChapterEntry({
-                    user: new User({ id: user.id }),
-                    chapter: chapter,
-                  });
-                  await chapterEntry.save();
+                const updateChapterEntry = async () => {
+                  if (!isRead && !chapter['chapter-entry']) {
+                    const chapterEntry = new ChapterEntry({
+                      user: new User({ id: user.id }),
+                      chapter: chapter,
+                    });
+                    await chapterEntry.save();
 
-                  onChapterChange(chapter.copy({
-                    'chapter-entry': chapterEntry,
-                  }));
-                } else if (isRead && chapter['chapter-entry']) {
-                  await chapter['chapter-entry'].delete();
+                    onChapterChange(chapter.copy({
+                      'chapter-entry': chapterEntry,
+                    }));
+                  } else if (isRead && chapter['chapter-entry']) {
+                    await chapter['chapter-entry'].delete();
 
-                  onChapterChange(chapter.copy({
-                    'chapter-entry': null,
-                  }));
-                }
+                    onChapterChange(chapter.copy({
+                      'chapter-entry': null,
+                    }));
+                  }
+                };
 
-                setIsUpdating(false);
+                updateChapterEntry()
+                  .catch((err) => console.error(err))
+                  .finally(() => setIsUpdating(false));
               }}
             />
           ) : (
