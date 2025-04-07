@@ -1,7 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Checkbox from 'expo-checkbox';
 import React, { useContext, useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { ChapterEntry, User, Volume, VolumeEntry } from '../../models';
 import ProgressBar from '../atoms/ProgressBar';
@@ -15,6 +14,7 @@ type Props = {
 
 export default function VolumeCard({ volume, onVolumeChange, style }: Props) {
   const { user } = useContext(AuthContext);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [showChapters, setShowChapters] = useState(false);
 
   const chaptersReadCount = volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0;
@@ -80,55 +80,75 @@ export default function VolumeCard({ volume, onVolumeChange, style }: Props) {
           </Text>
 
           {user ? (
-            <Checkbox
-              value={isRead}
-              onValueChange={async (value) => {
-                if (value && !volume['volume-entry']) {
-                  const volumeEntry = new VolumeEntry({
-                    user: new User({ id: user.id }),
-                    volume: volume,
-                  });
-                  await volumeEntry.save();
-
-                  onVolumeChange(volume.copy({
-                    'volume-entry': volumeEntry,
-                  }));
-                } else if (!value && volume['volume-entry']) {
-                  await volume['volume-entry'].delete();
-
-                  onVolumeChange(volume.copy({
-                    'volume-entry': null,
-                  }));
-                }
-
-                onVolumeChange(volume.copy({
-                  chapters: await Promise.all(volume.chapters?.map(async (chapter) => {
-                    if (value && !chapter['chapter-entry']) {
-                      const chapterEntry = new ChapterEntry({
-                        user: new User({ id: user.id }),
-                        chapter: chapter,
-                      });
-                      await chapterEntry.save();
-
-                      return chapter.copy({
-                        'chapter-entry': chapterEntry,
-                      });
-                    } else if (!value && chapter['chapter-entry']) {
-                      await chapter['chapter-entry'].delete();
-
-                      return chapter.copy({
-                        'chapter-entry': null,
-                      });
-                    }
-
-                    return chapter;
-                  }) ?? []),
-                }));
-              }}
+            <View
               style={{
+                backgroundColor: !isRead ? '#e5e5e5' : '#4281f5',
+                borderRadius: 360,
+                padding: 8,
                 marginRight: 10,
               }}
-            />
+            >
+              {!isUpdating ? (
+                <MaterialIcons
+                  name="check"
+                  size={20}
+                  color={!isRead ? '#7e7e7e' : '#fff'}
+                  onPress={async () => {
+                    setIsUpdating(true);
+
+                    if (!isRead && !volume['volume-entry']) {
+                      const volumeEntry = new VolumeEntry({
+                        user: new User({ id: user.id }),
+                        volume: volume,
+                      });
+                      await volumeEntry.save();
+
+                      onVolumeChange(volume.copy({
+                        'volume-entry': volumeEntry,
+                      }));
+                    } else if (isRead && volume['volume-entry']) {
+                      await volume['volume-entry'].delete();
+
+                      onVolumeChange(volume.copy({
+                        'volume-entry': null,
+                      }));
+                    }
+
+                    onVolumeChange(volume.copy({
+                      chapters: await Promise.all(volume.chapters?.map(async (chapter) => {
+                        if (!isRead && !chapter['chapter-entry']) {
+                          const chapterEntry = new ChapterEntry({
+                            user: new User({ id: user.id }),
+                            chapter: chapter,
+                          });
+                          await chapterEntry.save();
+
+                          return chapter.copy({
+                            'chapter-entry': chapterEntry,
+                          });
+                        } else if (isRead && chapter['chapter-entry']) {
+                          await chapter['chapter-entry'].delete();
+
+                          return chapter.copy({
+                            'chapter-entry': null,
+                          });
+                        }
+
+                        return chapter;
+                      }) ?? []),
+                    }));
+
+                    setIsUpdating(false);
+                  }}
+                />
+              ) : (
+                <ActivityIndicator
+                  animating
+                  color="#fff"
+                  size={20}
+                />
+              )}
+            </View>
           ) : null}
         </View>
 
@@ -147,6 +167,7 @@ export default function VolumeCard({ volume, onVolumeChange, style }: Props) {
                 chapters: volume.chapters?.map((c) => c.id === chapter.id ? chapter : c),
               }));
             }}
+            updating={isUpdating}
           />
         ))}
       </View>

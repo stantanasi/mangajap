@@ -1,17 +1,23 @@
-import Checkbox from 'expo-checkbox';
-import React, { useContext } from 'react';
-import { Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import React, { useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../models';
 
 type Props = {
   chapter: Chapter;
   onChapterChange: (chapter: Chapter) => void;
+  updating?: boolean;
   style?: ViewStyle;
 }
 
-export default function ChapterCard({ chapter, onChapterChange, style }: Props) {
+export default function ChapterCard({ chapter, onChapterChange, updating = false, style }: Props) {
   const { user } = useContext(AuthContext);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    setIsUpdating(updating);
+  }, [updating]);
 
   const isRead = !!chapter['chapter-entry'];
 
@@ -22,7 +28,7 @@ export default function ChapterCard({ chapter, onChapterChange, style }: Props) 
         style={styles.cover}
       />
 
-      <View style={{ flex: 1, padding: 10 }}>
+      <View style={{ flex: 1, margin: 10 }}>
         <Text style={styles.number}>
           Chapitre {chapter.number}
         </Text>
@@ -33,31 +39,51 @@ export default function ChapterCard({ chapter, onChapterChange, style }: Props) 
       </View>
 
       {user ? (
-        <Checkbox
-          value={isRead}
-          onValueChange={async (value) => {
-            if (value && !chapter['chapter-entry']) {
-              const chapterEntry = new ChapterEntry({
-                user: new User({ id: user.id }),
-                chapter: chapter,
-              });
-              await chapterEntry.save();
-
-              onChapterChange(chapter.copy({
-                'chapter-entry': chapterEntry,
-              }));
-            } else if (!value && chapter['chapter-entry']) {
-              await chapter['chapter-entry'].delete();
-
-              onChapterChange(chapter.copy({
-                'chapter-entry': null,
-              }));
-            }
-          }}
+        <View
           style={{
+            backgroundColor: !isRead ? '#e5e5e5' : '#4281f5',
+            borderRadius: 360,
+            padding: 8,
             marginRight: 10,
           }}
-        />
+        >
+          {!isUpdating ? (
+            <MaterialIcons
+              name="check"
+              size={20}
+              color={!isRead ? '#7e7e7e' : '#fff'}
+              onPress={async () => {
+                setIsUpdating(true);
+
+                if (!isRead && !chapter['chapter-entry']) {
+                  const chapterEntry = new ChapterEntry({
+                    user: new User({ id: user.id }),
+                    chapter: chapter,
+                  });
+                  await chapterEntry.save();
+
+                  onChapterChange(chapter.copy({
+                    'chapter-entry': chapterEntry,
+                  }));
+                } else if (isRead && chapter['chapter-entry']) {
+                  await chapter['chapter-entry'].delete();
+
+                  onChapterChange(chapter.copy({
+                    'chapter-entry': null,
+                  }));
+                }
+
+                setIsUpdating(false);
+              }}
+            />
+          ) : (
+            <ActivityIndicator
+              animating
+              color="#fff"
+              size={20}
+            />
+          )}
+        </View>
       ) : null}
     </View>
   );
