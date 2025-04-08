@@ -8,7 +8,7 @@ import { Anime, Manga } from '../../models';
 
 type Props = StaticScreenProps<{}>;
 
-export default function HomeScreen({ route }: Props) {
+export default function DiscoverScreen({ route }: Props) {
   const navigation = useNavigation();
   const [animes, setAnimes] = useState<Anime[]>();
   const [mangas, setMangas] = useState<Manga[]>();

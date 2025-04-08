@@ -8,7 +8,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import AnimeScreen from './screens/anime/AnimeScreen';
-import HomeScreen from './screens/home/HomeScreen';
+import DiscoverScreen from './screens/discover/DiscoverScreen';
 import MangaScreen from './screens/manga/MangaScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
 import SearchScreen from './screens/search/SearchScreen';
@@ -18,13 +18,13 @@ const MainTabs = createBottomTabNavigator({
     header: () => null,
   },
   screens: {
-    Home: {
-      screen: HomeScreen,
+    Discover: {
+      screen: DiscoverScreen,
       options: {
         tabBarShowLabel: false,
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons
-            name="home"
+            name="search"
             size={size}
             color={color}
           />
