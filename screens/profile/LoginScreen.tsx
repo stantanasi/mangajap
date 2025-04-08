@@ -2,9 +2,11 @@ import React, { useContext, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 
-type Props = {};
+type Props = {
+  onNavigateToRegister: () => void;
+};
 
-export default function LoginScreen({ }: Props) {
+export default function LoginScreen({ onNavigateToRegister }: Props) {
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -69,6 +71,17 @@ export default function LoginScreen({ }: Props) {
           color="#000"
         />
       </Pressable>
+
+      <Text
+        onPress={() => onNavigateToRegister()}
+        style={{
+          color: '#444',
+          marginTop: 30,
+          textAlign: 'center',
+        }}
+      >
+        Toujours pas inscrit ? Rejoignez-nous !
+      </Text>
     </View>
   );
 }

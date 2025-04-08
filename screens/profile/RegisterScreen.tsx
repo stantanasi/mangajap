@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
-type Props = {};
+type Props = {
+  onNavigateToLogin: () => void;
+};
 
-export default function RegisterScreen({ }: Props) {
+export default function RegisterScreen({ onNavigateToLogin }: Props) {
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -49,6 +51,17 @@ export default function RegisterScreen({ }: Props) {
           style={styles.input}
         />
       </View>
+
+      <Text
+        onPress={() => onNavigateToLogin()}
+        style={{
+          color: '#444',
+          marginTop: 30,
+          textAlign: 'center',
+        }}
+      >
+        Déjà inscrit ? Connectez-nous !
+      </Text>
     </View>
   );
 }

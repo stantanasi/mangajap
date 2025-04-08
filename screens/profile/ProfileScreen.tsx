@@ -16,6 +16,7 @@ type Props = StaticScreenProps<{
 export default function ProfileScreen({ route }: Props) {
   const navigation = useNavigation();
   const { user: authenticatedUser, logout } = useContext(AuthContext);
+  const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
   const [user, setUser] = useState<User>();
 
   const id = route.params?.id ?? authenticatedUser?.id;
@@ -44,8 +45,15 @@ export default function ProfileScreen({ route }: Props) {
   if (!id) {
     return (
       <SafeAreaView>
-        <LoginScreen />
-        <RegisterScreen />
+        {authScreen === 'login' ? (
+          <LoginScreen
+            onNavigateToRegister={() => setAuthScreen('register')}
+          />
+        ) : (
+          <RegisterScreen
+            onNavigateToLogin={() => setAuthScreen('login')}
+          />
+        )}
       </SafeAreaView>
     );
   }
