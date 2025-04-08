@@ -16,6 +16,7 @@ export default function SearchScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <TextInput
+        autoFocus
         value={query}
         onChangeText={(text) => setQuery(text)}
         onSubmitEditing={async () => {
