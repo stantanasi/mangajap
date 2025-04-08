@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AuthContext } from '../../contexts/AuthContext';
 
 type Props = {
   onNavigateToLogin: () => void;
 };
 
 export default function RegisterScreen({ onNavigateToLogin }: Props) {
+  const { register } = useContext(AuthContext);
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -52,6 +55,32 @@ export default function RegisterScreen({ onNavigateToLogin }: Props) {
         />
       </View>
 
+      <Pressable
+        disabled={isRegistering}
+        onPress={() => {
+          setIsRegistering(true)
+
+          register(pseudo, email, password)
+            .catch((err) => console.error(err))
+            .finally(() => setIsRegistering(false))
+        }}
+        style={styles.button}
+      >
+        <Text
+          style={{
+            color: '#000',
+            fontSize: 16,
+            fontWeight: 'bold',
+          }}
+        >
+          Inscription
+        </Text>
+        <ActivityIndicator
+          animating={isRegistering}
+          color="#000"
+        />
+      </Pressable>
+
       <Text
         onPress={() => onNavigateToLogin()}
         style={{
@@ -76,5 +105,17 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     padding: 10,
+  },
+  button: {
+    alignItems: 'center',
+    borderColor: '#000',
+    borderRadius: 360,
+    borderWidth: 2,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 12,
+    marginTop: 60,
+    paddingHorizontal: 25,
+    paddingVertical: 15,
   },
 });
