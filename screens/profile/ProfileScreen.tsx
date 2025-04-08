@@ -139,6 +139,12 @@ export default function ProfileScreen({ route }: Props) {
     if (!id) return
 
     User.findById(id)
+      .include([
+        'anime-library.anime',
+        'manga-library.manga',
+        'anime-favorites.anime',
+        'manga-favorites.manga',
+      ])
       .then((user) => setUser(user));
   }, [id]);
 
