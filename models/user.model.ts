@@ -15,6 +15,8 @@ export interface IUser {
   id: string;
 
   pseudo: string;
+  email?: string;
+  password?: string;
   firstName: string;
   lastName: string;
   about: string;
@@ -46,6 +48,10 @@ export interface IUser {
 export const UserSchema = new Schema<IUser>({
   attributes: {
     pseudo: {},
+
+    email: {},
+
+    password: {},
 
     firstName: {},
 

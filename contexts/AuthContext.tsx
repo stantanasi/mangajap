@@ -2,6 +2,7 @@ import { connect } from "@stantanasi/jsonapi-client";
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import React, { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import { auth } from "../firebaseConfig";
+import { User } from "../models";
 
 interface IAuthContext {
   isReady: boolean;
@@ -10,6 +11,7 @@ interface IAuthContext {
     id: string;
     token: string;
   } | null;
+  register: (pseudo: string, email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -18,6 +20,7 @@ export const AuthContext = createContext<IAuthContext>({
   isReady: false,
   isAuthenticated: false,
   user: null,
+  register: async () => { },
   login: async () => { },
   logout: async () => { },
 });
@@ -54,6 +57,17 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         isReady: isReady,
         isAuthenticated: !!user,
         user: user,
+
+        register: async (pseudo, email, password) => {
+          const user = new User({
+            pseudo: pseudo,
+            email: email,
+            password: password,
+          });
+          await user.save();
+
+          await signInWithEmailAndPassword(auth, email, password);
+        },
 
         login: async (email, password) => {
           await signInWithEmailAndPassword(auth, email, password);

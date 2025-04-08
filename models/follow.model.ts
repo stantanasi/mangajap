@@ -32,6 +32,6 @@ export const FollowSchema = new Schema<IFollow>({
 
 class Follow extends model<IFollow>(FollowSchema) { }
 
-Follow.register("Follow");
+Follow.register("follows");
 
 export default Follow;

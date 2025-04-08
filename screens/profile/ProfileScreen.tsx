@@ -1,184 +1,59 @@
-import { StaticScreenProps } from '@react-navigation/native';
+import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Modal, Pressable, StyleSheet, Text, TextInput } from 'react-native';
+import { ActivityIndicator, FlatList, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AnimeCard from '../../components/molecules/AnimeCard';
+import MangaCard from '../../components/molecules/MangaCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { User } from '../../models';
-
-const LoginModal = ({ visible, onRequestClose }: {
-  visible: boolean
-  onRequestClose: () => void
-}) => {
-  const { login } = useContext(AuthContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLogging, setIsLogging] = useState(false);
-
-  return (
-    <Modal
-      animationType="fade"
-      onRequestClose={() => onRequestClose()}
-      transparent
-      visible={visible}
-    >
-      <Pressable
-        onPress={() => onRequestClose()}
-        style={{
-          backgroundColor: '#00000052',
-          flex: 1,
-          justifyContent: 'flex-end',
-        }}
-      >
-        <Pressable
-          style={{
-            backgroundColor: '#fff',
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 26,
-              fontWeight: 'bold',
-              paddingHorizontal: 16,
-              marginTop: 16,
-              textAlign: 'center',
-            }}
-          >
-            Me connecter
-          </Text>
-
-          <TextInput
-            value={email}
-            onChangeText={(value) => setEmail(value)}
-            placeholder="Email"
-            placeholderTextColor="#a1a1a1"
-            keyboardType='email-address'
-            style={{
-              borderColor: '#EAEDE8',
-              borderRadius: 4,
-              borderWidth: 1,
-              marginTop: 24,
-              marginHorizontal: 20,
-              paddingHorizontal: 6,
-              paddingVertical: 8,
-            }}
-          />
-
-          <TextInput
-            value={password}
-            onChangeText={(value) => setPassword(value)}
-            placeholder="Mot de passe"
-            placeholderTextColor="#a1a1a1"
-            secureTextEntry
-            style={{
-              borderColor: '#EAEDE8',
-              borderRadius: 4,
-              borderWidth: 1,
-              marginTop: 24,
-              marginHorizontal: 20,
-              paddingHorizontal: 6,
-              paddingVertical: 8,
-            }}
-          />
-
-          <Pressable
-            onPress={() => {
-              setIsLogging(true)
-
-              login(email, password)
-                .then(() => onRequestClose())
-                .catch((err) => console.error(err))
-                .finally(() => setIsLogging(false))
-            }}
-            style={{
-              alignItems: 'center',
-              backgroundColor: '#000',
-              borderRadius: 10,
-              flexDirection: 'row',
-              justifyContent: 'center',
-              gap: 12,
-              marginHorizontal: 20,
-              marginVertical: 24,
-              padding: 16,
-            }}
-          >
-            <Text
-              disabled={isLogging}
-              style={{
-                color: '#fff',
-                fontWeight: 'bold',
-              }}
-            >
-              Se connecter
-            </Text>
-            <ActivityIndicator
-              animating={isLogging}
-              color="#fff"
-            />
-          </Pressable>
-        </Pressable>
-      </Pressable>
-    </Modal >
-  )
-}
-
+import LoginContent from './LoginContent';
+import RegisterContent from './RegisterContent';
 
 type Props = StaticScreenProps<{
   id?: string;
 }>;
 
 export default function ProfileScreen({ route }: Props) {
+  const navigation = useNavigation();
   const { user: authenticatedUser, logout } = useContext(AuthContext);
+  const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
   const [user, setUser] = useState<User>();
-  const [isLoginModalVisible, setLoginModalVisible] = useState(false);
 
   const id = route.params?.id ?? authenticatedUser?.id;
 
   useEffect(() => {
     if (!id) return
 
-    User.findById(id)
-      .then((user) => setUser(user));
+    const prepare = async () => {
+      setUser(undefined);
+
+      const user = await User.findById(id)
+        .include([
+          'anime-library.anime',
+          'manga-library.manga',
+          'anime-favorites.anime',
+          'manga-favorites.manga',
+        ]);
+
+      setUser(user);
+    }
+
+    prepare()
+      .catch((err) => console.error(err));
   }, [id]);
 
   if (!id) {
     return (
-      <SafeAreaView
-        style={{
-          alignItems: 'center',
-          flex: 1,
-          gap: 20,
-          justifyContent: 'center',
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 20,
-          }}
-        >
-          Vous n'êtes pas connecté
-        </Text>
-
-        <Text
-          onPress={() => setLoginModalVisible(true)}
-          style={{
-            backgroundColor: '#000',
-            borderColor: '#000',
-            borderRadius: 360,
-            borderWidth: 1,
-            color: '#fff',
-            paddingHorizontal: 12,
-            paddingVertical: 4,
-          }}
-        >
-          Connexion
-        </Text>
-
-        <LoginModal
-          visible={isLoginModalVisible}
-          onRequestClose={() => setLoginModalVisible(false)}
-        />
+      <SafeAreaView>
+        {authScreen === 'login' ? (
+          <LoginContent
+            onNavigateToRegister={() => setAuthScreen('register')}
+          />
+        ) : (
+          <RegisterContent
+            onNavigateToLogin={() => setAuthScreen('login')}
+          />
+        )}
       </SafeAreaView>
     );
   }
@@ -203,37 +78,277 @@ export default function ProfileScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text
-        style={{
-          fontSize: 24,
-          marginTop: 24,
-          textAlign: 'center',
+      <ScrollView
+        contentContainerStyle={{
+          paddingVertical: 16,
         }}
       >
-        {user.pseudo}
-      </Text>
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginHorizontal: 16,
+          }}
+        >
+          <Image
+            source={{ uri: user.avatar ?? undefined }}
+            style={styles.avatar}
+          />
 
-      <Text
-        onPress={() => logout()}
-        style={{
-          alignSelf: 'center',
-          backgroundColor: '#000',
-          borderColor: '#000',
-          borderRadius: 360,
-          borderWidth: 1,
-          color: '#fff',
-          marginTop: 20,
-          paddingHorizontal: 12,
-          paddingVertical: 4,
-          textAlign: 'center',
-        }}
-      >
-        Se déconnecter
-      </Text>
-    </SafeAreaView>
+          <View
+            style={{
+              flex: 1,
+              marginLeft: 16,
+            }}
+          >
+            <Text style={styles.pseudo}>
+              {user.pseudo}
+            </Text>
+
+            <Text style={styles.bio}>
+              {user.about}
+            </Text>
+
+            <Text
+              style={{
+                color: '#888',
+                fontSize: 13,
+                marginTop: 6,
+              }}
+            >
+              <Text>
+                <Text style={{ color: '#000', fontWeight: 'bold' }}>{user.followersCount}</Text>
+                <Text> abonnées</Text>
+              </Text>
+              <Text style={{ color: '#000', fontWeight: 'bold' }}> • </Text>
+              <Text>
+                <Text style={{ color: '#000', fontWeight: 'bold' }}>{user.followingCount}</Text>
+                <Text> abonnements</Text>
+              </Text>
+            </Text>
+          </View>
+        </View>
+
+        <Text
+          onPress={() => logout()}
+          style={{
+            alignSelf: 'flex-start',
+            borderColor: '#000',
+            borderRadius: 360,
+            borderWidth: 1,
+            color: '#000',
+            fontWeight: 'bold',
+            marginBottom: 10,
+            marginHorizontal: 16,
+            marginTop: 20,
+            paddingHorizontal: 12,
+            paddingVertical: 4,
+          }}
+        >
+          Déconnexion
+        </Text>
+
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 6,
+            marginHorizontal: 16,
+            marginTop: 20,
+          }}
+        >
+          Statistiques
+        </Text>
+
+        <FlatList
+          horizontal
+          data={[
+            { label: 'Épisodes vus', value: user.episodesWatch },
+            { label: 'Tomes lus', value: user.volumesRead },
+            { label: 'Chapitres lus', value: user.chaptersRead },
+          ]}
+          keyExtractor={(item) => item.label}
+          renderItem={({ item }) => (
+            <View
+              style={{
+                minWidth: 200,
+                alignItems: 'center',
+                borderColor: '#ccc',
+                borderRadius: 4,
+                borderWidth: 1,
+                gap: 6,
+                paddingHorizontal: 16,
+                paddingVertical: 6,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: 'bold',
+                  marginHorizontal: 10,
+                }}
+              >
+                {item.label}
+              </Text>
+
+              <View style={{ width: '100%', height: 1, backgroundColor: '#ccc' }} />
+
+              <Text
+                style={{
+                  fontSize: 24,
+                  fontWeight: 'bold',
+                  marginHorizontal: 10,
+                }}
+              >
+                {item.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+              </Text>
+            </View>
+          )}
+          ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
+          ListHeaderComponent={() => <View style={{ width: 16 }} />}
+          ListFooterComponent={() => <View style={{ width: 16 }} />}
+        />
+
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 6,
+            marginHorizontal: 16,
+            marginTop: 20,
+          }}
+        >
+          Animes
+        </Text>
+
+        <FlatList
+          horizontal
+          data={user['anime-library']!.map((entry) => entry.anime!.copy({
+            'anime-entry': entry,
+          }))}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <AnimeCard
+              anime={item}
+              onPress={() => navigation.navigate('Anime', { id: item.id })}
+            />
+          )}
+          ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
+          ListHeaderComponent={() => <View style={{ width: 16 }} />}
+          ListFooterComponent={() => <View style={{ width: 16 }} />}
+        />
+
+        {user['anime-favorites']!.length > 0 ? (
+          <>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                marginBottom: 6,
+                marginHorizontal: 16,
+                marginTop: 20,
+              }}
+            >
+              Animes préférées
+            </Text>
+
+            <FlatList
+              horizontal
+              data={user['anime-favorites']!.map((entry) => entry.anime!.copy({
+                'anime-entry': entry,
+              }))}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <AnimeCard
+                  anime={item}
+                  onPress={() => navigation.navigate('Anime', { id: item.id })}
+                />
+              )}
+              ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
+              ListHeaderComponent={() => <View style={{ width: 16 }} />}
+              ListFooterComponent={() => <View style={{ width: 16 }} />}
+            />
+          </>
+        ) : null}
+
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 6,
+            marginHorizontal: 16,
+            marginTop: 20,
+          }}
+        >
+          Mangas
+        </Text>
+
+        <FlatList
+          horizontal
+          data={user['manga-library']!.map((entry) => entry.manga!.copy({
+            'manga-entry': entry,
+          }))}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <MangaCard
+              manga={item}
+              onPress={() => navigation.navigate('Manga', { id: item.id })}
+            />
+          )}
+          ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
+          ListHeaderComponent={() => <View style={{ width: 16 }} />}
+          ListFooterComponent={() => <View style={{ width: 16 }} />}
+        />
+
+        {user['manga-favorites']!.length > 0 ? (
+          <>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                marginBottom: 6,
+                marginHorizontal: 16,
+                marginTop: 20,
+              }}
+            >
+              Mangas préférées
+            </Text>
+
+            <FlatList
+              horizontal
+              data={user['manga-favorites']!.map((entry) => entry.manga!.copy({
+                'manga-entry': entry,
+              }))}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <MangaCard
+                  manga={item}
+                  onPress={() => navigation.navigate('Manga', { id: item.id })}
+                />
+              )}
+              ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
+              ListHeaderComponent={() => <View style={{ width: 16 }} />}
+              ListFooterComponent={() => <View style={{ width: 16 }} />}
+            />
+          </>
+        ) : null}
+      </ScrollView>
+    </SafeAreaView >
   );
 }
 
 const styles = StyleSheet.create({
   container: {},
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 360,
+  },
+  pseudo: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  bio: {
+    color: '#444',
+  },
 });
