@@ -1,3 +1,4 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -11,6 +12,7 @@ export default function RegisterScreen({ onNavigateToLogin }: Props) {
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [hidePassword, setHidePassword] = useState(true);
   const [isRegistering, setIsRegistering] = useState(false);
 
   return (
@@ -44,15 +46,26 @@ export default function RegisterScreen({ onNavigateToLogin }: Props) {
           style={styles.input}
         />
 
-        <TextInput
-          value={password}
-          onChangeText={(value) => setPassword(value)}
-          placeholder="Mot de passe"
-          placeholderTextColor="#666"
-          secureTextEntry
-          autoCapitalize="none"
-          style={styles.input}
-        />
+        <View style={[styles.input, { flexDirection: 'row' }]}>
+          <TextInput
+            value={password}
+            onChangeText={(value) => setPassword(value)}
+            placeholder="Mot de passe"
+            placeholderTextColor="#666"
+            secureTextEntry={hidePassword}
+            autoCapitalize="none"
+            style={{
+              flex: 1,
+              padding: 0,
+            }}
+          />
+          <MaterialIcons
+            name={hidePassword ? 'visibility-off' : 'visibility'}
+            size={24}
+            color="black"
+            onPress={() => setHidePassword((prev) => !prev)}
+          />
+        </View>
       </View>
 
       <Pressable
