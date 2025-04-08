@@ -22,14 +22,22 @@ export default function ProfileScreen({ route }: Props) {
   useEffect(() => {
     if (!id) return
 
-    User.findById(id)
-      .include([
-        'anime-library.anime',
-        'manga-library.manga',
-        'anime-favorites.anime',
-        'manga-favorites.manga',
-      ])
-      .then((user) => setUser(user));
+    const prepare = async () => {
+      setUser(undefined);
+
+      const user = await User.findById(id)
+        .include([
+          'anime-library.anime',
+          'manga-library.manga',
+          'anime-favorites.anime',
+          'manga-favorites.manga',
+        ]);
+
+      setUser(user);
+    }
+
+    prepare()
+      .catch((err) => console.error(err));
   }, [id]);
 
   if (!id) {
