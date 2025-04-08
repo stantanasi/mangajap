@@ -7,6 +7,7 @@ import MangaCard from '../../components/molecules/MangaCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { User } from '../../models';
 import LoginScreen from './LoginScreen';
+import RegisterScreen from './RegisterScreen';
 
 type Props = StaticScreenProps<{
   id?: string;
@@ -44,6 +45,7 @@ export default function ProfileScreen({ route }: Props) {
     return (
       <SafeAreaView>
         <LoginScreen />
+        <RegisterScreen />
       </SafeAreaView>
     );
   }
