@@ -101,6 +101,16 @@ export default function SearchScreen({ route }: Props) {
                 }}
               />
             )}
+            ItemSeparatorComponent={() => (
+              <View
+                style={{
+                  width: '100%',
+                  height: 1,
+                  backgroundColor: '#ccc',
+                  marginVertical: 8,
+                }}
+              />
+            )}
             style={{
               display: selectedCategory === 'anime' ? 'flex' : 'none',
             }}
@@ -115,6 +125,16 @@ export default function SearchScreen({ route }: Props) {
                 onPress={() => navigation.navigate('Manga', { id: item.id })}
                 style={{
                   marginHorizontal: 16,
+                }}
+              />
+            )}
+            ItemSeparatorComponent={() => (
+              <View
+                style={{
+                  width: '100%',
+                  height: 1,
+                  backgroundColor: '#ccc',
+                  marginVertical: 8,
                 }}
               />
             )}
