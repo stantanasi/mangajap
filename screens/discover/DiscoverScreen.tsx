@@ -1,6 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
@@ -14,36 +14,28 @@ export default function DiscoverScreen({ route }: Props) {
   const [mangas, setMangas] = useState<Manga[]>();
 
   useEffect(() => {
-    Anime.find()
-      .sort({
-        createdAt: 'desc',
-      })
-      .then((animes) => setAnimes(animes));
+    const prepare = async () => {
+      setAnimes(undefined);
+      setMangas(undefined);
 
-    Manga.find()
-      .sort({
-        createdAt: 'desc',
-      })
-      .then((mangas) => setMangas(mangas));
+      const [animes, mangas] = await Promise.all([
+        Anime.find()
+          .sort({
+            createdAt: 'desc',
+          }),
+        Manga.find()
+          .sort({
+            createdAt: 'desc',
+          }),
+      ]);
+
+      setAnimes(animes);
+      setMangas(mangas);
+    };
+
+    prepare()
+      .catch((err) => console.error(err));
   }, []);
-
-  if (!animes || !mangas) {
-    return (
-      <SafeAreaView
-        style={{
-          alignItems: 'center',
-          flex: 1,
-          justifyContent: 'center',
-        }}
-      >
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </SafeAreaView>
-    );
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,41 +46,53 @@ export default function DiscoverScreen({ route }: Props) {
         Rechercher
       </Text>
 
-      <FlatList
-        horizontal
-        data={animes}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <AnimeCard
-            anime={item}
-            onPress={() => navigation.navigate('Anime', { id: item.id })}
+      {!animes || !mangas ? (
+        <ActivityIndicator
+          animating
+          color="#000"
+          size="large"
+        />
+      ) : (
+        <ScrollView>
+          <FlatList
+            horizontal
+            data={animes}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <AnimeCard
+                anime={item}
+                onPress={() => navigation.navigate('Anime', { id: item.id })}
+              />
+            )}
+            ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+            ListHeaderComponent={() => <View style={{ width: 16 }} />}
+            ListFooterComponent={() => <View style={{ width: 16 }} />}
           />
-        )}
-        ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
-        ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => <View style={{ width: 16 }} />}
-      />
 
-      <FlatList
-        horizontal
-        data={mangas}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <MangaCard
-            manga={item}
-            onPress={() => navigation.navigate('Manga', { id: item.id })}
+          <FlatList
+            horizontal
+            data={mangas}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <MangaCard
+                manga={item}
+                onPress={() => navigation.navigate('Manga', { id: item.id })}
+              />
+            )}
+            ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+            ListHeaderComponent={() => <View style={{ width: 16 }} />}
+            ListFooterComponent={() => <View style={{ width: 16 }} />}
           />
-        )}
-        ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
-        ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => <View style={{ width: 16 }} />}
-      />
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
   search: {
     alignItems: 'center',
     borderColor: '#d1d5db',
