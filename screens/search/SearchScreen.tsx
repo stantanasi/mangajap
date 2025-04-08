@@ -1,6 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { FlatList, StyleSheet, TextInput } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeSearchCard from '../../components/molecules/AnimeSearchCard';
 import MangaSearchCard from '../../components/molecules/MangaSearchCard';
@@ -11,7 +11,25 @@ type Props = StaticScreenProps<{}>;
 export default function SearchScreen({ route }: Props) {
   const navigation = useNavigation();
   const [query, setQuery] = useState('');
-  const [data, setData] = useState<(Anime | Manga)[]>([]);
+  const [animes, setAnimes] = useState<Anime[]>();
+  const [mangas, setMangas] = useState<Manga[]>();
+
+  const search = async (query: string) => {
+    setAnimes(undefined);
+    setMangas(undefined);
+
+    const [animes, mangas] = await Promise.all([
+      Anime.find({
+        query: query,
+      }),
+      Manga.find({
+        query: query,
+      }),
+    ]);
+
+    setAnimes(animes);
+    setMangas(mangas);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -19,38 +37,40 @@ export default function SearchScreen({ route }: Props) {
         autoFocus
         value={query}
         onChangeText={(text) => setQuery(text)}
-        onSubmitEditing={async () => {
-          const animes = await Anime.find({
-            query: query,
-          });
-          const mangas = await Manga.find({
-            query: query,
-          });
-
-          setData([...animes, ...mangas]);
+        onSubmitEditing={() => {
+          search(query)
+            .catch((err) => console.error(err));
         }}
         placeholder="Rechercher"
         placeholderTextColor="#a1a1a1"
         style={styles.search}
       />
 
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          item instanceof Anime ? (
-            <AnimeSearchCard
-              anime={item}
-              onPress={() => navigation.navigate('Anime', { id: item.id })}
-            />
-          ) : (
-            <MangaSearchCard
-              manga={item}
-              onPress={() => navigation.navigate('Manga', { id: item.id })}
-            />
-          )
-        )}
-      />
+      {!animes || !mangas ? (
+        <ActivityIndicator
+          animating
+          color="#000"
+          size="large"
+        />
+      ) : (
+        <FlatList
+          data={[...animes, ...mangas]}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            item instanceof Anime ? (
+              <AnimeSearchCard
+                anime={item}
+                onPress={() => navigation.navigate('Anime', { id: item.id })}
+              />
+            ) : (
+              <MangaSearchCard
+                manga={item}
+                onPress={() => navigation.navigate('Manga', { id: item.id })}
+              />
+            )
+          )}
+        />
+      )}
     </SafeAreaView>
   );
 }
