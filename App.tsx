@@ -65,6 +65,9 @@ const RootStack = createNativeStackNavigator({
     Search: {
       screen: SearchScreen,
     },
+    Profile: {
+      screen: ProfileScreen,
+    },
   },
 });
 
