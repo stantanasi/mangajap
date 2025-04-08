@@ -1,6 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, TextInput } from 'react-native';
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeSearchCard from '../../components/molecules/AnimeSearchCard';
 import MangaSearchCard from '../../components/molecules/MangaSearchCard';
@@ -13,6 +13,12 @@ export default function SearchScreen({ route }: Props) {
   const [query, setQuery] = useState('');
   const [animes, setAnimes] = useState<Anime[]>();
   const [mangas, setMangas] = useState<Manga[]>();
+
+  const categories = [
+    { label: 'Anime', value: 'anime' },
+    { label: 'Manga', value: 'manga' },
+  ] as const;
+  const [selectedCategory, setSelectedCategory] = useState<typeof categories[number]['value']>('anime');
 
   const search = async (query: string) => {
     setAnimes(undefined);
@@ -33,18 +39,47 @@ export default function SearchScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TextInput
-        autoFocus
-        value={query}
-        onChangeText={(text) => setQuery(text)}
-        onSubmitEditing={() => {
-          search(query)
-            .catch((err) => console.error(err));
-        }}
-        placeholder="Rechercher"
-        placeholderTextColor="#a1a1a1"
-        style={styles.search}
-      />
+      <View style={styles.header}>
+        <TextInput
+          autoFocus
+          value={query}
+          onChangeText={(text) => setQuery(text)}
+          onSubmitEditing={() => {
+            search(query)
+              .catch((err) => console.error(err));
+          }}
+          placeholder="Rechercher"
+          placeholderTextColor="#a1a1a1"
+          style={styles.search}
+        />
+
+        <ScrollView
+          horizontal
+          contentContainerStyle={{
+            gap: 10,
+            paddingHorizontal: 16,
+          }}
+        >
+          {categories.map((category) => {
+            const isSelected = category.value === selectedCategory;
+            return (
+              <Text
+                key={category.value}
+                onPress={() => setSelectedCategory(category.value)}
+                style={{
+                  backgroundColor: !isSelected ? '#e5e5e5' : '#4281f5',
+                  borderRadius: 360,
+                  color: !isSelected ? '#000' : '#fff',
+                  paddingHorizontal: 14,
+                  paddingVertical: 6,
+                }}
+              >
+                {category.label}
+              </Text>
+            );
+          })}
+        </ScrollView>
+      </View>
 
       {!animes || !mangas ? (
         <ActivityIndicator
@@ -53,36 +88,60 @@ export default function SearchScreen({ route }: Props) {
           size="large"
         />
       ) : (
-        <FlatList
-          data={[...animes, ...mangas]}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            item instanceof Anime ? (
+        <>
+          <FlatList
+            data={animes}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
               <AnimeSearchCard
                 anime={item}
                 onPress={() => navigation.navigate('Anime', { id: item.id })}
+                style={{
+                  marginHorizontal: 16,
+                }}
               />
-            ) : (
+            )}
+            style={{
+              display: selectedCategory === 'anime' ? 'flex' : 'none',
+            }}
+          />
+
+          <FlatList
+            data={mangas}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
               <MangaSearchCard
                 manga={item}
                 onPress={() => navigation.navigate('Manga', { id: item.id })}
+                style={{
+                  marginHorizontal: 16,
+                }}
               />
-            )
-          )}
-        />
+            )}
+            style={{
+              display: selectedCategory === 'manga' ? 'flex' : 'none',
+            }}
+          />
+        </>
       )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
+  header: {
+    gap: 10,
+    paddingBottom: 10,
+    paddingTop: 16,
+  },
   search: {
     alignItems: 'center',
     borderColor: '#d1d5db',
     borderWidth: 1,
     borderRadius: 8,
-    margin: 16,
-    padding: 8,
+    marginHorizontal: 16,
   },
 });
