@@ -6,8 +6,8 @@ import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { User } from '../../models';
-import LoginScreen from './LoginScreen';
-import RegisterScreen from './RegisterScreen';
+import LoginContent from './LoginContent';
+import RegisterContent from './RegisterContent';
 
 type Props = StaticScreenProps<{
   id?: string;
@@ -46,11 +46,11 @@ export default function ProfileScreen({ route }: Props) {
     return (
       <SafeAreaView>
         {authScreen === 'login' ? (
-          <LoginScreen
+          <LoginContent
             onNavigateToRegister={() => setAuthScreen('register')}
           />
         ) : (
-          <RegisterScreen
+          <RegisterContent
             onNavigateToLogin={() => setAuthScreen('login')}
           />
         )}

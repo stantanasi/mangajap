@@ -7,7 +7,7 @@ type Props = {
   onNavigateToRegister: () => void;
 };
 
-export default function LoginScreen({ onNavigateToRegister }: Props) {
+export default function LoginContent({ onNavigateToRegister }: Props) {
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

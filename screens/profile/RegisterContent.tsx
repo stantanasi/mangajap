@@ -7,7 +7,7 @@ type Props = {
   onNavigateToLogin: () => void;
 };
 
-export default function RegisterScreen({ onNavigateToLogin }: Props) {
+export default function RegisterContent({ onNavigateToLogin }: Props) {
   const { register } = useContext(AuthContext);
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
