@@ -2,8 +2,8 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { FlatList, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AnimeCard from '../../components/molecules/AnimeCard';
-import MangaCard from '../../components/molecules/MangaCard';
+import AnimeSearchCard from '../../components/molecules/AnimeSearchCard';
+import MangaSearchCard from '../../components/molecules/MangaSearchCard';
 import { Anime, Manga } from '../../models';
 
 type Props = StaticScreenProps<{}>;
@@ -38,14 +38,14 @@ export default function SearchScreen({ route }: Props) {
         data={data}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          item.type == Anime.type ? (
-            <AnimeCard
-              anime={item as Anime}
+          item instanceof Anime ? (
+            <AnimeSearchCard
+              anime={item}
               onPress={() => navigation.navigate('Anime', { id: item.id })}
             />
           ) : (
-            <MangaCard
-              manga={item as Manga}
+            <MangaSearchCard
+              manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
             />
           )
