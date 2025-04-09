@@ -1,11 +1,11 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { AuthContext } from '../../contexts/AuthContext';
-import { User } from '../../models';
+import { Follow, User } from '../../models';
 import LoginContent from './LoginContent';
 import RegisterContent from './RegisterContent';
 
@@ -18,6 +18,9 @@ export default function ProfileScreen({ route }: Props) {
   const { user: authenticatedUser, logout } = useContext(AuthContext);
   const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
   const [user, setUser] = useState<User>();
+  const [isFollowingUser, setIsFollowingUser] = useState<Follow | null>();
+  const [isFollowedByUser, setIsFollowedByUser] = useState<Follow | null>();
+  const [isFollowUpdating, setIsFollowUpdating] = useState(false);
 
   const id = route.params?.id ?? authenticatedUser?.id;
 
@@ -26,6 +29,8 @@ export default function ProfileScreen({ route }: Props) {
 
     const prepare = async () => {
       setUser(undefined);
+      setIsFollowingUser(undefined);
+      setIsFollowedByUser(undefined);
 
       const user = await User.findById(id)
         .include([
@@ -36,6 +41,23 @@ export default function ProfileScreen({ route }: Props) {
         ]);
 
       setUser(user);
+
+      if (authenticatedUser && id !== authenticatedUser.id) {
+        const isFollowingUser = await Follow.find({
+          "follower": authenticatedUser.id,
+          "followed": id,
+        } as any).then((follows) => follows[0] ?? null);
+        const isFollowedByUser = await Follow.find({
+          "follower": id,
+          "followed": authenticatedUser.id,
+        } as any).then((follows) => follows[0] ?? null);
+
+        setIsFollowingUser(isFollowingUser);
+        setIsFollowedByUser(isFollowedByUser);
+      } else {
+        setIsFollowingUser(null);
+        setIsFollowedByUser(null);
+      }
     }
 
     prepare()
@@ -58,7 +80,7 @@ export default function ProfileScreen({ route }: Props) {
     );
   }
 
-  if (!user) {
+  if (!user || isFollowingUser === undefined || isFollowedByUser === undefined) {
     return (
       <SafeAreaView
         style={{
@@ -129,29 +151,98 @@ export default function ProfileScreen({ route }: Props) {
           </View>
         </View>
 
-        {id === authenticatedUser?.id ? (
-          <Text
-            onPress={() => logout()}
-            style={{
-              alignSelf: 'flex-start',
-              borderColor: '#000',
-              borderRadius: 360,
-              borderWidth: 1,
-              color: '#000',
-              fontWeight: 'bold',
-              marginBottom: 10,
-              marginHorizontal: 16,
-              marginTop: 20,
-              paddingHorizontal: 12,
-              paddingVertical: 4,
-            }}
-          >
-            Déconnexion
-          </Text>
-        ) : (
-          <>
-          </>
-        )}
+        <View
+          style={{
+            alignItems: 'flex-start',
+            marginBottom: 10,
+            marginHorizontal: 16,
+            marginTop: 20,
+          }}
+        >
+          {authenticatedUser ? (
+            id === authenticatedUser.id ? (
+              <Text
+                onPress={() => logout()}
+                style={{
+                  alignSelf: 'flex-start',
+                  borderColor: '#000',
+                  borderRadius: 360,
+                  borderWidth: 1,
+                  color: '#000',
+                  fontWeight: 'bold',
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}
+              >
+                Déconnexion
+              </Text>
+            ) : (
+              <View style={{ alignItems: 'center' }}>
+                <Pressable
+                  disabled={isFollowUpdating}
+                  onPress={() => {
+                    setIsFollowUpdating(true);
+
+                    const updateFollow = async () => {
+                      if (!isFollowingUser) {
+                        const isFollowingUser = new Follow({
+                          follower: new User({ id: authenticatedUser.id }),
+                          followed: user,
+                        });
+
+                        return isFollowingUser.save()
+                          .then((follow) => setIsFollowingUser(follow));
+                      } else {
+                        return isFollowingUser.delete()
+                          .then(() => setIsFollowingUser(null));
+                      }
+                    };
+
+                    updateFollow()
+                      .catch((err) => console.error(err))
+                      .finally(() => setIsFollowUpdating(false));
+                  }}
+                  style={{
+                    borderColor: !isFollowingUser ? '#ccc' : '#000',
+                    borderRadius: 360,
+                    borderWidth: 1,
+                    flexDirection: 'row',
+                    gap: 10,
+                    paddingHorizontal: 12,
+                    paddingVertical: 4,
+                  }}
+                >
+                  {isFollowUpdating && (
+                    <ActivityIndicator
+                      animating
+                      color="#000"
+                    />
+                  )}
+                  <Text
+                    style={{
+                      color: '#000',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {!isFollowingUser ? "S'abonner" : "Abonné"}
+                  </Text>
+                </Pressable>
+
+                {isFollowedByUser ? (
+                  <Text
+                    style={{
+                      color: '#888',
+                      fontSize: 12,
+                      marginTop: 2,
+                    }}
+                  >
+                    Vous suit
+                  </Text>
+                ) : null}
+              </View>
+            )
+          ) : null}
+        </View>
 
         <Text
           style={{
