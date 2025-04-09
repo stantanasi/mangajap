@@ -9,6 +9,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import AnimeScreen from './screens/anime/AnimeScreen';
 import DiscoverScreen from './screens/discover/DiscoverScreen';
+import FollowsScreen from './screens/follows/FollowsScreen';
 import MangaScreen from './screens/manga/MangaScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
 import SearchScreen from './screens/search/SearchScreen';
@@ -67,6 +68,9 @@ const RootStack = createNativeStackNavigator({
     },
     Profile: {
       screen: ProfileScreen,
+    },
+    Follows: {
+      screen: FollowsScreen,
     },
   },
 });

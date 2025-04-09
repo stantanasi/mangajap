@@ -5,7 +5,7 @@ import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, V
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeSearchCard from '../../components/molecules/AnimeSearchCard';
 import MangaSearchCard from '../../components/molecules/MangaSearchCard';
-import UserSearchCard from '../../components/molecules/UserSearchCard';
+import UserCard from '../../components/molecules/UserCard';
 import { Anime, Manga, User } from '../../models';
 
 const AnimeTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
@@ -161,7 +161,7 @@ const UserTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
         data={list}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <UserSearchCard
+          <UserCard
             user={item}
             onPress={() => navigation.navigate('Profile', { id: item.id })}
             style={{

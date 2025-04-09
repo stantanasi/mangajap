@@ -7,7 +7,7 @@ type Props = PressableProps & {
   style?: ViewStyle;
 }
 
-export default function UserSearchCard({ user, style, ...props }: Props) {
+export default function UserCard({ user, style, ...props }: Props) {
   return (
     <Pressable
       {...props}
@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flexDirection: 'row',
-    paddingVertical: 10,
   },
   avatar: {
     width: 60,
