@@ -32,32 +32,32 @@ export default function ProfileScreen({ route }: Props) {
       setIsFollowingUser(undefined);
       setIsFollowedByUser(undefined);
 
-      const user = await User.findById(id)
-        .include([
-          'anime-library.anime',
-          'manga-library.manga',
-          'anime-favorites.anime',
-          'manga-favorites.manga',
-        ]);
+      const [user, isFollowingUser, isFollowedByUser] = await Promise.all([
+        User.findById(id)
+          .include([
+            'anime-library.anime',
+            'manga-library.manga',
+            'anime-favorites.anime',
+            'manga-favorites.manga',
+          ]),
+
+        ...(authenticatedUser && id !== authenticatedUser.id
+          ? [
+            Follow.find({
+              "follower": authenticatedUser.id,
+              "followed": id,
+            } as any).then((follows) => follows[0] ?? null),
+            Follow.find({
+              "follower": id,
+              "followed": authenticatedUser.id,
+            } as any).then((follows) => follows[0] ?? null),
+          ]
+          : [null, null]),
+      ]);
 
       setUser(user);
-
-      if (authenticatedUser && id !== authenticatedUser.id) {
-        const isFollowingUser = await Follow.find({
-          "follower": authenticatedUser.id,
-          "followed": id,
-        } as any).then((follows) => follows[0] ?? null);
-        const isFollowedByUser = await Follow.find({
-          "follower": id,
-          "followed": authenticatedUser.id,
-        } as any).then((follows) => follows[0] ?? null);
-
-        setIsFollowingUser(isFollowingUser);
-        setIsFollowedByUser(isFollowedByUser);
-      } else {
-        setIsFollowingUser(null);
-        setIsFollowedByUser(null);
-      }
+      setIsFollowingUser(isFollowingUser);
+      setIsFollowedByUser(isFollowedByUser);
     }
 
     prepare()
