@@ -1,7 +1,8 @@
-import { StaticScreenProps } from '@react-navigation/native';
+import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import UserCard from '../../components/molecules/UserCard';
 import { Follow, User } from '../../models';
 
 type Props = StaticScreenProps<{
@@ -10,6 +11,7 @@ type Props = StaticScreenProps<{
 }>;
 
 export default function FollowsScreen({ route }: Props) {
+  const navigation = useNavigation();
   const [follows, setFollows] = useState<Follow[]>();
 
   useEffect(() => {
@@ -33,8 +35,48 @@ export default function FollowsScreen({ route }: Props) {
       .catch((err) => console.error(err));
   }, []);
 
+  if (!follows) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator
+          animating
+          color="#000"
+          size="large"
+        />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+      <FlatList
+        data={follows}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => {
+          const user = route.params.type === 'followers'
+            ? item.follower!
+            : item.followed!;
+          return (
+            <UserCard
+              user={user}
+              onPress={() => navigation.navigate('Profile', { id: user.id })}
+              style={{
+                marginHorizontal: 16,
+              }}
+            />
+          );
+        }}
+        ItemSeparatorComponent={() => (
+          <View
+            style={{
+              width: '100%',
+              height: 1,
+              backgroundColor: '#ccc',
+              marginVertical: 8,
+            }}
+          />
+        )}
+      />
     </SafeAreaView>
   );
 }
