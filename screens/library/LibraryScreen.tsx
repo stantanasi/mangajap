@@ -1,8 +1,10 @@
-import { StaticScreenProps } from '@react-navigation/native';
+import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AnimeEntry, MangaEntry, User } from '../../models';
+import AnimeCard from '../../components/molecules/AnimeCard';
+import MangaCard from '../../components/molecules/MangaCard';
+import { Anime, AnimeEntry, MangaEntry, User } from '../../models';
 
 type Props = StaticScreenProps<{
   type: 'anime-library' | 'manga-library' | 'anime-favorites' | 'manga-favorites';
@@ -10,6 +12,7 @@ type Props = StaticScreenProps<{
 }>;
 
 export default function LibraryScreen({ route }: Props) {
+  const navigation = useNavigation();
   const [library, setLibrary] = useState<(AnimeEntry | MangaEntry)[]>();
 
   useEffect(() => {
@@ -51,8 +54,47 @@ export default function LibraryScreen({ route }: Props) {
       .catch((err) => console.error(err));
   }, []);
 
+  if (!library) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator
+          animating
+          color="#000"
+          size="large"
+        />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+      <FlatList
+        data={library.map((entry) => {
+          if (entry instanceof AnimeEntry) {
+            return entry.anime!.copy({
+              'anime-entry': entry,
+            });
+          } else {
+            return entry.manga!.copy({
+              'manga-entry': entry,
+            });
+          }
+        })}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          item instanceof Anime ? (
+            <AnimeCard
+              anime={item}
+              onPress={() => navigation.navigate('Anime', { id: item.id })}
+            />
+          ) : (
+            <MangaCard
+              manga={item}
+              onPress={() => navigation.navigate('Manga', { id: item.id })}
+            />
+          )
+        )}
+      />
     </SafeAreaView>
   );
 }
