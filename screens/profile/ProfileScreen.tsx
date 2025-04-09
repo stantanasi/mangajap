@@ -116,12 +116,12 @@ export default function ProfileScreen({ route }: Props) {
                 marginTop: 6,
               }}
             >
-              <Text>
+              <Text onPress={() => navigation.navigate('Follows', { type: 'followers', userId: id })}>
                 <Text style={{ color: '#000', fontWeight: 'bold' }}>{user.followersCount}</Text>
                 <Text> abonnées</Text>
               </Text>
               <Text style={{ color: '#000', fontWeight: 'bold' }}> • </Text>
-              <Text>
+              <Text onPress={() => navigation.navigate('Follows', { type: 'following', userId: id })}>
                 <Text style={{ color: '#000', fontWeight: 'bold' }}>{user.followingCount}</Text>
                 <Text> abonnements</Text>
               </Text>
