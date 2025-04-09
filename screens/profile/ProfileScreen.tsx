@@ -1,3 +1,4 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -305,17 +306,32 @@ export default function ProfileScreen({ route }: Props) {
           ListFooterComponent={() => <View style={{ width: 16 }} />}
         />
 
-        <Text
+        <Pressable
+          onPress={() => navigation.navigate('Library', { type: 'anime-library', userId: user.id })}
           style={{
-            fontSize: 20,
-            fontWeight: 'bold',
+            alignItems: 'center',
+            flexDirection: 'row',
             marginBottom: 6,
             marginHorizontal: 16,
             marginTop: 20,
           }}
         >
-          Animes
-        </Text>
+          <Text
+            style={{
+              flex: 1,
+              fontSize: 20,
+              fontWeight: 'bold',
+            }}
+          >
+            Animes
+          </Text>
+
+          <MaterialIcons
+            name="keyboard-arrow-right"
+            size={24}
+            color="#000"
+          />
+        </Pressable>
 
         <FlatList
           horizontal
@@ -336,17 +352,32 @@ export default function ProfileScreen({ route }: Props) {
 
         {user['anime-favorites']!.length > 0 ? (
           <>
-            <Text
+            <Pressable
+              onPress={() => navigation.navigate('Library', { type: 'anime-favorites', userId: user.id })}
               style={{
-                fontSize: 20,
-                fontWeight: 'bold',
+                alignItems: 'center',
+                flexDirection: 'row',
                 marginBottom: 6,
                 marginHorizontal: 16,
                 marginTop: 20,
               }}
             >
-              Animes préférées
-            </Text>
+              <Text
+                style={{
+                  flex: 1,
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                }}
+              >
+                Animes préférées
+              </Text>
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={24}
+                color="#000"
+              />
+            </Pressable>
 
             <FlatList
               horizontal
@@ -367,17 +398,32 @@ export default function ProfileScreen({ route }: Props) {
           </>
         ) : null}
 
-        <Text
+        <Pressable
+          onPress={() => navigation.navigate('Library', { type: 'manga-library', userId: user.id })}
           style={{
-            fontSize: 20,
-            fontWeight: 'bold',
+            alignItems: 'center',
+            flexDirection: 'row',
             marginBottom: 6,
             marginHorizontal: 16,
             marginTop: 20,
           }}
         >
-          Mangas
-        </Text>
+          <Text
+            style={{
+              flex: 1,
+              fontSize: 20,
+              fontWeight: 'bold',
+            }}
+          >
+            Mangas
+          </Text>
+
+          <MaterialIcons
+            name="keyboard-arrow-right"
+            size={24}
+            color="#000"
+          />
+        </Pressable>
 
         <FlatList
           horizontal
@@ -398,17 +444,32 @@ export default function ProfileScreen({ route }: Props) {
 
         {user['manga-favorites']!.length > 0 ? (
           <>
-            <Text
+            <Pressable
+              onPress={() => navigation.navigate('Library', { type: 'manga-favorites', userId: user.id })}
               style={{
-                fontSize: 20,
-                fontWeight: 'bold',
+                alignItems: 'center',
+                flexDirection: 'row',
                 marginBottom: 6,
                 marginHorizontal: 16,
                 marginTop: 20,
               }}
             >
-              Mangas préférées
-            </Text>
+              <Text
+                style={{
+                  flex: 1,
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                }}
+              >
+                Mangas préférées
+              </Text>
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={24}
+                color="#000"
+              />
+            </Pressable>
 
             <FlatList
               horizontal
