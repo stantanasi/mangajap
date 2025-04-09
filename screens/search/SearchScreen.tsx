@@ -4,7 +4,8 @@ import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, V
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeSearchCard from '../../components/molecules/AnimeSearchCard';
 import MangaSearchCard from '../../components/molecules/MangaSearchCard';
-import { Anime, Manga } from '../../models';
+import UserSearchCard from '../../components/molecules/UserSearchCard';
+import { Anime, Manga, User } from '../../models';
 
 type Props = StaticScreenProps<{}>;
 
@@ -13,28 +14,35 @@ export default function SearchScreen({ route }: Props) {
   const [query, setQuery] = useState('');
   const [animes, setAnimes] = useState<Anime[]>();
   const [mangas, setMangas] = useState<Manga[]>();
+  const [users, setUsers] = useState<User[]>();
 
   const categories = [
     { label: 'Anime', value: 'anime' },
     { label: 'Manga', value: 'manga' },
+    { label: 'Utilisateurs', value: 'users' },
   ] as const;
   const [selectedCategory, setSelectedCategory] = useState<typeof categories[number]['value']>('anime');
 
   const search = async (query: string) => {
     setAnimes(undefined);
     setMangas(undefined);
+    setUsers(undefined);
 
-    const [animes, mangas] = await Promise.all([
+    const [animes, mangas, users] = await Promise.all([
       Anime.find({
         query: query,
       }),
       Manga.find({
         query: query,
       }),
+      User.find({
+        query: query,
+      }),
     ]);
 
     setAnimes(animes);
     setMangas(mangas);
+    setUsers(users);
   };
 
   return (
@@ -81,7 +89,7 @@ export default function SearchScreen({ route }: Props) {
         </ScrollView>
       </View>
 
-      {!animes || !mangas ? (
+      {!animes || !mangas || !users ? (
         <ActivityIndicator
           animating
           color="#000"
@@ -140,6 +148,33 @@ export default function SearchScreen({ route }: Props) {
             )}
             style={{
               display: selectedCategory === 'manga' ? 'flex' : 'none',
+            }}
+          />
+
+          <FlatList
+            data={users}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <UserSearchCard
+                user={item}
+                onPress={() => navigation.navigate('Profile', { id: item.id })}
+                style={{
+                  marginHorizontal: 16,
+                }}
+              />
+            )}
+            ItemSeparatorComponent={() => (
+              <View
+                style={{
+                  width: '100%',
+                  height: 1,
+                  backgroundColor: '#ccc',
+                  marginVertical: 8,
+                }}
+              />
+            )}
+            style={{
+              display: selectedCategory === 'users' ? 'flex' : 'none',
             }}
           />
         </>
