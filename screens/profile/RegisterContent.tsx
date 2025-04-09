@@ -88,10 +88,12 @@ export default function RegisterContent({ onNavigateToLogin }: Props) {
         >
           Inscription
         </Text>
-        <ActivityIndicator
-          animating={isRegistering}
-          color="#000"
-        />
+        {isRegistering && (
+          <ActivityIndicator
+            animating
+            color="#000"
+          />
+        )}
       </Pressable>
 
       <Text

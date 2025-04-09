@@ -79,10 +79,12 @@ export default function LoginContent({ onNavigateToRegister }: Props) {
         >
           Se connecter
         </Text>
-        <ActivityIndicator
-          animating={isLogging}
-          color="#000"
-        />
+        {isLogging && (
+          <ActivityIndicator
+            animating
+            color="#000"
+          />
+        )}
       </Pressable>
 
       <Text
