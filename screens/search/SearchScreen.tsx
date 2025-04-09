@@ -58,6 +58,7 @@ const AnimeTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
               </View>
             ) : null
           )}
+          keyboardShouldPersistTaps="always"
           onEndReached={() => onLoadMore()}
           onEndReachedThreshold={0.5}
         />
@@ -116,6 +117,7 @@ const MangaTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
               </View>
             ) : null
           )}
+          keyboardShouldPersistTaps="always"
           onEndReached={() => onLoadMore()}
           onEndReachedThreshold={0.5}
         />
@@ -174,6 +176,7 @@ const UserTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
               </View>
             ) : null
           )}
+          keyboardShouldPersistTaps="always"
           onEndReached={() => onLoadMore()}
           onEndReachedThreshold={0.5}
         />
@@ -317,6 +320,7 @@ export default function SearchScreen({ route }: Props) {
 
         <ScrollView
           horizontal
+          keyboardShouldPersistTaps="always"
           contentContainerStyle={{
             gap: 10,
             paddingHorizontal: 16,
