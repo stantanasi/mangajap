@@ -1,6 +1,7 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
@@ -39,12 +40,26 @@ export default function DiscoverScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text
+      <Pressable
         onPress={() => navigation.navigate('Search', {})}
         style={styles.search}
       >
-        Rechercher
-      </Text>
+        <MaterialIcons
+          name="search"
+          size={24}
+          color="#666"
+        />
+
+        <Text
+          style={{
+            flex: 1,
+            paddingHorizontal: 0,
+            paddingVertical: 8,
+          }}
+        >
+          Rechercher
+        </Text>
+      </Pressable>
 
       {!animes || !mangas ? (
         <ActivityIndicator
@@ -95,10 +110,13 @@ const styles = StyleSheet.create({
   },
   search: {
     alignItems: 'center',
-    borderColor: '#d1d5db',
-    borderWidth: 1,
-    borderRadius: 8,
-    margin: 16,
-    padding: 8,
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 16,
+    marginHorizontal: 16,
+    marginTop: 16,
+    paddingHorizontal: 10,
   },
 });

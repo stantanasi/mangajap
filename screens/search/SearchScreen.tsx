@@ -1,3 +1,4 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
@@ -268,24 +269,51 @@ export default function SearchScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TextInput
-          autoFocus
-          value={query}
-          onChangeText={(text) => {
-            setQuery(text);
+        <View style={styles.search}>
+          <MaterialIcons
+            name="search"
+            size={24}
+            color="#666"
+          />
 
-            setAnimeTab((prev) => ({ ...prev, isLoading: true }));
-            setMangaTab((prev) => ({ ...prev, isLoading: true }));
-            setUserTab((prev) => ({ ...prev, isLoading: true }));
-          }}
-          onSubmitEditing={() => {
-            search(query)
-              .catch((err) => console.error(err));
-          }}
-          placeholder="Rechercher"
-          placeholderTextColor="#a1a1a1"
-          style={styles.search}
-        />
+          <TextInput
+            autoFocus
+            value={query}
+            onChangeText={(text) => {
+              setQuery(text);
+
+              setAnimeTab((prev) => ({ ...prev, isLoading: true }));
+              setMangaTab((prev) => ({ ...prev, isLoading: true }));
+              setUserTab((prev) => ({ ...prev, isLoading: true }));
+            }}
+            onSubmitEditing={() => {
+              search(query)
+                .catch((err) => console.error(err));
+            }}
+            placeholder="Rechercher"
+            placeholderTextColor="#666"
+            style={{
+              flex: 1,
+              paddingHorizontal: 0,
+              paddingVertical: 8,
+            }}
+          />
+
+          {query !== '' && (
+            <MaterialIcons
+              name="close"
+              size={24}
+              color="#666"
+              onPress={() => {
+                setQuery('');
+
+                setAnimeTab((prev) => ({ ...prev, isLoading: true }));
+                setMangaTab((prev) => ({ ...prev, isLoading: true }));
+                setUserTab((prev) => ({ ...prev, isLoading: true }));
+              }}
+            />
+          )}
+        </View>
 
         <ScrollView
           horizontal
@@ -437,9 +465,11 @@ const styles = StyleSheet.create({
   },
   search: {
     alignItems: 'center',
-    borderColor: '#d1d5db',
-    borderWidth: 1,
-    borderRadius: 8,
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    flexDirection: 'row',
+    gap: 10,
     marginHorizontal: 16,
+    paddingHorizontal: 10,
   },
 });
