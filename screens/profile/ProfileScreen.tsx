@@ -129,24 +129,29 @@ export default function ProfileScreen({ route }: Props) {
           </View>
         </View>
 
-        <Text
-          onPress={() => logout()}
-          style={{
-            alignSelf: 'flex-start',
-            borderColor: '#000',
-            borderRadius: 360,
-            borderWidth: 1,
-            color: '#000',
-            fontWeight: 'bold',
-            marginBottom: 10,
-            marginHorizontal: 16,
-            marginTop: 20,
-            paddingHorizontal: 12,
-            paddingVertical: 4,
-          }}
-        >
-          Déconnexion
-        </Text>
+        {id === authenticatedUser?.id ? (
+          <Text
+            onPress={() => logout()}
+            style={{
+              alignSelf: 'flex-start',
+              borderColor: '#000',
+              borderRadius: 360,
+              borderWidth: 1,
+              color: '#000',
+              fontWeight: 'bold',
+              marginBottom: 10,
+              marginHorizontal: 16,
+              marginTop: 20,
+              paddingHorizontal: 12,
+              paddingVertical: 4,
+            }}
+          >
+            Déconnexion
+          </Text>
+        ) : (
+          <>
+          </>
+        )}
 
         <Text
           style={{
