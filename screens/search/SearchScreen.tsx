@@ -257,9 +257,13 @@ export default function SearchScreen({ route }: Props) {
   };
 
   useEffect(() => {
-    search(query)
-      .catch((err) => console.error(err));
-  }, []);
+    const timeout = setTimeout(() => {
+      search(query)
+        .catch((err) => console.error(err));
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [query]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -267,7 +271,13 @@ export default function SearchScreen({ route }: Props) {
         <TextInput
           autoFocus
           value={query}
-          onChangeText={(text) => setQuery(text)}
+          onChangeText={(text) => {
+            setQuery(text);
+
+            setAnimeTab((prev) => ({ ...prev, isLoading: true }));
+            setMangaTab((prev) => ({ ...prev, isLoading: true }));
+            setUserTab((prev) => ({ ...prev, isLoading: true }));
+          }}
           onSubmitEditing={() => {
             search(query)
               .catch((err) => console.error(err));
