@@ -17,52 +17,56 @@ const AnimeTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
 }) => {
   const navigation = useNavigation();
 
-  return (
-    <View style={style}>
-      {isLoading ? (
+  if (isLoading) {
+    return (
+      <View style={style}>
         <ActivityIndicator
           animating
           color="#000"
           size="large"
         />
-      ) : (
-        <FlatList
-          data={list}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <AnimeSearchCard
-              anime={item}
-              onPress={() => navigation.navigate('Anime', { id: item.id })}
-              style={{
-                marginHorizontal: 16,
-              }}
-            />
-          )}
-          ItemSeparatorComponent={() => (
-            <View
-              style={{
-                width: '100%',
-                height: 1,
-                backgroundColor: '#ccc',
-                marginVertical: 8,
-              }}
-            />
-          )}
-          ListFooterComponent={() => (
-            hasMore ? (
-              <View style={{ marginVertical: 12 }}>
-                <ActivityIndicator
-                  animating
-                  color="#000"
-                />
-              </View>
-            ) : null
-          )}
-          keyboardShouldPersistTaps="always"
-          onEndReached={() => onLoadMore()}
-          onEndReachedThreshold={0.5}
-        />
-      )}
+      </View>
+    );
+  }
+
+  return (
+    <View style={style}>
+      <FlatList
+        data={list}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <AnimeSearchCard
+            anime={item}
+            onPress={() => navigation.navigate('Anime', { id: item.id })}
+            style={{
+              marginHorizontal: 16,
+            }}
+          />
+        )}
+        ItemSeparatorComponent={() => (
+          <View
+            style={{
+              width: '100%',
+              height: 1,
+              backgroundColor: '#ccc',
+              marginVertical: 8,
+            }}
+          />
+        )}
+        ListFooterComponent={() => (
+          hasMore ? (
+            <View style={{ marginVertical: 12 }}>
+              <ActivityIndicator
+                animating
+                color="#000"
+              />
+            </View>
+          ) : null
+        )}
+        keyboardShouldPersistTaps="always"
+        onEndReached={() => onLoadMore()}
+        onEndReachedThreshold={0.5}
+      />
     </View>
   );
 };
@@ -76,52 +80,56 @@ const MangaTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
 }) => {
   const navigation = useNavigation();
 
-  return (
-    <View style={style}>
-      {isLoading ? (
+  if (isLoading) {
+    return (
+      <View style={style}>
         <ActivityIndicator
           animating
           color="#000"
           size="large"
         />
-      ) : (
-        <FlatList
-          data={list}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <MangaSearchCard
-              manga={item}
-              onPress={() => navigation.navigate('Manga', { id: item.id })}
-              style={{
-                marginHorizontal: 16,
-              }}
-            />
-          )}
-          ItemSeparatorComponent={() => (
-            <View
-              style={{
-                width: '100%',
-                height: 1,
-                backgroundColor: '#ccc',
-                marginVertical: 8,
-              }}
-            />
-          )}
-          ListFooterComponent={() => (
-            hasMore ? (
-              <View style={{ marginVertical: 12 }}>
-                <ActivityIndicator
-                  animating
-                  color="#000"
-                />
-              </View>
-            ) : null
-          )}
-          keyboardShouldPersistTaps="always"
-          onEndReached={() => onLoadMore()}
-          onEndReachedThreshold={0.5}
-        />
-      )}
+      </View>
+    );
+  }
+
+  return (
+    <View style={style}>
+      <FlatList
+        data={list}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <MangaSearchCard
+            manga={item}
+            onPress={() => navigation.navigate('Manga', { id: item.id })}
+            style={{
+              marginHorizontal: 16,
+            }}
+          />
+        )}
+        ItemSeparatorComponent={() => (
+          <View
+            style={{
+              width: '100%',
+              height: 1,
+              backgroundColor: '#ccc',
+              marginVertical: 8,
+            }}
+          />
+        )}
+        ListFooterComponent={() => (
+          hasMore ? (
+            <View style={{ marginVertical: 12 }}>
+              <ActivityIndicator
+                animating
+                color="#000"
+              />
+            </View>
+          ) : null
+        )}
+        keyboardShouldPersistTaps="always"
+        onEndReached={() => onLoadMore()}
+        onEndReachedThreshold={0.5}
+      />
     </View>
   );
 };
@@ -135,52 +143,56 @@ const UserTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
 }) => {
   const navigation = useNavigation();
 
-  return (
-    <View style={style}>
-      {isLoading ? (
+  if (isLoading) {
+    return (
+      <View style={style}>
         <ActivityIndicator
           animating
           color="#000"
           size="large"
         />
-      ) : (
-        <FlatList
-          data={list}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <UserSearchCard
-              user={item}
-              onPress={() => navigation.navigate('Profile', { id: item.id })}
-              style={{
-                marginHorizontal: 16,
-              }}
-            />
-          )}
-          ItemSeparatorComponent={() => (
-            <View
-              style={{
-                width: '100%',
-                height: 1,
-                backgroundColor: '#ccc',
-                marginVertical: 8,
-              }}
-            />
-          )}
-          ListFooterComponent={() => (
-            hasMore ? (
-              <View style={{ marginVertical: 12 }}>
-                <ActivityIndicator
-                  animating
-                  color="#000"
-                />
-              </View>
-            ) : null
-          )}
-          keyboardShouldPersistTaps="always"
-          onEndReached={() => onLoadMore()}
-          onEndReachedThreshold={0.5}
-        />
-      )}
+      </View>
+    );
+  }
+
+  return (
+    <View style={style}>
+      <FlatList
+        data={list}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <UserSearchCard
+            user={item}
+            onPress={() => navigation.navigate('Profile', { id: item.id })}
+            style={{
+              marginHorizontal: 16,
+            }}
+          />
+        )}
+        ItemSeparatorComponent={() => (
+          <View
+            style={{
+              width: '100%',
+              height: 1,
+              backgroundColor: '#ccc',
+              marginVertical: 8,
+            }}
+          />
+        )}
+        ListFooterComponent={() => (
+          hasMore ? (
+            <View style={{ marginVertical: 12 }}>
+              <ActivityIndicator
+                animating
+                color="#000"
+              />
+            </View>
+          ) : null
+        )}
+        keyboardShouldPersistTaps="always"
+        onEndReached={() => onLoadMore()}
+        onEndReachedThreshold={0.5}
+      />
     </View>
   );
 };
