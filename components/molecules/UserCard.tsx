@@ -7,7 +7,7 @@ type Props = PressableProps & {
   style?: ViewStyle;
 }
 
-export default function UserSearchCard({ user, style, ...props }: Props) {
+export default function UserCard({ user, style, ...props }: Props) {
   return (
     <Pressable
       {...props}
