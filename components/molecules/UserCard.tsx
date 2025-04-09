@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flexDirection: 'row',
-    paddingVertical: 10,
   },
   avatar: {
     width: 60,
