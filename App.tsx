@@ -10,6 +10,7 @@ import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import AnimeScreen from './screens/anime/AnimeScreen';
 import DiscoverScreen from './screens/discover/DiscoverScreen';
 import FollowsScreen from './screens/follows/FollowsScreen';
+import LibraryScreen from './screens/library/LibraryScreen';
 import MangaScreen from './screens/manga/MangaScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
 import SearchScreen from './screens/search/SearchScreen';
@@ -71,6 +72,9 @@ const RootStack = createNativeStackNavigator({
     },
     Follows: {
       screen: FollowsScreen,
+    },
+    Library: {
+      screen: LibraryScreen,
     },
   },
 });
