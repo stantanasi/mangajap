@@ -1,5 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeSearchCard from '../../components/molecules/AnimeSearchCard';
@@ -35,15 +35,22 @@ export default function SearchScreen({ route }: Props) {
       Manga.find({
         query: query,
       }),
-      User.find({
-        query: query,
-      }),
+      query !== ''
+        ? User.find({
+          query: query,
+        })
+        : [],
     ]);
 
     setAnimes(animes);
     setMangas(mangas);
     setUsers(users);
   };
+
+  useEffect(() => {
+    search(query)
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
