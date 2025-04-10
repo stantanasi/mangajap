@@ -5,8 +5,9 @@ import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, V
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeSearchCard from '../../components/molecules/AnimeSearchCard';
 import MangaSearchCard from '../../components/molecules/MangaSearchCard';
+import PeopleSearchCard from '../../components/molecules/PeopleSearchCard';
 import UserCard from '../../components/molecules/UserCard';
-import { Anime, Manga, User } from '../../models';
+import { Anime, Manga, People, User } from '../../models';
 
 const AnimeTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
   isLoading: boolean;
@@ -134,6 +135,69 @@ const MangaTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
   );
 };
 
+const PeopleTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
+  isLoading: boolean;
+  list: People[];
+  onLoadMore: () => void;
+  hasMore: boolean;
+  style?: ViewStyle;
+}) => {
+  const navigation = useNavigation();
+
+  if (isLoading) {
+    return (
+      <View style={style}>
+        <ActivityIndicator
+          animating
+          color="#000"
+          size="large"
+        />
+      </View>
+    );
+  }
+
+  return (
+    <View style={style}>
+      <FlatList
+        data={list}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <PeopleSearchCard
+            people={item}
+            onPress={() => navigation.navigate('People', { id: item.id })}
+            style={{
+              marginHorizontal: 16,
+            }}
+          />
+        )}
+        ItemSeparatorComponent={() => (
+          <View
+            style={{
+              width: '100%',
+              height: 1,
+              backgroundColor: '#ccc',
+              marginVertical: 8,
+            }}
+          />
+        )}
+        ListFooterComponent={() => (
+          hasMore ? (
+            <View style={{ marginVertical: 12 }}>
+              <ActivityIndicator
+                animating
+                color="#000"
+              />
+            </View>
+          ) : null
+        )}
+        keyboardShouldPersistTaps="always"
+        onEndReached={() => onLoadMore()}
+        onEndReachedThreshold={0.5}
+      />
+    </View>
+  );
+};
+
 const UserTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
   isLoading: boolean;
   list: User[];
@@ -217,6 +281,13 @@ export default function SearchScreen({ route }: Props) {
     offset: number;
     hasMore: boolean;
   }>({ isLoading: true, list: [], isLoadingMore: false, offset: 0, hasMore: true });
+  const [peopleTab, setPeopleTab] = useState<{
+    isLoading: boolean;
+    list: People[];
+    isLoadingMore: boolean;
+    offset: number;
+    hasMore: boolean;
+  }>({ isLoading: true, list: [], isLoadingMore: false, offset: 0, hasMore: true });
   const [userTab, setUserTab] = useState<{
     isLoading: boolean;
     list: User[];
@@ -228,6 +299,7 @@ export default function SearchScreen({ route }: Props) {
   const categories = [
     { label: 'Anime', value: 'anime' },
     { label: 'Manga', value: 'manga' },
+    { label: 'Personnalités', value: 'people' },
     { label: 'Utilisateurs', value: 'users' },
   ] as const;
   const [selectedCategory, setSelectedCategory] = useState<typeof categories[number]['value']>('anime');
@@ -235,13 +307,15 @@ export default function SearchScreen({ route }: Props) {
   const search = async (query: string) => {
     setAnimeTab((prev) => ({ ...prev, isLoading: true }));
     setMangaTab((prev) => ({ ...prev, isLoading: true }));
+    setPeopleTab((prev) => ({ ...prev, isLoading: true }));
     setUserTab((prev) => ({ ...prev, isLoading: true }));
 
-    const [animes, mangas, users] = await Promise.all([
+    const [animes, mangas, peoples, users] = await Promise.all([
       Anime.find({ query: query })
         .sort({ popularity: 'desc' }),
       Manga.find({ query: query })
         .sort({ popularity: 'desc' }),
+      People.find({ query: query }),
       query !== ''
         ? User.find({ query: query })
           .sort({ followersCount: 'desc' })
@@ -262,6 +336,13 @@ export default function SearchScreen({ route }: Props) {
       isLoadingMore: false,
       offset: 0,
       hasMore: mangas.length !== 0,
+    });
+    setPeopleTab({
+      isLoading: false,
+      list: peoples,
+      isLoadingMore: false,
+      offset: 0,
+      hasMore: peoples.length !== 0,
     });
     setUserTab({
       isLoading: false,
@@ -299,6 +380,7 @@ export default function SearchScreen({ route }: Props) {
 
               setAnimeTab((prev) => ({ ...prev, isLoading: true }));
               setMangaTab((prev) => ({ ...prev, isLoading: true }));
+              setPeopleTab((prev) => ({ ...prev, isLoading: true }));
               setUserTab((prev) => ({ ...prev, isLoading: true }));
             }}
             onSubmitEditing={() => {
@@ -324,6 +406,7 @@ export default function SearchScreen({ route }: Props) {
 
                 setAnimeTab((prev) => ({ ...prev, isLoading: true }));
                 setMangaTab((prev) => ({ ...prev, isLoading: true }));
+                setPeopleTab((prev) => ({ ...prev, isLoading: true }));
                 setUserTab((prev) => ({ ...prev, isLoading: true }));
               }}
             />
@@ -427,6 +510,41 @@ export default function SearchScreen({ route }: Props) {
         hasMore={mangaTab.hasMore}
         style={{
           display: selectedCategory === 'manga' ? 'flex' : 'none',
+          flex: 1,
+        }}
+      />
+
+      <PeopleTab
+        isLoading={peopleTab.isLoading}
+        list={peopleTab.list}
+        onLoadMore={() => {
+          const loadMore = async () => {
+            if (!peopleTab.hasMore || peopleTab.isLoadingMore) return
+
+            setPeopleTab((prev) => ({ ...prev, isLoadingMore: true }));
+
+            const peoples = await People.find({ query: activeQuery })
+              .offset(peopleTab.offset + 10);
+
+            if (peoples.length === 0) {
+              setPeopleTab((prev) => ({ ...prev, isLoadingMore: false, hasMore: false }));
+            } else {
+              setPeopleTab((prev) => ({
+                ...prev,
+                list: prev.list.concat(peoples),
+                isLoadingMore: false,
+                offset: prev.offset + 10,
+                hasMore: true,
+              }));
+            }
+          };
+
+          loadMore()
+            .catch((err) => console.error(err));
+        }}
+        hasMore={peopleTab.hasMore}
+        style={{
+          display: selectedCategory === 'people' ? 'flex' : 'none',
           flex: 1,
         }}
       />
