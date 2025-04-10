@@ -1,12 +1,12 @@
 import { StaticScreenProps } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, SectionList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AutoHeightImage from '../../components/atoms/AutoHeightImage';
 import ChapterCard from '../../components/molecules/ChapterCard';
 import VolumeCard from '../../components/molecules/VolumeCard';
 import { AuthContext } from '../../contexts/AuthContext';
-import { Manga, Volume } from '../../models';
+import { Manga } from '../../models';
 
 const Header = ({ manga }: { manga: Manga }) => {
   return (
@@ -57,17 +57,25 @@ type Props = StaticScreenProps<{
 export default function MangaScreen({ route }: Props) {
   const { isAuthenticated } = useContext(AuthContext);
   const [manga, setManga] = useState<Manga>();
+  const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean }>({});
+  const [updatingVolumes, setUpdatingVolumes] = useState<{ [volumeId: string]: boolean }>({});
 
   useEffect(() => {
-    Manga.findById(route.params.id)
-      .include([
-        'genres',
-        'themes',
-        `volumes${isAuthenticated ? '.volume-entry' : ''}`,
-        `volumes.chapters${isAuthenticated ? '.chapter-entry' : ''}`,
-        `chapters${isAuthenticated ? '.chapter-entry' : ''}`,
-      ])
-      .then((manga) => setManga(manga));
+    const prepare = async () => {
+      const manga = await Manga.findById(route.params.id)
+        .include([
+          'genres',
+          'themes',
+          `volumes${isAuthenticated ? '.volume-entry' : ''}`,
+          `volumes.chapters${isAuthenticated ? '.chapter-entry' : ''}`,
+          `chapters${isAuthenticated ? '.chapter-entry' : ''}`,
+        ]);
+
+      setManga(manga);
+    };
+
+    prepare()
+      .catch((err) => console.error(err));
   }, []);
 
   if (!manga) {
@@ -90,43 +98,65 @@ export default function MangaScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={[
-          ...manga.volumes!,
-          ...manga.chapters!.filter((chapter) => !manga.volumes!.some((v) => v.chapters!.some((c) => c.id === chapter.id))),
+      <SectionList
+        sections={[
+          ...manga.volumes!.map((volume) => ({
+            volume: volume,
+            data: expandedVolumes[volume.id] ? volume.chapters! : [],
+          })),
+          {
+            volume: null,
+            data: manga.chapters!.filter((chapter) => !manga.volumes!.some((v) => v.chapters!.some((c) => c.id === chapter.id))),
+          },
         ]}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          item instanceof Volume ? (
-            <VolumeCard
-              volume={item}
-              onVolumeChange={(volume) => {
+        renderSectionHeader={({ section: { volume } }) => !volume ? null : (
+          <VolumeCard
+            volume={volume}
+            onUpdating={(updating) => setUpdatingVolumes((prev) => ({ ...prev, [volume.id]: updating }))}
+            onVolumeChange={(volume) => {
+              setManga((prev) => prev?.copy({
+                volumes: prev.volumes?.map((v) => v.id === volume.id ? volume : v),
+              }));
+            }}
+            onPress={() => setExpandedVolumes((prev) => ({ ...prev, [volume.id]: !prev[volume.id] }))}
+            expanded={expandedVolumes[volume.id]}
+            style={{
+              marginHorizontal: 16,
+            }}
+          />
+        )}
+        renderSectionFooter={() => <View style={{ height: 10 }} />}
+        renderItem={({ item, section: { volume } }) => (
+          <ChapterCard
+            chapter={item}
+            updating={volume ? updatingVolumes[volume.id] : undefined}
+            onChapterChange={(chapter) => {
+              if (volume) {
                 setManga((prev) => prev?.copy({
-                  volumes: prev.volumes?.map((v) => v.id === volume.id ? volume : v),
+                  volumes: prev.volumes?.map((v) => v.id === volume.id
+                    ? volume.copy({
+                      chapters: volume.chapters?.map((c) => c.id === chapter.id ? chapter : c)
+                    })
+                    : v,
+                  ),
                 }));
-              }}
-              style={{
-                marginHorizontal: 10,
-              }}
-            />
-          ) : (
-            <ChapterCard
-              chapter={item}
-              onChapterChange={(chapter) => {
+              } else {
                 setManga((prev) => prev?.copy({
                   chapters: prev.chapters?.map((c) => c.id === chapter.id ? chapter : c),
                 }));
-              }}
-              style={{
-                marginHorizontal: 10,
-              }}
-            />
-          )
+              }
+            }}
+            style={{
+              marginHorizontal: 16,
+            }}
+          />
         )}
         ListHeaderComponent={Header({
           manga: manga,
         })}
-        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        SectionSeparatorComponent={() => <View style={{ height: 10 }} />}
+        ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
       />
     </SafeAreaView>
   );

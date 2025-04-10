@@ -6,12 +6,17 @@ import { Chapter, ChapterEntry, User } from '../../models';
 
 type Props = {
   chapter: Chapter;
-  onChapterChange: (chapter: Chapter) => void;
   updating?: boolean;
+  onChapterChange?: (chapter: Chapter) => void;
   style?: ViewStyle;
 }
 
-export default function ChapterCard({ chapter, onChapterChange, updating = false, style }: Props) {
+export default function ChapterCard({
+  chapter,
+  updating = false,
+  onChapterChange = () => { },
+  style,
+}: Props) {
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
 
