@@ -12,6 +12,7 @@ import DiscoverScreen from './screens/discover/DiscoverScreen';
 import FollowsScreen from './screens/follows/FollowsScreen';
 import LibraryScreen from './screens/library/LibraryScreen';
 import MangaScreen from './screens/manga/MangaScreen';
+import PeopleScreen from './screens/people/PeopleScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
 import SearchScreen from './screens/search/SearchScreen';
 
@@ -75,6 +76,9 @@ const RootStack = createNativeStackNavigator({
     },
     Library: {
       screen: LibraryScreen,
+    },
+    People: {
+      screen: PeopleScreen,
     },
   },
 });
