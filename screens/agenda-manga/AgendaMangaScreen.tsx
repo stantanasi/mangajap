@@ -1,13 +1,15 @@
-import { StaticScreenProps } from '@react-navigation/native';
+import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AuthContext } from '../../contexts/AuthContext';
+import {AuthContext} from '../../contexts/AuthContext';
 import { Manga, User } from '../../models';
+import MangaAgendaCard from '../../components/molecules/MangaAgendaCard';
 
 type Props = StaticScreenProps<{}>;
 
 export default function AgendaMangaScreen({ }: Props) {
+  const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [mangas, setMangas] = useState<Manga[]>();
 
@@ -38,8 +40,36 @@ export default function AgendaMangaScreen({ }: Props) {
       .catch((err) => console.error(err));
   }, []);
 
+  if (!mangas) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator
+          animating
+          color="#000"
+          size="large"
+        />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+      <FlatList
+        data={mangas}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <MangaAgendaCard
+            manga={item}
+            onPress={() => navigation.navigate('Manga', { id: item.id })}
+            style={{
+              marginHorizontal: 16,
+            }}
+          />
+        )}
+        ListHeaderComponent={() => <View style={{ height: 16 }} />}
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        ListFooterComponent={() => <View style={{ height: 16 }} />}
+      />
     </SafeAreaView>
   );
 }
