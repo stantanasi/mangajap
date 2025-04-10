@@ -17,12 +17,12 @@ export default function SeasonCard({ season, onSeasonChange, style }: Props) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [showEpisodes, setShowEpisodes] = useState(false);
 
-  const episodesReadCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
+  const episodesWatchedCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
   const episodesCount = season.episodes?.length ?? 0;
 
-  const isWatched = episodesCount > 0 && episodesReadCount == episodesCount;
+  const isWatched = episodesCount > 0 && episodesWatchedCount == episodesCount;
   const progress = episodesCount > 0
-    ? (episodesReadCount / episodesCount) * 100
+    ? (episodesWatchedCount / episodesCount) * 100
     : isWatched ? 100 : 0;
 
   return (
@@ -68,7 +68,7 @@ export default function SeasonCard({ season, onSeasonChange, style }: Props) {
               marginRight: 12,
             }}
           >
-            {episodesReadCount} / {episodesCount}
+            {episodesWatchedCount} / {episodesCount}
           </Text>
 
           {user ? (
