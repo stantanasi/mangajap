@@ -83,6 +83,7 @@ export default function DiscoverScreen({ route }: Props) {
             renderItem={({ item }) => (
               <PeopleCard
                 people={item}
+                onPress={() => navigation.navigate('People', { id: item.id })}
               />
             )}
             ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
