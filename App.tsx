@@ -17,14 +17,15 @@ import ProfileScreen from './screens/profile/ProfileScreen';
 import SearchScreen from './screens/search/SearchScreen';
 
 const MainTabs = createBottomTabNavigator({
+  initialRouteName: 'Discover',
   screenOptions: {
     header: () => null,
+    tabBarShowLabel: false,
   },
   screens: {
     Discover: {
       screen: DiscoverScreen,
       options: {
-        tabBarShowLabel: false,
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons
             name="search"
@@ -37,7 +38,6 @@ const MainTabs = createBottomTabNavigator({
     Profile: {
       screen: ProfileScreen,
       options: {
-        tabBarShowLabel: false,
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons
             name="person"
