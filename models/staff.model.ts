@@ -3,20 +3,10 @@ import Anime from "./anime.model";
 import Manga from "./manga.model";
 import People from "./people.model";
 
-enum StaffRole {
-  Author = "author",
-  Illustrator = "illustrator",
-  StoryAndArt = "story_and_art",
-  Licensor = "licensor",
-  Producer = "producer",
-  Studio = "studio",
-  OriginalCreator = "original_creator",
-}
-
 export interface IStaff {
   id: string;
 
-  role: StaffRole;
+  role: 'author' | 'illustrator' | 'story_and_art' | 'licensor' | 'producer' | 'studio' | 'original_creator';
   createdAt: Date;
   updatedAt: Date;
 

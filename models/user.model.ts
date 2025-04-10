@@ -5,12 +5,6 @@ import MangaEntry from "./manga-entry.model";
 import Request from "./request.model";
 import Review from "./review.model";
 
-enum UserGender {
-  Men = "men",
-  Women = "women",
-  Other = "other",
-}
-
 export interface IUser {
   id: string;
 
@@ -20,7 +14,7 @@ export interface IUser {
   firstName: string;
   lastName: string;
   about: string;
-  gender: UserGender | null;
+  gender: 'men' | 'women' | 'other' | null;
   birthday: Date | null;
   country: string;
   avatar: string | null;

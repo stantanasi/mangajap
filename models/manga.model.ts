@@ -8,28 +8,6 @@ import Staff from "./staff.model";
 import Theme from "./theme.model";
 import Volume from "./volume.model";
 
-enum MangaType {
-  Bd = "bd",
-  Comics = "comics",
-  Josei = "josei",
-  Kodomo = "kodomo",
-  Seijin = "seijin",
-  Seinen = "seinen",
-  Shojo = "shojo",
-  Shonen = "shonen",
-  Doujin = "doujin",
-  Novel = "novel",
-  Oneshot = "oneshot",
-  Webtoon = "webtoon",
-}
-
-enum MangaStatus {
-  Publishing = "publishing",
-  Finished = "finished",
-  Unreleased = "unreleased",
-  Upcoming = "upcoming",
-}
-
 export interface IManga {
   id: string;
 
@@ -38,8 +16,8 @@ export interface IManga {
   startDate: Date;
   endDate: Date | null;
   origin: string[];
-  mangaType: MangaType;
-  status: MangaStatus;
+  mangaType: 'bd' | 'comics' | 'josei' | 'kodomo' | 'seijin' | 'seinen' | 'shojo' | 'shonen' | 'doujin' | 'novel' | 'oneshot' | 'webtoon';
+  status: 'publishing' | 'finished' | 'unreleased' | 'upcoming';
   poster: string | null;
   banner: string | null;
   links: {

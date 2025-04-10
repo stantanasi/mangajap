@@ -2,20 +2,12 @@ import { model, Schema } from "@stantanasi/jsonapi-client";
 import Anime from "./anime.model";
 import User from "./user.model";
 
-enum AnimeEntryStatus {
-  Watching = "watching",
-  Completed = "completed",
-  Planned = "planned",
-  OnHold = "on_hold",
-  Dropped = "dropped",
-}
-
 export interface IAnimeEntry {
   id: string;
 
   isAdd: boolean;
   isFavorites: boolean;
-  status: AnimeEntryStatus;
+  status: 'watching' | 'completed' | 'planned' | 'on_hold' | 'dropped';
   episodesWatch: number;
   rating: number | null;
   startedAt: Date | null;

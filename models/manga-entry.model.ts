@@ -2,20 +2,12 @@ import { model, Schema } from "@stantanasi/jsonapi-client";
 import Manga from "./manga.model";
 import User from "./user.model";
 
-enum MangaEntryStatus {
-  Reading = "reading",
-  Completed = "completed",
-  Planned = "planned",
-  OnHold = "on_hold",
-  Dropped = "dropped",
-}
-
 export interface IMangaEntry {
   id: string;
 
   isAdd: boolean;
   isFavorites: boolean;
-  status: MangaEntryStatus;
+  status: 'reading' | 'completed' | 'planned' | 'on_hold' | 'dropped';
   volumesRead: number;
   chaptersRead: number;
   rating: number | null;

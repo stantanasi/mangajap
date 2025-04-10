@@ -8,22 +8,6 @@ import Season from "./season.model";
 import Staff from "./staff.model";
 import Theme from "./theme.model";
 
-enum AnimeStatus {
-  Airing = "airing",
-  Finished = "finished",
-  Unreleased = "unreleased",
-  Upcoming = "upcoming",
-}
-
-enum AnimeType {
-  Tv = "tv",
-  Ova = "ova",
-  Ona = "ona",
-  Movie = "movie",
-  Music = "music",
-  Special = "special",
-}
-
 export interface IAnime {
   id: string;
 
@@ -32,8 +16,8 @@ export interface IAnime {
   startDate: Date;
   endDate: Date | null;
   origin: string[];
-  animeType: AnimeType;
-  status: AnimeStatus;
+  animeType: 'tv' | 'ova' | 'ona' | 'movie' | 'music' | 'special';
+  status: 'airing' | 'finished' | 'unreleased' | 'upcoming';
   inProduction: boolean;
   youtubeVideoId: string;
   poster: string | null;

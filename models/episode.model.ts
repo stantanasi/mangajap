@@ -3,11 +3,6 @@ import Anime from "./anime.model";
 import EpisodeEntry from "./episode-entry.model";
 import Season from "./season.model";
 
-enum EpisodeType {
-  None = "",
-  Oav = "oav",
-}
-
 export interface IEpisode {
   id: string;
 
@@ -16,7 +11,7 @@ export interface IEpisode {
   overview: string;
   airDate: Date;
   runtime: number;
-  episodeType: EpisodeType;
+  episodeType: '' | 'oav';
   poster: string | null;
   createdAt: Date;
   updatedAt: Date;

@@ -2,25 +2,10 @@ import { model, Schema } from "@stantanasi/jsonapi-client";
 import Anime from "./anime.model";
 import Manga from "./manga.model";
 
-enum FranchiseRole {
-  Adaptation = "adaptation",
-  AlternativeSetting = "alternative_setting",
-  AlternativeVersion = "alternative_version",
-  Character = "character",
-  FullStory = "full_story",
-  Other = "other",
-  ParentStory = "parent_story",
-  Prequel = "prequel",
-  Sequel = "sequel",
-  SideStory = "side_story",
-  Spinoff = "spinoff",
-  Summary = "summary",
-}
-
 export interface IFranchise {
   id: string;
 
-  role: FranchiseRole;
+  role: 'adaptation' | 'alternative_setting' | 'alternative_version' | 'character' | 'full_story' | 'other' | 'parent_story' | 'prequel' | 'sequel' | 'side_story' | 'spinoff' | 'summary';
   createdAt: Date;
   updatedAt: Date;
 
