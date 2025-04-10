@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     aspectRatio: 2 / 3,
+    backgroundColor: '#ccc',
   },
   title: {
     textAlign: 'center',

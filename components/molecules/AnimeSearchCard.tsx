@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
   image: {
     width: 80,
     aspectRatio: 2 / 3,
+    backgroundColor: '#ccc',
   },
   title: {
     fontSize: 16,
