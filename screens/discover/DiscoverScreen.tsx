@@ -5,6 +5,7 @@ import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, V
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
+import PeopleCard from '../../components/molecules/PeopleCard';
 import { Anime, Manga, People } from '../../models';
 
 type Props = StaticScreenProps<{}>;
@@ -67,7 +68,7 @@ export default function DiscoverScreen({ route }: Props) {
         </Text>
       </Pressable>
 
-      {!animes || !mangas ? (
+      {!peoples || !animes || !mangas ? (
         <ActivityIndicator
           animating
           color="#000"
@@ -75,6 +76,20 @@ export default function DiscoverScreen({ route }: Props) {
         />
       ) : (
         <ScrollView>
+          <FlatList
+            horizontal
+            data={peoples}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <PeopleCard
+                people={item}
+              />
+            )}
+            ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+            ListHeaderComponent={() => <View style={{ width: 16 }} />}
+            ListFooterComponent={() => <View style={{ width: 16 }} />}
+          />
+
           <FlatList
             horizontal
             data={animes}
