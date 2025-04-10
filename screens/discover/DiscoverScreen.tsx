@@ -76,6 +76,17 @@ export default function DiscoverScreen({ route }: Props) {
         />
       ) : (
         <ScrollView>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 'bold',
+              marginBottom: 6,
+              marginHorizontal: 16,
+            }}
+          >
+            Personnalités
+          </Text>
+
           <FlatList
             horizontal
             data={peoples}
@@ -91,6 +102,18 @@ export default function DiscoverScreen({ route }: Props) {
             ListFooterComponent={() => <View style={{ width: 16 }} />}
           />
 
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 'bold',
+              marginBottom: 6,
+              marginHorizontal: 16,
+              marginTop: 20,
+            }}
+          >
+            Derniers animes ajoutés
+          </Text>
+
           <FlatList
             horizontal
             data={animes}
@@ -105,6 +128,18 @@ export default function DiscoverScreen({ route }: Props) {
             ListHeaderComponent={() => <View style={{ width: 16 }} />}
             ListFooterComponent={() => <View style={{ width: 16 }} />}
           />
+
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 'bold',
+              marginBottom: 6,
+              marginHorizontal: 16,
+              marginTop: 20,
+            }}
+          >
+            Derniers mangas ajoutés
+          </Text>
 
           <FlatList
             horizontal
