@@ -6,12 +6,17 @@ import { Episode, EpisodeEntry, User } from '../../models';
 
 type Props = {
   episode: Episode;
-  onEpisodeChange: (episode: Episode) => void;
   updating?: boolean;
+  onEpisodeChange?: (episode: Episode) => void;
   style?: ViewStyle;
 }
 
-export default function EpisodeCard({ episode, onEpisodeChange, updating = false, style }: Props) {
+export default function EpisodeCard({
+  episode,
+  updating = false,
+  onEpisodeChange = () => { },
+  style,
+}: Props) {
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
 
