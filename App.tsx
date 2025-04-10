@@ -7,6 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
+import AgendaAnimeScreen from './screens/agenda-anime/AgendaAnimeScreen';
 import AnimeScreen from './screens/anime/AnimeScreen';
 import DiscoverScreen from './screens/discover/DiscoverScreen';
 import FollowsScreen from './screens/follows/FollowsScreen';
@@ -23,6 +24,18 @@ const MainTabs = createBottomTabNavigator({
     tabBarShowLabel: false,
   },
   screens: {
+    AgendaAnime: {
+      screen: AgendaAnimeScreen,
+      options: {
+        tabBarIcon: ({ color, size }) => (
+          <MaterialIcons
+            name="tv"
+            size={size}
+            color={color}
+          />
+        ),
+      },
+    },
     Discover: {
       screen: DiscoverScreen,
       options: {
