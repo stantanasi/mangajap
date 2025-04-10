@@ -69,6 +69,11 @@ export default function AnimeScreen({ route }: Props) {
           `seasons.episodes${isAuthenticated ? '.episode-entry' : ''}`,
         ]);
 
+      anime.seasons = [
+        ...anime.seasons!.filter((s) => s.number !== 0),
+        ...anime.seasons!.filter((s) => s.number === 0),
+      ];
+
       setAnime(anime);
     };
 

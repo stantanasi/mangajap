@@ -51,7 +51,9 @@ export default function SeasonCard({
 
         <View style={{ flex: 1, padding: 10 }}>
           <Text style={styles.number}>
-            Saison {season.number}
+            {season.number !== 0
+              ? `Saison ${season.number}`
+              : 'Épisodes spéciaux'}
           </Text>
         </View>
 
