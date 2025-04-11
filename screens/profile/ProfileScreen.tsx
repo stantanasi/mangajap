@@ -517,6 +517,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 100,
     height: 100,
+    backgroundColor: '#ccc',
     borderRadius: 360,
   },
   pseudo: {
