@@ -16,7 +16,7 @@ type Props = StaticScreenProps<{
 
 export default function ProfileScreen({ route }: Props) {
   const navigation = useNavigation();
-  const { user: authenticatedUser, logout } = useContext(AuthContext);
+  const { user: authenticatedUser } = useContext(AuthContext);
   const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
   const [user, setUser] = useState<User>();
   const [isFollowingUser, setIsFollowingUser] = useState<Follow | null>();
@@ -171,22 +171,6 @@ export default function ProfileScreen({ route }: Props) {
                   }}
                 >
                   Modifier
-                </Text>
-
-                <Text
-                  onPress={() => logout()}
-                  style={{
-                    alignSelf: 'flex-start',
-                    borderColor: '#000',
-                    borderRadius: 360,
-                    borderWidth: 1,
-                    color: '#000',
-                    fontWeight: 'bold',
-                    paddingHorizontal: 12,
-                    paddingVertical: 4,
-                  }}
-                >
-                  Déconnexion
                 </Text>
 
                 <MaterialIcons
