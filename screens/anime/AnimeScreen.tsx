@@ -58,7 +58,7 @@ export default function AnimeScreen({ route }: Props) {
   const { isAuthenticated } = useContext(AuthContext);
   const [anime, setAnime] = useState<Anime>();
   const [expandedSeasons, setExpandedSeasons] = useState<{ [seasonId: string]: boolean }>({});
-  const [updatingSeasons, setUpdatingSeasons] = useState<{ [seasonId: string]: boolean }>({});
+  const [updating, setUpdating] = useState<{ [id: string]: boolean }>({});
 
   useEffect(() => {
     const prepare = async () => {
@@ -110,12 +110,20 @@ export default function AnimeScreen({ route }: Props) {
         renderSectionHeader={({ section: { season } }) => (
           <SeasonCard
             season={season}
-            onUpdating={(updating) => setUpdatingSeasons((prev) => ({ ...prev, [season.id]: updating }))}
             onSeasonChange={(season) => {
               setAnime((prev) => prev?.copy({
                 seasons: prev.seasons?.map((s) => s.id === season.id ? season : s),
               }));
             }}
+            updating={updating[season.id]}
+            onUpdatingChange={(value) => setUpdating((prev) => ({
+              ...prev,
+              [season.id]: value,
+              ...season.episodes?.reduce((acc, episode) => {
+                acc[episode.id] = value;
+                return acc;
+              }, {} as typeof updating),
+            }))}
             onPress={() => setExpandedSeasons((prev) => ({ ...prev, [season.id]: !prev[season.id] }))}
             expanded={expandedSeasons[season.id]}
             style={{
@@ -127,7 +135,6 @@ export default function AnimeScreen({ route }: Props) {
         renderItem={({ item, section: { season } }) => (
           <EpisodeCard
             episode={item}
-            updating={updatingSeasons[season.id]}
             onEpisodeChange={(episode) => {
               setAnime((prev) => prev?.copy({
                 seasons: prev.seasons?.map((s) => s.id === season.id
@@ -137,6 +144,8 @@ export default function AnimeScreen({ route }: Props) {
                   : s),
               }));
             }}
+            updating={updating[item.id]}
+            onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [item.id]: value }))}
             style={{
               marginHorizontal: 16,
             }}

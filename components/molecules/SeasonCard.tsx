@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, Image, Pressable, PressableProps, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { EpisodeEntry, Season, User } from '../../models';
@@ -7,22 +7,23 @@ import ProgressBar from '../atoms/ProgressBar';
 
 type Props = PressableProps & {
   season: Season;
-  onUpdating?: (updating: boolean) => void;
   onSeasonChange?: (season: Season) => void;
+  updating?: boolean;
+  onUpdatingChange?: (value: boolean) => void;
   expanded?: boolean;
   style?: ViewStyle;
 }
 
 export default function SeasonCard({
   season,
-  onUpdating = () => { },
   onSeasonChange = () => { },
+  updating = false,
+  onUpdatingChange = () => { },
   expanded = false,
   style,
   ...props
 }: Props) {
   const { user } = useContext(AuthContext);
-  const [isUpdating, setIsUpdating] = useState(false);
 
   const episodesWatchedCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
   const episodesCount = season.episodes?.length ?? 0;
@@ -83,14 +84,13 @@ export default function SeasonCard({
               marginRight: 10,
             }}
           >
-            {!isUpdating ? (
+            {!updating ? (
               <MaterialIcons
                 name="check"
                 size={20}
                 color={!isWatched ? '#7e7e7e' : '#fff'}
                 onPress={() => {
-                  setIsUpdating(true);
-                  onUpdating(true);
+                  onUpdatingChange(true);
 
                   const updateSeasonEpisodesEntries = async () => {
                     const episodes = await Promise.all(season.episodes?.map(async (episode) => {
@@ -125,10 +125,7 @@ export default function SeasonCard({
 
                   updateSeasonEpisodesEntries()
                     .catch((err) => console.error(err))
-                    .finally(() => {
-                      setIsUpdating(false);
-                      onUpdating(false);
-                    });
+                    .finally(() => onUpdatingChange(false));
                 }}
               />
             ) : (
