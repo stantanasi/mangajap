@@ -11,6 +11,7 @@ type Props = PressableProps & {
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
+  onEpisodeUpdatingChange?: (id: string, value: boolean) => void;
   expanded?: boolean;
   style?: ViewStyle;
 }
@@ -21,6 +22,7 @@ export default function SeasonCard({
   onWatchedChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
+  onEpisodeUpdatingChange = () => { },
   expanded = false,
   style,
   ...props
@@ -98,6 +100,8 @@ export default function SeasonCard({
                   const updateSeasonEpisodesEntries = async () => {
                     const episodes = await Promise.all(season.episodes?.map(async (episode) => {
                       if (!isWatched && !episode['episode-entry']) {
+                        onEpisodeUpdatingChange(episode.id, true);
+
                         const episodeEntry = new EpisodeEntry({
                           user: new User({ id: user.id }),
                           episode: episode,
@@ -108,14 +112,18 @@ export default function SeasonCard({
                           .catch((err) => {
                             console.error(err);
                             return episode;
-                          });
+                          })
+                          .finally(() => onEpisodeUpdatingChange(episode.id, false));
                       } else if (isWatched && episode['episode-entry']) {
+                        onEpisodeUpdatingChange(episode.id, true);
+
                         return episode['episode-entry'].delete()
                           .then(() => episode.copy({ 'episode-entry': null }))
                           .catch((err) => {
                             console.error(err);
                             return episode;
-                          });
+                          })
+                          .finally(() => onEpisodeUpdatingChange(episode.id, false));
                       }
 
                       return episode;

@@ -164,6 +164,7 @@ export default function AnimeScreen({ route }: Props) {
                 return acc;
               }, {} as typeof updating),
             }))}
+            onEpisodeUpdatingChange={(id, value) => setUpdating((prev) => ({ ...prev, [id]: value }))}
             onPress={() => setExpandedSeasons((prev) => ({ ...prev, [season.id]: !prev[season.id] }))}
             expanded={expandedSeasons[season.id]}
             style={{
