@@ -1,5 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { launchImageLibraryAsync } from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -101,9 +102,30 @@ export default function ProfileEditScreen({ route }: Props) {
           padding: 16,
         }}
       >
-        <View
+        <Pressable
+          onPress={() => {
+            launchImageLibraryAsync({
+              mediaTypes: 'images',
+              allowsEditing: true,
+              aspect: [1, 1],
+              base64: true,
+              quality: 1,
+            })
+              .then((result) => {
+                if (result.canceled) return
+
+                const base64 = result.assets[0].base64;
+                if (!base64) return
+
+                setForm((prev) => ({
+                  ...prev,
+                  avatar: `data:image/jpg;base64,${base64}`,
+                }));
+              })
+              .catch((err) => console.error(err));
+          }}
           style={{
-            alignItems: 'center',
+            alignSelf: 'center',
             marginBottom: 16,
           }}
         >
@@ -111,7 +133,21 @@ export default function ProfileEditScreen({ route }: Props) {
             source={{ uri: form.avatar ?? undefined }}
             style={styles.avatar}
           />
-        </View>
+
+          <MaterialIcons
+            name="edit"
+            size={18}
+            color="#fff"
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              right: 0,
+              backgroundColor: '#000',
+              borderRadius: 4,
+              padding: 4,
+            }}
+          />
+        </Pressable>
 
         <View style={styles.row}>
           <Text style={styles.label}>
