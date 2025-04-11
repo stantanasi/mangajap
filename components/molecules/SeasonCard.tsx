@@ -1,21 +1,33 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useContext, useState } from 'react';
-import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import React, { useContext } from 'react';
+import { ActivityIndicator, Image, Pressable, PressableProps, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { EpisodeEntry, Season, User } from '../../models';
 import ProgressBar from '../atoms/ProgressBar';
-import EpisodeCard from './EpisodeCard';
 
-type Props = {
+type Props = PressableProps & {
   season: Season;
-  onSeasonChange: (season: Season) => void;
+  onSeasonChange?: (season: Season) => void;
+  onWatchedChange?: (value: boolean) => void;
+  updating?: boolean;
+  onUpdatingChange?: (value: boolean) => void;
+  onEpisodeUpdatingChange?: (id: string, value: boolean) => void;
+  expanded?: boolean;
   style?: ViewStyle;
 }
 
-export default function SeasonCard({ season, onSeasonChange, style }: Props) {
+export default function SeasonCard({
+  season,
+  onSeasonChange = () => { },
+  onWatchedChange = () => { },
+  updating = false,
+  onUpdatingChange = () => { },
+  onEpisodeUpdatingChange = () => { },
+  expanded = false,
+  style,
+  ...props
+}: Props) {
   const { user } = useContext(AuthContext);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [showEpisodes, setShowEpisodes] = useState(false);
 
   const episodesWatchedCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
   const episodesCount = season.episodes?.length ?? 0;
@@ -26,140 +38,131 @@ export default function SeasonCard({ season, onSeasonChange, style }: Props) {
     : isWatched ? 100 : 0;
 
   return (
-    <View style={[styles.container, style]}>
-      <Pressable
-        onPress={() => setShowEpisodes((prev) => !prev)}
+    <Pressable
+      {...props}
+      style={[styles.container, style]}
+    >
+      <View
         style={{
-          backgroundColor: '#fff',
-          borderRadius: 4,
-          overflow: 'hidden',
-          marginBottom: 6,
+          alignItems: 'center',
+          flexDirection: 'row',
         }}
       >
-        <View
-          style={{
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}
-        >
-          <Image
-            source={{ uri: season.poster ?? undefined }}
-            resizeMode="cover"
-            style={styles.poster}
-          />
+        <Image
+          source={{ uri: season.poster ?? undefined }}
+          resizeMode="cover"
+          style={styles.poster}
+        />
 
-          <View style={{ flex: 1, padding: 10 }}>
-            <Text style={styles.number}>
-              Saison {season.number}
-            </Text>
-          </View>
-
-          <MaterialIcons
-            name={showEpisodes ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
-            size={24}
-            color="black"
-            style={{
-              marginRight: 14,
-            }}
-          />
-
-          <Text
-            style={{
-              marginRight: 12,
-            }}
-          >
-            {episodesWatchedCount} / {episodesCount}
+        <View style={{ flex: 1, padding: 10 }}>
+          <Text style={styles.number}>
+            {season.number !== 0
+              ? `Saison ${season.number}`
+              : 'Épisodes spéciaux'}
           </Text>
-
-          {user ? (
-            <View
-              style={{
-                backgroundColor: !isWatched ? '#e5e5e5' : '#4281f5',
-                borderRadius: 360,
-                padding: 8,
-                marginRight: 10,
-              }}
-            >
-              {!isUpdating ? (
-                <MaterialIcons
-                  name="check"
-                  size={20}
-                  color={!isWatched ? '#7e7e7e' : '#fff'}
-                  onPress={() => {
-                    setIsUpdating(true);
-
-                    const updateSeasonEpisodesEntries = async () => {
-                      const episodes = await Promise.all(season.episodes?.map(async (episode) => {
-                        if (!isWatched && !episode['episode-entry']) {
-                          const episodeEntry = new EpisodeEntry({
-                            user: new User({ id: user.id }),
-                            episode: episode,
-                          });
-
-                          return episodeEntry.save()
-                            .then((entry) => episode.copy({ 'episode-entry': entry }))
-                            .catch((err) => {
-                              console.error(err);
-                              return episode;
-                            });
-                        } else if (isWatched && episode['episode-entry']) {
-                          return episode['episode-entry'].delete()
-                            .then(() => episode.copy({ 'episode-entry': null }))
-                            .catch((err) => {
-                              console.error(err);
-                              return episode;
-                            });
-                        }
-
-                        return episode;
-                      }) ?? []);
-
-                      onSeasonChange(season.copy({
-                        episodes: episodes,
-                      }));
-                    };
-
-                    updateSeasonEpisodesEntries()
-                      .catch((err) => console.error(err))
-                      .finally(() => setIsUpdating(false));
-                  }}
-                />
-              ) : (
-                <ActivityIndicator
-                  animating
-                  color="#fff"
-                  size={20}
-                />
-              )}
-            </View>
-          ) : null}
         </View>
 
-        <ProgressBar
-          progress={progress}
+        <MaterialIcons
+          name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
+          size={24}
+          color="black"
+          style={{
+            marginRight: 14,
+          }}
         />
-      </Pressable>
 
-      <View style={{ gap: 6 }}>
-        {showEpisodes && season.episodes?.map((episode) => (
-          <EpisodeCard
-            key={episode.id}
-            episode={episode}
-            onEpisodeChange={(episode) => {
-              onSeasonChange(season.copy({
-                episodes: season.episodes?.map((e) => e.id === episode.id ? episode : e),
-              }));
+        <Text
+          style={{
+            marginRight: 12,
+          }}
+        >
+          {episodesWatchedCount} / {episodesCount}
+        </Text>
+
+        {user ? (
+          <View
+            style={{
+              backgroundColor: !isWatched ? '#e5e5e5' : '#4281f5',
+              borderRadius: 360,
+              padding: 8,
+              marginRight: 10,
             }}
-            updating={isUpdating}
-          />
-        ))}
+          >
+            {!updating ? (
+              <MaterialIcons
+                name="check"
+                size={20}
+                color={!isWatched ? '#7e7e7e' : '#fff'}
+                onPress={() => {
+                  onWatchedChange(!isWatched);
+                  onUpdatingChange(true);
+
+                  const updateSeasonEpisodesEntries = async () => {
+                    const episodes = await Promise.all(season.episodes?.map(async (episode) => {
+                      if (!isWatched && !episode['episode-entry']) {
+                        onEpisodeUpdatingChange(episode.id, true);
+
+                        const episodeEntry = new EpisodeEntry({
+                          user: new User({ id: user.id }),
+                          episode: episode,
+                        });
+
+                        return episodeEntry.save()
+                          .then((entry) => episode.copy({ 'episode-entry': entry }))
+                          .catch((err) => {
+                            console.error(err);
+                            return episode;
+                          })
+                          .finally(() => onEpisodeUpdatingChange(episode.id, false));
+                      } else if (isWatched && episode['episode-entry']) {
+                        onEpisodeUpdatingChange(episode.id, true);
+
+                        return episode['episode-entry'].delete()
+                          .then(() => episode.copy({ 'episode-entry': null }))
+                          .catch((err) => {
+                            console.error(err);
+                            return episode;
+                          })
+                          .finally(() => onEpisodeUpdatingChange(episode.id, false));
+                      }
+
+                      return episode;
+                    }) ?? []);
+
+                    onSeasonChange(season.copy({
+                      episodes: episodes,
+                    }));
+                  };
+
+                  updateSeasonEpisodesEntries()
+                    .catch((err) => console.error(err))
+                    .finally(() => onUpdatingChange(false));
+                }}
+              />
+            ) : (
+              <ActivityIndicator
+                animating
+                color="#fff"
+                size={20}
+              />
+            )}
+          </View>
+        ) : null}
       </View>
-    </View>
+
+      <ProgressBar
+        progress={progress}
+      />
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    backgroundColor: '#fff',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
   poster: {
     width: 90,
     aspectRatio: 2 / 3,

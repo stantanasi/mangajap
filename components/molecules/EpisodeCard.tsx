@@ -1,23 +1,27 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../models';
 
 type Props = {
   episode: Episode;
-  onEpisodeChange: (episode: Episode) => void;
+  onEpisodeChange?: (episode: Episode) => void;
+  onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
+  onUpdatingChange?: (value: boolean) => void;
   style?: ViewStyle;
 }
 
-export default function EpisodeCard({ episode, onEpisodeChange, updating = false, style }: Props) {
+export default function EpisodeCard({
+  episode,
+  onEpisodeChange = () => { },
+  onWatchedChange = () => { },
+  updating = false,
+  onUpdatingChange = () => { },
+  style,
+}: Props) {
   const { user } = useContext(AuthContext);
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  useEffect(() => {
-    setIsUpdating(updating);
-  }, [updating]);
 
   const isWatched = !!episode['episode-entry'];
 
@@ -47,13 +51,14 @@ export default function EpisodeCard({ episode, onEpisodeChange, updating = false
             marginRight: 10,
           }}
         >
-          {!isUpdating ? (
+          {!updating ? (
             <MaterialIcons
               name="check"
               size={20}
               color={!isWatched ? '#7e7e7e' : '#fff'}
               onPress={() => {
-                setIsUpdating(true);
+                onWatchedChange(!isWatched);
+                onUpdatingChange(true);
 
                 const updateEpisodeEntry = async () => {
                   if (!isWatched && !episode['episode-entry']) {
@@ -77,7 +82,7 @@ export default function EpisodeCard({ episode, onEpisodeChange, updating = false
 
                 updateEpisodeEntry()
                   .catch((err) => console.error(err))
-                  .finally(() => setIsUpdating(false));
+                  .finally(() => onUpdatingChange(false));
               }}
             />
           ) : (

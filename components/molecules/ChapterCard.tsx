@@ -1,23 +1,27 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../models';
 
 type Props = {
   chapter: Chapter;
-  onChapterChange: (chapter: Chapter) => void;
+  onChapterChange?: (chapter: Chapter) => void;
+  onReadChange?: (value: boolean) => void;
   updating?: boolean;
+  onUpdatingChange?: (value: boolean) => void;
   style?: ViewStyle;
 }
 
-export default function ChapterCard({ chapter, onChapterChange, updating = false, style }: Props) {
+export default function ChapterCard({
+  chapter,
+  onChapterChange = () => { },
+  onReadChange = () => { },
+  updating = false,
+  onUpdatingChange = () => { },
+  style,
+}: Props) {
   const { user } = useContext(AuthContext);
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  useEffect(() => {
-    setIsUpdating(updating);
-  }, [updating]);
 
   const isRead = !!chapter['chapter-entry'];
 
@@ -47,13 +51,14 @@ export default function ChapterCard({ chapter, onChapterChange, updating = false
             marginRight: 10,
           }}
         >
-          {!isUpdating ? (
+          {!updating ? (
             <MaterialIcons
               name="check"
               size={20}
               color={!isRead ? '#7e7e7e' : '#fff'}
               onPress={() => {
-                setIsUpdating(true);
+                onReadChange(!isRead);
+                onUpdatingChange(true);
 
                 const updateChapterEntry = async () => {
                   if (!isRead && !chapter['chapter-entry']) {
@@ -77,7 +82,7 @@ export default function ChapterCard({ chapter, onChapterChange, updating = false
 
                 updateChapterEntry()
                   .catch((err) => console.error(err))
-                  .finally(() => setIsUpdating(false));
+                  .finally(() => onUpdatingChange(false));
               }}
             />
           ) : (
