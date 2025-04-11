@@ -188,6 +188,13 @@ export default function ProfileScreen({ route }: Props) {
                 >
                   Déconnexion
                 </Text>
+
+                <MaterialIcons
+                  name="more-vert"
+                  size={24}
+                  color="#000"
+                  onPress={() => navigation.navigate('Settings', {})}
+                />
               </View>
             ) : (
               <View style={{ alignItems: 'center' }}>
