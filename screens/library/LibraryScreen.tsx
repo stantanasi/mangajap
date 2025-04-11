@@ -52,7 +52,7 @@ export default function LibraryScreen({ route }: Props) {
 
     prepare()
       .catch((err) => console.error(err));
-  }, []);
+  }, [route.params]);
 
   if (!library) {
     return (

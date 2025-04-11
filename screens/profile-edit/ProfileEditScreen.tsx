@@ -27,7 +27,7 @@ export default function ProfileEditScreen({ route }: Props) {
 
     prepare()
       .catch((err) => console.error(err));
-  }, []);
+  }, [route.params]);
 
   if (!user || !form) {
     return (

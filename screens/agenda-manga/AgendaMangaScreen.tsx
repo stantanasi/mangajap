@@ -17,23 +17,23 @@ export default function AgendaMangaScreen({ }: Props) {
     const prepare = async () => {
       setMangas(undefined);
 
-      if (user) {
-        const mangaLibrary = await User.findById(user.id).get('manga-library')
-          .include(['manga'])
-          .sort({ updatedAt: 'desc' })
-          .limit(500);
+      if (!user) return
 
-        const mangas = mangaLibrary
-          .filter((entry) => {
-            const progress = (entry.chaptersRead / entry.manga!.chapterCount) * 100;
-            return progress < 100;
-          })
-          .map((entry) => entry.manga!.copy({
-            'manga-entry': entry,
-          }));
+      const mangaLibrary = await User.findById(user.id).get('manga-library')
+        .include(['manga'])
+        .sort({ updatedAt: 'desc' })
+        .limit(500);
 
-        setMangas(mangas);
-      }
+      const mangas = mangaLibrary
+        .filter((entry) => {
+          const progress = (entry.chaptersRead / entry.manga!.chapterCount) * 100;
+          return progress < 100;
+        })
+        .map((entry) => entry.manga!.copy({
+          'manga-entry': entry,
+        }));
+
+      setMangas(mangas);
     };
 
     prepare()

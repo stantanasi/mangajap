@@ -80,7 +80,7 @@ export default function AnimeScreen({ route }: Props) {
 
     prepare()
       .catch((err) => console.error(err));
-  }, []);
+  }, [route.params]);
 
   if (!anime) {
     return (

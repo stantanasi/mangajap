@@ -33,7 +33,7 @@ export default function FollowsScreen({ route }: Props) {
 
     prepare()
       .catch((err) => console.error(err));
-  }, []);
+  }, [route.params]);
 
   if (!follows) {
     return (

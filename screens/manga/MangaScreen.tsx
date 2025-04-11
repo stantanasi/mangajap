@@ -77,7 +77,7 @@ export default function MangaScreen({ route }: Props) {
 
     prepare()
       .catch((err) => console.error(err));
-  }, []);
+  }, [route.params]);
 
   if (!manga) {
     return (

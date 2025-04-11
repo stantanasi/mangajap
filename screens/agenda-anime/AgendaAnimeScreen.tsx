@@ -17,23 +17,23 @@ export default function AgendaAnimeScreen({ }: Props) {
     const prepare = async () => {
       setAnimes(undefined);
 
-      if (user) {
-        const animeLibrary = await User.findById(user.id).get('anime-library')
-          .include(['anime'])
-          .sort({ updatedAt: 'desc' })
-          .limit(500);
+      if (!user) return
 
-        const animes = animeLibrary
-          .filter((entry) => {
-            const progress = (entry.episodesWatch / entry.anime!.episodeCount) * 100;
-            return progress < 100;
-          })
-          .map((entry) => entry.anime!.copy({
-            'anime-entry': entry,
-          }));
+      const animeLibrary = await User.findById(user.id).get('anime-library')
+        .include(['anime'])
+        .sort({ updatedAt: 'desc' })
+        .limit(500);
 
-        setAnimes(animes);
-      }
+      const animes = animeLibrary
+        .filter((entry) => {
+          const progress = (entry.episodesWatch / entry.anime!.episodeCount) * 100;
+          return progress < 100;
+        })
+        .map((entry) => entry.anime!.copy({
+          'anime-entry': entry,
+        }));
+
+      setAnimes(animes);
     };
 
     prepare()
