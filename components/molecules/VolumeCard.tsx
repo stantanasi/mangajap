@@ -11,6 +11,7 @@ type Props = PressableProps & {
   onReadChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
+  onChapterUpdatingChange?: (id: string, value: boolean) => void;
   expanded?: boolean;
   style?: ViewStyle;
 }
@@ -21,6 +22,7 @@ export default function VolumeCard({
   onReadChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
+  onChapterUpdatingChange = () => { },
   expanded = false,
   style,
   ...props
@@ -124,6 +126,8 @@ export default function VolumeCard({
                   const updateVolumeChaptersEntries = async () => {
                     const chapters = await Promise.all(volume.chapters?.map(async (chapter, i) => {
                       if (!isRead && !chapter['chapter-entry']) {
+                        onChapterUpdatingChange(chapter.id, true);
+
                         const chapterEntry = new ChapterEntry({
                           user: new User({ id: user.id }),
                           chapter: chapter,
@@ -134,14 +138,18 @@ export default function VolumeCard({
                           .catch((err) => {
                             console.error(err);
                             return chapter;
-                          });
+                          })
+                          .finally(() => onChapterUpdatingChange(chapter.id, false));
                       } else if (isRead && chapter['chapter-entry']) {
+                        onChapterUpdatingChange(chapter.id, true);
+
                         return chapter['chapter-entry'].delete()
                           .then(() => chapter.copy({ 'chapter-entry': null }))
                           .catch((err) => {
                             console.error(err);
                             return chapter;
-                          });
+                          })
+                          .finally(() => onChapterUpdatingChange(chapter.id, false));
                       }
 
                       return chapter;

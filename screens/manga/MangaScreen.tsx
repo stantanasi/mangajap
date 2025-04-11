@@ -168,6 +168,7 @@ export default function MangaScreen({ route }: Props) {
             }}
             updating={updating[volume.id]}
             onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [volume.id]: value }))}
+            onChapterUpdatingChange={(id, value) => setUpdating((prev) => ({ ...prev, [id]: value }))}
             onPress={() => setExpandedVolumes((prev) => ({ ...prev, [volume.id]: !prev[volume.id] }))}
             expanded={expandedVolumes[volume.id]}
             style={{
@@ -208,7 +209,7 @@ export default function MangaScreen({ route }: Props) {
                 setPreviousUnread(previousUnread);
               }
             }}
-            updating={updating[item.id] || (volume ? updating[volume.id] : false)}
+            updating={updating[item.id]}
             onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [item.id]: value }))}
             style={{
               marginHorizontal: 16,
