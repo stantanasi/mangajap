@@ -221,7 +221,7 @@ export default function AnimeScreen({ route }: Props) {
             justifyContent: 'center',
           }}
         >
-          <View
+          <Pressable
             style={{
               width: '90%',
               backgroundColor: '#fff',
@@ -304,7 +304,7 @@ export default function AnimeScreen({ route }: Props) {
                 Non
               </Text>
             </View>
-          </View>
+          </Pressable>
         </Pressable>
       </Modal>
     </SafeAreaView>

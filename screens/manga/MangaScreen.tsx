@@ -232,7 +232,7 @@ export default function MangaScreen({ route }: Props) {
             justifyContent: 'center',
           }}
         >
-          <View
+          <Pressable
             style={{
               width: '90%',
               backgroundColor: '#fff',
@@ -336,7 +336,7 @@ export default function MangaScreen({ route }: Props) {
                 Non
               </Text>
             </View>
-          </View>
+          </Pressable>
         </Pressable>
       </Modal>
     </SafeAreaView>
