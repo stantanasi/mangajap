@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, Image, Pressable, PressableProps, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { ChapterEntry, User, Volume, VolumeEntry } from '../../models';
@@ -7,22 +7,23 @@ import ProgressBar from '../atoms/ProgressBar';
 
 type Props = PressableProps & {
   volume: Volume;
-  onUpdating?: (updating: boolean) => void;
   onVolumeChange?: (volume: Volume) => void;
+  updating?: boolean;
+  onUpdatingChange?: (value: boolean) => void;
   expanded?: boolean;
   style?: ViewStyle;
 }
 
 export default function VolumeCard({
   volume,
-  onUpdating = () => { },
   onVolumeChange = () => { },
+  updating = false,
+  onUpdatingChange = () => { },
   expanded = false,
   style,
   ...props
 }: Props) {
   const { user } = useContext(AuthContext);
-  const [isUpdating, setIsUpdating] = useState(false);
 
   const chaptersReadCount = volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0;
   const chaptersCount = volume.chapters?.length ?? 0;
@@ -89,14 +90,13 @@ export default function VolumeCard({
               marginRight: 10,
             }}
           >
-            {!isUpdating ? (
+            {!updating ? (
               <MaterialIcons
                 name="check"
                 size={20}
                 color={!isRead ? '#7e7e7e' : '#fff'}
                 onPress={() => {
-                  setIsUpdating(true);
-                  onUpdating(true);
+                  onUpdatingChange(true);
 
                   const updateVolumeEntry = async () => {
                     if (!isRead && !volume['volume-entry']) {
@@ -152,10 +152,7 @@ export default function VolumeCard({
                   updateVolumeEntry()
                     .then(() => updateVolumeChaptersEntries())
                     .catch((err) => console.error(err))
-                    .finally(() => {
-                      setIsUpdating(false);
-                      onUpdating(false);
-                    });
+                    .finally(() => onUpdatingChange(false));
                 }}
               />
             ) : (

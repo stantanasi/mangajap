@@ -58,7 +58,7 @@ export default function MangaScreen({ route }: Props) {
   const { isAuthenticated } = useContext(AuthContext);
   const [manga, setManga] = useState<Manga>();
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean }>({});
-  const [updatingVolumes, setUpdatingVolumes] = useState<{ [volumeId: string]: boolean }>({});
+  const [updating, setUpdating] = useState<{ [id: string]: boolean }>({});
 
   useEffect(() => {
     const prepare = async () => {
@@ -113,12 +113,13 @@ export default function MangaScreen({ route }: Props) {
         renderSectionHeader={({ section: { volume } }) => !volume ? null : (
           <VolumeCard
             volume={volume}
-            onUpdating={(updating) => setUpdatingVolumes((prev) => ({ ...prev, [volume.id]: updating }))}
             onVolumeChange={(volume) => {
               setManga((prev) => prev?.copy({
                 volumes: prev.volumes?.map((v) => v.id === volume.id ? volume : v),
               }));
             }}
+            updating={updating[volume.id]}
+            onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [volume.id]: value }))}
             onPress={() => setExpandedVolumes((prev) => ({ ...prev, [volume.id]: !prev[volume.id] }))}
             expanded={expandedVolumes[volume.id]}
             style={{
@@ -130,7 +131,6 @@ export default function MangaScreen({ route }: Props) {
         renderItem={({ item, section: { volume } }) => (
           <ChapterCard
             chapter={item}
-            updating={volume ? updatingVolumes[volume.id] : undefined}
             onChapterChange={(chapter) => {
               if (volume) {
                 setManga((prev) => prev?.copy({
@@ -147,6 +147,8 @@ export default function MangaScreen({ route }: Props) {
                 }));
               }
             }}
+            updating={updating[item.id] || (volume ? updating[volume.id] : false)}
+            onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [item.id]: value }))}
             style={{
               marginHorizontal: 16,
             }}
