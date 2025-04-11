@@ -15,6 +15,7 @@ import FollowsScreen from './screens/follows/FollowsScreen';
 import LibraryScreen from './screens/library/LibraryScreen';
 import MangaScreen from './screens/manga/MangaScreen';
 import PeopleScreen from './screens/people/PeopleScreen';
+import ProfileEditScreen from './screens/profile-edit/ProfileEditScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
 import SearchScreen from './screens/search/SearchScreen';
 
@@ -96,6 +97,9 @@ const RootStack = createNativeStackNavigator({
     },
     Profile: {
       screen: ProfileScreen,
+    },
+    ProfileEdit: {
+      screen: ProfileEditScreen,
     },
     Follows: {
       screen: FollowsScreen,
