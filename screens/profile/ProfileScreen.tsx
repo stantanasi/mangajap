@@ -272,7 +272,9 @@ export default function ProfileScreen({ route }: Props) {
         <FlatList
           horizontal
           data={[
+            { label: 'Animé suivis', value: user.followedAnimeCount },
             { label: 'Épisodes vus', value: user.episodesWatch },
+            { label: 'Manga suivis', value: user.followedMangaCount },
             { label: 'Tomes lus', value: user.volumesRead },
             { label: 'Chapitres lus', value: user.chaptersRead },
           ]}
