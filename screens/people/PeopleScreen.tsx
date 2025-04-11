@@ -49,7 +49,7 @@ export default function PeopleScreen({ route }: Props) {
 
   if (!people) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
           animating
           color="#000"
@@ -100,7 +100,9 @@ export default function PeopleScreen({ route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
   header: {
     margin: 16,
   },

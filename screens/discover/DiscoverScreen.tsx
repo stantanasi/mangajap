@@ -69,11 +69,13 @@ export default function DiscoverScreen({ route }: Props) {
       </Pressable>
 
       {!peoples || !animes || !mangas ? (
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
+        <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+          <ActivityIndicator
+            animating
+            color="#000"
+            size="large"
+          />
+        </View>
       ) : (
         <ScrollView>
           <Text

@@ -20,7 +20,7 @@ const AnimeTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
 
   if (isLoading) {
     return (
-      <View style={style}>
+      <View style={[style, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
           animating
           color="#000"
@@ -83,7 +83,7 @@ const MangaTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
 
   if (isLoading) {
     return (
-      <View style={style}>
+      <View style={[style, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
           animating
           color="#000"
@@ -146,7 +146,7 @@ const PeopleTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
 
   if (isLoading) {
     return (
-      <View style={style}>
+      <View style={[style, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
           animating
           color="#000"
@@ -209,7 +209,7 @@ const UserTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
 
   if (isLoading) {
     return (
-      <View style={style}>
+      <View style={[style, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
           animating
           color="#000"

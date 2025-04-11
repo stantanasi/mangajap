@@ -56,7 +56,7 @@ export default function LibraryScreen({ route }: Props) {
 
   if (!library) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
           animating
           color="#000"
@@ -111,5 +111,7 @@ export default function LibraryScreen({ route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
 });

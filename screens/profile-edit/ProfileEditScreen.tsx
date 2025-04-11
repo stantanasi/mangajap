@@ -31,7 +31,7 @@ export default function ProfileEditScreen({ route }: Props) {
 
   if (!user || !form) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
           animating
           color="#000"

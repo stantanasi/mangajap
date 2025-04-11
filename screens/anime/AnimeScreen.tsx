@@ -84,13 +84,7 @@ export default function AnimeScreen({ route }: Props) {
 
   if (!anime) {
     return (
-      <SafeAreaView
-        style={{
-          alignItems: 'center',
-          flex: 1,
-          justifyContent: 'center',
-        }}
-      >
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
           animating
           color="#000"
@@ -318,7 +312,9 @@ export default function AnimeScreen({ route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
   header: {
     marginBottom: 16,
   },

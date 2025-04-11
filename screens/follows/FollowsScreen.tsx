@@ -37,7 +37,7 @@ export default function FollowsScreen({ route }: Props) {
 
   if (!follows) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
           animating
           color="#000"
@@ -82,5 +82,7 @@ export default function FollowsScreen({ route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
 });

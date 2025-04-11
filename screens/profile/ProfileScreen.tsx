@@ -67,7 +67,7 @@ export default function ProfileScreen({ route }: Props) {
 
   if (!id) {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={styles.container}>
         {authScreen === 'login' ? (
           <LoginContent
             onNavigateToRegister={() => setAuthScreen('register')}
@@ -83,13 +83,7 @@ export default function ProfileScreen({ route }: Props) {
 
   if (!user || isFollowingUser === undefined || isFollowedByUser === undefined) {
     return (
-      <SafeAreaView
-        style={{
-          alignItems: 'center',
-          flex: 1,
-          justifyContent: 'center',
-        }}
-      >
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
           animating
           color="#000"
@@ -513,7 +507,9 @@ export default function ProfileScreen({ route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
   avatar: {
     width: 100,
     height: 100,

@@ -42,9 +42,7 @@ export default function AgendaMangaScreen({ }: Props) {
 
   if (!user) {
     return (
-      <SafeAreaView
-        style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}
-      >
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <Text
           style={{
             fontSize: 26,
@@ -78,7 +76,7 @@ export default function AgendaMangaScreen({ }: Props) {
 
   if (!mangas) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
           animating
           color="#000"
