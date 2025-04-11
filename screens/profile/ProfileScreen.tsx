@@ -162,21 +162,39 @@ export default function ProfileScreen({ route }: Props) {
         >
           {authenticatedUser ? (
             id === authenticatedUser.id ? (
-              <Text
-                onPress={() => logout()}
-                style={{
-                  alignSelf: 'flex-start',
-                  borderColor: '#000',
-                  borderRadius: 360,
-                  borderWidth: 1,
-                  color: '#000',
-                  fontWeight: 'bold',
-                  paddingHorizontal: 12,
-                  paddingVertical: 4,
-                }}
-              >
-                Déconnexion
-              </Text>
+              <View style={{ alignItems: 'center', flexDirection: 'row', gap: 10 }}>
+                <Text
+                  onPress={() => navigation.navigate('ProfileEdit', { id: id })}
+                  style={{
+                    alignSelf: 'flex-start',
+                    borderColor: '#000',
+                    borderRadius: 360,
+                    borderWidth: 1,
+                    color: '#000',
+                    fontWeight: 'bold',
+                    paddingHorizontal: 12,
+                    paddingVertical: 4,
+                  }}
+                >
+                  Modifier
+                </Text>
+
+                <Text
+                  onPress={() => logout()}
+                  style={{
+                    alignSelf: 'flex-start',
+                    borderColor: '#000',
+                    borderRadius: 360,
+                    borderWidth: 1,
+                    color: '#000',
+                    fontWeight: 'bold',
+                    paddingHorizontal: 12,
+                    paddingVertical: 4,
+                  }}
+                >
+                  Déconnexion
+                </Text>
+              </View>
             ) : (
               <View style={{ alignItems: 'center' }}>
                 <Pressable
@@ -499,6 +517,7 @@ const styles = StyleSheet.create({
   avatar: {
     width: 100,
     height: 100,
+    backgroundColor: '#ccc',
     borderRadius: 360,
   },
   pseudo: {
