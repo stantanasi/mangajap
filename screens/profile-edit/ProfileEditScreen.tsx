@@ -99,7 +99,7 @@ export default function ProfileEditScreen({ route }: Props) {
 
       <ScrollView
         contentContainerStyle={{
-          padding: 16,
+          paddingVertical: 16,
         }}
       >
         <Pressable
@@ -213,12 +213,14 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1,
     backgroundColor: '#ccc',
     borderRadius: 360,
+    marginHorizontal: 16,
   },
   row: {
     alignItems: 'flex-start',
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     flexDirection: 'row',
+    marginHorizontal: 16,
     paddingVertical: 16,
   },
   label: {
