@@ -40,13 +40,15 @@ export default function LibraryScreen({ route }: Props) {
           .limit(500);
 
         setLibrary(mangaLibrary);
-      } else {
+      } else if (route.params.type === 'manga-favorites') {
         const mangaFavorites = await User.findById(route.params.userId).get('manga-favorites')
           .include(['manga'])
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(mangaFavorites);
+      } else {
+        throw Error('Library type not supported');
       }
     };
 
