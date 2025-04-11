@@ -18,6 +18,7 @@ import PeopleScreen from './screens/people/PeopleScreen';
 import ProfileEditScreen from './screens/profile-edit/ProfileEditScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
 import SearchScreen from './screens/search/SearchScreen';
+import SettingsScreen from './screens/settings/SettingsScreen';
 
 const MainTabs = createBottomTabNavigator({
   initialRouteName: 'Discover',
@@ -109,6 +110,9 @@ const RootStack = createNativeStackNavigator({
     },
     People: {
       screen: PeopleScreen,
+    },
+    Settings: {
+      screen: SettingsScreen,
     },
   },
 });
