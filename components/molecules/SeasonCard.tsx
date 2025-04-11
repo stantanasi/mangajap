@@ -8,6 +8,7 @@ import ProgressBar from '../atoms/ProgressBar';
 type Props = PressableProps & {
   season: Season;
   onSeasonChange?: (season: Season) => void;
+  onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
   expanded?: boolean;
@@ -17,6 +18,7 @@ type Props = PressableProps & {
 export default function SeasonCard({
   season,
   onSeasonChange = () => { },
+  onWatchedChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
   expanded = false,
@@ -90,6 +92,7 @@ export default function SeasonCard({
                 size={20}
                 color={!isWatched ? '#7e7e7e' : '#fff'}
                 onPress={() => {
+                  onWatchedChange(!isWatched);
                   onUpdatingChange(true);
 
                   const updateSeasonEpisodesEntries = async () => {

@@ -7,6 +7,7 @@ import { Episode, EpisodeEntry, User } from '../../models';
 type Props = {
   episode: Episode;
   onEpisodeChange?: (episode: Episode) => void;
+  onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
   style?: ViewStyle;
@@ -15,6 +16,7 @@ type Props = {
 export default function EpisodeCard({
   episode,
   onEpisodeChange = () => { },
+  onWatchedChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
   style,
@@ -55,6 +57,7 @@ export default function EpisodeCard({
               size={20}
               color={!isWatched ? '#7e7e7e' : '#fff'}
               onPress={() => {
+                onWatchedChange(!isWatched);
                 onUpdatingChange(true);
 
                 const updateEpisodeEntry = async () => {
