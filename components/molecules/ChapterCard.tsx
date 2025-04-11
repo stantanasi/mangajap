@@ -7,6 +7,7 @@ import { Chapter, ChapterEntry, User } from '../../models';
 type Props = {
   chapter: Chapter;
   onChapterChange?: (chapter: Chapter) => void;
+  onReadChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
   style?: ViewStyle;
@@ -15,6 +16,7 @@ type Props = {
 export default function ChapterCard({
   chapter,
   onChapterChange = () => { },
+  onReadChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
   style,
@@ -55,6 +57,7 @@ export default function ChapterCard({
               size={20}
               color={!isRead ? '#7e7e7e' : '#fff'}
               onPress={() => {
+                onReadChange(!isRead);
                 onUpdatingChange(true);
 
                 const updateChapterEntry = async () => {

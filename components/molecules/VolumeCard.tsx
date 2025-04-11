@@ -8,6 +8,7 @@ import ProgressBar from '../atoms/ProgressBar';
 type Props = PressableProps & {
   volume: Volume;
   onVolumeChange?: (volume: Volume) => void;
+  onReadChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
   expanded?: boolean;
@@ -17,6 +18,7 @@ type Props = PressableProps & {
 export default function VolumeCard({
   volume,
   onVolumeChange = () => { },
+  onReadChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
   expanded = false,
@@ -28,7 +30,7 @@ export default function VolumeCard({
   const chaptersReadCount = volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0;
   const chaptersCount = volume.chapters?.length ?? 0;
 
-  const isRead = !!volume['volume-entry'] || chaptersCount > 0 && chaptersReadCount == chaptersCount;
+  const isRead = !!volume['volume-entry'];
   const progress = chaptersCount > 0
     ? (chaptersReadCount / chaptersCount) * 100
     : isRead ? 100 : 0;
@@ -96,6 +98,7 @@ export default function VolumeCard({
                 size={20}
                 color={!isRead ? '#7e7e7e' : '#fff'}
                 onPress={() => {
+                  onReadChange(!isRead);
                   onUpdatingChange(true);
 
                   const updateVolumeEntry = async () => {
