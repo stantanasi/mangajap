@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { User } from '../../models';
 import { IUser } from '../../models/user.model';
@@ -14,6 +14,7 @@ export default function ProfileEditScreen({ route }: Props) {
   const navigation = useNavigation();
   const [user, setUser] = useState<User>();
   const [form, setForm] = useState<IUser>(undefined as any);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const prepare = async () => {
@@ -69,7 +70,22 @@ export default function ProfileEditScreen({ route }: Props) {
 
         <View style={{ flex: 1 }}>
           <Text
-            onPress={() => { }}
+            onPress={() => {
+              setIsUpdating(true);
+
+              user.assign(form);
+
+              if (!user.isModified()) {
+                navigation.goBack();
+                setIsUpdating(false);
+                return
+              }
+
+              user.save()
+                .then(() => navigation.goBack())
+                .catch((err) => console.error(err))
+                .finally(() => setIsUpdating(false));
+            }}
             style={{
               padding: 16,
               textAlign: 'right',
@@ -111,6 +127,28 @@ export default function ProfileEditScreen({ route }: Props) {
           />
         </View>
       </ScrollView>
+
+      <Modal
+        animationType="fade"
+        onRequestClose={() => navigation.goBack()}
+        transparent
+        visible={isUpdating}
+      >
+        <Pressable
+          style={{
+            alignItems: 'center',
+            backgroundColor: '#00000052',
+            flex: 1,
+            justifyContent: 'center',
+          }}
+        >
+          <ActivityIndicator
+            animating
+            color="#fff"
+            size="large"
+          />
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   )
 }
