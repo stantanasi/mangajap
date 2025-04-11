@@ -162,6 +162,21 @@ export default function ProfileEditScreen({ route }: Props) {
             style={styles.input}
           />
         </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>
+            Bio
+          </Text>
+
+          <TextInput
+            value={form.about}
+            onChangeText={(text) => setForm((prev) => ({ ...prev, about: text }))}
+            placeholder="Votre bio"
+            placeholderTextColor="#666"
+            multiline
+            style={styles.input}
+          />
+        </View>
       </ScrollView>
 
       <Modal
@@ -200,7 +215,7 @@ const styles = StyleSheet.create({
     borderRadius: 360,
   },
   row: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
     flexDirection: 'row',
