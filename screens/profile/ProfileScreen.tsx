@@ -123,7 +123,7 @@ export default function ProfileScreen({ route }: Props) {
             </Text>
 
             <Text style={styles.bio}>
-              {user.about}
+              {user.bio}
             </Text>
 
             <Text

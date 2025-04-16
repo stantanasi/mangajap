@@ -169,12 +169,26 @@ export default function ProfileEditScreen({ route }: Props) {
 
         <View style={styles.row}>
           <Text style={styles.label}>
+            Nom
+          </Text>
+
+          <TextInput
+            value={form.name}
+            onChangeText={(text) => setForm((prev) => ({ ...prev, name: text }))}
+            placeholder="Votre nom"
+            placeholderTextColor="#666"
+            style={styles.input}
+          />
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>
             Bio
           </Text>
 
           <TextInput
-            value={form.about}
-            onChangeText={(text) => setForm((prev) => ({ ...prev, about: text }))}
+            value={form.bio}
+            onChangeText={(text) => setForm((prev) => ({ ...prev, bio: text }))}
             placeholder="Votre bio"
             placeholderTextColor="#666"
             multiline
