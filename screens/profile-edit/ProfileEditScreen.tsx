@@ -25,8 +25,12 @@ export default function ProfileEditScreen({ route }: Props) {
       setForm(user.toObject());
     };
 
-    prepare()
-      .catch((err) => console.error(err));
+    const unsubscribe = navigation.addListener('focus', () => {
+      prepare()
+        .catch((err) => console.error(err));
+    });
+
+    return unsubscribe;
   }, [route.params]);
 
   if (!user || !form) {

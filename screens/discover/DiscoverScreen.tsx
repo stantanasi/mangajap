@@ -18,10 +18,6 @@ export default function DiscoverScreen({ route }: Props) {
 
   useEffect(() => {
     const prepare = async () => {
-      setPeoples(undefined);
-      setAnimes(undefined);
-      setMangas(undefined);
-
       const [peoples, animes, mangas] = await Promise.all([
         People.find()
           .include(['staff.anime', 'staff.manga'])
@@ -41,8 +37,12 @@ export default function DiscoverScreen({ route }: Props) {
       setMangas(mangas);
     };
 
-    prepare()
-      .catch((err) => console.error(err));
+    const unsubscribe = navigation.addListener('focus', () => {
+      prepare()
+        .catch((err) => console.error(err));
+    });
+
+    return unsubscribe;
   }, []);
 
   return (

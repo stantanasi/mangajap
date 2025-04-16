@@ -1,4 +1,4 @@
-import { StaticScreenProps } from '@react-navigation/native';
+import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -55,6 +55,7 @@ type Props = StaticScreenProps<{
 }>;
 
 export default function MangaScreen({ route }: Props) {
+  const navigation = useNavigation();
   const { isAuthenticated, user } = useContext(AuthContext);
   const [manga, setManga] = useState<Manga>();
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean }>({});
@@ -75,8 +76,12 @@ export default function MangaScreen({ route }: Props) {
       setManga(manga);
     };
 
-    prepare()
-      .catch((err) => console.error(err));
+    const unsubscribe = navigation.addListener('focus', () => {
+      prepare()
+        .catch((err) => console.error(err));
+    });
+
+    return unsubscribe;
   }, [route.params]);
 
   if (!manga) {

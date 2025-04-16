@@ -1,4 +1,4 @@
-import { StaticScreenProps } from '@react-navigation/native';
+import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -55,6 +55,7 @@ type Props = StaticScreenProps<{
 }>;
 
 export default function AnimeScreen({ route }: Props) {
+  const navigation = useNavigation();
   const { isAuthenticated, user } = useContext(AuthContext);
   const [anime, setAnime] = useState<Anime>();
   const [expandedSeasons, setExpandedSeasons] = useState<{ [seasonId: string]: boolean }>({});
@@ -78,8 +79,12 @@ export default function AnimeScreen({ route }: Props) {
       setAnime(anime);
     };
 
-    prepare()
-      .catch((err) => console.error(err));
+    const unsubscribe = navigation.addListener('focus', () => {
+      prepare()
+        .catch((err) => console.error(err));
+    });
+
+    return unsubscribe;
   }, [route.params]);
 
   if (!anime) {

@@ -15,8 +15,6 @@ export default function AgendaAnimeScreen({ }: Props) {
 
   useEffect(() => {
     const prepare = async () => {
-      setAnimes(undefined);
-
       if (!user) return
 
       const animeLibrary = await User.findById(user.id).get('anime-library')
@@ -36,8 +34,12 @@ export default function AgendaAnimeScreen({ }: Props) {
       setAnimes(animes);
     };
 
-    prepare()
-      .catch((err) => console.error(err));
+    const unsubscribe = navigation.addListener('focus', () => {
+      prepare()
+        .catch((err) => console.error(err));
+    });
+
+    return unsubscribe;
   }, [user]);
 
   if (!user) {

@@ -15,8 +15,6 @@ export default function AgendaMangaScreen({ }: Props) {
 
   useEffect(() => {
     const prepare = async () => {
-      setMangas(undefined);
-
       if (!user) return
 
       const mangaLibrary = await User.findById(user.id).get('manga-library')
@@ -36,8 +34,12 @@ export default function AgendaMangaScreen({ }: Props) {
       setMangas(mangas);
     };
 
-    prepare()
-      .catch((err) => console.error(err));
+    const unsubscribe = navigation.addListener('focus', () => {
+      prepare()
+        .catch((err) => console.error(err));
+    });
+
+    return unsubscribe;
   }, [user]);
 
   if (!user) {

@@ -122,10 +122,6 @@ export default function ProfileScreen({ route }: Props) {
     if (!id) return
 
     const prepare = async () => {
-      setUser(undefined);
-      setIsFollowingUser(undefined);
-      setIsFollowedByUser(undefined);
-
       const [user, isFollowingUser, isFollowedByUser] = await Promise.all([
         User.findById(id)
           .include([
@@ -154,8 +150,12 @@ export default function ProfileScreen({ route }: Props) {
       setIsFollowedByUser(isFollowedByUser);
     }
 
-    prepare()
-      .catch((err) => console.error(err));
+    const unsubscribe = navigation.addListener('focus', () => {
+      prepare()
+        .catch((err) => console.error(err));
+    });
+
+    return unsubscribe;
   }, [id]);
 
   if (!id) {

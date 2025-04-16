@@ -32,8 +32,6 @@ export default function PeopleScreen({ route }: Props) {
 
   useEffect(() => {
     const prepare = async () => {
-      setPeople(undefined);
-
       const people = await People.findById(route.params.id)
         .include([
           'staff.anime',
@@ -43,8 +41,12 @@ export default function PeopleScreen({ route }: Props) {
       setPeople(people);
     };
 
-    prepare()
-      .catch((err) => console.error(err));
+    const unsubscribe = navigation.addListener('focus', () => {
+      prepare()
+        .catch((err) => console.error(err));
+    });
+
+    return unsubscribe;
   }, [route.params]);
 
   if (!people) {

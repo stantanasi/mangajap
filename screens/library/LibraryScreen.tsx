@@ -17,8 +17,6 @@ export default function LibraryScreen({ route }: Props) {
 
   useEffect(() => {
     const prepare = async () => {
-      setLibrary(undefined);
-
       if (route.params.type === 'anime-library') {
         const animeLibrary = await User.findById(route.params.userId).get('anime-library')
           .include(['anime'])
@@ -52,8 +50,12 @@ export default function LibraryScreen({ route }: Props) {
       }
     };
 
-    prepare()
-      .catch((err) => console.error(err));
+    const unsubscribe = navigation.addListener('focus', () => {
+      prepare()
+        .catch((err) => console.error(err));
+    });
+
+    return unsubscribe;
   }, [route.params]);
 
   if (!library) {
