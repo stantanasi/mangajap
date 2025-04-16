@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext } from 'react';
-import { Image, Pressable, PressableProps, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { EpisodeEntry, Season, User } from '../../models';
 import Checkbox from '../atoms/Checkbox';
@@ -14,7 +14,7 @@ type Props = PressableProps & {
   onUpdatingChange?: (value: boolean) => void;
   onEpisodeUpdatingChange?: (id: string, value: boolean) => void;
   expanded?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export default function SeasonCard({

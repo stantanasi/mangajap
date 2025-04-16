@@ -1,10 +1,10 @@
 import React from 'react';
-import { Image, Pressable, PressableProps, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { User } from '../../models';
 
 type Props = PressableProps & {
   user: User;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export default function UserCard({ user, style, ...props }: Props) {

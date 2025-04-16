@@ -1,5 +1,5 @@
 import React from 'react';
-import { ColorValue, StyleSheet, View, ViewStyle } from 'react-native';
+import { ColorValue, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 type Props = {
   /** Progress from 0 to 100 */
@@ -8,7 +8,7 @@ type Props = {
   color?: ColorValue;
   /** Background color of the progress bar container (default: #bbb) */
   backgroundColor?: ColorValue;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export default function ProgressBar({

@@ -1,11 +1,11 @@
 import React from 'react';
-import { Image, Pressable, PressableProps, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { Anime } from '../../models';
 import ProgressBar from '../atoms/ProgressBar';
 
 type Props = PressableProps & {
   anime: Anime;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export default function AnimeAgendaCard({ anime, style, ...props }: Props) {

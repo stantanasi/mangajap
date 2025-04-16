@@ -1,10 +1,10 @@
 import React from 'react';
-import { Image, Pressable, PressableProps, StyleSheet, Text, ViewStyle } from 'react-native';
+import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, ViewStyle } from 'react-native';
 import { People } from '../../models';
 
 type Props = PressableProps & {
   people: People;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 };
 
 export default function PeopleCard({ people, style, ...props }: Props) {

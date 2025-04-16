@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, FlatList, ScrollView, StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeSearchCard from '../../components/molecules/AnimeSearchCard';
 import MangaSearchCard from '../../components/molecules/MangaSearchCard';
@@ -16,7 +16,7 @@ const AnimeTab = ({ isLoading, list, onItemChange, onLoadMore, hasMore, style }:
   onItemChange: (item: Anime) => void;
   onLoadMore: () => void;
   hasMore: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }) => {
   const navigation = useNavigation();
 
@@ -81,7 +81,7 @@ const MangaTab = ({ isLoading, list, onItemChange, onLoadMore, hasMore, style }:
   onItemChange: (item: Manga) => void;
   onLoadMore: () => void;
   hasMore: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }) => {
   const navigation = useNavigation();
 
@@ -145,7 +145,7 @@ const PeopleTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
   list: People[];
   onLoadMore: () => void;
   hasMore: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }) => {
   const navigation = useNavigation();
 
@@ -208,7 +208,7 @@ const UserTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
   list: User[];
   onLoadMore: () => void;
   hasMore: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }) => {
   const navigation = useNavigation();
 

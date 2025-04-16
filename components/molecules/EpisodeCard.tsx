@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../models';
 import Checkbox from '../atoms/Checkbox';
@@ -10,7 +10,7 @@ type Props = {
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export default function EpisodeCard({
