@@ -1,17 +1,19 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeSearchCard from '../../components/molecules/AnimeSearchCard';
 import MangaSearchCard from '../../components/molecules/MangaSearchCard';
 import PeopleSearchCard from '../../components/molecules/PeopleSearchCard';
 import UserCard from '../../components/molecules/UserCard';
+import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, Manga, People, User } from '../../models';
 
-const AnimeTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
+const AnimeTab = ({ isLoading, list, onItemChange, onLoadMore, hasMore, style }: {
   isLoading: boolean;
   list: Anime[];
+  onItemChange: (item: Anime) => void;
   onLoadMore: () => void;
   hasMore: boolean;
   style?: ViewStyle;
@@ -38,6 +40,7 @@ const AnimeTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
         renderItem={({ item }) => (
           <AnimeSearchCard
             anime={item}
+            onAnimeChange={(anime) => onItemChange(anime)}
             onPress={() => navigation.navigate('Anime', { id: item.id })}
             style={{
               marginHorizontal: 16,
@@ -72,9 +75,10 @@ const AnimeTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
   );
 };
 
-const MangaTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
+const MangaTab = ({ isLoading, list, onItemChange, onLoadMore, hasMore, style }: {
   isLoading: boolean;
   list: Manga[];
+  onItemChange: (item: Manga) => void;
   onLoadMore: () => void;
   hasMore: boolean;
   style?: ViewStyle;
@@ -101,6 +105,7 @@ const MangaTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
         renderItem={({ item }) => (
           <MangaSearchCard
             manga={item}
+            onMangaChange={(manga) => onItemChange(manga)}
             onPress={() => navigation.navigate('Manga', { id: item.id })}
             style={{
               marginHorizontal: 16,
@@ -265,6 +270,7 @@ const UserTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
 type Props = StaticScreenProps<{}>;
 
 export default function SearchScreen({ route }: Props) {
+  const { isAuthenticated } = useContext(AuthContext);
   const [query, setQuery] = useState('');
   const [activeQuery, setActiveQuery] = useState('');
   const [animeTab, setAnimeTab] = useState<{
@@ -312,8 +318,10 @@ export default function SearchScreen({ route }: Props) {
 
     const [animes, mangas, peoples, users] = await Promise.all([
       Anime.find({ query: query })
+        .include(isAuthenticated ? ['anime-entry'] : [])
         .sort({ popularity: 'desc' }),
       Manga.find({ query: query })
+        .include(isAuthenticated ? ['manga-entry'] : [])
         .sort({ popularity: 'desc' }),
       People.find({ query: query }),
       query !== ''
@@ -445,6 +453,12 @@ export default function SearchScreen({ route }: Props) {
       <AnimeTab
         isLoading={animeTab.isLoading}
         list={animeTab.list}
+        onItemChange={(item) => {
+          setAnimeTab((prev) => ({
+            ...prev,
+            list: prev.list.map((it) => it.id === item.id ? item : it),
+          }));
+        }}
         onLoadMore={() => {
           const loadMore = async () => {
             if (!animeTab.hasMore || animeTab.isLoadingMore) return
@@ -481,6 +495,12 @@ export default function SearchScreen({ route }: Props) {
       <MangaTab
         isLoading={mangaTab.isLoading}
         list={mangaTab.list}
+        onItemChange={(item) => {
+          setMangaTab((prev) => ({
+            ...prev,
+            list: prev.list.map((it) => it.id === item.id ? item : it),
+          }));
+        }}
         onLoadMore={() => {
           const loadMore = async () => {
             if (!mangaTab.hasMore || mangaTab.isLoadingMore) return
