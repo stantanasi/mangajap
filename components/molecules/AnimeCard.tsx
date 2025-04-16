@@ -5,12 +5,14 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, AnimeEntry, User } from '../../models';
 
 type Props = PressableProps & {
+  screen: 'discover' | 'library' | 'profile';
   anime: Anime;
   onAnimeChange?: (anime: Anime) => void;
   style?: ViewStyle;
 }
 
 export default function AnimeCard({
+  screen,
   anime,
   onAnimeChange = () => { },
   style,
@@ -41,7 +43,7 @@ export default function AnimeCard({
             margin: 4,
           }}
         >
-          {user ? (
+          {user && screen !== 'library' && screen !== 'profile' ? (
             <View
               style={{
                 backgroundColor: !isAdd ? '#e5e5e5' : '#4281f5',

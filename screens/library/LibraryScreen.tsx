@@ -88,6 +88,7 @@ export default function LibraryScreen({ route }: Props) {
         renderItem={({ item }) => (
           item instanceof Anime ? (
             <AnimeCard
+              screen="library"
               anime={item}
               onPress={() => navigation.navigate('Anime', { id: item.id })}
               style={{
