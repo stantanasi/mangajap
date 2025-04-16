@@ -1,8 +1,8 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, Image, Pressable, PressableProps, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image, Pressable, PressableProps, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Manga, MangaEntry, User } from '../../models';
+import Checkbox from '../atoms/Checkbox';
 
 type Props = PressableProps & {
   screen: 'discover' | 'library' | 'profile';
@@ -21,8 +21,6 @@ export default function MangaCard({
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const isAdd = manga['manga-entry']?.isAdd ?? false;
-
   return (
     <Pressable
       {...props}
@@ -35,70 +33,50 @@ export default function MangaCard({
           style={styles.image}
         />
 
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            margin: 4,
-          }}
-        >
-          {user && screen !== 'library' && screen !== 'profile' ? (
-            <View
-              style={{
-                backgroundColor: !isAdd ? '#e5e5e5' : '#4281f5',
-                borderRadius: 360,
-                padding: 8,
-              }}
-            >
-              {!isUpdating ? (
-                <MaterialIcons
-                  name="check"
-                  size={20}
-                  color={!isAdd ? '#7e7e7e' : '#fff'}
-                  onPress={() => {
-                    setIsUpdating(true);
+        {user && screen !== 'library' && screen !== 'profile' ? (
+          <Checkbox
+            value={manga['manga-entry']?.isAdd ?? false}
+            onValueChange={(value) => {
+              setIsUpdating(true);
 
-                    const updateMangaEntry = async () => {
-                      if (manga['manga-entry']) {
-                        const mangaEntry = manga['manga-entry'].copy({
-                          isAdd: !isAdd,
-                        });
-                        await mangaEntry.save();
+              const updateMangaEntry = async () => {
+                if (manga['manga-entry']) {
+                  const mangaEntry = manga['manga-entry'].copy({
+                    isAdd: value,
+                  });
+                  await mangaEntry.save();
 
-                        onMangaChange(manga.copy({
-                          'manga-entry': mangaEntry,
-                        }));
-                      } else {
-                        const mangaEntry = new MangaEntry({
-                          isAdd: !isAdd,
+                  onMangaChange(manga.copy({
+                    'manga-entry': mangaEntry,
+                  }));
+                } else {
+                  const mangaEntry = new MangaEntry({
+                    isAdd: value,
 
-                          user: new User({ id: user.id }),
-                          manga: manga,
-                        });
-                        await mangaEntry.save();
+                    user: new User({ id: user.id }),
+                    manga: manga,
+                  });
+                  await mangaEntry.save();
 
-                        onMangaChange(manga.copy({
-                          'manga-entry': mangaEntry,
-                        }));
-                      }
-                    };
+                  onMangaChange(manga.copy({
+                    'manga-entry': mangaEntry,
+                  }));
+                }
+              };
 
-                    updateMangaEntry()
-                      .catch((err) => console.error(err))
-                      .finally(() => setIsUpdating(false));
-                  }}
-                />
-              ) : (
-                <ActivityIndicator
-                  animating
-                  color="#fff"
-                  size={20}
-                />
-              )}
-            </View>
-          ) : null}
-        </View>
+              updateMangaEntry()
+                .catch((err) => console.error(err))
+                .finally(() => setIsUpdating(false));
+            }}
+            loading={isUpdating}
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              margin: 4,
+            }}
+          />
+        ) : null}
       </View>
 
       <Text

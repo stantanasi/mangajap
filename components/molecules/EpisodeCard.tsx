@@ -1,8 +1,8 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext } from 'react';
-import { ActivityIndicator, Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../models';
+import Checkbox from '../atoms/Checkbox';
 
 type Props = {
   episode: Episode;
@@ -23,8 +23,6 @@ export default function EpisodeCard({
 }: Props) {
   const { user } = useContext(AuthContext);
 
-  const isWatched = !!episode['episode-entry'];
-
   return (
     <View style={[styles.container, style]}>
       <Image
@@ -43,56 +41,41 @@ export default function EpisodeCard({
       </View>
 
       {user ? (
-        <View
+        <Checkbox
+          value={!!episode['episode-entry']}
+          onValueChange={(value) => {
+            onWatchedChange(value);
+            onUpdatingChange(true);
+
+            const updateEpisodeEntry = async () => {
+              if (value && !episode['episode-entry']) {
+                const episodeEntry = new EpisodeEntry({
+                  user: new User({ id: user.id }),
+                  episode: episode,
+                });
+                await episodeEntry.save();
+
+                onEpisodeChange(episode.copy({
+                  'episode-entry': episodeEntry,
+                }));
+              } else if (!value && episode['episode-entry']) {
+                await episode['episode-entry'].delete();
+
+                onEpisodeChange(episode.copy({
+                  'episode-entry': null,
+                }));
+              }
+            };
+
+            updateEpisodeEntry()
+              .catch((err) => console.error(err))
+              .finally(() => onUpdatingChange(false));
+          }}
+          loading={updating}
           style={{
-            backgroundColor: !isWatched ? '#e5e5e5' : '#4281f5',
-            borderRadius: 360,
-            padding: 8,
             marginRight: 10,
           }}
-        >
-          {!updating ? (
-            <MaterialIcons
-              name="check"
-              size={20}
-              color={!isWatched ? '#7e7e7e' : '#fff'}
-              onPress={() => {
-                onWatchedChange(!isWatched);
-                onUpdatingChange(true);
-
-                const updateEpisodeEntry = async () => {
-                  if (!isWatched && !episode['episode-entry']) {
-                    const episodeEntry = new EpisodeEntry({
-                      user: new User({ id: user.id }),
-                      episode: episode,
-                    });
-                    await episodeEntry.save();
-
-                    onEpisodeChange(episode.copy({
-                      'episode-entry': episodeEntry,
-                    }));
-                  } else if (isWatched && episode['episode-entry']) {
-                    await episode['episode-entry'].delete();
-
-                    onEpisodeChange(episode.copy({
-                      'episode-entry': null,
-                    }));
-                  }
-                };
-
-                updateEpisodeEntry()
-                  .catch((err) => console.error(err))
-                  .finally(() => onUpdatingChange(false));
-              }}
-            />
-          ) : (
-            <ActivityIndicator
-              animating
-              color="#fff"
-              size={20}
-            />
-          )}
-        </View>
+        />
       ) : null}
     </View>
   );

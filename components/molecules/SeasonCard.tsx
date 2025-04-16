@@ -1,8 +1,9 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext } from 'react';
-import { ActivityIndicator, Image, Pressable, PressableProps, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image, Pressable, PressableProps, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { EpisodeEntry, Season, User } from '../../models';
+import Checkbox from '../atoms/Checkbox';
 import ProgressBar from '../atoms/ProgressBar';
 
 type Props = PressableProps & {
@@ -32,10 +33,9 @@ export default function SeasonCard({
   const episodesWatchedCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
   const episodesCount = season.episodes?.length ?? 0;
 
-  const isWatched = episodesCount > 0 && episodesWatchedCount == episodesCount;
   const progress = episodesCount > 0
     ? (episodesWatchedCount / episodesCount) * 100
-    : isWatched ? 100 : 0;
+    : 0;
 
   return (
     <Pressable
@@ -80,73 +80,58 @@ export default function SeasonCard({
         </Text>
 
         {user ? (
-          <View
+          <Checkbox
+            value={episodesCount > 0 && episodesWatchedCount >= episodesCount}
+            onValueChange={(value) => {
+              onWatchedChange(value);
+              onUpdatingChange(true);
+
+              const updateSeasonEpisodesEntries = async () => {
+                const episodes = await Promise.all(season.episodes?.map(async (episode) => {
+                  if (value && !episode['episode-entry']) {
+                    onEpisodeUpdatingChange(episode.id, true);
+
+                    const episodeEntry = new EpisodeEntry({
+                      user: new User({ id: user.id }),
+                      episode: episode,
+                    });
+
+                    return episodeEntry.save()
+                      .then((entry) => episode.copy({ 'episode-entry': entry }))
+                      .catch((err) => {
+                        console.error(err);
+                        return episode;
+                      })
+                      .finally(() => onEpisodeUpdatingChange(episode.id, false));
+                  } else if (!value && episode['episode-entry']) {
+                    onEpisodeUpdatingChange(episode.id, true);
+
+                    return episode['episode-entry'].delete()
+                      .then(() => episode.copy({ 'episode-entry': null }))
+                      .catch((err) => {
+                        console.error(err);
+                        return episode;
+                      })
+                      .finally(() => onEpisodeUpdatingChange(episode.id, false));
+                  }
+
+                  return episode;
+                }) ?? []);
+
+                onSeasonChange(season.copy({
+                  episodes: episodes,
+                }));
+              };
+
+              updateSeasonEpisodesEntries()
+                .catch((err) => console.error(err))
+                .finally(() => onUpdatingChange(false));
+            }}
+            loading={updating}
             style={{
-              backgroundColor: !isWatched ? '#e5e5e5' : '#4281f5',
-              borderRadius: 360,
-              padding: 8,
               marginRight: 10,
             }}
-          >
-            {!updating ? (
-              <MaterialIcons
-                name="check"
-                size={20}
-                color={!isWatched ? '#7e7e7e' : '#fff'}
-                onPress={() => {
-                  onWatchedChange(!isWatched);
-                  onUpdatingChange(true);
-
-                  const updateSeasonEpisodesEntries = async () => {
-                    const episodes = await Promise.all(season.episodes?.map(async (episode) => {
-                      if (!isWatched && !episode['episode-entry']) {
-                        onEpisodeUpdatingChange(episode.id, true);
-
-                        const episodeEntry = new EpisodeEntry({
-                          user: new User({ id: user.id }),
-                          episode: episode,
-                        });
-
-                        return episodeEntry.save()
-                          .then((entry) => episode.copy({ 'episode-entry': entry }))
-                          .catch((err) => {
-                            console.error(err);
-                            return episode;
-                          })
-                          .finally(() => onEpisodeUpdatingChange(episode.id, false));
-                      } else if (isWatched && episode['episode-entry']) {
-                        onEpisodeUpdatingChange(episode.id, true);
-
-                        return episode['episode-entry'].delete()
-                          .then(() => episode.copy({ 'episode-entry': null }))
-                          .catch((err) => {
-                            console.error(err);
-                            return episode;
-                          })
-                          .finally(() => onEpisodeUpdatingChange(episode.id, false));
-                      }
-
-                      return episode;
-                    }) ?? []);
-
-                    onSeasonChange(season.copy({
-                      episodes: episodes,
-                    }));
-                  };
-
-                  updateSeasonEpisodesEntries()
-                    .catch((err) => console.error(err))
-                    .finally(() => onUpdatingChange(false));
-                }}
-              />
-            ) : (
-              <ActivityIndicator
-                animating
-                color="#fff"
-                size={20}
-              />
-            )}
-          </View>
+          />
         ) : null}
       </View>
 

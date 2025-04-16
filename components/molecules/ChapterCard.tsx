@@ -1,8 +1,8 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext } from 'react';
-import { ActivityIndicator, Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../models';
+import Checkbox from '../atoms/Checkbox';
 
 type Props = {
   chapter: Chapter;
@@ -23,8 +23,6 @@ export default function ChapterCard({
 }: Props) {
   const { user } = useContext(AuthContext);
 
-  const isRead = !!chapter['chapter-entry'];
-
   return (
     <View style={[styles.container, style]}>
       <Image
@@ -43,56 +41,41 @@ export default function ChapterCard({
       </View>
 
       {user ? (
-        <View
+        <Checkbox
+          value={!!chapter['chapter-entry']}
+          onValueChange={(value) => {
+            onReadChange(value);
+            onUpdatingChange(true);
+
+            const updateChapterEntry = async () => {
+              if (value && !chapter['chapter-entry']) {
+                const chapterEntry = new ChapterEntry({
+                  user: new User({ id: user.id }),
+                  chapter: chapter,
+                });
+                await chapterEntry.save();
+
+                onChapterChange(chapter.copy({
+                  'chapter-entry': chapterEntry,
+                }));
+              } else if (!value && chapter['chapter-entry']) {
+                await chapter['chapter-entry'].delete();
+
+                onChapterChange(chapter.copy({
+                  'chapter-entry': null,
+                }));
+              }
+            };
+
+            updateChapterEntry()
+              .catch((err) => console.error(err))
+              .finally(() => onUpdatingChange(false));
+          }}
+          loading={updating}
           style={{
-            backgroundColor: !isRead ? '#e5e5e5' : '#4281f5',
-            borderRadius: 360,
-            padding: 8,
             marginRight: 10,
           }}
-        >
-          {!updating ? (
-            <MaterialIcons
-              name="check"
-              size={20}
-              color={!isRead ? '#7e7e7e' : '#fff'}
-              onPress={() => {
-                onReadChange(!isRead);
-                onUpdatingChange(true);
-
-                const updateChapterEntry = async () => {
-                  if (!isRead && !chapter['chapter-entry']) {
-                    const chapterEntry = new ChapterEntry({
-                      user: new User({ id: user.id }),
-                      chapter: chapter,
-                    });
-                    await chapterEntry.save();
-
-                    onChapterChange(chapter.copy({
-                      'chapter-entry': chapterEntry,
-                    }));
-                  } else if (isRead && chapter['chapter-entry']) {
-                    await chapter['chapter-entry'].delete();
-
-                    onChapterChange(chapter.copy({
-                      'chapter-entry': null,
-                    }));
-                  }
-                };
-
-                updateChapterEntry()
-                  .catch((err) => console.error(err))
-                  .finally(() => onUpdatingChange(false));
-              }}
-            />
-          ) : (
-            <ActivityIndicator
-              animating
-              color="#fff"
-              size={20}
-            />
-          )}
-        </View>
+        />
       ) : null}
     </View>
   );
