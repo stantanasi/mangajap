@@ -5,7 +5,7 @@ import { ActivityIndicator, FlatList, ScrollView, StyleProp, StyleSheet, Text, T
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
-import PeopleSearchCard from '../../components/molecules/PeopleSearchCard';
+import PeopleCard from '../../components/molecules/PeopleCard';
 import UserCard from '../../components/molecules/UserCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, Manga, People, User } from '../../models';
@@ -169,9 +169,10 @@ const PeopleTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
         data={list}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <PeopleSearchCard
+          <PeopleCard
             people={item}
             onPress={() => navigation.navigate('People', { id: item.id })}
+            variant="horizontal"
             style={{
               marginHorizontal: 16,
             }}
