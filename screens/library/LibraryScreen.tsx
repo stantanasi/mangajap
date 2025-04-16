@@ -97,9 +97,9 @@ export default function LibraryScreen({ route }: Props) {
             />
           ) : (
             <MangaCard
-              screen="library"
               manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
+              showCheckbox={false}
               style={{
                 flex: 1 / 3,
               }}

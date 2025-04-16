@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, ScrollView, StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
-import MangaSearchCard from '../../components/molecules/MangaSearchCard';
+import MangaCard from '../../components/molecules/MangaCard';
 import PeopleSearchCard from '../../components/molecules/PeopleSearchCard';
 import UserCard from '../../components/molecules/UserCard';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -104,10 +104,11 @@ const MangaTab = ({ isLoading, list, onItemChange, onLoadMore, hasMore, style }:
         data={list}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <MangaSearchCard
+          <MangaCard
             manga={item}
             onMangaChange={(manga) => onItemChange(manga)}
             onPress={() => navigation.navigate('Manga', { id: item.id })}
+            variant="horizontal"
             style={{
               marginHorizontal: 16,
             }}

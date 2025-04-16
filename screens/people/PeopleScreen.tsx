@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
-import MangaSearchCard from '../../components/molecules/MangaSearchCard';
+import MangaCard from '../../components/molecules/MangaCard';
 import { Anime, People } from '../../models';
 
 const Header = ({ people }: { people: People }) => {
@@ -84,9 +84,10 @@ export default function PeopleScreen({ route }: Props) {
               }}
             />
           ) : (
-            <MangaSearchCard
+            <MangaCard
               manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
+              variant="horizontal"
               style={{
                 marginHorizontal: 10,
               }}

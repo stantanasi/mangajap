@@ -440,9 +440,9 @@ export default function ProfileScreen({ route }: Props) {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <MangaCard
-              screen="profile"
               manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
+              showCheckbox={false}
             />
           )}
           ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
@@ -487,9 +487,9 @@ export default function ProfileScreen({ route }: Props) {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <MangaCard
-                  screen="profile"
                   manga={item}
                   onPress={() => navigation.navigate('Manga', { id: item.id })}
+                  showCheckbox={false}
                 />
               )}
               ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
