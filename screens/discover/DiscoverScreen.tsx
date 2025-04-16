@@ -125,7 +125,6 @@ export default function DiscoverScreen({ route }: Props) {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <AnimeCard
-                screen="discover"
                 anime={item}
                 onAnimeChange={(anime) => {
                   setAnimes((prev) => prev?.map((a) => a.id === anime.id ? anime : a));

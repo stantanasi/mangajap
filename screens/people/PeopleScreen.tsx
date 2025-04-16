@@ -2,7 +2,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AnimeSearchCard from '../../components/molecules/AnimeSearchCard';
+import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaSearchCard from '../../components/molecules/MangaSearchCard';
 import { Anime, People } from '../../models';
 
@@ -75,9 +75,10 @@ export default function PeopleScreen({ route }: Props) {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           item instanceof Anime ? (
-            <AnimeSearchCard
+            <AnimeCard
               anime={item}
               onPress={() => navigation.navigate('Anime', { id: item.id })}
+              variant="horizontal"
               style={{
                 marginHorizontal: 10,
               }}

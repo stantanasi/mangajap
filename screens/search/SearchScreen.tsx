@@ -3,7 +3,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, ScrollView, StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AnimeSearchCard from '../../components/molecules/AnimeSearchCard';
+import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaSearchCard from '../../components/molecules/MangaSearchCard';
 import PeopleSearchCard from '../../components/molecules/PeopleSearchCard';
 import UserCard from '../../components/molecules/UserCard';
@@ -38,10 +38,11 @@ const AnimeTab = ({ isLoading, list, onItemChange, onLoadMore, hasMore, style }:
         data={list}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <AnimeSearchCard
+          <AnimeCard
             anime={item}
             onAnimeChange={(anime) => onItemChange(anime)}
             onPress={() => navigation.navigate('Anime', { id: item.id })}
+            variant="horizontal"
             style={{
               marginHorizontal: 16,
             }}

@@ -346,9 +346,9 @@ export default function ProfileScreen({ route }: Props) {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <AnimeCard
-              screen="profile"
               anime={item}
               onPress={() => navigation.navigate('Anime', { id: item.id })}
+              showCheckbox={false}
             />
           )}
           ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
@@ -393,9 +393,9 @@ export default function ProfileScreen({ route }: Props) {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <AnimeCard
-                  screen="profile"
                   anime={item}
                   onPress={() => navigation.navigate('Anime', { id: item.id })}
+                  showCheckbox={false}
                 />
               )}
               ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
