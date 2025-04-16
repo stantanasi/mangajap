@@ -6,7 +6,7 @@ import MangaAgendaCard from '../../components/molecules/MangaAgendaCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Manga, User } from '../../models';
 
-type Props = StaticScreenProps<{}>;
+type Props = StaticScreenProps<undefined>;
 
 export default function AgendaMangaScreen({ }: Props) {
   const navigation = useNavigation();

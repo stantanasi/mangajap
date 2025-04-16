@@ -270,7 +270,7 @@ const UserTab = ({ isLoading, list, onLoadMore, hasMore, style }: {
 };
 
 
-type Props = StaticScreenProps<{}>;
+type Props = StaticScreenProps<undefined>;
 
 export default function SearchScreen({ route }: Props) {
   const { isAuthenticated } = useContext(AuthContext);

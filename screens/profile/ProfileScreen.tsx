@@ -177,7 +177,7 @@ export default function ProfileScreen({ route }: Props) {
                   name="settings"
                   size={24}
                   color="#000"
-                  onPress={() => navigation.navigate('Settings', {})}
+                  onPress={() => navigation.navigate('Settings')}
                 />
               </View>
             ) : (

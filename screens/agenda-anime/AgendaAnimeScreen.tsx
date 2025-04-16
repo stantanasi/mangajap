@@ -6,7 +6,7 @@ import AnimeAgendaCard from '../../components/molecules/AnimeAgendaCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, User } from '../../models';
 
-type Props = StaticScreenProps<{}>;
+type Props = StaticScreenProps<undefined>;
 
 export default function AgendaAnimeScreen({ }: Props) {
   const navigation = useNavigation();

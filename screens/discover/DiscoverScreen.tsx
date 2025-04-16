@@ -9,7 +9,7 @@ import PeopleCard from '../../components/molecules/PeopleCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, Manga, People } from '../../models';
 
-type Props = StaticScreenProps<{}>;
+type Props = StaticScreenProps<undefined>;
 
 export default function DiscoverScreen({ route }: Props) {
   const navigation = useNavigation();
@@ -51,7 +51,7 @@ export default function DiscoverScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Pressable
-        onPress={() => navigation.navigate('Search', {})}
+        onPress={() => navigation.navigate('Search')}
         style={styles.search}
       >
         <MaterialIcons

@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../contexts/AuthContext';
 
-type Props = StaticScreenProps<{}>;
+type Props = StaticScreenProps<undefined>;
 
 export default function SettingsScreen({ }: Props) {
   const navigation = useNavigation();
