@@ -1,6 +1,6 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import Anime from "./anime.model";
-import Manga from "./manga.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import Anime from './anime.model';
+import Manga from './manga.model';
 
 export interface ITheme {
   id: string;
@@ -36,6 +36,6 @@ export const ThemeSchema = new Schema<ITheme>({
 
 class Theme extends model<ITheme>(ThemeSchema) { }
 
-Theme.register("themes");
+Theme.register('themes');
 
 export default Theme;

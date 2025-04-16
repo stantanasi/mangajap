@@ -12,7 +12,7 @@ export default function AutoHeightImage(props: ImageProps) {
     if (Array.isArray(props.source)) {
       uri = props.source[props.source.length - 1].uri ?? '';
     } else if (typeof props.source === 'number') {
-      if (Platform.OS === "web") {
+      if (Platform.OS === 'web') {
         uri = props.source.toString();
       } else {
         uri = Image.resolveAssetSource(props.source).uri;

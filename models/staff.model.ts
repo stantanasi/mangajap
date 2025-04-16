@@ -1,7 +1,7 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import Anime from "./anime.model";
-import Manga from "./manga.model";
-import People from "./people.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import Anime from './anime.model';
+import Manga from './manga.model';
+import People from './people.model';
 
 export interface IStaff {
   id: string;
@@ -40,6 +40,6 @@ export const StaffSchema = new Schema<IStaff>({
 
 class Staff extends model<IStaff>(StaffSchema) { }
 
-Staff.register("staff");
+Staff.register('staff');
 
 export default Staff;

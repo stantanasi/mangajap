@@ -1,6 +1,6 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import Manga from "./manga.model";
-import User from "./user.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import Manga from './manga.model';
+import User from './user.model';
 
 export interface IMangaEntry {
   id: string;
@@ -61,6 +61,6 @@ export const MangaEntrySchema = new Schema<IMangaEntry>({
 
 class MangaEntry extends model<IMangaEntry>(MangaEntrySchema) { }
 
-MangaEntry.register("manga-entries");
+MangaEntry.register('manga-entries');
 
 export default MangaEntry;

@@ -1,7 +1,7 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import ChapterEntry from "./chapter-entry.model";
-import Manga from "./manga.model";
-import Volume from "./volume.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import ChapterEntry from './chapter-entry.model';
+import Manga from './manga.model';
+import Volume from './volume.model';
 
 export interface IChapter {
   id: string;
@@ -16,7 +16,7 @@ export interface IChapter {
 
   manga?: Manga;
   volume?: Volume | null;
-  "chapter-entry"?: ChapterEntry | null;
+  'chapter-entry'?: ChapterEntry | null;
 }
 
 export const ChapterSchema = new Schema<IChapter>({
@@ -50,13 +50,13 @@ export const ChapterSchema = new Schema<IChapter>({
 
     volume: {},
 
-    "chapter-entry": {},
+    'chapter-entry': {},
   },
 });
 
 
 class Chapter extends model<IChapter>(ChapterSchema) { }
 
-Chapter.register("chapters");
+Chapter.register('chapters');
 
 export default Chapter;

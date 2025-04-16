@@ -1,5 +1,5 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import User from "./user.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import User from './user.model';
 
 export interface IFollow {
   id: string;
@@ -32,6 +32,6 @@ export const FollowSchema = new Schema<IFollow>({
 
 class Follow extends model<IFollow>(FollowSchema) { }
 
-Follow.register("follows");
+Follow.register('follows');
 
 export default Follow;

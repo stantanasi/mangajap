@@ -1,6 +1,6 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import User from "./user.model";
-import Volume from "./volume.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import User from './user.model';
+import Volume from './volume.model';
 
 export interface IVolumeEntry {
   id: string;
@@ -44,6 +44,6 @@ export const VolumeEntrySchema = new Schema<IVolumeEntry>({
 
 class VolumeEntry extends model<IVolumeEntry>(VolumeEntrySchema) { }
 
-VolumeEntry.register("volume-entries");
+VolumeEntry.register('volume-entries');
 
 export default VolumeEntry;

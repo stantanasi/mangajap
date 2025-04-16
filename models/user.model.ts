@@ -1,8 +1,8 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import AnimeEntry from "./anime-entry.model";
-import Follow from "./follow.model";
-import MangaEntry from "./manga-entry.model";
-import Review from "./review.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import AnimeEntry from './anime-entry.model';
+import Follow from './follow.model';
+import MangaEntry from './manga-entry.model';
+import Review from './review.model';
 
 export interface IUser {
   id: string;
@@ -30,10 +30,10 @@ export interface IUser {
 
   followers?: Follow[];
   following?: Follow[];
-  "anime-library"?: AnimeEntry[];
-  "manga-library"?: MangaEntry[];
-  "anime-favorites"?: AnimeEntry[];
-  "manga-favorites"?: MangaEntry[];
+  'anime-library'?: AnimeEntry[];
+  'manga-library'?: MangaEntry[];
+  'anime-favorites'?: AnimeEntry[];
+  'manga-favorites'?: MangaEntry[];
   reviews?: Review[];
 }
 
@@ -94,13 +94,13 @@ export const UserSchema = new Schema<IUser>({
 
     following: {},
 
-    "anime-library": {},
+    'anime-library': {},
 
-    "manga-library": {},
+    'manga-library': {},
 
-    "anime-favorites": {},
+    'anime-favorites': {},
 
-    "manga-favorites": {},
+    'manga-favorites': {},
 
     reviews: {},
   },
@@ -109,6 +109,6 @@ export const UserSchema = new Schema<IUser>({
 
 class User extends model<IUser>(UserSchema) { }
 
-User.register("users");
+User.register('users');
 
 export default User;

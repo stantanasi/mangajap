@@ -1,12 +1,12 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import AnimeEntry from "./anime-entry.model";
-import Episode from "./episode.model";
-import Franchise from "./franchise.model";
-import Genre from "./genre.model";
-import Review from "./review.model";
-import Season from "./season.model";
-import Staff from "./staff.model";
-import Theme from "./theme.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import AnimeEntry from './anime-entry.model';
+import Episode from './episode.model';
+import Franchise from './franchise.model';
+import Genre from './genre.model';
+import Review from './review.model';
+import Season from './season.model';
+import Staff from './staff.model';
+import Theme from './theme.model';
 
 export interface IAnime {
   id: string;
@@ -44,7 +44,7 @@ export interface IAnime {
   staff?: Staff[];
   reviews?: Review[];
   franchises?: Franchise[];
-  "anime-entry"?: AnimeEntry | null;
+  'anime-entry'?: AnimeEntry | null;
 }
 
 export const AnimeSchema = new Schema<IAnime>({
@@ -125,13 +125,13 @@ export const AnimeSchema = new Schema<IAnime>({
 
     franchises: {},
 
-    "anime-entry": {},
+    'anime-entry': {},
   },
 });
 
 
 class Anime extends model<IAnime>(AnimeSchema) { }
 
-Anime.register("anime");
+Anime.register('anime');
 
 export default Anime;

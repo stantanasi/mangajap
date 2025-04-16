@@ -1,12 +1,12 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import Chapter from "./chapter.model";
-import Franchise from "./franchise.model";
-import Genre from "./genre.model";
-import MangaEntry from "./manga-entry.model";
-import Review from "./review.model";
-import Staff from "./staff.model";
-import Theme from "./theme.model";
-import Volume from "./volume.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import Chapter from './chapter.model';
+import Franchise from './franchise.model';
+import Genre from './genre.model';
+import MangaEntry from './manga-entry.model';
+import Review from './review.model';
+import Staff from './staff.model';
+import Theme from './theme.model';
+import Volume from './volume.model';
 
 export interface IManga {
   id: string;
@@ -41,7 +41,7 @@ export interface IManga {
   staff?: Staff[];
   reviews?: Review[];
   franchises?: Franchise[];
-  "manga-entry"?: MangaEntry | null;
+  'manga-entry'?: MangaEntry | null;
 }
 
 export const MangaSchema = new Schema<IManga>({
@@ -116,13 +116,13 @@ export const MangaSchema = new Schema<IManga>({
 
     franchises: {},
 
-    "manga-entry": {},
+    'manga-entry': {},
   },
 });
 
 
 class Manga extends model<IManga>(MangaSchema) { }
 
-Manga.register("manga");
+Manga.register('manga');
 
 export default Manga;

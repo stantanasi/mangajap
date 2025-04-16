@@ -1,6 +1,6 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import Anime from "./anime.model";
-import Episode from "./episode.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import Anime from './anime.model';
+import Episode from './episode.model';
 
 export interface ISeason {
   id: string;
@@ -56,6 +56,6 @@ export const SeasonSchema = new Schema<ISeason>({
 
 class Season extends model<ISeason>(SeasonSchema) { }
 
-Season.register("seasons");
+Season.register('seasons');
 
 export default Season;

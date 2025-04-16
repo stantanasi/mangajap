@@ -1,6 +1,6 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import Anime from "./anime.model";
-import Manga from "./manga.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import Anime from './anime.model';
+import Manga from './manga.model';
 
 export interface IGenre {
   id: string;
@@ -36,6 +36,6 @@ export const GenreSchema = new Schema<IGenre>({
 
 class Genre extends model<IGenre>(GenreSchema) { }
 
-Genre.register("genres");
+Genre.register('genres');
 
 export default Genre;

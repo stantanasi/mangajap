@@ -138,12 +138,12 @@ export default function ProfileScreen({ route }: Props) {
         ...(authenticatedUser && id !== authenticatedUser.id
           ? [
             Follow.find({
-              "follower": authenticatedUser.id,
-              "followed": id,
+              'follower': authenticatedUser.id,
+              'followed': id,
             } as any).then((follows) => follows[0] ?? null),
             Follow.find({
-              "follower": id,
-              "followed": authenticatedUser.id,
+              'follower': id,
+              'followed': authenticatedUser.id,
             } as any).then((follows) => follows[0] ?? null),
           ]
           : [null, null]),
@@ -326,7 +326,7 @@ export default function ProfileScreen({ route }: Props) {
                       fontWeight: 'bold',
                     }}
                   >
-                    {!isFollowingUser ? "S'abonner" : "Abonné"}
+                    {!isFollowingUser ? "S'abonner" : 'Abonné'}
                   </Text>
                 </Pressable>
 
@@ -400,7 +400,7 @@ export default function ProfileScreen({ route }: Props) {
                   marginHorizontal: 10,
                 }}
               >
-                {item.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")}
+                {item.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
               </Text>
             </View>
           )}

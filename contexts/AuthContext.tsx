@@ -1,8 +1,8 @@
-import { connect } from "@stantanasi/jsonapi-client";
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { connect } from '@stantanasi/jsonapi-client';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import React, { createContext, PropsWithChildren, useEffect, useState } from 'react';
-import { auth } from "../firebaseConfig";
-import { User } from "../models";
+import { auth } from '../firebaseConfig';
+import { User } from '../models';
 
 interface IAuthContext {
   isReady: boolean;

@@ -1,7 +1,7 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import Anime from "./anime.model";
-import EpisodeEntry from "./episode-entry.model";
-import Season from "./season.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import Anime from './anime.model';
+import EpisodeEntry from './episode-entry.model';
+import Season from './season.model';
 
 export interface IEpisode {
   id: string;
@@ -18,7 +18,7 @@ export interface IEpisode {
 
   anime?: Anime;
   season?: Season;
-  "episode-entry"?: EpisodeEntry | null;
+  'episode-entry'?: EpisodeEntry | null;
 
 }
 
@@ -57,13 +57,13 @@ export const EpisodeSchema = new Schema<IEpisode>({
 
     season: {},
 
-    "episode-entry": {},
+    'episode-entry': {},
   },
 });
 
 
 class Episode extends model<IEpisode>(EpisodeSchema) { }
 
-Episode.register("episodes");
+Episode.register('episodes');
 
 export default Episode;

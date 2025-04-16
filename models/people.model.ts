@@ -1,5 +1,5 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import Staff from "./staff.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import Staff from './staff.model';
 
 export interface IPeople {
   id: string;
@@ -10,8 +10,8 @@ export interface IPeople {
   updatedAt: Date;
 
   staff?: Staff[];
-  "anime-staff"?: Staff[];
-  "manga-staff"?: Staff[];
+  'anime-staff'?: Staff[];
+  'manga-staff'?: Staff[];
 }
 
 export const PeopleSchema = new Schema<IPeople>({
@@ -32,15 +32,15 @@ export const PeopleSchema = new Schema<IPeople>({
   relationships: {
     staff: {},
 
-    "anime-staff": {},
+    'anime-staff': {},
 
-    "manga-staff": {},
+    'manga-staff': {},
   },
 });
 
 
 class People extends model<IPeople>(PeopleSchema) { }
 
-People.register("peoples");
+People.register('peoples');
 
 export default People;

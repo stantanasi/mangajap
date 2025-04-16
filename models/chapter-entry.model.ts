@@ -1,6 +1,6 @@
-import { model, Schema } from "@stantanasi/jsonapi-client";
-import Chapter from "./chapter.model";
-import User from "./user.model";
+import { model, Schema } from '@stantanasi/jsonapi-client';
+import Chapter from './chapter.model';
+import User from './user.model';
 
 export interface IChapterEntry {
   id: string;
@@ -44,6 +44,6 @@ export const ChapterEntrySchema = new Schema<IChapterEntry>({
 
 class ChapterEntry extends model<IChapterEntry>(ChapterEntrySchema) { }
 
-ChapterEntry.register("chapter-entries");
+ChapterEntry.register('chapter-entries');
 
 export default ChapterEntry;
