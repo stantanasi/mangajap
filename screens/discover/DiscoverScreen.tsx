@@ -1,17 +1,19 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import PeopleCard from '../../components/molecules/PeopleCard';
+import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, Manga, People } from '../../models';
 
 type Props = StaticScreenProps<{}>;
 
 export default function DiscoverScreen({ route }: Props) {
   const navigation = useNavigation();
+  const { isAuthenticated } = useContext(AuthContext);
   const [peoples, setPeoples] = useState<People[]>();
   const [animes, setAnimes] = useState<Anime[]>();
   const [mangas, setMangas] = useState<Manga[]>();
@@ -20,13 +22,14 @@ export default function DiscoverScreen({ route }: Props) {
     const prepare = async () => {
       const [peoples, animes, mangas] = await Promise.all([
         People.find()
-          .include(['staff.anime', 'staff.manga'])
           .sort({ random: 'asc' } as any),
         Anime.find()
+          .include(isAuthenticated ? ['anime-entry'] : [])
           .sort({
             createdAt: 'desc',
           }),
         Manga.find()
+          .include(isAuthenticated ? ['manga-entry'] : [])
           .sort({
             createdAt: 'desc',
           }),
@@ -123,6 +126,9 @@ export default function DiscoverScreen({ route }: Props) {
             renderItem={({ item }) => (
               <AnimeCard
                 anime={item}
+                onAnimeChange={(anime) => {
+                  setAnimes((prev) => prev?.map((a) => a.id === anime.id ? anime : a));
+                }}
                 onPress={() => navigation.navigate('Anime', { id: item.id })}
               />
             )}
@@ -150,6 +156,9 @@ export default function DiscoverScreen({ route }: Props) {
             renderItem={({ item }) => (
               <MangaCard
                 manga={item}
+                onMangaChange={(manga) => {
+                  setMangas((prev) => prev?.map((m) => m.id === manga.id ? manga : m));
+                }}
                 onPress={() => navigation.navigate('Manga', { id: item.id })}
               />
             )}
