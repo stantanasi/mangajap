@@ -2,7 +2,6 @@ import { model, Schema } from "@stantanasi/jsonapi-client";
 import AnimeEntry from "./anime-entry.model";
 import Follow from "./follow.model";
 import MangaEntry from "./manga-entry.model";
-import Request from "./request.model";
 import Review from "./review.model";
 
 export interface IUser {
@@ -36,7 +35,6 @@ export interface IUser {
   "anime-favorites"?: AnimeEntry[];
   "manga-favorites"?: MangaEntry[];
   reviews?: Review[];
-  requests?: Request[];
 }
 
 export const UserSchema = new Schema<IUser>({
@@ -105,8 +103,6 @@ export const UserSchema = new Schema<IUser>({
     "manga-favorites": {},
 
     reviews: {},
-
-    requests: {},
   },
 });
 

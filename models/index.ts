@@ -22,8 +22,6 @@ export { default as Manga } from "./manga.model";
 
 export { default as People } from "./people.model";
 
-export { default as Request } from "./request.model";
-
 export { default as Review } from "./review.model";
 
 export { default as Season } from "./season.model";
