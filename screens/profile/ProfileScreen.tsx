@@ -538,6 +538,7 @@ export default function ProfileScreen({ route }: Props) {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <MangaCard
+              screen="profile"
               manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
             />
@@ -584,6 +585,7 @@ export default function ProfileScreen({ route }: Props) {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <MangaCard
+                  screen="profile"
                   manga={item}
                   onPress={() => navigation.navigate('Manga', { id: item.id })}
                 />

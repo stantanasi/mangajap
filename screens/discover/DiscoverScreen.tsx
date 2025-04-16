@@ -156,6 +156,7 @@ export default function DiscoverScreen({ route }: Props) {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <MangaCard
+                screen="discover"
                 manga={item}
                 onMangaChange={(manga) => {
                   setMangas((prev) => prev?.map((m) => m.id === manga.id ? manga : m));

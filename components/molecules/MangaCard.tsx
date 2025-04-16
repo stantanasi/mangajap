@@ -5,12 +5,14 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { Manga, MangaEntry, User } from '../../models';
 
 type Props = PressableProps & {
+  screen: 'discover' | 'library' | 'profile';
   manga: Manga;
   onMangaChange?: (manga: Manga) => void;
   style?: ViewStyle;
 }
 
 export default function MangaCard({
+  screen,
   manga,
   onMangaChange = () => { },
   style,
@@ -41,7 +43,7 @@ export default function MangaCard({
             margin: 4,
           }}
         >
-          {user ? (
+          {user && screen !== 'library' && screen !== 'profile' ? (
             <View
               style={{
                 backgroundColor: !isAdd ? '#e5e5e5' : '#4281f5',
