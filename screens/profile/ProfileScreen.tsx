@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
@@ -9,98 +9,6 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { Follow, User } from '../../models';
 import LoginContent from './LoginContent';
 import RegisterContent from './RegisterContent';
-
-const OptionsModal = ({ user, visible, onRequestClose }: {
-  user: User,
-  visible: boolean
-  onRequestClose: () => void
-}) => {
-  const navigation = useNavigation();
-
-  return (
-    <Modal
-      animationType="fade"
-      onRequestClose={() => onRequestClose()}
-      transparent
-      visible={visible}
-    >
-      <Pressable
-        onPress={() => onRequestClose()}
-        style={{
-          backgroundColor: '#00000052',
-          flex: 1,
-          justifyContent: 'flex-end',
-        }}
-      >
-        <Pressable
-          style={{
-            backgroundColor: '#fff',
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-          }}
-        >
-          <View
-            style={{
-              alignItems: 'center',
-              borderBottomColor: '#ccc',
-              borderBottomWidth: 1,
-              flexDirection: 'row',
-              gap: 16,
-              padding: 18,
-            }}
-          >
-            <Image
-              source={{ uri: user.avatar ?? undefined }}
-              style={{
-                width: 50,
-                aspectRatio: 1 / 1,
-                backgroundColor: '#ccc',
-                borderRadius: 360,
-              }}
-            />
-
-            <Text
-              style={{
-                fontSize: 15,
-              }}
-            >
-              {user.pseudo}
-            </Text>
-          </View>
-
-          <Pressable
-            onPress={() => {
-              navigation.navigate('Settings', {});
-              onRequestClose();
-            }}
-            style={{
-              alignItems: 'center',
-              flexDirection: 'row',
-              gap: 16,
-              padding: 18,
-            }}
-          >
-            <MaterialIcons
-              name="settings"
-              size={24}
-              color="#000"
-            />
-
-            <Text
-              style={{
-                flex: 1,
-                fontSize: 15,
-              }}
-            >
-              Paramètres
-            </Text>
-          </Pressable>
-        </Pressable>
-      </Pressable>
-    </Modal>
-  );
-};
-
 
 type Props = StaticScreenProps<{
   id?: string;
@@ -114,7 +22,6 @@ export default function ProfileScreen({ route }: Props) {
   const [isFollowingUser, setIsFollowingUser] = useState<Follow | null>();
   const [isFollowedByUser, setIsFollowedByUser] = useState<Follow | null>();
   const [isFollowUpdating, setIsFollowUpdating] = useState(false);
-  const [optionsVisible, setOptionsVisible] = useState(false);
 
   const id = route.params?.id ?? authenticatedUser?.id;
 
@@ -267,15 +174,10 @@ export default function ProfileScreen({ route }: Props) {
                 </Text>
 
                 <MaterialIcons
-                  name="more-vert"
+                  name="settings"
                   size={24}
                   color="#000"
-                  onPress={() => setOptionsVisible(true)}
-                />
-                <OptionsModal
-                  user={user}
-                  visible={optionsVisible}
-                  onRequestClose={() => setOptionsVisible(false)}
+                  onPress={() => navigation.navigate('Settings', {})}
                 />
               </View>
             ) : (
