@@ -1,3 +1,4 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
@@ -6,7 +7,7 @@ import AutoHeightImage from '../../components/atoms/AutoHeightImage';
 import ChapterCard from '../../components/molecules/ChapterCard';
 import VolumeCard from '../../components/molecules/VolumeCard';
 import { AuthContext } from '../../contexts/AuthContext';
-import { Chapter, ChapterEntry, Manga, User, Volume, VolumeEntry } from '../../models';
+import { Chapter, ChapterEntry, Manga, MangaEntry, User, Volume, VolumeEntry } from '../../models';
 
 const Header = ({ manga }: { manga: Manga }) => {
   return (
@@ -58,6 +59,7 @@ export default function MangaScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isAuthenticated, user } = useContext(AuthContext);
   const [manga, setManga] = useState<Manga>();
+  const [isUpdating, setIsUpdating] = useState(false);
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean }>({});
   const [previousUnread, setPreviousUnread] = useState<(Volume | Chapter)[]>();
@@ -71,6 +73,7 @@ export default function MangaScreen({ route }: Props) {
           `volumes${isAuthenticated ? '.volume-entry' : ''}`,
           `volumes.chapters${isAuthenticated ? '.chapter-entry' : ''}`,
           `chapters${isAuthenticated ? '.chapter-entry' : ''}`,
+          isAuthenticated ? 'manga-entry' : '',
         ]);
 
       setManga(manga);
@@ -221,6 +224,76 @@ export default function MangaScreen({ route }: Props) {
         SectionSeparatorComponent={() => <View style={{ height: 10 }} />}
         ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
       />
+
+      {user && !manga['manga-entry']?.isAdd ? (
+        <Pressable
+          onPress={() => {
+            setIsUpdating(true);
+
+            const updateMangaEntry = async () => {
+              if (manga['manga-entry']) {
+                const mangaEntry = manga['manga-entry'].copy({
+                  isAdd: true,
+                });
+                await mangaEntry.save();
+
+                setManga((prev) => prev?.copy({
+                  'manga-entry': mangaEntry,
+                }));
+              } else {
+                const mangaEntry = new MangaEntry({
+                  isAdd: true,
+
+                  user: new User({ id: user.id }),
+                  manga: manga,
+                });
+                await mangaEntry.save();
+
+                setManga((prev) => prev?.copy({
+                  'manga-entry': mangaEntry,
+                }));
+              }
+            };
+
+            updateMangaEntry()
+              .catch((err) => console.error(err))
+              .finally(() => setIsUpdating(false));
+          }}
+          style={{
+            alignItems: 'center',
+            backgroundColor: '#4281f5',
+            flexDirection: 'row',
+            gap: 10,
+            justifyContent: 'center',
+            padding: 16,
+          }}
+        >
+          {!isUpdating ? (
+            <MaterialIcons
+              name="add"
+              color="#fff"
+              size={24}
+            />
+          ) : (
+            <ActivityIndicator
+              animating
+              color="#fff"
+              size={24}
+            />
+          )}
+
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 16,
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+            }}
+          >
+            Ajouter le manga
+          </Text>
+        </Pressable>
+      ) : null}
 
       <Modal
         animationType="fade"
