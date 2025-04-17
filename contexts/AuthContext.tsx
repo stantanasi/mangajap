@@ -38,6 +38,9 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        params: {
+          language: 'fr-FR',
+        },
       });
 
       setUser(user ? {
