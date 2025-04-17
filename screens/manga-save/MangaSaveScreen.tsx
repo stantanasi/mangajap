@@ -1,6 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TextInput from '../../components/atoms/TextInput';
 import { Manga } from '../../models';
@@ -14,6 +14,7 @@ export default function MangaSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [manga, setManga] = useState<Manga>();
   const [form, setForm] = useState<Partial<IManga>>();
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const prepare = async () => {
@@ -86,6 +87,49 @@ export default function MangaSaveScreen({ route }: Props) {
         }))}
         style={styles.input}
       />
+
+      <Pressable
+        disabled={isSaving}
+        onPress={() => {
+          setIsSaving(true);
+
+          manga.assign(form);
+
+          manga.save()
+            .then(() => navigation.goBack())
+            .catch((err) => console.error(err))
+            .finally(() => setIsSaving(false));
+        }}
+        style={{
+          alignItems: 'center',
+          alignSelf: 'flex-start',
+          backgroundColor: '#ddd',
+          borderRadius: 4,
+          flexDirection: 'row',
+          gap: 10,
+          marginHorizontal: 16,
+          marginTop: 24,
+          paddingHorizontal: 12,
+          paddingVertical: 6,
+        }}
+      >
+        {isSaving && (
+          <ActivityIndicator
+            animating
+            color="#000"
+            size={20}
+          />
+        )}
+
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: 'bold',
+          }}
+        >
+          Enregistrer
+        </Text>
+      </Pressable>
     </SafeAreaView>
   );
 }
