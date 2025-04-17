@@ -191,6 +191,7 @@ const VolumesTab = ({ manga, onMangaChange, style }: {
         )}
         SectionSeparatorComponent={() => <View style={{ height: 10 }} />}
         ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
+        removeClippedSubviews
         contentContainerStyle={{
           paddingVertical: 11,
         }}
