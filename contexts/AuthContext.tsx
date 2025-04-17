@@ -9,7 +9,7 @@ interface IAuthContext {
   isAuthenticated: boolean;
   user: {
     id: string;
-    token: string;
+    isAdmin: boolean;
   } | null;
   register: (pseudo: string, email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
@@ -30,22 +30,22 @@ export default function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<IAuthContext['user']>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      const token = await user?.getIdToken();
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      const tokenResult = await currentUser?.getIdTokenResult();
 
       connect({
         baseURL: 'https://api-za7rwcomoa-uc.a.run.app',
         headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(tokenResult ? { Authorization: `Bearer ${tokenResult.token}` } : {}),
         },
         params: {
           language: 'fr-FR',
         },
       });
 
-      setUser(user ? {
-        id: user.uid,
-        token: token!,
+      setUser(currentUser && tokenResult ? {
+        id: currentUser.uid,
+        isAdmin: tokenResult.claims['isAdmin'] as boolean,
       } : null);
 
       setIsReady(true);
