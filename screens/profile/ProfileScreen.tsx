@@ -7,8 +7,8 @@ import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Follow, User } from '../../models';
-import LoginContent from './LoginContent';
-import RegisterContent from './RegisterContent';
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
 
 type Props = StaticScreenProps<{
   id?: string;
@@ -66,19 +66,21 @@ export default function ProfileScreen({ route }: Props) {
   }, [id]);
 
   if (!id) {
-    return (
-      <SafeAreaView style={styles.container}>
-        {authScreen === 'login' ? (
-          <LoginContent
-            onNavigateToRegister={() => setAuthScreen('register')}
-          />
-        ) : (
-          <RegisterContent
-            onNavigateToLogin={() => setAuthScreen('login')}
-          />
-        )}
-      </SafeAreaView>
-    );
+    if (authScreen === 'login') {
+      return (
+        <LoginScreen
+          onNavigateToRegister={() => setAuthScreen('register')}
+          style={styles.container}
+        />
+      );
+    } else {
+      return (
+        <RegisterScreen
+          onNavigateToLogin={() => setAuthScreen('login')}
+          style={styles.container}
+        />
+      );
+    }
   }
 
   if (!user || isFollowingUser === undefined || isFollowedByUser === undefined) {

@@ -1,13 +1,15 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { AuthContext } from '../../contexts/AuthContext';
+import { ActivityIndicator, Pressable, StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthContext } from '../../../contexts/AuthContext';
 
 type Props = {
   onNavigateToLogin: () => void;
+  style?: StyleProp<ViewStyle>;
 };
 
-export default function RegisterContent({ onNavigateToLogin }: Props) {
+export default function RegisterScreen({ onNavigateToLogin, style }: Props) {
   const { register } = useContext(AuthContext);
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
@@ -16,7 +18,7 @@ export default function RegisterContent({ onNavigateToLogin }: Props) {
   const [isRegistering, setIsRegistering] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={[styles.container, style]}>
       <Text
         style={{
           fontSize: 26,
@@ -106,7 +108,7 @@ export default function RegisterContent({ onNavigateToLogin }: Props) {
       >
         Déjà inscrit ? Connectez-nous !
       </Text>
-    </View>
+    </SafeAreaView>
   );
 }
 
