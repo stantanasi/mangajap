@@ -69,7 +69,7 @@ export default function AnimeSaveScreen({ route }: Props) {
         />
 
         <TextInput
-          label="Titre"
+          label="Titre *"
           value={form.title}
           onChangeText={(text) => setForm((prev) => ({
             ...prev!,
@@ -79,7 +79,7 @@ export default function AnimeSaveScreen({ route }: Props) {
         />
 
         <TextInput
-          label="Synopsis"
+          label="Synopsis *"
           value={form.overview}
           onChangeText={(text) => setForm((prev) => ({
             ...prev!,
@@ -90,7 +90,7 @@ export default function AnimeSaveScreen({ route }: Props) {
         />
 
         <DateInput
-          label="Date de début"
+          label="Date de début *"
           value={form.startDate}
           onValueChange={(text) => setForm((prev) => ({
             ...prev!,
@@ -100,7 +100,7 @@ export default function AnimeSaveScreen({ route }: Props) {
         />
 
         <SelectInput
-          label="Type d'animé"
+          label="Type d'animé *"
           values={[
             { label: 'Série TV', value: 'tv' },
             { label: 'OVA', value: 'ova' },
@@ -118,7 +118,7 @@ export default function AnimeSaveScreen({ route }: Props) {
         />
 
         <SelectInput
-          label="Status"
+          label="Status *"
           values={[
             { label: 'En cours', value: 'airing' },
             { label: 'Terminé', value: 'finished' },

@@ -69,7 +69,7 @@ export default function MangaSaveScreen({ route }: Props) {
         />
 
         <TextInput
-          label="Titre"
+          label="Titre *"
           value={form.title}
           onChangeText={(text) => setForm((prev) => ({
             ...prev!,
@@ -79,7 +79,7 @@ export default function MangaSaveScreen({ route }: Props) {
         />
 
         <TextInput
-          label="Synopsis"
+          label="Synopsis *"
           value={form.overview}
           onChangeText={(text) => setForm((prev) => ({
             ...prev!,
@@ -90,7 +90,7 @@ export default function MangaSaveScreen({ route }: Props) {
         />
 
         <DateInput
-          label="Date de début"
+          label="Date de début *"
           value={form.startDate}
           onValueChange={(text) => setForm((prev) => ({
             ...prev!,
@@ -100,7 +100,7 @@ export default function MangaSaveScreen({ route }: Props) {
         />
 
         <SelectInput
-          label="Type de manga"
+          label="Type de manga *"
           values={[
             { label: 'BD', value: 'bd' },
             { label: 'Comics', value: 'comics' },
@@ -124,7 +124,7 @@ export default function MangaSaveScreen({ route }: Props) {
         />
 
         <SelectInput
-          label="Status"
+          label="Status *"
           values={[
             { label: 'En cours', value: 'publishing' },
             { label: 'Terminé', value: 'finished' },
