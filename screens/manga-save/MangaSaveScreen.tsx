@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
+import ImageInput from '../../components/atoms/ImageInput';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { Manga } from '../../models';
@@ -52,6 +53,20 @@ export default function MangaSaveScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ImageInput
+        label="Poster"
+        value={form.poster}
+        onValueChange={(value) => setForm((prev) => ({
+          ...prev,
+          poster: value,
+        }))}
+        style={styles.input}
+        inputStyle={{
+          width: 150,
+          minHeight: 150 * 3 / 2,
+        }}
+      />
+
       <TextInput
         label="Titre"
         value={form.title}
