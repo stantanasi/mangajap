@@ -1,7 +1,11 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import DateInput from '../../components/atoms/DateInput';
+import ImageInput from '../../components/atoms/ImageInput';
+import SelectInput from '../../components/atoms/SelectInput';
+import TextInput from '../../components/atoms/TextInput';
 import { Anime } from '../../models';
 import { IAnime } from '../../models/anime.model';
 
@@ -34,8 +38,118 @@ export default function AnimeSaveScreen({ route }: Props) {
     return unsubscribe;
   }, [route.params]);
 
+  if (!anime || !form) {
+    return (
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
+        <ActivityIndicator
+          animating
+          color="#000"
+          size="large"
+        />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <ImageInput
+          label="Poster"
+          value={form.poster}
+          onValueChange={(value) => setForm((prev) => ({
+            ...prev,
+            poster: value,
+          }))}
+          style={styles.input}
+          inputStyle={{
+            width: 150,
+            minHeight: 150 * 3 / 2,
+          }}
+        />
+
+        <TextInput
+          label="Titre"
+          value={form.title}
+          onChangeText={(text) => setForm((prev) => ({
+            ...prev!,
+            title: text,
+          }))}
+          style={styles.input}
+        />
+
+        <TextInput
+          label="Synopsis"
+          value={form.overview}
+          onChangeText={(text) => setForm((prev) => ({
+            ...prev!,
+            overview: text,
+          }))}
+          multiline
+          style={styles.input}
+        />
+
+        <DateInput
+          label="Date de début"
+          value={form.startDate}
+          onValueChange={(text) => setForm((prev) => ({
+            ...prev!,
+            startDate: text,
+          }))}
+          style={styles.input}
+        />
+
+        <SelectInput
+          label="Type d'animé"
+          values={[
+            { label: 'Série TV', value: 'tv' },
+            { label: 'OVA', value: 'ova' },
+            { label: 'ONA', value: 'ona' },
+            { label: 'Film', value: 'movie' },
+            { label: 'Musique', value: 'music' },
+            { label: 'Spécial', value: 'special' },
+          ]}
+          selectedValue={form.animeType}
+          onValueChange={(value) => setForm((prev) => ({
+            ...prev,
+            animeType: value,
+          }))}
+          style={styles.input}
+        />
+
+        <SelectInput
+          label="Status"
+          values={[
+            { label: 'En cours', value: 'airing' },
+            { label: 'Terminé', value: 'finished' },
+            { label: 'À sortir', value: 'unreleased' },
+            { label: 'À venir', value: 'upcoming' },
+          ]}
+          selectedValue={form.status}
+          onValueChange={(value) => setForm((prev) => ({
+            ...prev,
+            status: value,
+            inProduction: value !== 'finished',
+          }))}
+          style={styles.input}
+        />
+
+        <Text style={styles.sectionTitle}>
+          Identifiants externes
+        </Text>
+
+        <TextInput
+          label="TheMovieDB"
+          value={form.links?.['themoviedb']}
+          onChangeText={(text) => setForm((prev) => ({
+            ...prev!,
+            links: {
+              ...prev!.links,
+              themoviedb: text,
+            },
+          }))}
+          style={styles.input}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -43,5 +157,15 @@ export default function AnimeSaveScreen({ route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  input: {
+    marginHorizontal: 16,
+    marginTop: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginHorizontal: 16,
+    marginTop: 20,
   },
 });
