@@ -29,7 +29,7 @@ const AboutTab = ({ manga, style }: {
           name="edit"
           color="#000"
           size={24}
-          onPress={() => navigation.navigate('MangaEdit', { id: manga.id })}
+          onPress={() => navigation.navigate('MangaUpdate', { id: manga.id })}
           style={{
             alignSelf: 'flex-end',
             marginRight: 16,

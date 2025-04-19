@@ -104,7 +104,7 @@ const RootStack = createNativeStackNavigator({
     MangaCreate: {
       screen: MangaSaveScreen,
     },
-    MangaEdit: {
+    MangaUpdate: {
       screen: MangaSaveScreen,
     },
     Search: {
