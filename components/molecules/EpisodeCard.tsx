@@ -1,3 +1,5 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Image, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -21,6 +23,7 @@ export default function EpisodeCard({
   onUpdatingChange = () => { },
   style,
 }: Props) {
+  const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
   return (
@@ -72,6 +75,18 @@ export default function EpisodeCard({
               .finally(() => onUpdatingChange(false));
           }}
           loading={updating}
+          style={{
+            marginRight: 10,
+          }}
+        />
+      ) : null}
+
+      {user && user.isAdmin ? (
+        <MaterialIcons
+          name="edit"
+          color="#000"
+          size={24}
+          onPress={() => navigation.navigate('EpisodeUpdate', { episodeId: episode.id })}
           style={{
             marginRight: 10,
           }}

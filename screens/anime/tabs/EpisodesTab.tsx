@@ -156,6 +156,33 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
                 Ajouter une saison
               </Text>
             </Pressable>
+
+            <Pressable
+              onPress={() => navigation.navigate('EpisodeCreate', { animeId: anime.id })}
+              style={{
+                backgroundColor: '#ddd',
+                borderRadius: 6,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: 10,
+                marginHorizontal: 16,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+              }}
+            >
+              <MaterialIcons
+                name="add"
+                color="#000"
+                size={24}
+              />
+              <Text
+                style={{
+                  fontSize: 16,
+                }}
+              >
+                Ajouter un épisode
+              </Text>
+            </Pressable>
           </View>
         )}
         removeClippedSubviews
