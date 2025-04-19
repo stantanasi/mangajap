@@ -11,6 +11,7 @@ import AgendaAnimeScreen from './screens/agenda-anime/AgendaAnimeScreen';
 import AgendaMangaScreen from './screens/agenda-manga/AgendaMangaScreen';
 import AnimeSaveScreen from './screens/anime-save/AnimeSaveScreen';
 import AnimeScreen from './screens/anime/AnimeScreen';
+import ChapterSaveScreen from './screens/chapter-save/ChapterSaveScreen';
 import DiscoverScreen from './screens/discover/DiscoverScreen';
 import FollowsScreen from './screens/follows/FollowsScreen';
 import LibraryScreen from './screens/library/LibraryScreen';
@@ -113,6 +114,12 @@ const RootStack = createNativeStackNavigator({
     },
     VolumeUpdate: {
       screen: VolumeSaveScreen,
+    },
+    ChapterCreate: {
+      screen: ChapterSaveScreen,
+    },
+    ChapterUpdate: {
+      screen: ChapterSaveScreen,
     },
     Search: {
       screen: SearchScreen,
