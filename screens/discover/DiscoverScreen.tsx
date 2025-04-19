@@ -171,11 +171,27 @@ export default function DiscoverScreen({ route }: Props) {
       )}
 
       {user && user.isAdmin ? (
-        <FloatingActionButton
-          icon="add"
-          label="Manga"
-          onPress={() => navigation.navigate('MangaCreate')}
-        />
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+          }}
+        >
+          <FloatingActionButton
+            icon="add"
+            label="Animé"
+            onPress={() => navigation.navigate('AnimeCreate')}
+            style={{ position: 'relative' }}
+          />
+
+          <FloatingActionButton
+            icon="add"
+            label="Manga"
+            onPress={() => navigation.navigate('MangaCreate')}
+            style={{ position: 'relative' }}
+          />
+        </View>
       ) : null}
     </SafeAreaView>
   );

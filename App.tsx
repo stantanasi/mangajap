@@ -9,6 +9,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import AgendaAnimeScreen from './screens/agenda-anime/AgendaAnimeScreen';
 import AgendaMangaScreen from './screens/agenda-manga/AgendaMangaScreen';
+import AnimeSaveScreen from './screens/anime-save/AnimeSaveScreen';
 import AnimeScreen from './screens/anime/AnimeScreen';
 import DiscoverScreen from './screens/discover/DiscoverScreen';
 import FollowsScreen from './screens/follows/FollowsScreen';
@@ -91,13 +92,19 @@ const RootStack = createNativeStackNavigator({
     Anime: {
       screen: AnimeScreen,
     },
+    AnimeCreate: {
+      screen: AnimeSaveScreen,
+    },
+    AnimeUpdate: {
+      screen: AnimeSaveScreen,
+    },
     Manga: {
       screen: MangaScreen,
     },
     MangaCreate: {
       screen: MangaSaveScreen,
     },
-    MangaEdit: {
+    MangaUpdate: {
       screen: MangaSaveScreen,
     },
     Search: {
