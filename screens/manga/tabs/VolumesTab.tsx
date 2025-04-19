@@ -1,3 +1,5 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { Modal, Pressable, SectionList, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import ChapterCard from '../../../components/molecules/ChapterCard';
@@ -12,6 +14,7 @@ type Props = {
 }
 
 export default function VolumesTab({ manga, onMangaChange, style }: Props) {
+  const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean }>({});
@@ -139,6 +142,36 @@ export default function VolumesTab({ manga, onMangaChange, style }: Props) {
         )}
         SectionSeparatorComponent={() => <View style={{ height: 10 }} />}
         ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
+        ListFooterComponent={() => (
+          <View>
+            <Pressable
+              onPress={() => navigation.navigate('VolumeCreate', { mangaId: manga.id })}
+              style={{
+                backgroundColor: '#ddd',
+                borderRadius: 6,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: 10,
+                marginHorizontal: 16,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+              }}
+            >
+              <MaterialIcons
+                name="add"
+                color="#000"
+                size={24}
+              />
+              <Text
+                style={{
+                  fontSize: 16,
+                }}
+              >
+                Ajouter un tome
+              </Text>
+            </Pressable>
+          </View>
+        )}
         removeClippedSubviews
         contentContainerStyle={{
           paddingVertical: 11,
