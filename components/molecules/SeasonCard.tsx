@@ -1,4 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -28,6 +29,7 @@ export default function SeasonCard({
   style,
   ...props
 }: Props) {
+  const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
   const episodesWatchedCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
@@ -128,6 +130,18 @@ export default function SeasonCard({
                 .finally(() => onUpdatingChange(false));
             }}
             loading={updating}
+            style={{
+              marginRight: 10,
+            }}
+          />
+        ) : null}
+
+        {user && user.isAdmin ? (
+          <MaterialIcons
+            name="edit"
+            color="#000"
+            size={24}
+            onPress={() => navigation.navigate('SeasonUpdate', { seasonId: season.id })}
             style={{
               marginRight: 10,
             }}
