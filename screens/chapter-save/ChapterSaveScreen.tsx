@@ -5,8 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
+import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
-import { Chapter, Manga } from '../../models';
+import { Chapter, Manga, Volume } from '../../models';
 import { IChapter } from '../../models/chapter.model';
 
 type Props = StaticScreenProps<{
@@ -19,6 +20,7 @@ export default function ChapterSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [chapter, setChapter] = useState<Chapter>();
   const [form, setForm] = useState<Partial<IChapter>>();
+  const [volumes, setVolumes] = useState<Volume[]>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -27,14 +29,22 @@ export default function ChapterSaveScreen({ route }: Props) {
 
       if ('mangaId' in route.params) {
         chapter = new Chapter({
-          manga: new Manga({ id: route.params.mangaId }),
+          manga: new Manga({
+            id: route.params.mangaId,
+            volumes: await Manga.findById(route.params.mangaId).get('volumes'),
+          }),
         });
       } else {
-        chapter = await Chapter.findById(route.params.chapterId);
+        chapter = await Chapter.findById(route.params.chapterId)
+          .include([
+            'manga.volumes',
+            'volume',
+          ]);
       }
 
       setChapter(chapter);
       setForm(chapter.toObject());
+      setVolumes(chapter.manga?.volumes ?? []);
     };
 
     const unsubscribe = navigation.addListener('focus', () => {
@@ -45,7 +55,7 @@ export default function ChapterSaveScreen({ route }: Props) {
     return unsubscribe;
   }, [route.params]);
 
-  if (!chapter || !form) {
+  if (!chapter || !form || !volumes) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -111,6 +121,20 @@ export default function ChapterSaveScreen({ route }: Props) {
           onValueChange={(value) => setForm((prev) => ({
             ...prev,
             publishedDate: value,
+          }))}
+          style={styles.input}
+        />
+
+        <SelectInput
+          label="Tome"
+          values={volumes.map((volume) => ({
+            label: `Tome ${volume.number}`,
+            value: volume.id,
+          }))}
+          selectedValue={form.volume?.id}
+          onValueChange={(value) => setForm((prev) => ({
+            ...prev,
+            volume: new Volume({ id: value }),
           }))}
           style={styles.input}
         />
