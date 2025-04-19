@@ -8,7 +8,7 @@ export interface ISeason {
   number: number;
   title: string;
   overview: string;
-  airDate: Date;
+  airDate: Date | null;
   poster: string | null;
   episodeCount: number;
   createdAt: Date;
@@ -29,7 +29,7 @@ export const SeasonSchema = new Schema<ISeason>({
     airDate: {
       type: Date,
       transform: function (val) {
-        return val.toISOString().slice(0, 10);
+        return val?.toISOString().slice(0, 10) ?? null;
       },
     },
 
