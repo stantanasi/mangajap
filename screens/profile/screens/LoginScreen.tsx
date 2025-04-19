@@ -1,4 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export default function LoginScreen({ onNavigateToRegister, style }: Props) {
+  const navigation = useNavigation();
   const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -67,6 +69,10 @@ export default function LoginScreen({ onNavigateToRegister, style }: Props) {
           setIsLogging(true)
 
           login(email, password)
+            .then(() => navigation.reset({
+              index: 0,
+              routes: [{ name: 'Main' }],
+            }))
             .catch((err) => console.error(err))
             .finally(() => setIsLogging(false))
         }}
