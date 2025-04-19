@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleProp, StyleSheet, Text, TextInputProps, TextInput as TextInputRN, View, ViewStyle } from 'react-native';
+import InputLabel from './InputLabel';
 
 type Props = TextInputProps & {
   label?: string;
@@ -13,9 +14,9 @@ export default function TextInput({ label, error, style, ...props }: Props) {
   return (
     <View style={[styles.container, style]}>
       {label ? (
-        <Text style={styles.label}>
+        <InputLabel>
           {label}
-        </Text>
+        </InputLabel>
       ) : null}
 
       <TextInputRN
@@ -46,9 +47,6 @@ export default function TextInput({ label, error, style, ...props }: Props) {
 
 const styles = StyleSheet.create({
   container: {},
-  label: {
-    fontSize: 12,
-  },
   input: {
     borderColor: '#ccc',
     borderRadius: 4,
