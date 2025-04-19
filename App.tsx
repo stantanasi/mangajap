@@ -13,6 +13,7 @@ import AnimeSaveScreen from './screens/anime-save/AnimeSaveScreen';
 import AnimeScreen from './screens/anime/AnimeScreen';
 import ChapterSaveScreen from './screens/chapter-save/ChapterSaveScreen';
 import DiscoverScreen from './screens/discover/DiscoverScreen';
+import EpisodeSaveScreen from './screens/episode-save/EpisodeSaveScreen';
 import FollowsScreen from './screens/follows/FollowsScreen';
 import LibraryScreen from './screens/library/LibraryScreen';
 import MangaSaveScreen from './screens/manga-save/MangaSaveScreen';
@@ -106,6 +107,12 @@ const RootStack = createNativeStackNavigator({
     },
     SeasonUpdate: {
       screen: SeasonSaveScreen,
+    },
+    EpisodeCreate: {
+      screen: EpisodeSaveScreen,
+    },
+    EpisodeUpdate: {
+      screen: EpisodeSaveScreen,
     },
     Manga: {
       screen: MangaScreen,
