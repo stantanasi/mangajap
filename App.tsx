@@ -21,6 +21,7 @@ import PeopleScreen from './screens/people/PeopleScreen';
 import ProfileEditScreen from './screens/profile-edit/ProfileEditScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
 import SearchScreen from './screens/search/SearchScreen';
+import SeasonSaveScreen from './screens/season-save/SeasonSaveScreen';
 import SettingsScreen from './screens/settings/SettingsScreen';
 import VolumeSaveScreen from './screens/volume-save/VolumeSaveScreen';
 
@@ -99,6 +100,12 @@ const RootStack = createNativeStackNavigator({
     },
     AnimeUpdate: {
       screen: AnimeSaveScreen,
+    },
+    SeasonCreate: {
+      screen: SeasonSaveScreen,
+    },
+    SeasonUpdate: {
+      screen: SeasonSaveScreen,
     },
     Manga: {
       screen: MangaScreen,
