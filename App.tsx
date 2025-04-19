@@ -21,6 +21,7 @@ import ProfileEditScreen from './screens/profile-edit/ProfileEditScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
 import SearchScreen from './screens/search/SearchScreen';
 import SettingsScreen from './screens/settings/SettingsScreen';
+import VolumeSaveScreen from './screens/volume-save/VolumeSaveScreen';
 
 const MainTabs = createBottomTabNavigator({
   initialRouteName: 'Discover',
@@ -106,6 +107,12 @@ const RootStack = createNativeStackNavigator({
     },
     MangaUpdate: {
       screen: MangaSaveScreen,
+    },
+    VolumeCreate: {
+      screen: VolumeSaveScreen,
+    },
+    VolumeUpdate: {
+      screen: VolumeSaveScreen,
     },
     Search: {
       screen: SearchScreen,
