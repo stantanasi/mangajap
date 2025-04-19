@@ -72,7 +72,7 @@ export default function MangaSaveScreen({ route }: Props) {
           label="Titre *"
           value={form.title}
           onChangeText={(text) => setForm((prev) => ({
-            ...prev!,
+            ...prev,
             title: text,
           }))}
           style={styles.input}
@@ -82,7 +82,7 @@ export default function MangaSaveScreen({ route }: Props) {
           label="Synopsis *"
           value={form.overview}
           onChangeText={(text) => setForm((prev) => ({
-            ...prev!,
+            ...prev,
             overview: text,
           }))}
           multiline
@@ -93,7 +93,7 @@ export default function MangaSaveScreen({ route }: Props) {
           label="Date de début *"
           value={form.startDate}
           onValueChange={(text) => setForm((prev) => ({
-            ...prev!,
+            ...prev,
             startDate: text,
           }))}
           style={styles.input}
@@ -147,7 +147,7 @@ export default function MangaSaveScreen({ route }: Props) {
           label="Mangadex"
           value={form.links?.['mangadex']}
           onChangeText={(text) => setForm((prev) => ({
-            ...prev!,
+            ...prev,
             links: {
               ...prev!.links,
               mangadex: text,
