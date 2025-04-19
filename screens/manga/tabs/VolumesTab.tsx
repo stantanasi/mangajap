@@ -143,7 +143,7 @@ export default function VolumesTab({ manga, onMangaChange, style }: Props) {
         SectionSeparatorComponent={() => <View style={{ height: 10 }} />}
         ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
         ListFooterComponent={() => (
-          <View>
+          <View style={{ gap: 12 }}>
             <Pressable
               onPress={() => navigation.navigate('VolumeCreate', { mangaId: manga.id })}
               style={{
@@ -168,6 +168,33 @@ export default function VolumesTab({ manga, onMangaChange, style }: Props) {
                 }}
               >
                 Ajouter un tome
+              </Text>
+            </Pressable>
+
+            <Pressable
+              onPress={() => navigation.navigate('ChapterCreate', { mangaId: manga.id })}
+              style={{
+                backgroundColor: '#ddd',
+                borderRadius: 6,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: 10,
+                marginHorizontal: 16,
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+              }}
+            >
+              <MaterialIcons
+                name="add"
+                color="#000"
+                size={24}
+              />
+              <Text
+                style={{
+                  fontSize: 16,
+                }}
+              >
+                Ajouter un chapitre
               </Text>
             </Pressable>
           </View>
