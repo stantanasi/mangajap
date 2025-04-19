@@ -2,6 +2,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { Manga } from '../../models';
 import { IManga } from '../../models/manga.model';
@@ -68,6 +69,46 @@ export default function MangaSaveScreen({ route }: Props) {
           overview: text,
         }))}
         multiline
+        style={styles.input}
+      />
+
+      <SelectInput
+        label="Type de manga"
+        values={[
+          { label: 'BD', value: 'bd' },
+          { label: 'Comics', value: 'comics' },
+          { label: 'Josei', value: 'josei' },
+          { label: 'Kodomo', value: 'kodomo' },
+          { label: 'Seijin', value: 'seijin' },
+          { label: 'Seinen', value: 'seinen' },
+          { label: 'Shojo', value: 'shojo' },
+          { label: 'Shonen', value: 'shonen' },
+          { label: 'Doujin', value: 'doujin' },
+          { label: 'Novel', value: 'novel' },
+          { label: 'Oneshot', value: 'oneshot' },
+          { label: 'Webtoon', value: 'webtoon' },
+        ]}
+        selectedValue={form.mangaType}
+        onValueChange={(value) => setForm((prev) => ({
+          ...prev,
+          mangaType: value,
+        }))}
+        style={styles.input}
+      />
+
+      <SelectInput
+        label="Status"
+        values={[
+          { label: 'En cours', value: 'publishing' },
+          { label: 'Terminé', value: 'finished' },
+          { label: 'À sortir', value: 'unreleased' },
+          { label: 'À venir', value: 'upcoming' },
+        ]}
+        selectedValue={form.status}
+        onValueChange={(value) => setForm((prev) => ({
+          ...prev,
+          status: value,
+        }))}
         style={styles.input}
       />
 
