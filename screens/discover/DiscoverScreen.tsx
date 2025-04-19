@@ -3,6 +3,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import FloatingActionButton from '../../components/atoms/FloatingActionButton';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import PeopleCard from '../../components/molecules/PeopleCard';
@@ -13,7 +14,7 @@ type Props = StaticScreenProps<undefined>;
 
 export default function DiscoverScreen({ route }: Props) {
   const navigation = useNavigation();
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, user } = useContext(AuthContext);
   const [peoples, setPeoples] = useState<People[]>();
   const [animes, setAnimes] = useState<Anime[]>();
   const [mangas, setMangas] = useState<Manga[]>();
@@ -168,6 +169,14 @@ export default function DiscoverScreen({ route }: Props) {
           />
         </ScrollView>
       )}
+
+      {user && user.isAdmin ? (
+        <FloatingActionButton
+          icon="add"
+          label="Manga"
+          onPress={() => navigation.navigate('MangaCreate')}
+        />
+      ) : null}
     </SafeAreaView>
   );
 }

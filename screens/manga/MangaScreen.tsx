@@ -14,6 +14,9 @@ const AboutTab = ({ manga, style }: {
   manga: Manga;
   style?: StyleProp<ViewStyle>;
 }) => {
+  const navigation = useNavigation();
+  const { user } = useContext(AuthContext);
+
   return (
     <ScrollView
       contentContainerStyle={{
@@ -21,6 +24,19 @@ const AboutTab = ({ manga, style }: {
       }}
       style={style}
     >
+      {user && user.isAdmin ? (
+        <MaterialIcons
+          name="edit"
+          color="#000"
+          size={24}
+          onPress={() => navigation.navigate('MangaEdit', { id: manga.id })}
+          style={{
+            alignSelf: 'flex-end',
+            marginRight: 16,
+          }}
+        />
+      ) : null}
+
       <AutoHeightImage
         source={{ uri: manga.poster ?? undefined }}
         style={styles.poster}

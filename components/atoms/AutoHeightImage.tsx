@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Image, ImageProps, Platform } from 'react-native';
 
 export default function AutoHeightImage(props: ImageProps) {
-  const [width, setWidth] = useState(1);
-  const [height, setHeight] = useState(1);
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
 
   useEffect(() => {
     if (!props.source) return
@@ -24,13 +24,15 @@ export default function AutoHeightImage(props: ImageProps) {
     Image.getSize(uri, (width, height) => {
       setWidth(width);
       setHeight(height);
-    });
+    }, (_) => { });
   }, [props.source]);
 
   return (
     <Image
       {...props}
-      style={[props.style, { aspectRatio: width / height }]}
+      style={[props.style, width && height ? {
+        aspectRatio: width / height,
+      } : {}]}
     />
   );
 }

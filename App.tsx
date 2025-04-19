@@ -13,6 +13,7 @@ import AnimeScreen from './screens/anime/AnimeScreen';
 import DiscoverScreen from './screens/discover/DiscoverScreen';
 import FollowsScreen from './screens/follows/FollowsScreen';
 import LibraryScreen from './screens/library/LibraryScreen';
+import MangaSaveScreen from './screens/manga-save/MangaSaveScreen';
 import MangaScreen from './screens/manga/MangaScreen';
 import PeopleScreen from './screens/people/PeopleScreen';
 import ProfileEditScreen from './screens/profile-edit/ProfileEditScreen';
@@ -92,6 +93,12 @@ const RootStack = createNativeStackNavigator({
     },
     Manga: {
       screen: MangaScreen,
+    },
+    MangaCreate: {
+      screen: MangaSaveScreen,
+    },
+    MangaEdit: {
+      screen: MangaSaveScreen,
     },
     Search: {
       screen: SearchScreen,
