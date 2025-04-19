@@ -2,6 +2,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import DateInput from '../../components/atoms/DateInput';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { Manga } from '../../models';
@@ -69,6 +70,16 @@ export default function MangaSaveScreen({ route }: Props) {
           overview: text,
         }))}
         multiline
+        style={styles.input}
+      />
+
+      <DateInput
+        label="Date de début"
+        value={form.startDate}
+        onValueChange={(text) => setForm((prev) => ({
+          ...prev!,
+          startDate: text,
+        }))}
         style={styles.input}
       />
 
