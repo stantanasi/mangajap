@@ -1,6 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
@@ -18,6 +18,7 @@ export default function SeasonSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [season, setSeason] = useState<Season>();
   const [form, setForm] = useState<Partial<ISeason>>();
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const prepare = async () => {
@@ -102,6 +103,49 @@ export default function SeasonSaveScreen({ route }: Props) {
           multiline
           style={styles.input}
         />
+
+        <Pressable
+          disabled={isSaving}
+          onPress={() => {
+            setIsSaving(true);
+
+            season.assign(form);
+
+            season.save()
+              .then(() => navigation.goBack())
+              .catch((err) => console.error(err))
+              .finally(() => setIsSaving(false));
+          }}
+          style={{
+            alignItems: 'center',
+            alignSelf: 'flex-start',
+            backgroundColor: '#ddd',
+            borderRadius: 4,
+            flexDirection: 'row',
+            gap: 10,
+            marginHorizontal: 16,
+            marginTop: 24,
+            paddingHorizontal: 12,
+            paddingVertical: 6,
+          }}
+        >
+          {isSaving && (
+            <ActivityIndicator
+              animating
+              color="#000"
+              size={20}
+            />
+          )}
+
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: 'bold',
+            }}
+          >
+            Enregistrer
+          </Text>
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
