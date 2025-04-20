@@ -1,7 +1,9 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ImageInput from '../../components/atoms/ImageInput';
+import TextInput from '../../components/atoms/TextInput';
 import { People } from '../../models';
 import { IPeople } from '../../models/people.model';
 
@@ -34,8 +36,45 @@ export default function PeopleSaveScreen({ route }: Props) {
     return unsubscribe;
   }, [route.params]);
 
+  if (!people || !form) {
+    return (
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
+        <ActivityIndicator
+          animating
+          color="#000"
+          size="large"
+        />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <ImageInput
+          label="Portrait"
+          value={form.portrait}
+          onValueChange={(value) => setForm((prev) => ({
+            ...prev,
+            portrait: value,
+          }))}
+          style={styles.input}
+          inputStyle={{
+            width: 150,
+            minHeight: 150 * 1 / 1,
+          }}
+        />
+
+        <TextInput
+          label="Nom *"
+          value={form.name}
+          onChangeText={(text) => setForm((prev) => ({
+            ...prev,
+            name: text,
+          }))}
+          style={styles.input}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -43,5 +82,9 @@ export default function PeopleSaveScreen({ route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  input: {
+    marginHorizontal: 16,
+    marginTop: 16,
   },
 });
