@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
-import { FlatList, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { FlatList, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import AnimeCard from '../../../components/molecules/AnimeCard';
 import MangaCard from '../../../components/molecules/MangaCard';
@@ -84,26 +84,77 @@ export default function AboutTab({ anime, style }: Props) {
         renderItem={({ item }) => {
           if (item.destination instanceof Anime) {
             return (
-              <AnimeCard
-                anime={item.destination}
-                onPress={() => navigation.navigate('Anime', { id: item.id })}
-                showCheckbox={false}
-              />
+              <View>
+                <AnimeCard
+                  anime={item.destination}
+                  onPress={() => navigation.navigate('Anime', { id: item.id })}
+                  showCheckbox={false}
+                />
+                {user && user.isAdmin ? (
+                  <MaterialIcons
+                    name="edit"
+                    color="#fff"
+                    size={24}
+                    onPress={() => navigation.navigate('FranchiseUpdate', { franchiseId: item.id })}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                      margin: 2,
+                    }}
+                  />
+                ) : null}
+              </View>
             );
           } else if (item.destination instanceof Manga) {
             return (
-              <MangaCard
-                manga={item.destination}
-                onPress={() => navigation.navigate('Manga', { id: item.id })}
-                showCheckbox={false}
-              />
+              <View>
+                <MangaCard
+                  manga={item.destination}
+                  onPress={() => navigation.navigate('Manga', { id: item.id })}
+                  showCheckbox={false}
+                />
+                {user && user.isAdmin ? (
+                  <MaterialIcons
+                    name="edit"
+                    color="#fff"
+                    size={24}
+                    onPress={() => navigation.navigate('FranchiseUpdate', { franchiseId: item.id })}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                      margin: 2,
+                    }}
+                  />
+                ) : null}
+              </View>
             );
           }
           return null;
         }}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => <View style={{ width: 16 }} />}
+        ListFooterComponent={() => (
+          <Pressable
+            onPress={() => navigation.navigate('FranchiseCreate', { animeId: anime.id })}
+            style={{
+              width: 130,
+              aspectRatio: 2 / 3,
+              backgroundColor: '#ccc',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: anime.franchises!.length > 0 ? 10 : 0,
+              marginRight: 16,
+            }}
+          >
+            <MaterialIcons
+              name="add"
+              color="#000"
+              size={24}
+            />
+          </Pressable>
+        )}
         style={{
           marginTop: 12,
         }}
