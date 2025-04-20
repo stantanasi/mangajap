@@ -27,6 +27,7 @@ export default function AnimeScreen({ route }: Props) {
           'genres',
           'themes',
           `seasons.episodes${isAuthenticated ? '.episode-entry' : ''}`,
+          'staff.people',
           'franchises.destination',
           ...(isAuthenticated ? ['anime-entry'] : []),
         ]);
