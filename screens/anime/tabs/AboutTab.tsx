@@ -5,6 +5,7 @@ import { FlatList, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, Vie
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import AnimeCard from '../../../components/molecules/AnimeCard';
 import MangaCard from '../../../components/molecules/MangaCard';
+import PeopleCard from '../../../components/molecules/PeopleCard';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime, Manga } from '../../../models';
 
@@ -71,6 +72,29 @@ export default function AboutTab({ anime, style }: Props) {
       <Text style={styles.overview}>
         {anime.overview}
       </Text>
+
+
+      <Text style={styles.sectionTitle}>
+        Staff
+      </Text>
+
+      <FlatList
+        horizontal
+        data={anime.staff}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <PeopleCard
+            people={item.people!}
+            onPress={() => navigation.navigate('People', { id: item.people!.id })}
+          />
+        )}
+        ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+        ListHeaderComponent={() => <View style={{ width: 16 }} />}
+        ListFooterComponent={() => <View style={{ width: 16 }} />}
+        style={{
+          marginTop: 12,
+        }}
+      />
 
 
       <Text style={styles.sectionTitle}>
