@@ -1,14 +1,32 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
+import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, People } from '../../models';
 
 const Header = ({ people }: { people: People }) => {
+  const navigation = useNavigation();
+  const { user } = useContext(AuthContext);
+
   return (
     <View style={styles.header}>
+      {user && user.isAdmin ? (
+        <MaterialIcons
+          name="edit"
+          color="#000"
+          size={24}
+          onPress={() => navigation.navigate('PeopleUpdate', { peopleId: people.id })}
+          style={{
+            alignSelf: 'flex-end',
+            marginRight: 16,
+          }}
+        />
+      ) : null}
+
       <Image
         source={{ uri: people.portrait ?? undefined }}
         style={styles.image}
@@ -94,9 +112,11 @@ export default function PeopleScreen({ route }: Props) {
             />
           )
         )}
-        ListHeaderComponent={Header({
-          people: people,
-        })}
+        ListHeaderComponent={() => (
+          <Header
+            people={people}
+          />
+        )}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
       />
     </SafeAreaView>

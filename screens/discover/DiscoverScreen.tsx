@@ -191,6 +191,13 @@ export default function DiscoverScreen({ route }: Props) {
             onPress={() => navigation.navigate('MangaCreate')}
             style={{ position: 'relative' }}
           />
+
+          <FloatingActionButton
+            icon="add"
+            label="Personnalité"
+            onPress={() => navigation.navigate('PeopleCreate')}
+            style={{ position: 'relative' }}
+          />
         </View>
       ) : null}
     </SafeAreaView>
