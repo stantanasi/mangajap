@@ -111,6 +111,7 @@ export default function StaffSaveScreen({ route }: Props) {
   const [staff, setStaff] = useState<Staff>();
   const [form, setForm] = useState<Partial<IStaff>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const prepare = async () => {
@@ -224,6 +225,49 @@ export default function StaffSaveScreen({ route }: Props) {
           }))}
           style={styles.input}
         />
+
+        <Pressable
+          disabled={isSaving}
+          onPress={() => {
+            setIsSaving(true);
+  
+            staff.assign(form);
+  
+            staff.save()
+              .then(() => navigation.goBack())
+              .catch((err) => console.error(err))
+              .finally(() => setIsSaving(false));
+          }}
+          style={{
+            alignItems: 'center',
+            alignSelf: 'flex-start',
+            backgroundColor: '#ddd',
+            borderRadius: 4,
+            flexDirection: 'row',
+            gap: 10,
+            marginHorizontal: 16,
+            marginTop: 24,
+            paddingHorizontal: 12,
+            paddingVertical: 6,
+          }}
+        >
+          {isSaving && (
+            <ActivityIndicator
+              animating
+              color="#000"
+              size={20}
+            />
+          )}
+  
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: 'bold',
+            }}
+          >
+            Enregistrer
+          </Text>
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
