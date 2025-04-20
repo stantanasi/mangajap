@@ -26,6 +26,7 @@ import ProfileScreen from './screens/profile/ProfileScreen';
 import SearchScreen from './screens/search/SearchScreen';
 import SeasonSaveScreen from './screens/season-save/SeasonSaveScreen';
 import SettingsScreen from './screens/settings/SettingsScreen';
+import StaffSaveScreen from './screens/staff-save/StaffSaveScreen';
 import VolumeSaveScreen from './screens/volume-save/VolumeSaveScreen';
 
 const MainTabs = createBottomTabNavigator({
@@ -136,6 +137,12 @@ const RootStack = createNativeStackNavigator({
     },
     ChapterUpdate: {
       screen: ChapterSaveScreen,
+    },
+    StaffCreate: {
+      screen: StaffSaveScreen,
+    },
+    StaffUpdate: {
+      screen: StaffSaveScreen,
     },
     FranchiseCreate: {
       screen: FranchiseSaveScreen,

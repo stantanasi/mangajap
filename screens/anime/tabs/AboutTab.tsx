@@ -83,14 +83,50 @@ export default function AboutTab({ anime, style }: Props) {
         data={anime.staff}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <PeopleCard
-            people={item.people!}
-            onPress={() => navigation.navigate('People', { id: item.people!.id })}
-          />
+          <View>
+            <PeopleCard
+              people={item.people!}
+              onPress={() => navigation.navigate('People', { id: item.people!.id })}
+            />
+            {user && user.isAdmin ? (
+              <MaterialIcons
+                name="edit"
+                color="#fff"
+                size={24}
+                onPress={() => navigation.navigate('StaffUpdate', { staffId: item.id })}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  margin: 24,
+                }}
+              />
+            ) : null}
+          </View>
         )}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => <View style={{ width: 16 }} />}
+        ListFooterComponent={() => (
+          <Pressable
+            onPress={() => navigation.navigate('StaffCreate', { animeId: anime.id })}
+            style={{
+              width: 130,
+              alignItems: 'center',
+              aspectRatio: 1 / 1,
+              backgroundColor: '#ccc',
+              borderRadius: 360,
+              justifyContent: 'center',
+              marginLeft: anime.staff!.length > 0 ? 10 : 0,
+              marginRight: 16,
+            }}
+          >
+            <MaterialIcons
+              name="add"
+              color="#000"
+              size={24}
+            />
+          </Pressable>
+        )}
         style={{
           marginTop: 12,
         }}
