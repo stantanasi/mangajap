@@ -1,8 +1,8 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps } from '@react-navigation/native';
-import { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useContext, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SearchBar from '../../components/atoms/SearchBar';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, Manga, People, User } from '../../models';
 import AnimeTab from './tabs/AnimeTab';
@@ -104,65 +104,26 @@ export default function SearchScreen({ route }: Props) {
     });
   };
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      search(query)
-        .catch((err) => console.error(err));
-    }, 500);
-
-    return () => clearTimeout(timeout);
-  }, [query]);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.search}>
-          <MaterialIcons
-            name="search"
-            size={24}
-            color="#666"
-          />
-
-          <TextInput
-            autoFocus
-            value={query}
-            onChangeText={(text) => {
-              setQuery(text);
-
-              setAnimeTab((prev) => ({ ...prev, isLoading: true }));
-              setMangaTab((prev) => ({ ...prev, isLoading: true }));
-              setPeopleTab((prev) => ({ ...prev, isLoading: true }));
-              setUserTab((prev) => ({ ...prev, isLoading: true }));
-            }}
-            onSubmitEditing={() => {
-              search(query)
-                .catch((err) => console.error(err));
-            }}
-            placeholder="Rechercher"
-            placeholderTextColor="#666"
-            style={{
-              flex: 1,
-              paddingHorizontal: 0,
-              paddingVertical: 8,
-            }}
-          />
-
-          {query !== '' && (
-            <MaterialIcons
-              name="close"
-              size={24}
-              color="#666"
-              onPress={() => {
-                setQuery('');
-
-                setAnimeTab((prev) => ({ ...prev, isLoading: true }));
-                setMangaTab((prev) => ({ ...prev, isLoading: true }));
-                setPeopleTab((prev) => ({ ...prev, isLoading: true }));
-                setUserTab((prev) => ({ ...prev, isLoading: true }));
-              }}
-            />
-          )}
-        </View>
+        <SearchBar
+          autoFocus
+          onChangeText={() => {
+            setAnimeTab((prev) => ({ ...prev, isLoading: true }));
+            setMangaTab((prev) => ({ ...prev, isLoading: true }));
+            setPeopleTab((prev) => ({ ...prev, isLoading: true }));
+            setUserTab((prev) => ({ ...prev, isLoading: true }));
+          }}
+          onSearch={(query) => {
+            search(query)
+              .catch((err) => console.error(err));
+          }}
+          delay={500}
+          style={{
+            marginHorizontal: 16,
+          }}
+        />
 
         <ScrollView
           horizontal
@@ -359,14 +320,5 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingBottom: 10,
     paddingTop: 16,
-  },
-  search: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 6,
-    flexDirection: 'row',
-    gap: 10,
-    marginHorizontal: 16,
-    paddingHorizontal: 10,
   },
 });
