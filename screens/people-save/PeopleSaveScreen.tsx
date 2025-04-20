@@ -1,6 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
 import TextInput from '../../components/atoms/TextInput';
@@ -15,6 +15,7 @@ export default function PeopleSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [people, setPeople] = useState<People>();
   const [form, setForm] = useState<Partial<IPeople>>();
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const prepare = async () => {
@@ -74,6 +75,49 @@ export default function PeopleSaveScreen({ route }: Props) {
           }))}
           style={styles.input}
         />
+
+        <Pressable
+          disabled={isSaving}
+          onPress={() => {
+            setIsSaving(true);
+
+            people.assign(form);
+
+            people.save()
+              .then(() => navigation.goBack())
+              .catch((err) => console.error(err))
+              .finally(() => setIsSaving(false));
+          }}
+          style={{
+            alignItems: 'center',
+            alignSelf: 'flex-start',
+            backgroundColor: '#ddd',
+            borderRadius: 4,
+            flexDirection: 'row',
+            gap: 10,
+            marginHorizontal: 16,
+            marginTop: 24,
+            paddingHorizontal: 12,
+            paddingVertical: 6,
+          }}
+        >
+          {isSaving && (
+            <ActivityIndicator
+              animating
+              color="#000"
+              size={20}
+            />
+          )}
+
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: 'bold',
+            }}
+          >
+            Enregistrer
+          </Text>
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
