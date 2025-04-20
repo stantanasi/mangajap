@@ -1,12 +1,13 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import Checkbox from 'expo-checkbox';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
 import ImageInput from '../../components/atoms/ImageInput';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
-import { Anime } from '../../models';
+import { Anime, Genre, Theme } from '../../models';
 import { IAnime } from '../../models/anime.model';
 
 type Props = StaticScreenProps<{
@@ -17,18 +18,39 @@ export default function AnimeSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [anime, setAnime] = useState<Anime>();
   const [form, setForm] = useState<Partial<IAnime>>();
+  const [genres, setGenres] = useState<Genre[]>();
+  const [themes, setThemes] = useState<Theme[]>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const prepare = async () => {
-      let anime = new Anime({});
+      let anime = new Anime({
+        genres: [],
+        themes: [],
+      });
 
       if (route.params) {
-        anime = await Anime.findById(route.params.id);
+        anime = await Anime.findById(route.params.id)
+          .include(['genres', 'themes']);
       }
+
+      const [genres, themes] = await Promise.all([
+        Genre.find()
+          .sort({
+            name: 'asc',
+          })
+          .limit(1000),
+        Theme.find()
+          .sort({
+            name: 'asc',
+          })
+          .limit(1000),
+      ]);
 
       setAnime(anime);
       setForm(anime.toObject());
+      setGenres(genres);
+      setThemes(themes);
     };
 
     const unsubscribe = navigation.addListener('focus', () => {
@@ -39,7 +61,7 @@ export default function AnimeSaveScreen({ route }: Props) {
     return unsubscribe;
   }, [route.params]);
 
-  if (!anime || !form) {
+  if (!anime || !form || !genres || !themes) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -133,6 +155,108 @@ export default function AnimeSaveScreen({ route }: Props) {
           }))}
           style={styles.input}
         />
+
+        <Text style={styles.sectionTitle}>
+          Genres
+        </Text>
+
+        <View
+          style={{
+            gap: 4,
+            marginTop: 16,
+          }}
+        >
+          {genres.map((genre) => {
+            const isSelected = form.genres?.some((g) => g.id === genre.id) ?? false;
+
+            return (
+              <Pressable
+                key={genre.id}
+                onPress={() => setForm((prev) => ({
+                  ...prev,
+                  genres: !isSelected
+                    ? [...(prev?.genres ?? [])].concat(genre)
+                    : [...(prev?.genres ?? [])].filter((g) => g.id !== genre.id),
+                }))}
+                style={[styles.input, {
+                  borderColor: '#ccc',
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  flexDirection: 'row',
+                  gap: 10,
+                  marginTop: 0,
+                  paddingHorizontal: 6,
+                  paddingVertical: 8,
+                }]}
+              >
+                <Checkbox
+                  value={isSelected}
+                  onValueChange={(value) => setForm((prev) => ({
+                    ...prev,
+                    genres: value
+                      ? [...(prev?.genres ?? [])].concat(genre)
+                      : [...(prev?.genres ?? [])].filter((g) => g.id !== genre.id),
+                  }))}
+                  color="#000"
+                />
+                <Text>
+                  {genre.name}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        <Text style={styles.sectionTitle}>
+          Thèmes
+        </Text>
+
+        <View
+          style={{
+            gap: 4,
+            marginTop: 16,
+          }}
+        >
+          {themes.map((theme) => {
+            const isSelected = form.themes?.some((t) => t.id === theme.id) ?? false;
+
+            return (
+              <Pressable
+                key={theme.id}
+                onPress={() => setForm((prev) => ({
+                  ...prev,
+                  themes: !isSelected
+                    ? [...(prev?.themes ?? [])].concat(theme)
+                    : [...(prev?.themes ?? [])].filter((t) => t.id !== theme.id),
+                }))}
+                style={[styles.input, {
+                  borderColor: '#ccc',
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  flexDirection: 'row',
+                  gap: 10,
+                  marginTop: 0,
+                  paddingHorizontal: 6,
+                  paddingVertical: 8,
+                }]}
+              >
+                <Checkbox
+                  value={isSelected}
+                  onValueChange={(value) => setForm((prev) => ({
+                    ...prev,
+                    themes: value
+                      ? [...(prev?.themes ?? [])].concat(theme)
+                      : [...(prev?.themes ?? [])].filter((t) => t.id !== theme.id),
+                  }))}
+                  color="#000"
+                />
+                <Text>
+                  {theme.name}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
 
         <Text style={styles.sectionTitle}>
           Identifiants externes
