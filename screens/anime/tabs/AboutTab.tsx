@@ -1,10 +1,12 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
-import { ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { FlatList, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
+import AnimeCard from '../../../components/molecules/AnimeCard';
+import MangaCard from '../../../components/molecules/MangaCard';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { Anime } from '../../../models';
+import { Anime, Manga } from '../../../models';
 
 type Props = {
   anime: Anime;
@@ -69,6 +71,43 @@ export default function AboutTab({ anime, style }: Props) {
       <Text style={styles.overview}>
         {anime.overview}
       </Text>
+
+
+      <Text style={styles.sectionTitle}>
+        Franchise
+      </Text>
+
+      <FlatList
+        horizontal
+        data={anime.franchises}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => {
+          if (item.destination instanceof Anime) {
+            return (
+              <AnimeCard
+                anime={item.destination}
+                onPress={() => navigation.navigate('Anime', { id: item.id })}
+                showCheckbox={false}
+              />
+            );
+          } else if (item.destination instanceof Manga) {
+            return (
+              <MangaCard
+                manga={item.destination}
+                onPress={() => navigation.navigate('Manga', { id: item.id })}
+                showCheckbox={false}
+              />
+            );
+          }
+          return null;
+        }}
+        ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+        ListHeaderComponent={() => <View style={{ width: 16 }} />}
+        ListFooterComponent={() => <View style={{ width: 16 }} />}
+        style={{
+          marginTop: 12,
+        }}
+      />
     </ScrollView>
   );
 }
@@ -97,4 +136,10 @@ const styles = StyleSheet.create({
   },
   theme: {},
   overview: {},
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginHorizontal: 16,
+    marginTop: 20,
+  },
 });
