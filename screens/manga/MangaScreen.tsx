@@ -29,6 +29,7 @@ export default function MangaScreen({ route }: Props) {
           `volumes${isAuthenticated ? '.volume-entry' : ''}`,
           `volumes.chapters${isAuthenticated ? '.chapter-entry' : ''}`,
           `chapters${isAuthenticated ? '.chapter-entry' : ''}`,
+          'franchises.destination',
           ...(isAuthenticated ? ['manga-entry'] : []),
         ]);
 
