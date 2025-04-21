@@ -27,7 +27,7 @@ export const SeasonSchema = new Schema<ISeason>({
     airDate: {
       type: Date,
       transform: function (val) {
-        return val?.toISOString().slice(0, 10) ?? null;
+        return val?.toISOString().slice(0, 10) ?? val;
       },
     },
 

@@ -28,7 +28,7 @@ export const ChapterSchema = new Schema<IChapter>({
     publishedDate: {
       type: Date,
       transform: function (val) {
-        return val?.toISOString().slice(0, 10) ?? null;
+        return val?.toISOString().slice(0, 10) ?? val;
       },
     },
 
