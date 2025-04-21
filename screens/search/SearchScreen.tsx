@@ -61,10 +61,14 @@ export default function SearchScreen({ route }: Props) {
 
     const [animes, mangas, peoples, users] = await Promise.all([
       Anime.find({ query: query })
-        .include(isAuthenticated ? ['anime-entry'] : [])
+        .include({
+          'anime-entry': isAuthenticated,
+        })
         .sort({ popularity: 'desc' }),
       Manga.find({ query: query })
-        .include(isAuthenticated ? ['manga-entry'] : [])
+        .include({
+          'manga-entry': isAuthenticated,
+        })
         .sort({ popularity: 'desc' }),
       People.find({ query: query }),
       query !== ''

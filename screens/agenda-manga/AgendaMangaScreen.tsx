@@ -18,7 +18,9 @@ export default function AgendaMangaScreen({ }: Props) {
       if (!user) return
 
       const mangaLibrary = await User.findById(user.id).get('manga-library')
-        .include(['manga'])
+        .include({
+          manga: true,
+        })
         .sort({ updatedAt: 'desc' })
         .limit(500);
 

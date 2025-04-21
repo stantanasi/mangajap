@@ -20,12 +20,12 @@ export default function FollowsScreen({ route }: Props) {
 
       if (route.params.type === 'followers') {
         const followers = await User.findById(userId).get('followers')
-          .include(['follower']);
+          .include({ follower: true });
 
         setFollows(followers);
       } else {
         const following = await User.findById(userId).get('following')
-          .include(['followed']);
+          .include({ followed: true });
 
         setFollows(following);
       }

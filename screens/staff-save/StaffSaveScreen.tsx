@@ -1,4 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -109,7 +110,7 @@ type Props = StaticScreenProps<{
 export default function StaffSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [staff, setStaff] = useState<Staff>();
-  const [form, setForm] = useState<Partial<IStaff>>();
+  const [form, setForm] = useState<Partial<Object<IStaff>>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -127,7 +128,7 @@ export default function StaffSaveScreen({ route }: Props) {
         });
       } else {
         staff = await Staff.findById(route.params.staffId)
-          .include(['people']);
+          .include({ people: true });
       }
 
       setStaff(staff);
@@ -230,9 +231,9 @@ export default function StaffSaveScreen({ route }: Props) {
           disabled={isSaving}
           onPress={() => {
             setIsSaving(true);
-  
+
             staff.assign(form);
-  
+
             staff.save()
               .then(() => navigation.goBack())
               .catch((err) => console.error(err))
@@ -258,7 +259,7 @@ export default function StaffSaveScreen({ route }: Props) {
               size={20}
             />
           )}
-  
+
           <Text
             style={{
               fontSize: 16,

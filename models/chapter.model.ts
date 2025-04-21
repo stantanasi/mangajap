@@ -4,8 +4,6 @@ import Manga from './manga.model';
 import Volume from './volume.model';
 
 export interface IChapter {
-  id: string;
-
   number: number;
   title: string;
   overview: string;

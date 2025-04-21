@@ -1,4 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,7 +15,7 @@ type Props = StaticScreenProps<{
 export default function PeopleSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [people, setPeople] = useState<People>();
-  const [form, setForm] = useState<Partial<IPeople>>();
+  const [form, setForm] = useState<Partial<Object<IPeople>>>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {

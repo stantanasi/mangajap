@@ -5,8 +5,6 @@ import MangaEntry from './manga-entry.model';
 import Review from './review.model';
 
 export interface IUser {
-  id: string;
-
   pseudo: string;
   email?: string;
   password?: string;

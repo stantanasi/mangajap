@@ -1,4 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { Object } from '@stantanasi/jsonapi-client';
+import Checkbox from 'expo-checkbox';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,7 +10,6 @@ import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { Genre, Manga, Theme } from '../../models';
 import { IManga } from '../../models/manga.model';
-import Checkbox from 'expo-checkbox';
 
 type Props = StaticScreenProps<{
   id: string
@@ -17,7 +18,7 @@ type Props = StaticScreenProps<{
 export default function MangaSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [manga, setManga] = useState<Manga>();
-  const [form, setForm] = useState<Partial<IManga>>();
+  const [form, setForm] = useState<Partial<Object<IManga>>>();
   const [genres, setGenres] = useState<Genre[]>();
   const [themes, setThemes] = useState<Theme[]>();
   const [isSaving, setIsSaving] = useState(false);
@@ -31,7 +32,10 @@ export default function MangaSaveScreen({ route }: Props) {
 
       if (route.params) {
         manga = await Manga.findById(route.params.id)
-          .include(['genres', 'themes']);
+          .include({
+            genres: true,
+            themes: true,
+          });
       }
 
       const [genres, themes] = await Promise.all([

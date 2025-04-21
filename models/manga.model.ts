@@ -9,8 +9,6 @@ import Theme from './theme.model';
 import Volume from './volume.model';
 
 export interface IManga {
-  id: string;
-
   title: string;
   overview: string;
   startDate: Date;

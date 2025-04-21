@@ -3,8 +3,6 @@ import Anime from './anime.model';
 import Episode from './episode.model';
 
 export interface ISeason {
-  id: string;
-
   number: number;
   title: string;
   overview: string;

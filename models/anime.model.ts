@@ -9,8 +9,6 @@ import Staff from './staff.model';
 import Theme from './theme.model';
 
 export interface IAnime {
-  id: string;
-
   title: string;
   overview: string;
   startDate: Date;

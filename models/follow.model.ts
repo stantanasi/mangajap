@@ -2,8 +2,6 @@ import { model, Schema } from '@stantanasi/jsonapi-client';
 import User from './user.model';
 
 export interface IFollow {
-  id: string;
-
   createdAt: Date;
   updatedAt: Date;
 

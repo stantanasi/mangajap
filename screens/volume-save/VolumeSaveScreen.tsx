@@ -1,4 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,7 +19,7 @@ type Props = StaticScreenProps<{
 export default function VolumeSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [volume, setVolume] = useState<Volume>();
-  const [form, setForm] = useState<Partial<IVolume>>();
+  const [form, setForm] = useState<Partial<Object<IVolume>>>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {

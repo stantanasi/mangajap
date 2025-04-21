@@ -4,8 +4,6 @@ import Manga from './manga.model';
 import VolumeEntry from './volume-entry.model';
 
 export interface IVolume {
-  id: string;
-
   number: number;
   title: string;
   overview: string;

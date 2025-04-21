@@ -31,12 +31,12 @@ export default function ProfileScreen({ route }: Props) {
     const prepare = async () => {
       const [user, isFollowingUser, isFollowedByUser] = await Promise.all([
         User.findById(id)
-          .include([
-            'anime-library.anime',
-            'manga-library.manga',
-            'anime-favorites.anime',
-            'manga-favorites.manga',
-          ]),
+          .include({
+            'anime-library': { anime: true },
+            'manga-library': { manga: true },
+            'anime-favorites': { anime: true },
+            'manga-favorites': { manga: true },
+          }),
 
         ...(authenticatedUser && id !== authenticatedUser.id
           ? [

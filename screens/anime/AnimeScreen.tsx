@@ -23,14 +23,22 @@ export default function AnimeScreen({ route }: Props) {
   useEffect(() => {
     const prepare = async () => {
       const anime = await Anime.findById(route.params.id)
-        .include([
-          'genres',
-          'themes',
-          `seasons.episodes${isAuthenticated ? '.episode-entry' : ''}`,
-          'staff.people',
-          'franchises.destination',
-          ...(isAuthenticated ? ['anime-entry'] : []),
-        ]);
+        .include({
+          genres: true,
+          themes: true,
+          seasons: {
+            episodes: {
+              'episode-entry': isAuthenticated,
+            },
+          },
+          staff: {
+            people: true,
+          },
+          franchises: {
+            destination: true,
+          },
+          'anime-entry': isAuthenticated,
+        });
 
       anime.seasons = [
         ...anime.seasons!.filter((s) => s.number !== 0),

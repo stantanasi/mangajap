@@ -3,8 +3,6 @@ import Anime from './anime.model';
 import User from './user.model';
 
 export interface IAnimeEntry {
-  id: string;
-
   isAdd: boolean;
   isFavorites: boolean;
   status: 'watching' | 'completed' | 'planned' | 'on_hold' | 'dropped';

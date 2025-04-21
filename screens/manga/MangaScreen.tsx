@@ -23,16 +23,26 @@ export default function MangaScreen({ route }: Props) {
   useEffect(() => {
     const prepare = async () => {
       const manga = await Manga.findById(route.params.id)
-        .include([
-          'genres',
-          'themes',
-          `volumes${isAuthenticated ? '.volume-entry' : ''}`,
-          `volumes.chapters${isAuthenticated ? '.chapter-entry' : ''}`,
-          `chapters${isAuthenticated ? '.chapter-entry' : ''}`,
-          'staff.people',
-          'franchises.destination',
-          ...(isAuthenticated ? ['manga-entry'] : []),
-        ]);
+        .include({
+          genres: true,
+          themes: true,
+          volumes: {
+            chapters: {
+              'chapter-entry': isAuthenticated,
+            },
+            'volume-entry': isAuthenticated,
+          },
+          chapters: {
+            'chapter-entry': isAuthenticated,
+          },
+          staff: {
+            people: true,
+          },
+          franchises: {
+            destination: true,
+          },
+          'manga-entry': isAuthenticated,
+        });
 
       setManga(manga);
     };

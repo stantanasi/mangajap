@@ -3,8 +3,6 @@ import Manga from './manga.model';
 import User from './user.model';
 
 export interface IMangaEntry {
-  id: string;
-
   isAdd: boolean;
   isFavorites: boolean;
   status: 'reading' | 'completed' | 'planned' | 'on_hold' | 'dropped';

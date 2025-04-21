@@ -3,8 +3,6 @@ import User from './user.model';
 import Volume from './volume.model';
 
 export interface IVolumeEntry {
-  id: string;
-
   readDate: Date;
   readCount: number;
   rating: number | null;

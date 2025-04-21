@@ -1,4 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,7 +20,7 @@ type Props = StaticScreenProps<{
 export default function ChapterSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [chapter, setChapter] = useState<Chapter>();
-  const [form, setForm] = useState<Partial<IChapter>>();
+  const [form, setForm] = useState<Partial<Object<IChapter>>>();
   const [volumes, setVolumes] = useState<Volume[]>();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -36,10 +37,12 @@ export default function ChapterSaveScreen({ route }: Props) {
         });
       } else {
         chapter = await Chapter.findById(route.params.chapterId)
-          .include([
-            'manga.volumes',
-            'volume',
-          ]);
+          .include({
+            manga: {
+              volumes: true,
+            },
+            volume: true,
+          });
       }
 
       setChapter(chapter);

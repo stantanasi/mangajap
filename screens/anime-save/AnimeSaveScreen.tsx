@@ -1,4 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { Object } from '@stantanasi/jsonapi-client';
 import Checkbox from 'expo-checkbox';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -17,7 +18,7 @@ type Props = StaticScreenProps<{
 export default function AnimeSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [anime, setAnime] = useState<Anime>();
-  const [form, setForm] = useState<Partial<IAnime>>();
+  const [form, setForm] = useState<Partial<Object<IAnime>>>();
   const [genres, setGenres] = useState<Genre[]>();
   const [themes, setThemes] = useState<Theme[]>();
   const [isSaving, setIsSaving] = useState(false);
@@ -31,7 +32,10 @@ export default function AnimeSaveScreen({ route }: Props) {
 
       if (route.params) {
         anime = await Anime.findById(route.params.id)
-          .include(['genres', 'themes']);
+          .include({
+            genres: true,
+            themes: true,
+          });
       }
 
       const [genres, themes] = await Promise.all([

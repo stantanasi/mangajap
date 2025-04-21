@@ -3,8 +3,6 @@ import Episode from './episode.model';
 import User from './user.model';
 
 export interface IEpisodeEntry {
-  id: string;
-
   watchedDate: Date;
   watchedCount: number;
   rating: number | null;

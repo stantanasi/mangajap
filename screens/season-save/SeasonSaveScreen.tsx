@@ -1,4 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,7 +18,7 @@ type Props = StaticScreenProps<{
 export default function SeasonSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [season, setSeason] = useState<Season>();
-  const [form, setForm] = useState<Partial<ISeason>>();
+  const [form, setForm] = useState<Partial<Object<ISeason>>>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {

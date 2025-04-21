@@ -3,8 +3,6 @@ import Chapter from './chapter.model';
 import User from './user.model';
 
 export interface IChapterEntry {
-  id: string;
-
   readDate: Date;
   readCount: number;
   rating: number | null;

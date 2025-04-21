@@ -51,10 +51,12 @@ export default function PeopleScreen({ route }: Props) {
   useEffect(() => {
     const prepare = async () => {
       const people = await People.findById(route.params.id)
-        .include([
-          'staff.anime',
-          'staff.manga',
-        ]);
+        .include({
+          staff: {
+            anime: true,
+            manga: true,
+          },
+        });
 
       setPeople(people);
     };

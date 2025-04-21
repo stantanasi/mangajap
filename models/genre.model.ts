@@ -3,8 +3,6 @@ import Anime from './anime.model';
 import Manga from './manga.model';
 
 export interface IGenre {
-  id: string;
-
   name: string;
   createdAt: Date;
   updatedAt: Date;

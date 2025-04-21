@@ -4,8 +4,6 @@ import EpisodeEntry from './episode-entry.model';
 import Season from './season.model';
 
 export interface IEpisode {
-  id: string;
-
   number: number;
   title: string;
   overview: string;

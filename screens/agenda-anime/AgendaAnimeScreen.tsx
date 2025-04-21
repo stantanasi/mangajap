@@ -18,7 +18,9 @@ export default function AgendaAnimeScreen({ }: Props) {
       if (!user) return
 
       const animeLibrary = await User.findById(user.id).get('anime-library')
-        .include(['anime'])
+        .include({
+          anime: true,
+        })
         .sort({ updatedAt: 'desc' })
         .limit(500);
 

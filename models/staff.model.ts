@@ -4,8 +4,6 @@ import Manga from './manga.model';
 import People from './people.model';
 
 export interface IStaff {
-  id: string;
-
   role: 'author' | 'illustrator' | 'story_and_art' | 'licensor' | 'producer' | 'studio' | 'original_creator';
   createdAt: Date;
   updatedAt: Date;

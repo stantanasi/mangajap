@@ -1,5 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { Object } from '@stantanasi/jsonapi-client';
 import { launchImageLibraryAsync } from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -14,7 +15,7 @@ type Props = StaticScreenProps<{
 export default function ProfileEditScreen({ route }: Props) {
   const navigation = useNavigation();
   const [user, setUser] = useState<User>();
-  const [form, setForm] = useState<IUser>(undefined as any);
+  const [form, setForm] = useState<Partial<Object<IUser>>>();
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {

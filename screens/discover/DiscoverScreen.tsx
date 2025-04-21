@@ -25,12 +25,16 @@ export default function DiscoverScreen({ route }: Props) {
         People.find()
           .sort({ random: 'asc' } as any),
         Anime.find()
-          .include(isAuthenticated ? ['anime-entry'] : [])
+          .include({
+            'anime-entry': isAuthenticated,
+          })
           .sort({
             createdAt: 'desc',
           }),
         Manga.find()
-          .include(isAuthenticated ? ['manga-entry'] : [])
+          .include({
+            'manga-entry': isAuthenticated,
+          })
           .sort({
             createdAt: 'desc',
           }),

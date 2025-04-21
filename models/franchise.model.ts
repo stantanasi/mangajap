@@ -3,8 +3,6 @@ import Anime from './anime.model';
 import Manga from './manga.model';
 
 export interface IFranchise {
-  id: string;
-
   role: 'adaptation' | 'alternative_setting' | 'alternative_version' | 'character' | 'full_story' | 'other' | 'parent_story' | 'prequel' | 'sequel' | 'side_story' | 'spinoff' | 'summary';
   createdAt: Date;
   updatedAt: Date;

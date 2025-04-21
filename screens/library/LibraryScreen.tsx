@@ -19,28 +19,28 @@ export default function LibraryScreen({ route }: Props) {
     const prepare = async () => {
       if (route.params.type === 'anime-library') {
         const animeLibrary = await User.findById(route.params.userId).get('anime-library')
-          .include(['anime'])
+          .include({ anime: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(animeLibrary);
       } else if (route.params.type === 'anime-favorites') {
         const animeFavorites = await User.findById(route.params.userId).get('anime-favorites')
-          .include(['anime'])
+          .include({ anime: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(animeFavorites);
       } else if (route.params.type === 'manga-library') {
         const mangaLibrary = await User.findById(route.params.userId).get('manga-library')
-          .include(['manga'])
+          .include({ manga: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(mangaLibrary);
       } else if (route.params.type === 'manga-favorites') {
         const mangaFavorites = await User.findById(route.params.userId).get('manga-favorites')
-          .include(['manga'])
+          .include({ manga: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 

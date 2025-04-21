@@ -2,8 +2,6 @@ import { model, Schema } from '@stantanasi/jsonapi-client';
 import Staff from './staff.model';
 
 export interface IPeople {
-  id: string;
-
   name: string;
   portrait: string | null;
   createdAt: Date;

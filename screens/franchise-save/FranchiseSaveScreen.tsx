@@ -1,4 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -172,7 +173,7 @@ type Props = StaticScreenProps<{
 export default function FranchiseSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [franchise, setFranchise] = useState<Franchise>();
-  const [form, setForm] = useState<Partial<IFranchise>>();
+  const [form, setForm] = useState<Partial<Object<IFranchise>>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -190,7 +191,7 @@ export default function FranchiseSaveScreen({ route }: Props) {
         });
       } else {
         franchise = await Franchise.findById(route.params.franchiseId)
-          .include(['destination']);
+          .include({ destination: true });
       }
 
       setFranchise(franchise);

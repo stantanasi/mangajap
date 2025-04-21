@@ -1,4 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,7 +20,7 @@ type Props = StaticScreenProps<{
 export default function EpisodeSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const [episode, setEpisode] = useState<Episode>();
-  const [form, setForm] = useState<Partial<IEpisode>>();
+  const [form, setForm] = useState<Partial<Object<IEpisode>>>();
   const [seasons, setSeasons] = useState<Season[]>();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -36,10 +37,12 @@ export default function EpisodeSaveScreen({ route }: Props) {
         });
       } else {
         episode = await Episode.findById(route.params.episodeId)
-          .include([
-            'anime.seasons',
-            'season',
-          ]);
+          .include({
+            anime: {
+              seasons: true,
+            },
+            season: true,
+          });
       }
 
       setEpisode(episode);
