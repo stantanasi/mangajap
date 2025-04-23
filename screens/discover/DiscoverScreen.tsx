@@ -23,7 +23,7 @@ export default function DiscoverScreen({ route }: Props) {
     const prepare = async () => {
       const [peoples, animes, mangas] = await Promise.all([
         People.find()
-          .sort({ random: 'asc' } as any),
+          .sort({ random: 'asc' }),
         Anime.find()
           .include({
             'anime-entry': isAuthenticated,
