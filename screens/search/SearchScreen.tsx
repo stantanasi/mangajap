@@ -1,4 +1,5 @@
 import { StaticScreenProps } from '@react-navigation/native';
+import { JsonApiBody } from '@stantanasi/jsonapi-client';
 import { useContext, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,7 +15,6 @@ type Props = StaticScreenProps<undefined>;
 
 export default function SearchScreen({ route }: Props) {
   const { isAuthenticated } = useContext(AuthContext);
-  const [query, setQuery] = useState('');
   const [activeQuery, setActiveQuery] = useState('');
   const [animeTab, setAnimeTab] = useState<{
     isLoading: boolean;
@@ -64,47 +64,54 @@ export default function SearchScreen({ route }: Props) {
         .include({
           'anime-entry': isAuthenticated,
         })
-        .sort({ popularity: 'desc' }),
+        .sort({ popularity: 'desc' })
+        .raw(),
       Manga.find({ query: query })
         .include({
           'manga-entry': isAuthenticated,
         })
-        .sort({ popularity: 'desc' }),
-      People.find({ query: query }),
+        .sort({ popularity: 'desc' })
+        .raw(),
+      People.find({ query: query })
+        .raw(),
       query !== ''
         ? User.find({ query: query })
           .sort({ followersCount: 'desc' })
-        : [],
+          .raw()
+        : {
+          result: [],
+          body: {} as JsonApiBody,
+        },
     ]);
 
     setActiveQuery(query);
     setAnimeTab({
       isLoading: false,
-      list: animes,
+      list: animes.result,
       isLoadingMore: false,
       offset: 0,
-      hasMore: animes.length !== 0,
+      hasMore: !!animes.body.links?.next,
     });
     setMangaTab({
       isLoading: false,
-      list: mangas,
+      list: mangas.result,
       isLoadingMore: false,
       offset: 0,
-      hasMore: mangas.length !== 0,
+      hasMore: !!mangas.body.links?.next,
     });
     setPeopleTab({
       isLoading: false,
-      list: peoples,
+      list: peoples.result,
       isLoadingMore: false,
       offset: 0,
-      hasMore: peoples.length !== 0,
+      hasMore: !!peoples.body.links?.next,
     });
     setUserTab({
       isLoading: false,
-      list: users,
+      list: users.result,
       isLoadingMore: false,
       offset: 0,
-      hasMore: users.length !== 0,
+      hasMore: !!users.body.links?.next,
     });
   };
 
@@ -175,19 +182,16 @@ export default function SearchScreen({ route }: Props) {
 
             const animes = await Anime.find({ query: activeQuery })
               .sort({ popularity: 'desc' })
-              .offset(animeTab.offset + 10);
+              .offset(animeTab.offset + 10)
+              .raw();
 
-            if (animes.length === 0) {
-              setAnimeTab((prev) => ({ ...prev, isLoadingMore: false, hasMore: false }));
-            } else {
-              setAnimeTab((prev) => ({
-                ...prev,
-                list: prev.list.concat(animes),
-                isLoadingMore: false,
-                offset: prev.offset + 10,
-                hasMore: true,
-              }));
-            }
+            setAnimeTab((prev) => ({
+              ...prev,
+              list: prev.list.concat(animes.result),
+              isLoadingMore: false,
+              offset: prev.offset + 10,
+              hasMore: !!animes.body.links?.next,
+            }));
           };
 
           loadMore()
@@ -217,19 +221,16 @@ export default function SearchScreen({ route }: Props) {
 
             const mangas = await Manga.find({ query: activeQuery })
               .sort({ popularity: 'desc' })
-              .offset(mangaTab.offset + 10);
+              .offset(mangaTab.offset + 10)
+              .raw();
 
-            if (mangas.length === 0) {
-              setMangaTab((prev) => ({ ...prev, isLoadingMore: false, hasMore: false }));
-            } else {
-              setMangaTab((prev) => ({
-                ...prev,
-                list: prev.list.concat(mangas),
-                isLoadingMore: false,
-                offset: prev.offset + 10,
-                hasMore: true,
-              }));
-            }
+            setMangaTab((prev) => ({
+              ...prev,
+              list: prev.list.concat(mangas.result),
+              isLoadingMore: false,
+              offset: prev.offset + 10,
+              hasMore: !!mangas.body.links?.next,
+            }));
           };
 
           loadMore()
@@ -252,19 +253,16 @@ export default function SearchScreen({ route }: Props) {
             setPeopleTab((prev) => ({ ...prev, isLoadingMore: true }));
 
             const peoples = await People.find({ query: activeQuery })
-              .offset(peopleTab.offset + 10);
+              .offset(peopleTab.offset + 10)
+              .raw();
 
-            if (peoples.length === 0) {
-              setPeopleTab((prev) => ({ ...prev, isLoadingMore: false, hasMore: false }));
-            } else {
-              setPeopleTab((prev) => ({
-                ...prev,
-                list: prev.list.concat(peoples),
-                isLoadingMore: false,
-                offset: prev.offset + 10,
-                hasMore: true,
-              }));
-            }
+            setPeopleTab((prev) => ({
+              ...prev,
+              list: prev.list.concat(peoples.result),
+              isLoadingMore: false,
+              offset: prev.offset + 10,
+              hasMore: !!peoples.body.links?.next,
+            }));
           };
 
           loadMore()
@@ -288,19 +286,16 @@ export default function SearchScreen({ route }: Props) {
 
             const users = await User.find({ query: activeQuery })
               .sort({ followersCount: 'desc' })
-              .offset(userTab.offset + 10);
+              .offset(userTab.offset + 10)
+              .raw();
 
-            if (users.length === 0) {
-              setUserTab((prev) => ({ ...prev, isLoadingMore: false, hasMore: false }));
-            } else {
-              setUserTab((prev) => ({
-                ...prev,
-                list: prev.list.concat(users),
-                isLoadingMore: false,
-                offset: prev.offset + 10,
-                hasMore: true,
-              }));
-            }
+            setUserTab((prev) => ({
+              ...prev,
+              list: prev.list.concat(users.result),
+              isLoadingMore: false,
+              offset: prev.offset + 10,
+              hasMore: !!users.body.links?.next,
+            }));
           };
 
           loadMore()
