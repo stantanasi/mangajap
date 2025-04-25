@@ -130,7 +130,7 @@ export default function ChapterSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Tome"
-          values={volumes.map((volume) => ({
+          items={volumes.map((volume) => ({
             label: `Tome ${volume.number}`,
             value: volume.id,
           }))}

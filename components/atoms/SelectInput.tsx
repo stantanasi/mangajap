@@ -1,11 +1,11 @@
-import { Picker } from '@react-native-picker/picker';
-import React from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import React, { useState } from 'react';
+import { FlatList, Modal, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import InputLabel from './InputLabel';
 
 type Props<T> = {
   label?: string;
-  values: {
+  items: {
     label: string;
     value: T;
   }[];
@@ -16,11 +16,18 @@ type Props<T> = {
 
 export default function SelectInput<T extends string>({
   label,
-  values,
+  items,
   selectedValue,
   onValueChange,
   style,
 }: Props<T>) {
+  const [optionsVisible, setOptionsVisible] = useState(false);
+
+  items = [
+    { label: 'Sélectionner', value: '' as T },
+    ...items,
+  ];
+
   return (
     <View style={[styles.container, style]}>
       {label ? (
@@ -29,32 +36,71 @@ export default function SelectInput<T extends string>({
         </InputLabel>
       ) : null}
 
-      <View style={styles.input}>
-        <Picker
-          selectedValue={selectedValue}
-          onValueChange={(value, index) => {
-            if (value) {
-              return onValueChange(value, index)
-            }
-          }}
-          mode="dialog"
+      <Pressable
+        onPress={() => setOptionsVisible(true)}
+        style={[styles.input, {
+          alignItems: 'center',
+          flexDirection: 'row',
+        }]}
+      >
+        <Text
           style={{
-            margin: -16,
+            flex: 1,
           }}
         >
-          <Picker.Item
-            label="Sélectionner"
-            value=""
-          />
-          {values.map((value) => (
-            <Picker.Item
-              key={value.value}
-              label={value.label}
-              value={value.value}
+          {items.find((value) => value.value === selectedValue)?.label
+            ?? items[0]?.label}
+        </Text>
+
+        <MaterialIcons
+          name={!optionsVisible ? 'keyboard-arrow-down' : 'keyboard-arrow-up'}
+          color="#000"
+          size={18}
+        />
+      </Pressable>
+
+      <Modal
+        animationType="fade"
+        onRequestClose={() => setOptionsVisible(false)}
+        transparent
+        visible={optionsVisible}
+      >
+        <Pressable
+          onPress={() => setOptionsVisible(false)}
+          style={{
+            alignItems: 'center',
+            backgroundColor: '#00000052',
+            flex: 1,
+            justifyContent: 'center',
+          }}
+        >
+          <Pressable
+            style={{
+              width: '90%',
+              backgroundColor: '#fff',
+              borderRadius: 4,
+              gap: 12,
+              maxHeight: '90%',
+            }}
+          >
+            <FlatList
+              data={items}
+              keyExtractor={(item) => item.value}
+              renderItem={({ item, index }) => (
+                <Text
+                  onPress={() => {
+                    onValueChange(item.value, index);
+                    setOptionsVisible(false);
+                  }}
+                  style={styles.item}
+                >
+                  {item.label}
+                </Text>
+              )}
             />
-          ))}
-        </Picker>
-      </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
@@ -67,5 +113,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 6,
     paddingVertical: 8,
+  },
+  item: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
 });

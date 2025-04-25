@@ -89,7 +89,7 @@ export default function EpisodeSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Saison *"
-          values={seasons.map((season) => ({
+          items={seasons.map((season) => ({
             label: `Saison ${season.number}`,
             value: season.id,
           }))}

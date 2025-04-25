@@ -127,7 +127,7 @@ export default function MangaSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Type de manga *"
-          values={[
+          items={[
             { label: 'BD', value: 'bd' },
             { label: 'Comics', value: 'comics' },
             { label: 'Josei', value: 'josei' },
@@ -151,7 +151,7 @@ export default function MangaSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Status *"
-          values={[
+          items={[
             { label: 'En cours', value: 'publishing' },
             { label: 'Terminé', value: 'finished' },
             { label: 'À sortir', value: 'unreleased' },
