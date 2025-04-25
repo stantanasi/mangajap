@@ -108,7 +108,7 @@ export default function AboutTab({ manga, style }: Props) {
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
         ListFooterComponent={() => (
           <Pressable
-            onPress={() => navigation.navigate('StaffCreate', { mangaId: manga.id })}
+            onPress={() => navigation.navigate('MangaStaffCreate', { mangaId: manga.id })}
             style={{
               width: 130,
               alignItems: 'center',
@@ -197,7 +197,7 @@ export default function AboutTab({ manga, style }: Props) {
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
         ListFooterComponent={() => (
           <Pressable
-            onPress={() => navigation.navigate('FranchiseCreate', { mangaId: manga.id })}
+            onPress={() => navigation.navigate('MangaFranchiseCreate', { mangaId: manga.id })}
             style={{
               width: 130,
               aspectRatio: 2 / 3,

@@ -6,7 +6,6 @@ import UserCard from '../../components/molecules/UserCard';
 import { Follow, User } from '../../models';
 
 type Props = StaticScreenProps<{
-  type: 'followers' | 'following';
   userId: string;
 }>;
 
@@ -15,19 +14,22 @@ export default function FollowsScreen({ route }: Props) {
   const [follows, setFollows] = useState<Follow[]>();
 
   useEffect(() => {
-    const prepare = async () => {
-      const userId = route.params.userId;
+    const state = navigation.getState()!;
+    const routeName = state.routes.at(state.index)?.name as keyof ReactNavigation.RootParamList;
 
-      if (route.params.type === 'followers') {
-        const followers = await User.findById(userId).get('followers')
+    const prepare = async () => {
+      if (routeName === 'ProfileFollowers') {
+        const followers = await User.findById(route.params.userId).get('followers')
           .include({ follower: true });
 
         setFollows(followers);
-      } else {
-        const following = await User.findById(userId).get('following')
+      } else if (routeName === 'ProfileFollowing') {
+        const following = await User.findById(route.params.userId).get('following')
           .include({ followed: true });
 
         setFollows(following);
+      } else {
+        throw Error('Library type not supported');
       }
     };
 
@@ -57,7 +59,10 @@ export default function FollowsScreen({ route }: Props) {
         data={follows}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          const user = route.params.type === 'followers'
+          const state = navigation.getState()!;
+          const routeName = state.routes.at(state.index)?.name as keyof ReactNavigation.RootParamList;
+
+          const user = routeName === 'ProfileFollowers'
             ? item.follower!
             : item.followed!;
           return (

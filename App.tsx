@@ -2,6 +2,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStaticNavigation, StaticParamList } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Linking from "expo-linking";
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -19,6 +20,7 @@ import FranchiseSaveScreen from './screens/franchise-save/FranchiseSaveScreen';
 import LibraryScreen from './screens/library/LibraryScreen';
 import MangaSaveScreen from './screens/manga-save/MangaSaveScreen';
 import MangaScreen from './screens/manga/MangaScreen';
+import NotFoundScreen from './screens/not-found/NotFoundScreen';
 import PeopleSaveScreen from './screens/people-save/PeopleSaveScreen';
 import PeopleScreen from './screens/people/PeopleScreen';
 import ProfileEditScreen from './screens/profile-edit/ProfileEditScreen';
@@ -38,6 +40,9 @@ const MainTabs = createBottomTabNavigator({
   screens: {
     AgendaAnime: {
       screen: AgendaAnimeScreen,
+      linking: {
+        path: 'agenda/anime',
+      },
       options: {
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons
@@ -50,6 +55,9 @@ const MainTabs = createBottomTabNavigator({
     },
     AgendaManga: {
       screen: AgendaMangaScreen,
+      linking: {
+        path: 'agenda/manga',
+      },
       options: {
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons
@@ -62,6 +70,9 @@ const MainTabs = createBottomTabNavigator({
     },
     Discover: {
       screen: DiscoverScreen,
+      linking: {
+        path: '',
+      },
       options: {
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons
@@ -74,6 +85,9 @@ const MainTabs = createBottomTabNavigator({
     },
     Profile: {
       screen: ProfileScreen,
+      linking: {
+        path: 'profile',
+      },
       options: {
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons
@@ -98,84 +112,207 @@ const RootStack = createNativeStackNavigator({
     },
     Anime: {
       screen: AnimeScreen,
+      linking: {
+        path: 'anime/:id',
+      },
     },
     AnimeCreate: {
       screen: AnimeSaveScreen,
+      linking: {
+        path: 'anime/add',
+      },
     },
     AnimeUpdate: {
       screen: AnimeSaveScreen,
+      linking: {
+        path: 'anime/:id/edit',
+      },
     },
     SeasonCreate: {
       screen: SeasonSaveScreen,
+      linking: {
+        path: 'anime/:animeId/season/add',
+      },
     },
     SeasonUpdate: {
       screen: SeasonSaveScreen,
+      linking: {
+        path: 'season/:seasonId/edit',
+      },
     },
     EpisodeCreate: {
       screen: EpisodeSaveScreen,
+      linking: {
+        path: 'anime/:animeId/episode/add',
+      },
     },
     EpisodeUpdate: {
       screen: EpisodeSaveScreen,
+      linking: {
+        path: 'episode/:episodeId/edit',
+      },
+    },
+    AnimeStaffCreate: {
+      screen: StaffSaveScreen,
+      linking: {
+        path: 'anime/:animeId/staff/create',
+      },
+    },
+    AnimeFranchiseCreate: {
+      screen: FranchiseSaveScreen,
+      linking: {
+        path: 'anime/:animeId/franchise/create',
+      },
     },
     Manga: {
       screen: MangaScreen,
+      linking: {
+        path: 'manga/:id',
+      },
     },
     MangaCreate: {
       screen: MangaSaveScreen,
+      linking: {
+        path: 'manga/add',
+      },
     },
     MangaUpdate: {
       screen: MangaSaveScreen,
+      linking: {
+        path: 'manga/:id/edit',
+      },
     },
     VolumeCreate: {
       screen: VolumeSaveScreen,
+      linking: {
+        path: 'manga/:mangaId/volume/add',
+      },
     },
     VolumeUpdate: {
       screen: VolumeSaveScreen,
+      linking: {
+        path: 'volume/:volumeId/edit',
+      },
     },
     ChapterCreate: {
       screen: ChapterSaveScreen,
+      linking: {
+        path: 'manga/:mangaId/chapter/add',
+      },
     },
     ChapterUpdate: {
       screen: ChapterSaveScreen,
+      linking: {
+        path: 'chapter/:chapterId/edit',
+      },
     },
-    StaffCreate: {
+    MangaStaffCreate: {
       screen: StaffSaveScreen,
+      linking: {
+        path: 'manga/:mangaId/staff/create',
+      },
     },
     StaffUpdate: {
       screen: StaffSaveScreen,
+      linking: {
+        path: 'staff/:staffId/edit',
+      },
     },
-    FranchiseCreate: {
+    MangaFranchiseCreate: {
       screen: FranchiseSaveScreen,
+      linking: {
+        path: 'manga/:mangaId/franchise/create',
+      },
     },
     FranchiseUpdate: {
       screen: FranchiseSaveScreen,
+      linking: {
+        path: 'franchise/:franchiseId/edit',
+      },
     },
     Search: {
       screen: SearchScreen,
+      linking: {
+        path: 'search',
+      },
     },
     Profile: {
       screen: ProfileScreen,
+      linking: {
+        path: 'profile/:id',
+      },
     },
     ProfileEdit: {
       screen: ProfileEditScreen,
+      linking: {
+        path: 'profile/:id/edit',
+      },
     },
-    Follows: {
+    ProfileFollowers: {
       screen: FollowsScreen,
+      linking: {
+        path: 'profile/:userId/followers',
+      },
     },
-    Library: {
+    ProfileFollowing: {
+      screen: FollowsScreen,
+      linking: {
+        path: 'profile/:userId/following',
+      },
+    },
+    ProfileAnimeLibrary: {
       screen: LibraryScreen,
+      linking: {
+        path: 'profile/:userId/anime-library',
+      },
+    },
+    ProfileMangaLibrary: {
+      screen: LibraryScreen,
+      linking: {
+        path: 'profile/:userId/manga-library',
+      },
+    },
+    ProfileAnimeFavorites: {
+      screen: LibraryScreen,
+      linking: {
+        path: 'profile/:userId/anime-favorites',
+      },
+    },
+    ProfileMangaFavorites: {
+      screen: LibraryScreen,
+      linking: {
+        path: 'profile/:userId/manga-favorites',
+      },
     },
     People: {
       screen: PeopleScreen,
+      linking: {
+        path: 'people/:id',
+      },
     },
     PeopleCreate: {
       screen: PeopleSaveScreen,
+      linking: {
+        path: 'people/add',
+      },
     },
     PeopleUpdate: {
       screen: PeopleSaveScreen,
+      linking: {
+        path: 'people/:peopleId/edit',
+      },
     },
     Settings: {
       screen: SettingsScreen,
+      linking: {
+        path: 'settings',
+      },
+    },
+    NotFound: {
+      screen: NotFoundScreen,
+      linking: {
+        path: '*',
+      },
     },
   },
 });
@@ -212,7 +349,11 @@ function AppContent() {
 
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
-      <Navigation />
+      <Navigation
+        linking={{
+          prefixes: [Linking.createURL("/")],
+        }}
+      />
       <StatusBar style="auto" />
     </SafeAreaProvider>
   );
