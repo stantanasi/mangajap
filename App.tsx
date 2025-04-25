@@ -152,6 +152,12 @@ const RootStack = createNativeStackNavigator({
         path: 'episode/:episodeId/edit',
       },
     },
+    AnimeStaffCreate: {
+      screen: StaffSaveScreen,
+      linking: {
+        path: 'anime/:animeId/staff/create',
+      },
+    },
     Manga: {
       screen: MangaScreen,
       linking: {
@@ -194,11 +200,17 @@ const RootStack = createNativeStackNavigator({
         path: 'chapter/:chapterId/edit',
       },
     },
-    StaffCreate: {
+    MangaStaffCreate: {
       screen: StaffSaveScreen,
+      linking: {
+        path: 'manga/:mangaId/staff/create',
+      },
     },
     StaffUpdate: {
       screen: StaffSaveScreen,
+      linking: {
+        path: 'staff/:staffId/edit',
+      },
     },
     FranchiseCreate: {
       screen: FranchiseSaveScreen,

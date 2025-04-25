@@ -108,7 +108,7 @@ export default function AboutTab({ anime, style }: Props) {
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
         ListFooterComponent={() => (
           <Pressable
-            onPress={() => navigation.navigate('StaffCreate', { animeId: anime.id })}
+            onPress={() => navigation.navigate('AnimeStaffCreate', { animeId: anime.id })}
             style={{
               width: 130,
               alignItems: 'center',
