@@ -158,6 +158,12 @@ const RootStack = createNativeStackNavigator({
         path: 'anime/:animeId/staff/create',
       },
     },
+    AnimeFranchiseCreate: {
+      screen: FranchiseSaveScreen,
+      linking: {
+        path: 'anime/:animeId/franchise/create',
+      },
+    },
     Manga: {
       screen: MangaScreen,
       linking: {
@@ -212,11 +218,17 @@ const RootStack = createNativeStackNavigator({
         path: 'staff/:staffId/edit',
       },
     },
-    FranchiseCreate: {
+    MangaFranchiseCreate: {
       screen: FranchiseSaveScreen,
+      linking: {
+        path: 'manga/:mangaId/franchise/create',
+      },
     },
     FranchiseUpdate: {
       screen: FranchiseSaveScreen,
+      linking: {
+        path: 'franchise/:franchiseId/edit',
+      },
     },
     Search: {
       screen: SearchScreen,
