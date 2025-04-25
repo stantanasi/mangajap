@@ -224,16 +224,40 @@ const RootStack = createNativeStackNavigator({
         path: 'profile/:id/edit',
       },
     },
-    Follows: {
+    ProfileFollowers: {
       screen: FollowsScreen,
       linking: {
-        path: 'profile/:userId/:type',
+        path: 'profile/:userId/followers',
       },
     },
-    Library: {
+    ProfileFollowing: {
+      screen: FollowsScreen,
+      linking: {
+        path: 'profile/:userId/following',
+      },
+    },
+    ProfileAnimeLibrary: {
       screen: LibraryScreen,
       linking: {
-        path: 'profile/:userId/library/:type',
+        path: 'profile/:userId/anime-library',
+      },
+    },
+    ProfileMangaLibrary: {
+      screen: LibraryScreen,
+      linking: {
+        path: 'profile/:userId/manga-library',
+      },
+    },
+    ProfileAnimeFavorites: {
+      screen: LibraryScreen,
+      linking: {
+        path: 'profile/:userId/anime-favorites',
+      },
+    },
+    ProfileMangaFavorites: {
+      screen: LibraryScreen,
+      linking: {
+        path: 'profile/:userId/manga-favorites',
       },
     },
     People: {

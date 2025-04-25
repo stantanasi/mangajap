@@ -135,12 +135,12 @@ export default function ProfileScreen({ route }: Props) {
                 marginTop: 6,
               }}
             >
-              <Text onPress={() => navigation.navigate('Follows', { type: 'followers', userId: id })}>
+              <Text onPress={() => navigation.navigate('ProfileFollowers', { userId: id })}>
                 <Text style={{ color: '#000', fontWeight: 'bold' }}>{user.followersCount}</Text>
                 <Text> abonnées</Text>
               </Text>
               <Text style={{ color: '#000', fontWeight: 'bold' }}> • </Text>
-              <Text onPress={() => navigation.navigate('Follows', { type: 'following', userId: id })}>
+              <Text onPress={() => navigation.navigate('ProfileFollowing', { userId: id })}>
                 <Text style={{ color: '#000', fontWeight: 'bold' }}>{user.followingCount}</Text>
                 <Text> abonnements</Text>
               </Text>
@@ -314,7 +314,7 @@ export default function ProfileScreen({ route }: Props) {
         />
 
         <Pressable
-          onPress={() => navigation.navigate('Library', { type: 'anime-library', userId: user.id })}
+          onPress={() => navigation.navigate('ProfileAnimeLibrary', { userId: user.id })}
           style={{
             alignItems: 'center',
             flexDirection: 'row',
@@ -361,7 +361,7 @@ export default function ProfileScreen({ route }: Props) {
         {user['anime-favorites']!.length > 0 ? (
           <>
             <Pressable
-              onPress={() => navigation.navigate('Library', { type: 'anime-favorites', userId: user.id })}
+              onPress={() => navigation.navigate('ProfileAnimeFavorites', { userId: user.id })}
               style={{
                 alignItems: 'center',
                 flexDirection: 'row',
@@ -408,7 +408,7 @@ export default function ProfileScreen({ route }: Props) {
         ) : null}
 
         <Pressable
-          onPress={() => navigation.navigate('Library', { type: 'manga-library', userId: user.id })}
+          onPress={() => navigation.navigate('ProfileMangaLibrary', { userId: user.id })}
           style={{
             alignItems: 'center',
             flexDirection: 'row',
@@ -455,7 +455,7 @@ export default function ProfileScreen({ route }: Props) {
         {user['manga-favorites']!.length > 0 ? (
           <>
             <Pressable
-              onPress={() => navigation.navigate('Library', { type: 'manga-favorites', userId: user.id })}
+              onPress={() => navigation.navigate('ProfileMangaFavorites', { userId: user.id })}
               style={{
                 alignItems: 'center',
                 flexDirection: 'row',

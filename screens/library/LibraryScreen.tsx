@@ -7,7 +7,6 @@ import MangaCard from '../../components/molecules/MangaCard';
 import { Anime, AnimeEntry, MangaEntry, User } from '../../models';
 
 type Props = StaticScreenProps<{
-  type: 'anime-library' | 'manga-library' | 'anime-favorites' | 'manga-favorites';
   userId: string;
 }>;
 
@@ -16,29 +15,32 @@ export default function LibraryScreen({ route }: Props) {
   const [library, setLibrary] = useState<(AnimeEntry | MangaEntry)[]>();
 
   useEffect(() => {
+    const state = navigation.getState()!;
+    const routeName = state.routes.at(state.index)?.name as keyof ReactNavigation.RootParamList;
+
     const prepare = async () => {
-      if (route.params.type === 'anime-library') {
+      if (routeName === 'ProfileAnimeLibrary') {
         const animeLibrary = await User.findById(route.params.userId).get('anime-library')
           .include({ anime: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(animeLibrary);
-      } else if (route.params.type === 'anime-favorites') {
+      } else if (routeName === 'ProfileAnimeFavorites') {
         const animeFavorites = await User.findById(route.params.userId).get('anime-favorites')
           .include({ anime: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(animeFavorites);
-      } else if (route.params.type === 'manga-library') {
+      } else if (routeName === 'ProfileMangaLibrary') {
         const mangaLibrary = await User.findById(route.params.userId).get('manga-library')
           .include({ manga: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(mangaLibrary);
-      } else if (route.params.type === 'manga-favorites') {
+      } else if (routeName === 'ProfileMangaFavorites') {
         const mangaFavorites = await User.findById(route.params.userId).get('manga-favorites')
           .include({ manga: true })
           .sort({ updatedAt: 'desc' })
