@@ -20,6 +20,7 @@ import FranchiseSaveScreen from './screens/franchise-save/FranchiseSaveScreen';
 import LibraryScreen from './screens/library/LibraryScreen';
 import MangaSaveScreen from './screens/manga-save/MangaSaveScreen';
 import MangaScreen from './screens/manga/MangaScreen';
+import NotFoundScreen from './screens/not-found/NotFoundScreen';
 import PeopleSaveScreen from './screens/people-save/PeopleSaveScreen';
 import PeopleScreen from './screens/people/PeopleScreen';
 import ProfileEditScreen from './screens/profile-edit/ProfileEditScreen';
@@ -257,6 +258,12 @@ const RootStack = createNativeStackNavigator({
       screen: SettingsScreen,
       linking: {
         path: 'settings',
+      },
+    },
+    NotFound: {
+      screen: NotFoundScreen,
+      linking: {
+        path: '*',
       },
     },
   },
