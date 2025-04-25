@@ -127,7 +127,7 @@ export default function AnimeSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Type d'animé *"
-          values={[
+          items={[
             { label: 'Série TV', value: 'tv' },
             { label: 'OVA', value: 'ova' },
             { label: 'ONA', value: 'ona' },
@@ -145,7 +145,7 @@ export default function AnimeSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Status *"
-          values={[
+          items={[
             { label: 'En cours', value: 'airing' },
             { label: 'Terminé', value: 'finished' },
             { label: 'À sortir', value: 'unreleased' },

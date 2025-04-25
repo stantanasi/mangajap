@@ -273,7 +273,7 @@ export default function FranchiseSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Role *"
-          values={[
+          items={[
             { label: 'Adaptation', value: 'adaptation' },
             { label: 'Univers alternatif', value: 'alternative_setting' },
             { label: 'Version alternative', value: 'alternative_version' },

@@ -210,7 +210,7 @@ export default function StaffSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Role *"
-          values={[
+          items={[
             { label: 'Auteur', value: 'author' },
             { label: 'Illustrateur', value: 'illustrator' },
             { label: 'Scénario et dessin', value: 'story_and_art' },
