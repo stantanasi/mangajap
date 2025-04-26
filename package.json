@@ -8,6 +8,7 @@
     "start:android": "expo start --android",
     "start:ios": "expo start --ios",
     "start:web": "expo start --web",
+    "build:web": "expo export --platform web && cp ./dist/index.html ./dist/404.html",
     "compile": "tsc --noEmit",
     "prepare": "husky"
   },
