@@ -5,14 +5,23 @@ import { Pressable, PressableProps, StyleProp, StyleSheet, Text, ViewStyle } fro
 type Props = PressableProps & {
   icon: React.ComponentProps<typeof MaterialIcons>['name'];
   label?: string;
+  size?: 'small' | 'large';
   style?: StyleProp<ViewStyle>;
 }
 
-export default function FloatingActionButton({ icon, label, style, ...props }: Props) {
+export default function FloatingActionButton({
+  icon,
+  label,
+  size = 'large',
+  style,
+  ...props
+}: Props) {
   return (
     <Pressable
       {...props}
-      style={[styles.container, style]}
+      style={[styles.container, style, {
+        padding: size === 'large' ? 16 : 8,
+      }]}
     >
       <MaterialIcons
         name={icon}
@@ -43,8 +52,6 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 16,
     marginRight: 16,
-    minWidth: 80,
-    padding: 16,
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.4,
