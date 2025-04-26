@@ -35,7 +35,10 @@ const MainTabs = createBottomTabNavigator({
   initialRouteName: 'Discover',
   screenOptions: {
     header: () => null,
-    tabBarShowLabel: false,
+    tabBarShowLabel: true,
+    tabBarStyle: {
+      height: 'auto',
+    },
   },
   screens: {
     AgendaAnime: {
@@ -44,6 +47,7 @@ const MainTabs = createBottomTabNavigator({
         path: 'mangajap/agenda/anime',
       },
       options: {
+        tabBarLabel: 'Animé',
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons
             name="tv"
@@ -59,6 +63,7 @@ const MainTabs = createBottomTabNavigator({
         path: 'mangajap/agenda/manga',
       },
       options: {
+        tabBarLabel: 'Manga',
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons
             name="menu-book"
@@ -74,6 +79,7 @@ const MainTabs = createBottomTabNavigator({
         path: 'mangajap/',
       },
       options: {
+        tabBarLabel: 'Découvrir',
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons
             name="search"
@@ -89,6 +95,7 @@ const MainTabs = createBottomTabNavigator({
         path: 'mangajap/profile',
       },
       options: {
+        tabBarLabel: 'Profil',
         tabBarIcon: ({ color, size }) => (
           <MaterialIcons
             name="person"
