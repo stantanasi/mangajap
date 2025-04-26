@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { FlatList, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
@@ -147,7 +147,7 @@ export default function AboutTab({ anime, style }: Props) {
               <View>
                 <AnimeCard
                   anime={item.destination}
-                  onPress={() => navigation.navigate('Anime', { id: item.id })}
+                  onPress={() => navigation.dispatch(StackActions.push('Anime', { id: item.destination!.id }))}
                   showCheckbox={false}
                 />
                 {user && user.isAdmin ? (
@@ -171,7 +171,7 @@ export default function AboutTab({ anime, style }: Props) {
               <View>
                 <MangaCard
                   manga={item.destination}
-                  onPress={() => navigation.navigate('Manga', { id: item.id })}
+                  onPress={() => navigation.navigate('Manga', { id: item.destination!.id })}
                   showCheckbox={false}
                 />
                 {user && user.isAdmin ? (

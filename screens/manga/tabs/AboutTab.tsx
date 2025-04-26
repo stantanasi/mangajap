@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { FlatList, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
@@ -228,7 +228,7 @@ export default function AboutTab({ manga, style }: Props) {
             editable={franchisesEditable}
             onPress={() => {
               if (!franchisesEditable) {
-                navigation.navigate('Anime', { id: item.id });
+                navigation.navigate('Anime', { id: item.destination!.id });
               } else {
                 navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
               }
@@ -242,7 +242,7 @@ export default function AboutTab({ manga, style }: Props) {
             editable={franchisesEditable}
             onPress={() => {
               if (!franchisesEditable) {
-                navigation.navigate('Manga', { id: item.id });
+                navigation.dispatch(StackActions.push('Manga', { id: item.destination!.id }));
               } else {
                 navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
               }
