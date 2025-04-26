@@ -41,7 +41,7 @@ const MainTabs = createBottomTabNavigator({
     AgendaAnime: {
       screen: AgendaAnimeScreen,
       linking: {
-        path: 'agenda/anime',
+        path: 'mangajap/agenda/anime',
       },
       options: {
         tabBarIcon: ({ color, size }) => (
@@ -56,7 +56,7 @@ const MainTabs = createBottomTabNavigator({
     AgendaManga: {
       screen: AgendaMangaScreen,
       linking: {
-        path: 'agenda/manga',
+        path: 'mangajap/agenda/manga',
       },
       options: {
         tabBarIcon: ({ color, size }) => (
@@ -71,7 +71,7 @@ const MainTabs = createBottomTabNavigator({
     Discover: {
       screen: DiscoverScreen,
       linking: {
-        path: '',
+        path: 'mangajap/',
       },
       options: {
         tabBarIcon: ({ color, size }) => (
@@ -86,7 +86,7 @@ const MainTabs = createBottomTabNavigator({
     Profile: {
       screen: ProfileScreen,
       linking: {
-        path: 'profile',
+        path: 'mangajap/profile',
       },
       options: {
         tabBarIcon: ({ color, size }) => (
@@ -113,205 +113,205 @@ const RootStack = createNativeStackNavigator({
     Anime: {
       screen: AnimeScreen,
       linking: {
-        path: 'anime/:id',
+        path: 'mangajap/anime/:id',
       },
     },
     AnimeCreate: {
       screen: AnimeSaveScreen,
       linking: {
-        path: 'anime/add',
+        path: 'mangajap/anime/add',
       },
     },
     AnimeUpdate: {
       screen: AnimeSaveScreen,
       linking: {
-        path: 'anime/:id/edit',
+        path: 'mangajap/anime/:id/edit',
       },
     },
     SeasonCreate: {
       screen: SeasonSaveScreen,
       linking: {
-        path: 'anime/:animeId/season/add',
+        path: 'mangajap/anime/:animeId/season/add',
       },
     },
     SeasonUpdate: {
       screen: SeasonSaveScreen,
       linking: {
-        path: 'season/:seasonId/edit',
+        path: 'mangajap/season/:seasonId/edit',
       },
     },
     EpisodeCreate: {
       screen: EpisodeSaveScreen,
       linking: {
-        path: 'anime/:animeId/episode/add',
+        path: 'mangajap/anime/:animeId/episode/add',
       },
     },
     EpisodeUpdate: {
       screen: EpisodeSaveScreen,
       linking: {
-        path: 'episode/:episodeId/edit',
+        path: 'mangajap/episode/:episodeId/edit',
       },
     },
     AnimeStaffCreate: {
       screen: StaffSaveScreen,
       linking: {
-        path: 'anime/:animeId/staff/create',
+        path: 'mangajap/anime/:animeId/staff/create',
       },
     },
     AnimeFranchiseCreate: {
       screen: FranchiseSaveScreen,
       linking: {
-        path: 'anime/:animeId/franchise/create',
+        path: 'mangajap/anime/:animeId/franchise/create',
       },
     },
     Manga: {
       screen: MangaScreen,
       linking: {
-        path: 'manga/:id',
+        path: 'mangajap/manga/:id',
       },
     },
     MangaCreate: {
       screen: MangaSaveScreen,
       linking: {
-        path: 'manga/add',
+        path: 'mangajap/manga/add',
       },
     },
     MangaUpdate: {
       screen: MangaSaveScreen,
       linking: {
-        path: 'manga/:id/edit',
+        path: 'mangajap/manga/:id/edit',
       },
     },
     VolumeCreate: {
       screen: VolumeSaveScreen,
       linking: {
-        path: 'manga/:mangaId/volume/add',
+        path: 'mangajap/manga/:mangaId/volume/add',
       },
     },
     VolumeUpdate: {
       screen: VolumeSaveScreen,
       linking: {
-        path: 'volume/:volumeId/edit',
+        path: 'mangajap/volume/:volumeId/edit',
       },
     },
     ChapterCreate: {
       screen: ChapterSaveScreen,
       linking: {
-        path: 'manga/:mangaId/chapter/add',
+        path: 'mangajap/manga/:mangaId/chapter/add',
       },
     },
     ChapterUpdate: {
       screen: ChapterSaveScreen,
       linking: {
-        path: 'chapter/:chapterId/edit',
+        path: 'mangajap/chapter/:chapterId/edit',
       },
     },
     MangaStaffCreate: {
       screen: StaffSaveScreen,
       linking: {
-        path: 'manga/:mangaId/staff/create',
+        path: 'mangajap/manga/:mangaId/staff/create',
       },
     },
     StaffUpdate: {
       screen: StaffSaveScreen,
       linking: {
-        path: 'staff/:staffId/edit',
+        path: 'mangajap/staff/:staffId/edit',
       },
     },
     MangaFranchiseCreate: {
       screen: FranchiseSaveScreen,
       linking: {
-        path: 'manga/:mangaId/franchise/create',
+        path: 'mangajap/manga/:mangaId/franchise/create',
       },
     },
     FranchiseUpdate: {
       screen: FranchiseSaveScreen,
       linking: {
-        path: 'franchise/:franchiseId/edit',
+        path: 'mangajap/franchise/:franchiseId/edit',
       },
     },
     Search: {
       screen: SearchScreen,
       linking: {
-        path: 'search',
+        path: 'mangajap/search',
       },
     },
     Profile: {
       screen: ProfileScreen,
       linking: {
-        path: 'profile/:id',
+        path: 'mangajap/profile/:id',
       },
     },
     ProfileEdit: {
       screen: ProfileEditScreen,
       linking: {
-        path: 'profile/:id/edit',
+        path: 'mangajap/profile/:id/edit',
       },
     },
     ProfileFollowers: {
       screen: FollowsScreen,
       linking: {
-        path: 'profile/:userId/followers',
+        path: 'mangajap/profile/:userId/followers',
       },
     },
     ProfileFollowing: {
       screen: FollowsScreen,
       linking: {
-        path: 'profile/:userId/following',
+        path: 'mangajap/profile/:userId/following',
       },
     },
     ProfileAnimeLibrary: {
       screen: LibraryScreen,
       linking: {
-        path: 'profile/:userId/anime-library',
+        path: 'mangajap/profile/:userId/anime-library',
       },
     },
     ProfileMangaLibrary: {
       screen: LibraryScreen,
       linking: {
-        path: 'profile/:userId/manga-library',
+        path: 'mangajap/profile/:userId/manga-library',
       },
     },
     ProfileAnimeFavorites: {
       screen: LibraryScreen,
       linking: {
-        path: 'profile/:userId/anime-favorites',
+        path: 'mangajap/profile/:userId/anime-favorites',
       },
     },
     ProfileMangaFavorites: {
       screen: LibraryScreen,
       linking: {
-        path: 'profile/:userId/manga-favorites',
+        path: 'mangajap/profile/:userId/manga-favorites',
       },
     },
     People: {
       screen: PeopleScreen,
       linking: {
-        path: 'people/:id',
+        path: 'mangajap/people/:id',
       },
     },
     PeopleCreate: {
       screen: PeopleSaveScreen,
       linking: {
-        path: 'people/add',
+        path: 'mangajap/people/add',
       },
     },
     PeopleUpdate: {
       screen: PeopleSaveScreen,
       linking: {
-        path: 'people/:peopleId/edit',
+        path: 'mangajap/people/:peopleId/edit',
       },
     },
     Settings: {
       screen: SettingsScreen,
       linking: {
-        path: 'settings',
+        path: 'mangajap/settings',
       },
     },
     NotFound: {
       screen: NotFoundScreen,
       linking: {
-        path: '*',
+        path: 'mangajap/*',
       },
     },
   },
