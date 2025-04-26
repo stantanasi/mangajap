@@ -5,8 +5,12 @@
   <br />
   MangaJap is an app that lets you organize yourself among all the manga and anime you love.
   <br />
+  <a href="https://stantanasi.github.io/mangajap">
+    <strong>Visit website</strong>
+  </a>
+  <strong>·</strong>
   <a href="https://github.com/stantanasi/mangajap/releases/latest">
-    <strong>Download app »</strong>
+    <strong>Download app</strong>
   </a>
   <br />
   <br />
@@ -118,5 +122,5 @@ This project is licensed under the `Apache-2.0` License - see the [LICENSE](LICE
 
 <p align="center">
   <br />
-  © 2021 Lory-Stan TANASI. All rights reserved
+  © 2025 Lory-Stan TANASI. All rights reserved
 </p>
