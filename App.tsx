@@ -112,6 +112,9 @@ const RootStack = createNativeStackNavigator({
   initialRouteName: 'Main',
   screenOptions: {
     header: () => null,
+    contentStyle: {
+      backgroundColor: '#fafafa',
+    },
   },
   screens: {
     Main: {

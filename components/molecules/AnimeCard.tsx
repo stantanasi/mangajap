@@ -1,7 +1,8 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext, useState } from 'react';
 import { Image, ImageStyle, Pressable, PressableProps, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
-import { Anime, AnimeEntry, User } from '../../models';
+import { Anime, AnimeEntry, Franchise, User } from '../../models';
 import Checkbox from '../atoms/Checkbox';
 
 type Variants = 'default' | 'horizontal';
@@ -9,16 +10,20 @@ type Variants = 'default' | 'horizontal';
 type Props = PressableProps & {
   anime: Anime;
   onAnimeChange?: (anime: Anime) => void;
+  franchise?: Franchise;
   showCheckbox?: boolean;
   variant?: Variants;
+  editable?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
 export default function AnimeCard({
   anime,
   onAnimeChange = () => { },
+  franchise,
   showCheckbox = true,
   variant = 'default',
+  editable = false,
   style,
   ...props
 }: Props) {
@@ -30,11 +35,40 @@ export default function AnimeCard({
       {...props}
       style={[styles.container, styles[variant].container, style]}
     >
-      <Image
-        source={{ uri: anime.poster ?? undefined }}
-        resizeMode="cover"
-        style={[styles.image, styles[variant].image]}
-      />
+      <View
+        style={{
+          width: styles[variant].image.width ?? styles.image.width,
+          height: styles[variant].image.height ?? styles.image.height,
+        }}
+      >
+        <Image
+          source={{ uri: anime.poster ?? undefined }}
+          resizeMode="cover"
+          style={[styles.image, styles[variant].image]}
+        />
+
+        {editable ? (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              top: 0,
+              alignItems: 'center',
+              backgroundColor: '#00000080',
+              borderRadius: styles.image.borderRadius,
+              justifyContent: 'center',
+            }}
+          >
+            <MaterialIcons
+              name="edit"
+              color="#fff"
+              size={24}
+            />
+          </View>
+        ) : null}
+      </View>
 
       <View style={[styles.infos, styles[variant].infos]}>
         <Text
@@ -43,6 +77,29 @@ export default function AnimeCard({
         >
           {anime.title}
         </Text>
+
+        {franchise ? (
+          <Text style={[styles.role, styles[variant].role]}>
+            {(() => {
+              const roleLabels: Record<typeof franchise.role, string> = {
+                adaptation: 'Adaptation',
+                alternative_setting: 'Univers alternatif',
+                alternative_version: 'Version alternative',
+                character: 'Personnage',
+                full_story: 'Histoire complète',
+                other: 'Autre',
+                parent_story: 'Histoire principale',
+                prequel: 'Préquelle',
+                sequel: 'Suite',
+                side_story: 'Histoire parallèle',
+                spinoff: 'Spin-off',
+                summary: 'Résumé',
+              };
+
+              return roleLabels[franchise.role];
+            })()}
+          </Text>
+        ) : null}
       </View>
 
       {user && showCheckbox ? (
@@ -93,6 +150,7 @@ type Style = {
   image: ImageStyle;
   infos: ViewStyle;
   title: TextStyle;
+  role: TextStyle;
   checkbox: ViewStyle;
 };
 
@@ -105,6 +163,7 @@ const styles: Style & Record<Variants, Style> = {
     },
     infos: {},
     title: {},
+    role: {},
     checkbox: {},
   }),
 
@@ -117,6 +176,10 @@ const styles: Style & Record<Variants, Style> = {
     },
     infos: {},
     title: {
+      textAlign: 'center',
+    },
+    role: {
+      color: '#888',
       textAlign: 'center',
     },
     checkbox: {
@@ -143,6 +206,7 @@ const styles: Style & Record<Variants, Style> = {
       fontSize: 16,
       fontWeight: 'bold',
     },
+    role: {},
     checkbox: {},
   }),
 };
