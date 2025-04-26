@@ -59,3 +59,12 @@ class AnimeEntry extends model<IAnimeEntry>(AnimeEntrySchema) { }
 AnimeEntry.register('anime-entries');
 
 export default AnimeEntry;
+
+
+export const AnimeEntryStatus: Record<IAnimeEntry['status'], string> = {
+  watching: 'En cours de visionnage',
+  completed: 'Terminé',
+  planned: 'Prévu',
+  on_hold: 'Mis en pause',
+  dropped: 'Abandonné',
+};

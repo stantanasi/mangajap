@@ -9,7 +9,7 @@ import ImageInput from '../../components/atoms/ImageInput';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { Anime, Genre, Theme } from '../../models';
-import { IAnime } from '../../models/anime.model';
+import { AnimeStatus, AnimeType, IAnime } from '../../models/anime.model';
 
 type Props = StaticScreenProps<{
   id: string;
@@ -127,14 +127,10 @@ export default function AnimeSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Type d'animé *"
-          items={[
-            { label: 'Série TV', value: 'tv' },
-            { label: 'OVA', value: 'ova' },
-            { label: 'ONA', value: 'ona' },
-            { label: 'Film', value: 'movie' },
-            { label: 'Musique', value: 'music' },
-            { label: 'Spécial', value: 'special' },
-          ]}
+          items={Object.entries(AnimeType).map(([key, value]) => ({
+            value: key as IAnime['animeType'],
+            label: value,
+          }))}
           selectedValue={form.animeType}
           onValueChange={(value) => setForm((prev) => ({
             ...prev,
@@ -145,12 +141,10 @@ export default function AnimeSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Status *"
-          items={[
-            { label: 'En cours', value: 'airing' },
-            { label: 'Terminé', value: 'finished' },
-            { label: 'À sortir', value: 'unreleased' },
-            { label: 'À venir', value: 'upcoming' },
-          ]}
+          items={Object.entries(AnimeStatus).map(([key, value]) => ({
+            value: key as IAnime['status'],
+            label: value,
+          }))}
           selectedValue={form.status}
           onValueChange={(value) => setForm((prev) => ({
             ...prev,

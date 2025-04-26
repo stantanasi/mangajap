@@ -124,3 +124,26 @@ class Manga extends model<IManga>(MangaSchema) { }
 Manga.register('manga');
 
 export default Manga;
+
+
+export const MangaType: Record<IManga['mangaType'], string> = {
+  bd: 'BD',
+  comics: 'Comics',
+  josei: 'Josei',
+  kodomo: 'Kodomo',
+  seijin: 'Seijin',
+  seinen: 'Seinen',
+  shojo: 'Shōjo',
+  shonen: 'Shōnen',
+  doujin: 'Doujin',
+  novel: 'Novel',
+  oneshot: 'One shot',
+  webtoon: 'Webtoon',
+};
+
+export const MangaStatus: Record<IManga['status'], string> = {
+  publishing: 'En cours',
+  finished: 'Terminé',
+  unreleased: 'À sortir',
+  upcoming: 'À venir',
+};

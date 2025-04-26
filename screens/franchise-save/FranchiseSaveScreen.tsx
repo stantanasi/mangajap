@@ -10,7 +10,7 @@ import TabBar from '../../components/atoms/TabBar';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { Anime, Franchise, Manga } from '../../models';
-import { IFranchise } from '../../models/franchise.model';
+import { FranchiseRole, IFranchise } from '../../models/franchise.model';
 
 const SelectDestinationModal = ({ onSelect, onRequestClose, visible }: {
   onSelect: (destination: Anime | Manga) => void;
@@ -273,20 +273,10 @@ export default function FranchiseSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Role *"
-          items={[
-            { label: 'Adaptation', value: 'adaptation' },
-            { label: 'Univers alternatif', value: 'alternative_setting' },
-            { label: 'Version alternative', value: 'alternative_version' },
-            { label: 'Personnage', value: 'character' },
-            { label: 'Histoire complète', value: 'full_story' },
-            { label: 'Autre', value: 'other' },
-            { label: 'Histoire principale', value: 'parent_story' },
-            { label: 'Préquelle', value: 'prequel' },
-            { label: 'Suite', value: 'sequel' },
-            { label: 'Histoire parallèle', value: 'side_story' },
-            { label: 'Spin-off', value: 'spinoff' },
-            { label: 'Résumé', value: 'summary' },
-          ]}
+          items={Object.entries(FranchiseRole).map(([key, value]) => ({
+            value: key as IFranchise['role'],
+            label: value,
+          }))}
           selectedValue={form.role}
           onValueChange={(value) => setForm((prev) => ({
             ...prev,

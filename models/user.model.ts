@@ -107,3 +107,10 @@ class User extends model<IUser>(UserSchema) { }
 User.register('users');
 
 export default User;
+
+
+export const UserGender: Record<NonNullable<IUser['gender']>, string> = {
+  men: 'Homme',
+  women: 'Femme',
+  other: 'Autre',
+};

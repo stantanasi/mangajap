@@ -131,8 +131,8 @@ export default function ChapterSaveScreen({ route }: Props) {
         <SelectInput
           label="Tome"
           items={volumes.map((volume) => ({
-            label: `Tome ${volume.number}`,
             value: volume.id,
+            label: `Tome ${volume.number}`,
           }))}
           selectedValue={form.volume?.id}
           onValueChange={(value) => setForm((prev) => ({

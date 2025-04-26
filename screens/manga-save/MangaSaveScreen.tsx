@@ -9,7 +9,7 @@ import ImageInput from '../../components/atoms/ImageInput';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { Genre, Manga, Theme } from '../../models';
-import { IManga } from '../../models/manga.model';
+import { IManga, MangaStatus, MangaType } from '../../models/manga.model';
 
 type Props = StaticScreenProps<{
   id: string
@@ -127,20 +127,10 @@ export default function MangaSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Type de manga *"
-          items={[
-            { label: 'BD', value: 'bd' },
-            { label: 'Comics', value: 'comics' },
-            { label: 'Josei', value: 'josei' },
-            { label: 'Kodomo', value: 'kodomo' },
-            { label: 'Seijin', value: 'seijin' },
-            { label: 'Seinen', value: 'seinen' },
-            { label: 'Shojo', value: 'shojo' },
-            { label: 'Shonen', value: 'shonen' },
-            { label: 'Doujin', value: 'doujin' },
-            { label: 'Novel', value: 'novel' },
-            { label: 'Oneshot', value: 'oneshot' },
-            { label: 'Webtoon', value: 'webtoon' },
-          ]}
+          items={Object.entries(MangaType).map(([key, value]) => ({
+            value: key as IManga['mangaType'],
+            label: value,
+          }))}
           selectedValue={form.mangaType}
           onValueChange={(value) => setForm((prev) => ({
             ...prev,
@@ -151,12 +141,10 @@ export default function MangaSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Status *"
-          items={[
-            { label: 'En cours', value: 'publishing' },
-            { label: 'Terminé', value: 'finished' },
-            { label: 'À sortir', value: 'unreleased' },
-            { label: 'À venir', value: 'upcoming' },
-          ]}
+          items={Object.entries(MangaStatus).map(([key, value]) => ({
+            value: key as IManga['status'],
+            label: value,
+          }))}
           selectedValue={form.status}
           onValueChange={(value) => setForm((prev) => ({
             ...prev,

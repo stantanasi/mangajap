@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react';
 import { Image, ImageStyle, Pressable, PressableProps, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Franchise, Manga, MangaEntry, User } from '../../models';
+import { FranchiseRole } from '../../models/franchise.model';
 import Checkbox from '../atoms/Checkbox';
 
 type Variants = 'default' | 'horizontal';
@@ -80,24 +81,7 @@ export default function MangaCard({
 
         {franchise ? (
           <Text style={[styles.role, styles[variant].role]}>
-            {(() => {
-              const roleLabels: Record<typeof franchise.role, string> = {
-                adaptation: 'Adaptation',
-                alternative_setting: 'Univers alternatif',
-                alternative_version: 'Version alternative',
-                character: 'Personnage',
-                full_story: 'Histoire complète',
-                other: 'Autre',
-                parent_story: 'Histoire principale',
-                prequel: 'Préquelle',
-                sequel: 'Suite',
-                side_story: 'Histoire parallèle',
-                spinoff: 'Spin-off',
-                summary: 'Résumé',
-              };
-
-              return roleLabels[franchise.role];
-            })()}
+            {FranchiseRole[franchise.role]}
           </Text>
         ) : null}
       </View>

@@ -8,6 +8,7 @@ import MangaCard from '../../../components/molecules/MangaCard';
 import PeopleCard from '../../../components/molecules/PeopleCard';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime, Manga } from '../../../models';
+import { MangaType } from '../../../models/manga.model';
 
 type Props = {
   manga: Manga;
@@ -70,24 +71,7 @@ export default function AboutTab({ manga, style }: Props) {
         </Text>
 
         <Text style={{ color: '#666' }}>
-          {(() => {
-            const mangaTypeLabels: Record<typeof manga.mangaType, string> = {
-              bd: 'BD',
-              comics: 'Comics',
-              josei: 'Josei',
-              kodomo: 'Kodomo',
-              seijin: 'Seijin',
-              seinen: 'Seinen',
-              shojo: 'Shōjo',
-              shonen: 'Shōnen',
-              doujin: 'Doujin',
-              novel: 'Novel',
-              oneshot: 'One shot',
-              webtoon: 'Webtoon',
-            };
-
-            return mangaTypeLabels[manga.mangaType];
-          })()}
+          {MangaType[manga.mangaType]}
         </Text>
       </View>
 

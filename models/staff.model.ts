@@ -41,3 +41,14 @@ class Staff extends model<IStaff>(StaffSchema) { }
 Staff.register('staff');
 
 export default Staff;
+
+
+export const StaffRole: Record<IStaff['role'], string> = {
+  author: 'Scénariste',
+  illustrator: 'Dessinateur',
+  story_and_art: 'Créateur',
+  licensor: 'Éditeur',
+  producer: 'Producteur',
+  studio: 'Studio',
+  original_creator: 'Créateur original',
+};

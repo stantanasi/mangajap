@@ -8,7 +8,7 @@ import SearchBar from '../../components/atoms/SearchBar';
 import SelectInput from '../../components/atoms/SelectInput';
 import PeopleCard from '../../components/molecules/PeopleCard';
 import { Anime, Manga, People, Staff } from '../../models';
-import { IStaff } from '../../models/staff.model';
+import { IStaff, StaffRole } from '../../models/staff.model';
 
 const SelectDestinationModal = ({ onSelect, onRequestClose, visible }: {
   onSelect: (people: People) => void;
@@ -210,15 +210,10 @@ export default function StaffSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Role *"
-          items={[
-            { label: 'Auteur', value: 'author' },
-            { label: 'Illustrateur', value: 'illustrator' },
-            { label: 'Créateur', value: 'story_and_art' },
-            { label: 'Éditeur', value: 'licensor' },
-            { label: 'Producteur', value: 'producer' },
-            { label: 'Studio', value: 'studio' },
-            { label: 'Créateur original', value: 'original_creator' },
-          ]}
+          items={Object.entries(StaffRole).map(([key, value]) => ({
+            value: key as IStaff['role'],
+            label: value,
+          }))}
           selectedValue={form.role}
           onValueChange={(value) => setForm((prev) => ({
             ...prev,

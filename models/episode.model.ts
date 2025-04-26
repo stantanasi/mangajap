@@ -65,3 +65,9 @@ class Episode extends model<IEpisode>(EpisodeSchema) { }
 Episode.register('episodes');
 
 export default Episode;
+
+
+export const EpisodeType: Record<IEpisode['episodeType'], string> = {
+  '': '',
+  oav: 'OAV',
+};

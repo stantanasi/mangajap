@@ -2,6 +2,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
 import { Image, ImageStyle, Pressable, PressableProps, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { People, Staff } from '../../models';
+import { StaffRole } from '../../models/staff.model';
 
 type Variants = 'default' | 'horizontal';
 
@@ -67,19 +68,7 @@ export default function PeopleCard({
 
         {staff ? (
           <Text style={[styles.role, styles[variant].role]}>
-            {(() => {
-              const roleLabels: Record<typeof staff.role, string> = {
-                author: 'Scénariste',
-                illustrator: 'Dessinateur',
-                story_and_art: 'Créateur',
-                licensor: 'Éditeur',
-                producer: 'Producteur',
-                studio: 'Studio',
-                original_creator: 'Créateur original',
-              };
-
-              return roleLabels[staff.role];
-            })()}
+            {StaffRole[staff.role]}
           </Text>
         ) : null}
       </View>

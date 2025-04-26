@@ -133,3 +133,20 @@ class Anime extends model<IAnime>(AnimeSchema) { }
 Anime.register('anime');
 
 export default Anime;
+
+
+export const AnimeType: Record<IAnime['animeType'], string> = {
+  tv: 'Série TV',
+  ova: 'OVA',
+  ona: 'ONA',
+  movie: 'Film',
+  music: 'Musique',
+  special: 'Spécial',
+};
+
+export const AnimeStatus: Record<IAnime['status'], string> = {
+  airing: 'En cours',
+  finished: 'Terminé',
+  unreleased: 'À sortir',
+  upcoming: 'À venir',
+};

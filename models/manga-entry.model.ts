@@ -62,3 +62,12 @@ class MangaEntry extends model<IMangaEntry>(MangaEntrySchema) { }
 MangaEntry.register('manga-entries');
 
 export default MangaEntry;
+
+
+export const MangaEntryStatus: Record<IMangaEntry['status'], string> = {
+  reading: 'En cours de lecture',
+  completed: 'Terminé',
+  planned: 'Prévu',
+  on_hold: 'Mis en pause',
+  dropped: 'Abandonné',
+};

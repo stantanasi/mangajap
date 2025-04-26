@@ -37,3 +37,19 @@ class Franchise extends model<IFranchise>(FranchiseSchema) { }
 Franchise.register('franchises');
 
 export default Franchise;
+
+
+export const FranchiseRole: Record<IFranchise['role'], string> = {
+  adaptation: 'Adaptation',
+  alternative_setting: 'Univers alternatif',
+  alternative_version: 'Version alternative',
+  character: 'Personnage',
+  full_story: 'Histoire complète',
+  other: 'Autre',
+  parent_story: 'Histoire principale',
+  prequel: 'Préquelle',
+  sequel: 'Suite',
+  side_story: 'Histoire parallèle',
+  spinoff: 'Spin-off',
+  summary: 'Résumé',
+};

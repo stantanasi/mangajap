@@ -6,8 +6,8 @@ import InputLabel from './InputLabel';
 type Props<T> = {
   label?: string;
   items: {
-    label: string;
     value: T;
+    label: string;
   }[];
   selectedValue: T | undefined;
   onValueChange: (itemValue: T, itemIndex: number) => void;
@@ -24,7 +24,7 @@ export default function SelectInput<T extends string>({
   const [optionsVisible, setOptionsVisible] = useState(false);
 
   items = [
-    { label: 'Sélectionner', value: '' as T },
+    { value: '' as T, label: 'Sélectionner' },
     ...items,
   ];
 
