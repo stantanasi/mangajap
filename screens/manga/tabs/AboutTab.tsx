@@ -25,19 +25,6 @@ export default function AboutTab({ manga, style }: Props) {
       }}
       style={[styles.container, style]}
     >
-      {user && user.isAdmin ? (
-        <MaterialIcons
-          name="edit"
-          color="#000"
-          size={24}
-          onPress={() => navigation.navigate('MangaUpdate', { id: manga.id })}
-          style={{
-            alignSelf: 'flex-end',
-            marginRight: 16,
-          }}
-        />
-      ) : null}
-
       <AutoHeightImage
         source={{ uri: manga.poster ?? undefined }}
         style={styles.poster}

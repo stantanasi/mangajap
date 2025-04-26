@@ -1,8 +1,9 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ProgressBar from '../../components/atoms/ProgressBar';
 import TabBar from '../../components/atoms/TabBar';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Manga, MangaEntry, User } from '../../models';
@@ -67,16 +68,68 @@ export default function MangaScreen({ route }: Props) {
     );
   }
 
+  const progress = manga['manga-entry']
+    ? manga.chapterCount > 0
+      ? (manga['manga-entry'].chaptersRead / manga.chapterCount) * 100
+      : (manga['manga-entry'].volumesRead / manga.volumeCount) * 100
+    : 0;
+
   return (
     <SafeAreaView style={styles.container}>
-      <TabBar
-        selected={selectedTab}
-        tabs={[
-          { key: 'about', title: 'À propos' },
-          { key: 'volumes', title: 'Tomes' },
-        ]}
-        onTabChange={(key) => setSelectedTab(key)}
-      />
+      <View style={styles.header}>
+        <View
+          style={{
+            alignItems: 'flex-start',
+            flexDirection: 'row',
+          }}
+        >
+          <MaterialIcons
+            name="arrow-back"
+            color="#000"
+            size={24}
+            onPress={() => navigation.goBack()}
+            style={{
+              padding: 12,
+            }}
+          />
+
+          <Text
+            style={{
+              flex: 1,
+              fontSize: 18,
+              fontWeight: 'bold',
+              padding: 12,
+            }}
+          >
+            {manga.title}
+          </Text>
+
+          {user && user.isAdmin ? (
+            <MaterialIcons
+              name="edit"
+              color="#000"
+              size={24}
+              onPress={() => navigation.navigate('MangaUpdate', { id: manga.id })}
+              style={{
+                padding: 12,
+              }}
+            />
+          ) : null}
+        </View>
+
+        <ProgressBar
+          progress={progress}
+        />
+
+        <TabBar
+          selected={selectedTab}
+          tabs={[
+            { key: 'about', title: 'À propos' },
+            { key: 'volumes', title: 'Tomes' },
+          ]}
+          onTabChange={(key) => setSelectedTab(key)}
+        />
+      </View>
 
       <AboutTab
         manga={manga}
@@ -171,5 +224,8 @@ export default function MangaScreen({ route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    backgroundColor: '#fff',
   },
 });
