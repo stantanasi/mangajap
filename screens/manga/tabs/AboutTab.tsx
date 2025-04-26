@@ -34,6 +34,61 @@ export default function AboutTab({ manga, style }: Props) {
         {manga.title}
       </Text>
 
+      <View
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          gap: 14,
+          justifyContent: 'center',
+          marginHorizontal: 16,
+          marginTop: 4,
+        }}
+      >
+        <View style={{ alignItems: 'center', flexDirection: 'row', gap: 2 }}>
+          <MaterialIcons
+            name="star"
+            color="#666"
+            size={14}
+            style={{ alignSelf: 'center' }}
+          />
+          <Text style={{ color: '#666' }}>
+            {manga.averageRating?.toFixed(1) ?? 'N/A'}
+          </Text>
+        </View>
+
+        <Text style={{ color: '#666' }}>
+          {(() => {
+            const startYear = manga.startDate.getFullYear();
+            const endYear = manga.endDate?.getFullYear();
+
+            return endYear && startYear !== endYear
+              ? `${startYear} - ${endYear}`
+              : `${startYear}`;
+          })()}
+        </Text>
+
+        <Text style={{ color: '#666' }}>
+          {(() => {
+            const mangaTypeLabels: Record<typeof manga.mangaType, string> = {
+              bd: 'BD',
+              comics: 'Comics',
+              josei: 'Josei',
+              kodomo: 'Kodomo',
+              seijin: 'Seijin',
+              seinen: 'Seinen',
+              shojo: 'Shōjo',
+              shonen: 'Shōnen',
+              doujin: 'Doujin',
+              novel: 'Novel',
+              oneshot: 'One shot',
+              webtoon: 'Webtoon',
+            };
+
+            return mangaTypeLabels[manga.mangaType];
+          })()}
+        </Text>
+      </View>
+
       <View style={styles.genres}>
         {manga.genres?.map((genre) => (
           <Text
@@ -45,6 +100,10 @@ export default function AboutTab({ manga, style }: Props) {
         ))}
       </View>
 
+      <Text style={styles.overview}>
+        {manga.overview}
+      </Text>
+
       <View style={styles.themes}>
         {manga.themes?.map((theme) => (
           <Text
@@ -55,10 +114,6 @@ export default function AboutTab({ manga, style }: Props) {
           </Text>
         ))}
       </View>
-
-      <Text style={styles.overview}>
-        {manga.overview}
-      </Text>
 
 
       <Text style={styles.sectionTitle}>
@@ -121,7 +176,7 @@ export default function AboutTab({ manga, style }: Props) {
 
 
       <Text style={styles.sectionTitle}>
-        Franchise
+        De la même franchise
       </Text>
 
       <FlatList
@@ -213,27 +268,45 @@ export default function AboutTab({ manga, style }: Props) {
 const styles = StyleSheet.create({
   container: {},
   poster: {
-    width: '80%',
+    width: 225,
     alignSelf: 'center',
   },
   title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginHorizontal: 16,
+    marginTop: 20,
     textAlign: 'center',
   },
   genres: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 6,
     justifyContent: 'center',
+    marginHorizontal: 16,
+    marginTop: 8,
   },
-  genre: {},
+  genre: {
+    color: '#888',
+  },
+  overview: {
+    marginTop: 14,
+    marginHorizontal: 16,
+  },
   themes: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-    justifyContent: 'center',
+    marginHorizontal: 16,
+    marginTop: 8,
   },
-  theme: {},
-  overview: {},
+  theme: {
+    borderColor: '#ccc',
+    borderRadius: 4,
+    borderWidth: 1,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+  },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
