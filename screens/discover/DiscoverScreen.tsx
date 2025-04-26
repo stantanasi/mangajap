@@ -3,8 +3,8 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import FloatingActionButton from '../../components/atoms/FloatingActionButton';
 import AnimeCard from '../../components/molecules/AnimeCard';
+import ExpandableFloatingActionButton from '../../components/molecules/ExpandableFloatingActionButton';
 import MangaCard from '../../components/molecules/MangaCard';
 import PeopleCard from '../../components/molecules/PeopleCard';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -174,36 +174,23 @@ export default function DiscoverScreen({ route }: Props) {
         </ScrollView>
       )}
 
-      {user && user.isAdmin ? (
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            right: 0,
-          }}
-        >
-          <FloatingActionButton
-            icon="add"
-            label="Animé"
-            onPress={() => navigation.navigate('AnimeCreate')}
-            style={{ position: 'relative' }}
-          />
-
-          <FloatingActionButton
-            icon="add"
-            label="Manga"
-            onPress={() => navigation.navigate('MangaCreate')}
-            style={{ position: 'relative' }}
-          />
-
-          <FloatingActionButton
-            icon="add"
-            label="Personnalité"
-            onPress={() => navigation.navigate('PeopleCreate')}
-            style={{ position: 'relative' }}
-          />
-        </View>
-      ) : null}
+      <ExpandableFloatingActionButton
+        icon="add"
+        menuItems={[
+          {
+            icon: 'tv',
+            onPress: () => navigation.navigate('AnimeCreate'),
+          },
+          {
+            icon: 'menu-book',
+            onPress: () => navigation.navigate('MangaCreate'),
+          },
+          {
+            icon: 'person',
+            onPress: () => navigation.navigate('PeopleCreate'),
+          },
+        ]}
+      />
     </SafeAreaView>
   );
 }
