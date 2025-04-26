@@ -213,8 +213,8 @@ export default function StaffSaveScreen({ route }: Props) {
           items={[
             { label: 'Auteur', value: 'author' },
             { label: 'Illustrateur', value: 'illustrator' },
-            { label: 'Scénario et dessin', value: 'story_and_art' },
-            { label: 'Licencié', value: 'licensor' },
+            { label: 'Créateur', value: 'story_and_art' },
+            { label: 'Éditeur', value: 'licensor' },
             { label: 'Producteur', value: 'producer' },
             { label: 'Studio', value: 'studio' },
             { label: 'Créateur original', value: 'original_creator' },

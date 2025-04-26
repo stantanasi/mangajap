@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { FlatList, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import AnimeCard from '../../../components/molecules/AnimeCard';
@@ -17,6 +17,7 @@ type Props = {
 export default function AboutTab({ manga, style }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
+  const [staffEditable, setStaffEditable] = useState(false);
 
   return (
     <ScrollView
@@ -116,35 +117,49 @@ export default function AboutTab({ manga, style }: Props) {
       </View>
 
 
-      <Text style={styles.sectionTitle}>
-        Staff
-      </Text>
+      <View
+        style={{
+          alignItems: 'center',
+          flexDirection: 'row',
+          marginHorizontal: 16,
+          marginTop: 20,
+        }}>
+        <Text
+          style={[styles.sectionTitle, {
+            flex: 1,
+            margin: 0,
+          }]}
+        >
+          Staff
+        </Text>
+
+        {user && user.isAdmin ? (
+          <MaterialIcons
+            name={!staffEditable ? 'edit' : 'edit-off'}
+            color="#000"
+            size={24}
+            onPress={() => setStaffEditable((prev) => !prev)}
+          />
+        ) : null}
+      </View>
 
       <FlatList
         horizontal
         data={manga.staff}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View>
-            <PeopleCard
-              people={item.people!}
-              onPress={() => navigation.navigate('People', { id: item.people!.id })}
-            />
-            {user && user.isAdmin ? (
-              <MaterialIcons
-                name="edit"
-                color="#fff"
-                size={24}
-                onPress={() => navigation.navigate('StaffUpdate', { staffId: item.id })}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  margin: 24,
-                }}
-              />
-            ) : null}
-          </View>
+          <PeopleCard
+            people={item.people!}
+            staff={item}
+            editable={staffEditable}
+            onPress={() => {
+              if (!staffEditable) {
+                navigation.navigate('People', { id: item.people!.id })
+              } else {
+                navigation.navigate('StaffUpdate', { staffId: item.id })
+              }
+            }}
+          />
         )}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
