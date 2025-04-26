@@ -18,6 +18,7 @@ export default function AboutTab({ manga, style }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [staffEditable, setStaffEditable] = useState(false);
+  const [franchisesEditable, setFranchisesEditable] = useState(false);
 
   return (
     <ScrollView
@@ -190,66 +191,65 @@ export default function AboutTab({ manga, style }: Props) {
       />
 
 
-      <Text style={styles.sectionTitle}>
-        De la même franchise
-      </Text>
+      <View
+        style={{
+          alignItems: 'center',
+          flexDirection: 'row',
+          marginHorizontal: 16,
+          marginTop: 20,
+        }}>
+        <Text
+          style={[styles.sectionTitle, {
+            flex: 1,
+            margin: 0,
+          }]}
+        >
+          De la même franchise
+        </Text>
+
+        {user && user.isAdmin ? (
+          <MaterialIcons
+            name={!franchisesEditable ? 'edit' : 'edit-off'}
+            color="#000"
+            size={24}
+            onPress={() => setFranchisesEditable((prev) => !prev)}
+          />
+        ) : null}
+      </View>
 
       <FlatList
         horizontal
         data={manga.franchises}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          if (item.destination instanceof Anime) {
-            return (
-              <View>
-                <AnimeCard
-                  anime={item.destination}
-                  onPress={() => navigation.navigate('Anime', { id: item.id })}
-                  showCheckbox={false}
-                />
-                {user && user.isAdmin ? (
-                  <MaterialIcons
-                    name="edit"
-                    color="#fff"
-                    size={24}
-                    onPress={() => navigation.navigate('FranchiseUpdate', { franchiseId: item.id })}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      right: 0,
-                      margin: 2,
-                    }}
-                  />
-                ) : null}
-              </View>
-            );
-          } else if (item.destination instanceof Manga) {
-            return (
-              <View>
-                <MangaCard
-                  manga={item.destination}
-                  onPress={() => navigation.navigate('Manga', { id: item.id })}
-                  showCheckbox={false}
-                />
-                {user && user.isAdmin ? (
-                  <MaterialIcons
-                    name="edit"
-                    color="#fff"
-                    size={24}
-                    onPress={() => navigation.navigate('FranchiseUpdate', { franchiseId: item.id })}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      right: 0,
-                      margin: 2,
-                    }}
-                  />
-                ) : null}
-              </View>
-            );
-          }
-          return null;
-        }}
+        renderItem={({ item }) => item.destination instanceof Anime ? (
+          <AnimeCard
+            anime={item.destination}
+            franchise={item}
+            editable={franchisesEditable}
+            onPress={() => {
+              if (!franchisesEditable) {
+                navigation.navigate('Anime', { id: item.id });
+              } else {
+                navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
+              }
+            }}
+            showCheckbox={false}
+          />
+        ) : item.destination instanceof Manga ? (
+          <MangaCard
+            manga={item.destination}
+            franchise={item}
+            editable={franchisesEditable}
+            onPress={() => {
+              if (!franchisesEditable) {
+                navigation.navigate('Manga', { id: item.id });
+              } else {
+                navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
+              }
+            }}
+            showCheckbox={false}
+          />
+        ) : null}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
         ListFooterComponent={() => (
