@@ -6,6 +6,7 @@ import ExpandableFloatingActionButton from '../../../components/molecules/Expand
 import SeasonCard from '../../../components/molecules/SeasonCard';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime, Episode, EpisodeEntry, Season, User } from '../../../models';
+import SeasonModal from '../modals/SeasonModal';
 
 type Props = {
   anime: Anime;
@@ -18,6 +19,7 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
   const { user } = useContext(AuthContext);
   const [expandedSeasons, setExpandedSeasons] = useState<{ [seasonId: string]: boolean }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean }>({});
+  const [selectedSeason, setSelectedSeason] = useState<Season>();
   const [previousUnwatched, setPreviousUnwatched] = useState<(Season | Episode)[]>();
 
   const findPreviousSeasonsEpisodes = (item: Season | Episode) => {
@@ -85,8 +87,9 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
               }, {} as typeof updating),
             }))}
             onEpisodeUpdatingChange={(id, value) => setUpdating((prev) => ({ ...prev, [id]: value }))}
-            onPress={() => setExpandedSeasons((prev) => ({ ...prev, [season.id]: !prev[season.id] }))}
             expanded={expandedSeasons[season.id]}
+            onExpandedChange={(value) => setExpandedSeasons((prev) => ({ ...prev, [season.id]: value }))}
+            onPress={() => setSelectedSeason(season)}
             style={{
               marginTop: 5,
               marginHorizontal: 16,
@@ -151,6 +154,12 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
           ]}
         />
       ) : null}
+
+      <SeasonModal
+        season={selectedSeason}
+        onRequestClose={() => setSelectedSeason(undefined)}
+        visible={!!selectedSeason}
+      />
 
       <Modal
         animationType="fade"

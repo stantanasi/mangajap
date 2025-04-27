@@ -15,6 +15,7 @@ type Props = PressableProps & {
   onUpdatingChange?: (value: boolean) => void;
   onEpisodeUpdatingChange?: (id: string, value: boolean) => void;
   expanded?: boolean;
+  onExpandedChange?: (value: boolean) => void;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -26,6 +27,7 @@ export default function SeasonCard({
   onUpdatingChange = () => { },
   onEpisodeUpdatingChange = () => { },
   expanded = false,
+  onExpandedChange = () => { },
   style,
   ...props
 }: Props) {
@@ -68,6 +70,7 @@ export default function SeasonCard({
           name={expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
           size={24}
           color="black"
+          onPress={() => onExpandedChange(!expanded)}
           style={{
             marginRight: 14,
           }}
@@ -130,18 +133,6 @@ export default function SeasonCard({
                 .finally(() => onUpdatingChange(false));
             }}
             loading={updating}
-            style={{
-              marginRight: 10,
-            }}
-          />
-        ) : null}
-
-        {user && user.isAdmin ? (
-          <MaterialIcons
-            name="edit"
-            color="#000"
-            size={24}
-            onPress={() => navigation.navigate('SeasonUpdate', { seasonId: season.id })}
             style={{
               marginRight: 10,
             }}
