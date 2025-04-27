@@ -1,8 +1,8 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { Modal, Pressable, SectionList, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import ChapterCard from '../../../components/molecules/ChapterCard';
+import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import VolumeCard from '../../../components/molecules/VolumeCard';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, Manga, User, Volume, VolumeEntry } from '../../../models';
@@ -142,68 +142,29 @@ export default function VolumesTab({ manga, onMangaChange, style }: Props) {
         )}
         SectionSeparatorComponent={() => <View style={{ height: 10 }} />}
         ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
-        ListFooterComponent={() => (
-          <View style={{ gap: 12 }}>
-            <Pressable
-              onPress={() => navigation.navigate('VolumeCreate', { mangaId: manga.id })}
-              style={{
-                backgroundColor: '#ddd',
-                borderRadius: 6,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                gap: 10,
-                marginHorizontal: 16,
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-              }}
-            >
-              <MaterialIcons
-                name="add"
-                color="#000"
-                size={24}
-              />
-              <Text
-                style={{
-                  fontSize: 16,
-                }}
-              >
-                Ajouter un tome
-              </Text>
-            </Pressable>
-
-            <Pressable
-              onPress={() => navigation.navigate('ChapterCreate', { mangaId: manga.id })}
-              style={{
-                backgroundColor: '#ddd',
-                borderRadius: 6,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                gap: 10,
-                marginHorizontal: 16,
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-              }}
-            >
-              <MaterialIcons
-                name="add"
-                color="#000"
-                size={24}
-              />
-              <Text
-                style={{
-                  fontSize: 16,
-                }}
-              >
-                Ajouter un chapitre
-              </Text>
-            </Pressable>
-          </View>
-        )}
         removeClippedSubviews
         contentContainerStyle={{
           paddingVertical: 11,
         }}
       />
+
+      {user && user.isAdmin ? (
+        <ExpandableFloatingActionButton
+          icon="add"
+          menuItems={[
+            {
+              icon: 'library-add',
+              label: 'Tome',
+              onPress: () => navigation.navigate('VolumeCreate', { mangaId: manga.id }),
+            },
+            {
+              icon: 'library-add',
+              label: 'Chapitre',
+              onPress: () => navigation.navigate('ChapterCreate', { mangaId: manga.id }),
+            },
+          ]}
+        />
+      ) : null}
 
       <Modal
         animationType="fade"
