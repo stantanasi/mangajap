@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StackActions, useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { FlatList, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import AnimeCard from '../../../components/molecules/AnimeCard';
@@ -8,6 +8,7 @@ import MangaCard from '../../../components/molecules/MangaCard';
 import PeopleCard from '../../../components/molecules/PeopleCard';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime, Manga } from '../../../models';
+import { AnimeType } from '../../../models/anime.model';
 
 type Props = {
   anime: Anime;
@@ -17,6 +18,8 @@ type Props = {
 export default function AboutTab({ anime, style }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
+  const [staffEditable, setStaffEditable] = useState(false);
+  const [franchisesEditable, setFranchisesEditable] = useState(false);
 
   return (
     <ScrollView
@@ -34,6 +37,44 @@ export default function AboutTab({ anime, style }: Props) {
         {anime.title}
       </Text>
 
+      <View
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          gap: 14,
+          justifyContent: 'center',
+          marginHorizontal: 16,
+          marginTop: 4,
+        }}
+      >
+        <View style={{ alignItems: 'center', flexDirection: 'row', gap: 2 }}>
+          <MaterialIcons
+            name="star"
+            color="#666"
+            size={14}
+            style={{ alignSelf: 'center' }}
+          />
+          <Text style={{ color: '#666' }}>
+            {anime.averageRating?.toFixed(1) ?? 'N/A'}
+          </Text>
+        </View>
+
+        <Text style={{ color: '#666' }}>
+          {(() => {
+            const startYear = anime.startDate.getFullYear();
+            const endYear = anime.endDate?.getFullYear();
+
+            return endYear && startYear !== endYear
+              ? `${startYear} - ${endYear}`
+              : `${startYear}`;
+          })()}
+        </Text>
+
+        <Text style={{ color: '#666' }}>
+          {AnimeType[anime.animeType]}
+        </Text>
+      </View>
+
       <View style={styles.genres}>
         {anime.genres?.map((genre) => (
           <Text
@@ -44,6 +85,10 @@ export default function AboutTab({ anime, style }: Props) {
           </Text>
         ))}
       </View>
+
+      <Text style={styles.overview}>
+        {anime.overview}
+      </Text>
 
       <View style={styles.themes}>
         {anime.themes?.map((theme) => (
@@ -56,40 +101,50 @@ export default function AboutTab({ anime, style }: Props) {
         ))}
       </View>
 
-      <Text style={styles.overview}>
-        {anime.overview}
-      </Text>
 
+      <View
+        style={{
+          alignItems: 'center',
+          flexDirection: 'row',
+          marginHorizontal: 16,
+          marginTop: 20,
+        }}>
+        <Text
+          style={[styles.sectionTitle, {
+            flex: 1,
+            margin: 0,
+          }]}
+        >
+          Staff
+        </Text>
 
-      <Text style={styles.sectionTitle}>
-        Staff
-      </Text>
+        {user && user.isAdmin ? (
+          <MaterialIcons
+            name={!staffEditable ? 'edit' : 'edit-off'}
+            color="#000"
+            size={24}
+            onPress={() => setStaffEditable((prev) => !prev)}
+          />
+        ) : null}
+      </View>
 
       <FlatList
         horizontal
         data={anime.staff}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View>
-            <PeopleCard
-              people={item.people!}
-              onPress={() => navigation.navigate('People', { id: item.people!.id })}
-            />
-            {user && user.isAdmin ? (
-              <MaterialIcons
-                name="edit"
-                color="#fff"
-                size={24}
-                onPress={() => navigation.navigate('StaffUpdate', { staffId: item.id })}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  margin: 24,
-                }}
-              />
-            ) : null}
-          </View>
+          <PeopleCard
+            people={item.people!}
+            staff={item}
+            editable={staffEditable}
+            onPress={() => {
+              if (!staffEditable) {
+                navigation.navigate('People', { id: item.people!.id })
+              } else {
+                navigation.navigate('StaffUpdate', { staffId: item.id })
+              }
+            }}
+          />
         )}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
@@ -120,66 +175,65 @@ export default function AboutTab({ anime, style }: Props) {
       />
 
 
-      <Text style={styles.sectionTitle}>
-        Franchise
-      </Text>
+      <View
+        style={{
+          alignItems: 'center',
+          flexDirection: 'row',
+          marginHorizontal: 16,
+          marginTop: 20,
+        }}>
+        <Text
+          style={[styles.sectionTitle, {
+            flex: 1,
+            margin: 0,
+          }]}
+        >
+          De la même franchise
+        </Text>
+
+        {user && user.isAdmin ? (
+          <MaterialIcons
+            name={!franchisesEditable ? 'edit' : 'edit-off'}
+            color="#000"
+            size={24}
+            onPress={() => setFranchisesEditable((prev) => !prev)}
+          />
+        ) : null}
+      </View>
 
       <FlatList
         horizontal
         data={anime.franchises}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          if (item.destination instanceof Anime) {
-            return (
-              <View>
-                <AnimeCard
-                  anime={item.destination}
-                  onPress={() => navigation.dispatch(StackActions.push('Anime', { id: item.destination!.id }))}
-                  showCheckbox={false}
-                />
-                {user && user.isAdmin ? (
-                  <MaterialIcons
-                    name="edit"
-                    color="#fff"
-                    size={24}
-                    onPress={() => navigation.navigate('FranchiseUpdate', { franchiseId: item.id })}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      right: 0,
-                      margin: 2,
-                    }}
-                  />
-                ) : null}
-              </View>
-            );
-          } else if (item.destination instanceof Manga) {
-            return (
-              <View>
-                <MangaCard
-                  manga={item.destination}
-                  onPress={() => navigation.navigate('Manga', { id: item.destination!.id })}
-                  showCheckbox={false}
-                />
-                {user && user.isAdmin ? (
-                  <MaterialIcons
-                    name="edit"
-                    color="#fff"
-                    size={24}
-                    onPress={() => navigation.navigate('FranchiseUpdate', { franchiseId: item.id })}
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      right: 0,
-                      margin: 2,
-                    }}
-                  />
-                ) : null}
-              </View>
-            );
-          }
-          return null;
-        }}
+        renderItem={({ item }) => item.destination instanceof Anime ? (
+          <AnimeCard
+            anime={item.destination}
+            franchise={item}
+            editable={franchisesEditable}
+            onPress={() => {
+              if (!franchisesEditable) {
+                navigation.dispatch(StackActions.push('Anime', { id: item.destination!.id }));
+              } else {
+                navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
+              }
+            }}
+            showCheckbox={false}
+          />
+        ) : item.destination instanceof Manga ? (
+          <MangaCard
+            manga={item.destination}
+            franchise={item}
+            editable={franchisesEditable}
+            onPress={() => {
+              if (!franchisesEditable) {
+                navigation.navigate('Manga', { id: item.destination!.id });
+              } else {
+                navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
+              }
+            }}
+            showCheckbox={false}
+          />
+        ) : null}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
         ListFooterComponent={() => (
@@ -213,27 +267,45 @@ export default function AboutTab({ anime, style }: Props) {
 const styles = StyleSheet.create({
   container: {},
   poster: {
-    width: '80%',
+    width: 225,
     alignSelf: 'center',
   },
   title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginHorizontal: 16,
+    marginTop: 20,
     textAlign: 'center',
   },
   genres: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 6,
     justifyContent: 'center',
+    marginHorizontal: 16,
+    marginTop: 8,
   },
-  genre: {},
+  genre: {
+    color: '#888',
+  },
+  overview: {
+    marginTop: 14,
+    marginHorizontal: 16,
+  },
   themes: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-    justifyContent: 'center',
+    marginHorizontal: 16,
+    marginTop: 8,
   },
-  theme: {},
-  overview: {},
+  theme: {
+    borderColor: '#ccc',
+    borderRadius: 4,
+    borderWidth: 1,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+  },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
