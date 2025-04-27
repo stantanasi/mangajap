@@ -59,7 +59,7 @@ export default function AgendaMangaScreen({ }: Props) {
         </Text>
 
         <Text
-          onPress={() => navigation.navigate('Profile', {})}
+          onPress={() => navigation.navigate('Profile')}
           style={{
             borderColor: '#000',
             borderRadius: 360,

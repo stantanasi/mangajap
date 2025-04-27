@@ -1,3 +1,4 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
@@ -74,6 +75,29 @@ export default function LibraryScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View
+        style={{
+          alignItems: 'flex-start',
+          flexDirection: 'row',
+        }}
+      >
+        <MaterialIcons
+          name="arrow-back"
+          color="#000"
+          size={24}
+          onPress={() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            } else if (typeof window !== 'undefined') {
+              window.history.back();
+            }
+          }}
+          style={{
+            padding: 12,
+          }}
+        />
+      </View>
+
       <FlatList
         data={library.map((entry) => {
           if (entry instanceof AnimeEntry) {
@@ -108,7 +132,6 @@ export default function LibraryScreen({ route }: Props) {
             />
           )
         )}
-        ListHeaderComponent={() => <View style={{ height: 16 }} />}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListFooterComponent={() => <View style={{ height: 16 }} />}
         numColumns={3}

@@ -1,6 +1,7 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -14,9 +15,32 @@ export default function SettingsScreen({ }: Props) {
     <SafeAreaView style={styles.container}>
       <ScrollView
         contentContainerStyle={{
-          paddingVertical: 16,
+          paddingBottom: 16,
         }}
       >
+        <View
+          style={{
+            alignItems: 'flex-start',
+            flexDirection: 'row',
+          }}
+        >
+          <MaterialIcons
+            name="arrow-back"
+            color="#000"
+            size={24}
+            onPress={() => {
+              if (navigation.canGoBack()) {
+                navigation.goBack();
+              } else if (typeof window !== 'undefined') {
+                window.history.back();
+              }
+            }}
+            style={{
+              padding: 12,
+            }}
+          />
+        </View>
+
         <Text
           onPress={() => {
             logout()

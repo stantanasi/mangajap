@@ -1,4 +1,5 @@
-import { StaticScreenProps } from '@react-navigation/native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { JsonApiBody } from '@stantanasi/jsonapi-client';
 import { useContext, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -14,6 +15,7 @@ import UserTab from './tabs/UserTab';
 type Props = StaticScreenProps<undefined>;
 
 export default function SearchScreen({ route }: Props) {
+  const navigation = useNavigation();
   const { isAuthenticated } = useContext(AuthContext);
   const [activeQuery, setActiveQuery] = useState('');
   const [animeTab, setAnimeTab] = useState<{
@@ -118,23 +120,42 @@ export default function SearchScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <SearchBar
-          autoFocus
-          onChangeText={() => {
-            setAnimeTab((prev) => ({ ...prev, isLoading: true }));
-            setMangaTab((prev) => ({ ...prev, isLoading: true }));
-            setPeopleTab((prev) => ({ ...prev, isLoading: true }));
-            setUserTab((prev) => ({ ...prev, isLoading: true }));
-          }}
-          onSearch={(query) => {
-            search(query)
-              .catch((err) => console.error(err));
-          }}
-          delay={500}
-          style={{
-            marginHorizontal: 16,
-          }}
-        />
+        <View style={{ alignItems: 'center', flexDirection: 'row' }}>
+          <MaterialIcons
+            name="arrow-back"
+            color="#000"
+            size={24}
+            onPress={() => {
+              if (navigation.canGoBack()) {
+                navigation.goBack();
+              } else if (typeof window !== 'undefined') {
+                window.history.back();
+              }
+            }}
+            style={{
+              padding: 12,
+            }}
+          />
+
+          <SearchBar
+            autoFocus
+            onChangeText={() => {
+              setAnimeTab((prev) => ({ ...prev, isLoading: true }));
+              setMangaTab((prev) => ({ ...prev, isLoading: true }));
+              setPeopleTab((prev) => ({ ...prev, isLoading: true }));
+              setUserTab((prev) => ({ ...prev, isLoading: true }));
+            }}
+            onSearch={(query) => {
+              search(query)
+                .catch((err) => console.error(err));
+            }}
+            delay={500}
+            style={{
+              flex: 1,
+              marginRight: 16,
+            }}
+          />
+        </View>
 
         <ScrollView
           horizontal
@@ -318,6 +339,5 @@ const styles = StyleSheet.create({
   header: {
     gap: 10,
     paddingBottom: 10,
-    paddingTop: 16,
   },
 });

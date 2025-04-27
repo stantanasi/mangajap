@@ -33,7 +33,7 @@ export default function SearchBar({
     <View style={[styles.container, style]}>
       <MaterialIcons
         name="search"
-        size={24}
+        size={20}
         color="#666"
       />
 

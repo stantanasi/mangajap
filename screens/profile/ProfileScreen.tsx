@@ -11,8 +11,8 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 
 type Props = StaticScreenProps<{
-  id?: string;
-}>;
+  id: string;
+} | undefined>;
 
 export default function ProfileScreen({ route }: Props) {
   const navigation = useNavigation();
@@ -95,18 +95,46 @@ export default function ProfileScreen({ route }: Props) {
     );
   }
 
+  console.log(route.params)
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
         contentContainerStyle={{
-          paddingVertical: 16,
+          paddingBottom: 16,
         }}
       >
+        {!!route.params ? (
+          <View
+            style={{
+              alignItems: 'flex-start',
+              flexDirection: 'row',
+            }}
+          >
+            <MaterialIcons
+              name="arrow-back"
+              color="#000"
+              size={24}
+              onPress={() => {
+                if (navigation.canGoBack()) {
+                  navigation.goBack();
+                } else if (typeof window !== 'undefined') {
+                  window.history.back();
+                }
+              }}
+              style={{
+                padding: 12,
+              }}
+            />
+          </View>
+        ) : null}
+
         <View
           style={{
             alignItems: 'center',
             flexDirection: 'row',
             marginHorizontal: 16,
+            marginTop: !route.params ? 16 : 0,
           }}
         >
           <Image

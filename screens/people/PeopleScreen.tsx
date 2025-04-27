@@ -14,18 +14,51 @@ const Header = ({ people }: { people: People }) => {
 
   return (
     <View style={styles.header}>
-      {user && user.isAdmin ? (
+      <View
+        style={{
+          alignItems: 'flex-start',
+          flexDirection: 'row',
+        }}
+      >
         <MaterialIcons
-          name="edit"
+          name="arrow-back"
           color="#000"
           size={24}
-          onPress={() => navigation.navigate('PeopleUpdate', { peopleId: people.id })}
+          onPress={() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            } else if (typeof window !== 'undefined') {
+              window.history.back();
+            }
+          }}
           style={{
-            alignSelf: 'flex-end',
-            marginRight: 16,
+            padding: 12,
           }}
         />
-      ) : null}
+
+        <Text
+          style={{
+            flex: 1,
+            fontSize: 18,
+            fontWeight: 'bold',
+            padding: 12,
+          }}
+        >
+          {people.name}
+        </Text>
+
+        {user && user.isAdmin ? (
+          <MaterialIcons
+            name="edit"
+            color="#000"
+            size={24}
+            onPress={() => navigation.navigate('PeopleUpdate', { peopleId: people.id })}
+            style={{
+              padding: 12,
+            }}
+          />
+        ) : null}
+      </View>
 
       <Image
         source={{ uri: people.portrait ?? undefined }}
@@ -99,8 +132,9 @@ export default function PeopleScreen({ route }: Props) {
               anime={item}
               onPress={() => navigation.navigate('Anime', { id: item.id })}
               variant="horizontal"
+              showCheckbox={false}
               style={{
-                marginHorizontal: 10,
+                marginHorizontal: 16,
               }}
             />
           ) : (
@@ -108,8 +142,9 @@ export default function PeopleScreen({ route }: Props) {
               manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
               variant="horizontal"
+              showCheckbox={false}
               style={{
-                marginHorizontal: 10,
+                marginHorizontal: 16,
               }}
             />
           )
@@ -130,7 +165,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    margin: 16,
+    marginBottom: 20,
   },
   image: {
     width: 180,
@@ -138,11 +173,13 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1,
     backgroundColor: '#ccc',
     borderRadius: 360,
+    marginHorizontal: 16,
   },
   name: {
     color: '#000',
     fontSize: 26,
     fontWeight: 'bold',
+    marginHorizontal: 16,
     marginTop: 16,
     textAlign: 'center',
   },
