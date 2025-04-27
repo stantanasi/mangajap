@@ -1,11 +1,11 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useState } from 'react';
-import { Pressable, PressableProps, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import FloatingActionButton from '../atoms/FloatingActionButton';
 
 type Props = PressableProps & {
   icon: React.ComponentProps<typeof MaterialIcons>['name'];
-  menuItems: Parameters<typeof FloatingActionButton>[0][];
+  menuItems: React.ComponentProps<typeof FloatingActionButton>[];
   style?: StyleProp<ViewStyle>;
 }
 
@@ -28,7 +28,7 @@ export default function ExpandableFloatingActionButton({
             left: 0,
             right: 0,
             top: 0,
-            backgroundColor: '#00000060'
+            backgroundColor: '#00000080'
           }}
         />
       ) : null}
@@ -41,15 +41,31 @@ export default function ExpandableFloatingActionButton({
               gap: 10,
             }}
           >
-            {menuItems.map((item) => (
-              <FloatingActionButton
-                size="small"
-                {...item}
-                style={[{
-                  margin: 0,
-                  position: 'relative',
-                }, item.style]}
-              />
+            {menuItems.map((item, index) => (
+              <Pressable
+                key={`expandable-fab-${index}`}
+                onPress={item.onPress}
+                style={{
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                }}
+              >
+                {item.label ? (
+                  <Text style={styles.label}>
+                    {item.label}
+                  </Text>
+                ) : null}
+
+                <FloatingActionButton
+                  size="small"
+                  {...item}
+                  label={undefined}
+                  style={[{
+                    margin: 0,
+                    position: 'relative',
+                  }, item.style]}
+                />
+              </Pressable>
             ))}
           </View>
         ) : null}
@@ -79,5 +95,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginBottom: 16,
     marginRight: 16,
+  },
+  label: {
+    position: 'absolute',
+    right: '100%',
+    color: '#fff',
+    marginRight: 10,
+    fontSize: 18,
   },
 });
