@@ -1,8 +1,8 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { Modal, Pressable, SectionList, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import EpisodeCard from '../../../components/molecules/EpisodeCard';
+import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import SeasonCard from '../../../components/molecules/SeasonCard';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime, Episode, EpisodeEntry, Season, User } from '../../../models';
@@ -128,68 +128,29 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
         )}
         SectionSeparatorComponent={() => <View style={{ height: 10 }} />}
         ItemSeparatorComponent={() => <View style={{ height: 6 }} />}
-        ListFooterComponent={() => (
-          <View style={{ gap: 12 }}>
-            <Pressable
-              onPress={() => navigation.navigate('SeasonCreate', { animeId: anime.id })}
-              style={{
-                backgroundColor: '#ddd',
-                borderRadius: 6,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                gap: 10,
-                marginHorizontal: 16,
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-              }}
-            >
-              <MaterialIcons
-                name="add"
-                color="#000"
-                size={24}
-              />
-              <Text
-                style={{
-                  fontSize: 16,
-                }}
-              >
-                Ajouter une saison
-              </Text>
-            </Pressable>
-
-            <Pressable
-              onPress={() => navigation.navigate('EpisodeCreate', { animeId: anime.id })}
-              style={{
-                backgroundColor: '#ddd',
-                borderRadius: 6,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                gap: 10,
-                marginHorizontal: 16,
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-              }}
-            >
-              <MaterialIcons
-                name="add"
-                color="#000"
-                size={24}
-              />
-              <Text
-                style={{
-                  fontSize: 16,
-                }}
-              >
-                Ajouter un épisode
-              </Text>
-            </Pressable>
-          </View>
-        )}
         removeClippedSubviews
         contentContainerStyle={{
           paddingVertical: 11,
         }}
       />
+
+      {user && user.isAdmin ? (
+        <ExpandableFloatingActionButton
+          icon="add"
+          menuItems={[
+            {
+              icon: 'library-add',
+              label: 'Saison',
+              onPress: () => navigation.navigate('SeasonCreate', { animeId: anime.id }),
+            },
+            {
+              icon: 'library-add',
+              label: 'Épisode',
+              onPress: () => navigation.navigate('EpisodeCreate', { animeId: anime.id }),
+            },
+          ]}
+        />
+      ) : null}
 
       <Modal
         animationType="fade"
