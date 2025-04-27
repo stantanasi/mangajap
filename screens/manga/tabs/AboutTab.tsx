@@ -148,7 +148,7 @@ export default function AboutTab({ manga, style }: Props) {
         )}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => (
+        ListFooterComponent={() => user && user.isAdmin ? (
           <Pressable
             onPress={() => navigation.navigate('MangaStaffCreate', { mangaId: manga.id })}
             style={{
@@ -168,7 +168,7 @@ export default function AboutTab({ manga, style }: Props) {
               size={24}
             />
           </Pressable>
-        )}
+        ) : null}
         style={{
           marginTop: 12,
         }}
@@ -236,7 +236,7 @@ export default function AboutTab({ manga, style }: Props) {
         ) : null}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => (
+        ListFooterComponent={() => user && user.isAdmin ? (
           <Pressable
             onPress={() => navigation.navigate('MangaFranchiseCreate', { mangaId: manga.id })}
             style={{
@@ -255,7 +255,7 @@ export default function AboutTab({ manga, style }: Props) {
               size={24}
             />
           </Pressable>
-        )}
+        ) : null}
         style={{
           marginTop: 12,
         }}
