@@ -1,12 +1,11 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
-import { Image, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../models';
 import Checkbox from '../atoms/Checkbox';
 
-type Props = {
+type Props = PressableProps & {
   episode: Episode;
   onEpisodeChange?: (episode: Episode) => void;
   onWatchedChange?: (value: boolean) => void;
@@ -22,12 +21,16 @@ export default function EpisodeCard({
   updating = false,
   onUpdatingChange = () => { },
   style,
+  ...props
 }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
   return (
-    <View style={[styles.container, style]}>
+    <Pressable
+      {...props}
+      style={[styles.container, style]}
+    >
       <Image
         source={{ uri: episode.poster ?? undefined }}
         style={styles.poster}
@@ -80,19 +83,7 @@ export default function EpisodeCard({
           }}
         />
       ) : null}
-
-      {user && user.isAdmin ? (
-        <MaterialIcons
-          name="edit"
-          color="#000"
-          size={24}
-          onPress={() => navigation.navigate('EpisodeUpdate', { episodeId: episode.id })}
-          style={{
-            marginRight: 10,
-          }}
-        />
-      ) : null}
-    </View>
+    </Pressable>
   );
 }
 
