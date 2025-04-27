@@ -6,6 +6,7 @@ import ExpandableFloatingActionButton from '../../../components/molecules/Expand
 import VolumeCard from '../../../components/molecules/VolumeCard';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, Manga, User, Volume, VolumeEntry } from '../../../models';
+import ChapterModal from '../modals/ChapterModal';
 import VolumeModal from '../modals/VolumeModal';
 
 type Props = {
@@ -20,6 +21,7 @@ export default function VolumesTab({ manga, onMangaChange, style }: Props) {
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean }>({});
   const [selectedVolume, setSelectedVolume] = useState<Volume>();
+  const [selectedChapter, setSelectedChapter] = useState<Chapter>();
   const [previousUnread, setPreviousUnread] = useState<(Volume | Chapter)[]>();
 
   const findPreviousVolumesChapters = (item: Volume | Chapter): (Volume | Chapter)[] => {
@@ -138,6 +140,7 @@ export default function VolumesTab({ manga, onMangaChange, style }: Props) {
             }}
             updating={updating[item.id]}
             onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [item.id]: value }))}
+            onPress={() => setSelectedChapter(item.copy({ volume: volume }))}
             style={{
               marginHorizontal: 16,
             }}
@@ -173,6 +176,12 @@ export default function VolumesTab({ manga, onMangaChange, style }: Props) {
         volume={selectedVolume}
         onRequestClose={() => setSelectedVolume(undefined)}
         visible={!!selectedVolume}
+      />
+
+      <ChapterModal
+        chapter={selectedChapter}
+        onRequestClose={() => setSelectedChapter(undefined)}
+        visible={!!selectedChapter}
       />
 
       <Modal
