@@ -86,7 +86,13 @@ export default function AnimeScreen({ route }: Props) {
             name="arrow-back"
             color="#000"
             size={24}
-            onPress={() => navigation.goBack()}
+            onPress={() => {
+              if (navigation.canGoBack()) {
+                navigation.goBack();
+              } else if (typeof window !== 'undefined') {
+                window.history.back();
+              }
+            }}
             style={{
               padding: 12,
             }}
