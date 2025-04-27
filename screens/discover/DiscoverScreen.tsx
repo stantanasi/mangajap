@@ -179,14 +179,17 @@ export default function DiscoverScreen({ route }: Props) {
         menuItems={[
           {
             icon: 'tv',
+            label: 'Animé',
             onPress: () => navigation.navigate('AnimeCreate'),
           },
           {
             icon: 'menu-book',
+            label: 'Manga',
             onPress: () => navigation.navigate('MangaCreate'),
           },
           {
             icon: 'person',
+            label: 'Personnalité',
             onPress: () => navigation.navigate('PeopleCreate'),
           },
         ]}
