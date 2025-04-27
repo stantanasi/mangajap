@@ -101,14 +101,28 @@ export default function VolumeModal({ volume, onRequestClose, visible }: Props) 
       >
         <MaterialIcons
           name="calendar-month"
-          color={styles.publishedDate.color}
+          color={styles.date.color}
           size={20}
           style={{
             marginRight: 4,
           }}
         />
-        <Text style={styles.publishedDate}>
+        <Text style={styles.date}>
           {volume.publishedDate?.toLocaleDateString() ?? 'Indisponible'}
+        </Text>
+
+        <View style={{ flex: 1 }} />
+
+        <MaterialIcons
+          name="visibility"
+          color={styles.date.color}
+          size={20}
+          style={{
+            marginRight: 4,
+          }}
+        />
+        <Text style={styles.date}>
+          {volume['volume-entry']?.readDate.toLocaleDateString() ?? 'Pas lu'}
         </Text>
       </View>
 
@@ -144,7 +158,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     textAlign: 'center',
   },
-  publishedDate: {
+  date: {
     color: '#666',
   },
   overview: {

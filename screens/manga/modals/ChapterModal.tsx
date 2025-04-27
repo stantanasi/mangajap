@@ -122,7 +122,7 @@ export default function ChapterModal({ chapter, onRequestClose, visible }: Props
           }}
         />
         <Text style={styles.date}>
-          {chapter['chapter-entry']?.readDate.toLocaleDateString() ?? 'Pas vu'}
+          {chapter['chapter-entry']?.readDate.toLocaleDateString() ?? 'Pas lu'}
         </Text>
       </View>
 
