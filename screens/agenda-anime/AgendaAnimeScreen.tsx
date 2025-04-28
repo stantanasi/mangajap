@@ -2,9 +2,9 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AnimeAgendaCard from '../../components/molecules/AnimeAgendaCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, User } from '../../models';
+import AnimeAgendaCard from './components/AnimeAgendaCard';
 
 type Props = StaticScreenProps<undefined>;
 

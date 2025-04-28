@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { Manga } from '../../models';
-import ProgressBar from '../atoms/ProgressBar';
+import ProgressBar from '../../../components/atoms/ProgressBar';
+import { Manga } from '../../../models';
 
 type Props = PressableProps & {
   manga: Manga;
