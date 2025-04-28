@@ -1,10 +1,10 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../contexts/AuthContext';
-import { Anime, AnimeEntry, User } from '../../models';
+import { Anime } from '../../models';
+import AddAnimeButton from './components/AddAnimeButton';
 import Header from './components/Header';
 import AboutTab from './tabs/AboutTab';
 import EpisodesTab from './tabs/EpisodesTab';
@@ -98,73 +98,10 @@ export default function AnimeScreen({ route }: Props) {
       />
 
       {user && !anime['anime-entry']?.isAdd ? (
-        <Pressable
-          onPress={() => {
-            setIsUpdating(true);
-
-            const updateAnimeEntry = async () => {
-              if (anime['anime-entry']) {
-                const animeEntry = anime['anime-entry'].copy({
-                  isAdd: true,
-                });
-                await animeEntry.save();
-
-                setAnime((prev) => prev?.copy({
-                  'anime-entry': animeEntry,
-                }));
-              } else {
-                const animeEntry = new AnimeEntry({
-                  isAdd: true,
-
-                  user: new User({ id: user.id }),
-                  anime: anime,
-                });
-                await animeEntry.save();
-
-                setAnime((prev) => prev?.copy({
-                  'anime-entry': animeEntry,
-                }));
-              }
-            };
-
-            updateAnimeEntry()
-              .catch((err) => console.error(err))
-              .finally(() => setIsUpdating(false));
-          }}
-          style={{
-            alignItems: 'center',
-            backgroundColor: '#4281f5',
-            flexDirection: 'row',
-            gap: 10,
-            justifyContent: 'center',
-            padding: 16,
-          }}
-        >
-          {!isUpdating ? (
-            <MaterialIcons
-              name="add"
-              color="#fff"
-              size={24}
-            />
-          ) : (
-            <ActivityIndicator
-              animating
-              color="#fff"
-              size={24}
-            />
-          )}
-
-          <Text
-            style={{
-              color: '#fff',
-              fontSize: 16,
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-            }}
-          >
-            Ajouter l'animé
-          </Text>
-        </Pressable>
+        <AddAnimeButton
+          anime={anime}
+          onAnimeChange={(anime) => setAnime(anime)}
+        />
       ) : null}
     </SafeAreaView>
   );
