@@ -6,6 +6,7 @@ import * as Linking from "expo-linking";
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { Image, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import AgendaAnimeScreen from './screens/agenda-anime/AgendaAnimeScreen';
@@ -354,7 +355,21 @@ function AppContent() {
   }, [isAuthReady, isAppReady]);
 
   if (!isAuthReady || !isAppReady) {
-    return null;
+    if (Platform.OS === 'web') {
+      return (
+        <Image
+          source={require('./assets/splash.png')}
+          resizeMode="contain"
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#ffffff',
+          }}
+        />
+      );
+    } else {
+      return null;
+    }
   }
 
   return (
