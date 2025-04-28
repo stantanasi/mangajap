@@ -3,17 +3,30 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
+import Checkbox from '../../../components/atoms/Checkbox';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { Chapter } from '../../../models';
+import { Chapter, ChapterEntry, User } from '../../../models';
 
 type Props = {
   chapter: Chapter | undefined;
+  onChapterChange?: (chapter: Chapter) => void;
+  onReadChange?: (value: boolean) => void;
+  updating?: boolean;
+  onUpdatingChange?: (value: boolean) => void;
   onRequestClose: () => void;
   visible: boolean;
 }
 
-export default function ChapterModal({ chapter, onRequestClose, visible }: Props) {
+export default function ChapterModal({
+  chapter,
+  onChapterChange = () => { },
+  onReadChange = () => { },
+  updating = false,
+  onUpdatingChange = () => { },
+  onRequestClose,
+  visible,
+}: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
@@ -33,6 +46,36 @@ export default function ChapterModal({ chapter, onRequestClose, visible }: Props
       </Modal>
     );
   }
+
+  const updateChapterEntry = async (add: boolean) => {
+    if (!user) return
+
+    const chapterEntry = await (async () => {
+      if (add && !chapter['chapter-entry']) {
+        const chapterEntry = new ChapterEntry({
+          user: new User({ id: user.id }),
+          chapter: chapter,
+        });
+        await chapterEntry.save();
+
+        return chapterEntry;
+      } else if (!add && chapter['chapter-entry']) {
+        await chapter['chapter-entry'].delete();
+
+        return null;
+      }
+
+      return chapter['chapter-entry'];
+    })()
+      .catch((err) => {
+        console.error(err);
+        return chapter['chapter-entry'];
+      });
+
+    onChapterChange(chapter.copy({
+      'chapter-entry': chapterEntry,
+    }));
+  };
 
   return (
     <Modal
@@ -96,34 +139,50 @@ export default function ChapterModal({ chapter, onRequestClose, visible }: Props
           borderTopColor: '#ccc',
           borderTopWidth: 1,
           flexDirection: 'row',
+          gap: 16,
           padding: 12,
         }}
       >
-        <MaterialIcons
-          name="calendar-month"
-          color={styles.date.color}
-          size={20}
-          style={{
-            marginRight: 4,
-          }}
-        />
-        <Text style={styles.date}>
-          {chapter.publishedDate?.toLocaleDateString() ?? 'Indisponible'}
-        </Text>
+        <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
+          <MaterialIcons
+            name="calendar-month"
+            color={styles.date.color}
+            size={20}
+          />
+          <Text style={styles.date}>
+            {chapter.publishedDate?.toLocaleDateString() ?? 'Indisponible'}
+          </Text>
+        </View>
 
-        <View style={{ flex: 1 }} />
+        {user ? (
+          <>
+            <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
+              <MaterialIcons
+                name="visibility"
+                color={styles.date.color}
+                size={20}
+              />
+              <Text style={styles.date}>
+                {chapter['chapter-entry']?.readDate.toLocaleDateString() ?? 'Pas lu'}
+              </Text>
+            </View>
 
-        <MaterialIcons
-          name="visibility"
-          color={styles.date.color}
-          size={20}
-          style={{
-            marginRight: 4,
-          }}
-        />
-        <Text style={styles.date}>
-          {chapter['chapter-entry']?.readDate.toLocaleDateString() ?? 'Pas lu'}
-        </Text>
+            <View style={{ flex: 1 }} />
+
+            <Checkbox
+              value={!!chapter['chapter-entry']}
+              onValueChange={(value) => {
+                onReadChange(value);
+                onUpdatingChange(true);
+
+                updateChapterEntry(value)
+                  .catch((err) => console.error(err))
+                  .finally(() => onUpdatingChange(false));
+              }}
+              loading={updating}
+            />
+          </>
+        ) : null}
       </View>
 
       <Text style={styles.overview}>

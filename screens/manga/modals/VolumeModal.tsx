@@ -3,17 +3,32 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
+import Checkbox from '../../../components/atoms/Checkbox';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { Volume } from '../../../models';
+import { ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
 
 type Props = {
   volume: Volume | undefined;
+  onVolumeChange?: (volume: Volume) => void;
+  onReadChange?: (value: boolean) => void;
+  updating?: boolean;
+  onUpdatingChange?: (value: boolean) => void;
+  onChapterUpdatingChange?: (id: string, value: boolean) => void;
   onRequestClose: () => void;
   visible: boolean;
 }
 
-export default function VolumeModal({ volume, onRequestClose, visible }: Props) {
+export default function VolumeModal({
+  volume,
+  onVolumeChange = () => { },
+  onReadChange = () => { },
+  updating = false,
+  onUpdatingChange = () => { },
+  onChapterUpdatingChange = () => { },
+  onRequestClose,
+  visible,
+}: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
@@ -33,6 +48,68 @@ export default function VolumeModal({ volume, onRequestClose, visible }: Props) 
       </Modal>
     );
   }
+
+  const updateVolumeEntry = async (add: boolean) => {
+    if (!user) return
+
+    const volumeEntry = await (async () => {
+      if (add && !volume['volume-entry']) {
+        const volumeEntry = new VolumeEntry({
+          user: new User({ id: user.id }),
+          volume: volume,
+        });
+        await volumeEntry.save();
+
+        return volumeEntry;
+      } else if (!add && volume['volume-entry']) {
+        await volume['volume-entry'].delete();
+
+        return null;
+      }
+
+      return volume['volume-entry'];
+    })()
+      .catch((err) => {
+        console.error(err);
+        return volume['volume-entry'];
+      });
+
+    const chapters = await Promise.all(volume.chapters?.map(async (chapter, i) => {
+      if (add && !chapter['chapter-entry']) {
+        onChapterUpdatingChange(chapter.id, true);
+
+        const chapterEntry = new ChapterEntry({
+          user: new User({ id: user.id }),
+          chapter: chapter,
+        });
+
+        return chapterEntry.save()
+          .then((entry) => chapter.copy({ 'chapter-entry': entry }))
+          .catch((err) => {
+            console.error(err);
+            return chapter;
+          })
+          .finally(() => onChapterUpdatingChange(chapter.id, false));
+      } else if (!add && chapter['chapter-entry']) {
+        onChapterUpdatingChange(chapter.id, true);
+
+        return chapter['chapter-entry'].delete()
+          .then(() => chapter.copy({ 'chapter-entry': null }))
+          .catch((err) => {
+            console.error(err);
+            return chapter;
+          })
+          .finally(() => onChapterUpdatingChange(chapter.id, false));
+      }
+
+      return chapter;
+    }) ?? []);
+
+    onVolumeChange(volume.copy({
+      chapters: chapters,
+      'volume-entry': volumeEntry,
+    }));
+  };
 
   return (
     <Modal
@@ -96,34 +173,50 @@ export default function VolumeModal({ volume, onRequestClose, visible }: Props) 
           borderTopColor: '#ccc',
           borderTopWidth: 1,
           flexDirection: 'row',
+          gap: 16,
           padding: 12,
         }}
       >
-        <MaterialIcons
-          name="calendar-month"
-          color={styles.date.color}
-          size={20}
-          style={{
-            marginRight: 4,
-          }}
-        />
-        <Text style={styles.date}>
-          {volume.publishedDate?.toLocaleDateString() ?? 'Indisponible'}
-        </Text>
+        <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
+          <MaterialIcons
+            name="calendar-month"
+            color={styles.date.color}
+            size={20}
+          />
+          <Text style={styles.date}>
+            {volume.publishedDate?.toLocaleDateString() ?? 'Indisponible'}
+          </Text>
+        </View>
 
-        <View style={{ flex: 1 }} />
+        {user ? (
+          <>
+            <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
+              <MaterialIcons
+                name="visibility"
+                color={styles.date.color}
+                size={20}
+              />
+              <Text style={styles.date}>
+                {volume['volume-entry']?.readDate.toLocaleDateString() ?? 'Pas lu'}
+              </Text>
+            </View>
 
-        <MaterialIcons
-          name="visibility"
-          color={styles.date.color}
-          size={20}
-          style={{
-            marginRight: 4,
-          }}
-        />
-        <Text style={styles.date}>
-          {volume['volume-entry']?.readDate.toLocaleDateString() ?? 'Pas lu'}
-        </Text>
+            <View style={{ flex: 1 }} />
+
+            <Checkbox
+              value={!!volume['volume-entry']}
+              onValueChange={(value) => {
+                onReadChange(value);
+                onUpdatingChange(true);
+
+                updateVolumeEntry(value)
+                  .catch((err) => console.error(err))
+                  .finally(() => onUpdatingChange(false));
+              }}
+              loading={updating}
+            />
+          </>
+        ) : null}
       </View>
 
       <Text style={styles.overview}>

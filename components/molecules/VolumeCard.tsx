@@ -41,6 +41,68 @@ export default function VolumeCard({
     ? (chaptersReadCount / chaptersCount) * 100
     : volume['volume-entry'] ? 100 : 0;
 
+  const updateVolumeEntry = async (add: boolean) => {
+    if (!user) return
+
+    const volumeEntry = await (async () => {
+      if (add && !volume['volume-entry']) {
+        const volumeEntry = new VolumeEntry({
+          user: new User({ id: user.id }),
+          volume: volume,
+        });
+        await volumeEntry.save();
+
+        return volumeEntry;
+      } else if (!add && volume['volume-entry']) {
+        await volume['volume-entry'].delete();
+
+        return null;
+      }
+
+      return volume['volume-entry'];
+    })()
+      .catch((err) => {
+        console.error(err);
+        return volume['volume-entry'];
+      });
+
+    const chapters = await Promise.all(volume.chapters?.map(async (chapter, i) => {
+      if (add && !chapter['chapter-entry']) {
+        onChapterUpdatingChange(chapter.id, true);
+
+        const chapterEntry = new ChapterEntry({
+          user: new User({ id: user.id }),
+          chapter: chapter,
+        });
+
+        return chapterEntry.save()
+          .then((entry) => chapter.copy({ 'chapter-entry': entry }))
+          .catch((err) => {
+            console.error(err);
+            return chapter;
+          })
+          .finally(() => onChapterUpdatingChange(chapter.id, false));
+      } else if (!add && chapter['chapter-entry']) {
+        onChapterUpdatingChange(chapter.id, true);
+
+        return chapter['chapter-entry'].delete()
+          .then(() => chapter.copy({ 'chapter-entry': null }))
+          .catch((err) => {
+            console.error(err);
+            return chapter;
+          })
+          .finally(() => onChapterUpdatingChange(chapter.id, false));
+      }
+
+      return chapter;
+    }) ?? []);
+
+    onVolumeChange(volume.copy({
+      chapters: chapters,
+      'volume-entry': volumeEntry,
+    }));
+  };
+
   return (
     <Pressable
       {...props}
@@ -97,65 +159,7 @@ export default function VolumeCard({
               onReadChange(value);
               onUpdatingChange(true);
 
-              const updateVolumeEntry = async () => {
-                if (value && !volume['volume-entry']) {
-                  const volumeEntry = new VolumeEntry({
-                    user: new User({ id: user.id }),
-                    volume: volume,
-                  });
-                  await volumeEntry.save();
-
-                  onVolumeChange(volume.copy({
-                    'volume-entry': volumeEntry,
-                  }));
-                } else if (!value && volume['volume-entry']) {
-                  await volume['volume-entry'].delete();
-
-                  onVolumeChange(volume.copy({
-                    'volume-entry': null,
-                  }));
-                }
-              };
-
-              const updateVolumeChaptersEntries = async () => {
-                const chapters = await Promise.all(volume.chapters?.map(async (chapter, i) => {
-                  if (value && !chapter['chapter-entry']) {
-                    onChapterUpdatingChange(chapter.id, true);
-
-                    const chapterEntry = new ChapterEntry({
-                      user: new User({ id: user.id }),
-                      chapter: chapter,
-                    });
-
-                    return chapterEntry.save()
-                      .then((entry) => chapter.copy({ 'chapter-entry': entry }))
-                      .catch((err) => {
-                        console.error(err);
-                        return chapter;
-                      })
-                      .finally(() => onChapterUpdatingChange(chapter.id, false));
-                  } else if (!value && chapter['chapter-entry']) {
-                    onChapterUpdatingChange(chapter.id, true);
-
-                    return chapter['chapter-entry'].delete()
-                      .then(() => chapter.copy({ 'chapter-entry': null }))
-                      .catch((err) => {
-                        console.error(err);
-                        return chapter;
-                      })
-                      .finally(() => onChapterUpdatingChange(chapter.id, false));
-                  }
-
-                  return chapter;
-                }) ?? []);
-
-                onVolumeChange(volume.copy({
-                  chapters: chapters,
-                }));
-              };
-
-              updateVolumeEntry()
-                .then(() => updateVolumeChaptersEntries())
+              updateVolumeEntry(value)
                 .catch((err) => console.error(err))
                 .finally(() => onUpdatingChange(false));
             }}
