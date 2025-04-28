@@ -26,6 +26,36 @@ export default function EpisodeCard({
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
+  const updateEpisodeEntry = async (add: boolean) => {
+    if (!user) return
+
+    const episodeEntry = await (async () => {
+      if (add && !episode['episode-entry']) {
+        const episodeEntry = new EpisodeEntry({
+          user: new User({ id: user.id }),
+          episode: episode,
+        });
+        await episodeEntry.save();
+
+        return episodeEntry;
+      } else if (!add && episode['episode-entry']) {
+        await episode['episode-entry'].delete();
+
+        return null;
+      }
+
+      return episode['episode-entry'];
+    })()
+      .catch((err) => {
+        console.error(err);
+        return episode['episode-entry'];
+      });
+
+    onEpisodeChange(episode.copy({
+      'episode-entry': episodeEntry,
+    }));
+  };
+
   return (
     <Pressable
       {...props}
@@ -53,27 +83,7 @@ export default function EpisodeCard({
             onWatchedChange(value);
             onUpdatingChange(true);
 
-            const updateEpisodeEntry = async () => {
-              if (value && !episode['episode-entry']) {
-                const episodeEntry = new EpisodeEntry({
-                  user: new User({ id: user.id }),
-                  episode: episode,
-                });
-                await episodeEntry.save();
-
-                onEpisodeChange(episode.copy({
-                  'episode-entry': episodeEntry,
-                }));
-              } else if (!value && episode['episode-entry']) {
-                await episode['episode-entry'].delete();
-
-                onEpisodeChange(episode.copy({
-                  'episode-entry': null,
-                }));
-              }
-            };
-
-            updateEpisodeEntry()
+            updateEpisodeEntry(value)
               .catch((err) => console.error(err))
               .finally(() => onUpdatingChange(false));
           }}
