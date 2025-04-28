@@ -26,6 +26,36 @@ export default function ChapterCard({
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
+  const updateChapterEntry = async (add: boolean) => {
+    if (!user) return
+
+    const chapterEntry = await (async () => {
+      if (add && !chapter['chapter-entry']) {
+        const chapterEntry = new ChapterEntry({
+          user: new User({ id: user.id }),
+          chapter: chapter,
+        });
+        await chapterEntry.save();
+
+        return chapterEntry;
+      } else if (!add && chapter['chapter-entry']) {
+        await chapter['chapter-entry'].delete();
+
+        return null;
+      }
+
+      return chapter['chapter-entry'];
+    })()
+      .catch((err) => {
+        console.error(err);
+        return chapter['chapter-entry'];
+      });
+
+    onChapterChange(chapter.copy({
+      'chapter-entry': chapterEntry,
+    }));
+  };
+
   return (
     <Pressable
       {...props}
@@ -53,27 +83,7 @@ export default function ChapterCard({
             onReadChange(value);
             onUpdatingChange(true);
 
-            const updateChapterEntry = async () => {
-              if (value && !chapter['chapter-entry']) {
-                const chapterEntry = new ChapterEntry({
-                  user: new User({ id: user.id }),
-                  chapter: chapter,
-                });
-                await chapterEntry.save();
-
-                onChapterChange(chapter.copy({
-                  'chapter-entry': chapterEntry,
-                }));
-              } else if (!value && chapter['chapter-entry']) {
-                await chapter['chapter-entry'].delete();
-
-                onChapterChange(chapter.copy({
-                  'chapter-entry': null,
-                }));
-              }
-            };
-
-            updateChapterEntry()
+            updateChapterEntry(value)
               .catch((err) => console.error(err))
               .finally(() => onUpdatingChange(false));
           }}
