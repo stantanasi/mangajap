@@ -3,17 +3,30 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
+import Checkbox from '../../../components/atoms/Checkbox';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { Episode } from '../../../models';
+import { Episode, EpisodeEntry, User } from '../../../models';
 
 type Props = {
   episode: Episode | undefined;
+  onEpisodeChange?: (episode: Episode) => void;
+  onWatchedChange?: (value: boolean) => void;
+  updating?: boolean;
+  onUpdatingChange?: (value: boolean) => void;
   onRequestClose: () => void;
   visible: boolean;
 }
 
-export default function EpisodeModal({ episode, onRequestClose, visible }: Props) {
+export default function EpisodeModal({
+  episode,
+  onEpisodeChange = () => { },
+  onWatchedChange = () => { },
+  updating = false,
+  onUpdatingChange = () => { },
+  onRequestClose,
+  visible,
+}: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
@@ -33,6 +46,36 @@ export default function EpisodeModal({ episode, onRequestClose, visible }: Props
       </Modal>
     );
   }
+
+  const updateEpisodeEntry = async (add: boolean) => {
+    if (!user) return
+
+    const episodeEntry = await (async () => {
+      if (add && !episode['episode-entry']) {
+        const episodeEntry = new EpisodeEntry({
+          user: new User({ id: user.id }),
+          episode: episode,
+        });
+        await episodeEntry.save();
+
+        return episodeEntry;
+      } else if (!add && episode['episode-entry']) {
+        await episode['episode-entry'].delete();
+
+        return null;
+      }
+
+      return episode['episode-entry'];
+    })()
+      .catch((err) => {
+        console.error(err);
+        return episode['episode-entry'];
+      });
+
+    onEpisodeChange(episode.copy({
+      'episode-entry': episodeEntry,
+    }));
+  };
 
   return (
     <Modal
@@ -96,34 +139,50 @@ export default function EpisodeModal({ episode, onRequestClose, visible }: Props
           borderTopColor: '#ccc',
           borderTopWidth: 1,
           flexDirection: 'row',
+          gap: 16,
           padding: 12,
         }}
       >
-        <MaterialIcons
-          name="calendar-month"
-          color={styles.date.color}
-          size={20}
-          style={{
-            marginRight: 4,
-          }}
-        />
-        <Text style={styles.date}>
-          {episode.airDate?.toLocaleDateString() ?? 'Indisponible'}
-        </Text>
+        <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
+          <MaterialIcons
+            name="calendar-month"
+            color={styles.date.color}
+            size={20}
+          />
+          <Text style={styles.date}>
+            {episode.airDate?.toLocaleDateString() ?? 'Indisponible'}
+          </Text>
+        </View>
 
-        <View style={{ flex: 1 }} />
+        {user ? (
+          <>
+            <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
+              <MaterialIcons
+                name="visibility"
+                color={styles.date.color}
+                size={20}
+              />
+              <Text style={styles.date}>
+                {episode['episode-entry']?.watchedDate.toLocaleDateString() ?? 'Pas vu'}
+              </Text>
+            </View>
 
-        <MaterialIcons
-          name="visibility"
-          color={styles.date.color}
-          size={20}
-          style={{
-            marginRight: 4,
-          }}
-        />
-        <Text style={styles.date}>
-          {episode['episode-entry']?.watchedDate.toLocaleDateString() ?? 'Pas vu'}
-        </Text>
+            <View style={{ flex: 1 }} />
+
+            <Checkbox
+              value={!!episode['episode-entry']}
+              onValueChange={(value) => {
+                onWatchedChange(value);
+                onUpdatingChange(true);
+
+                updateEpisodeEntry(value)
+                  .catch((err) => console.error(err))
+                  .finally(() => onUpdatingChange(false));
+              }}
+              loading={updating}
+            />
+          </>
+        ) : null}
       </View>
 
       <Text style={styles.overview}>
