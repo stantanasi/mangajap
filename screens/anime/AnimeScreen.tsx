@@ -1,12 +1,11 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ProgressBar from '../../components/atoms/ProgressBar';
-import TabBar from '../../components/atoms/TabBar';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, AnimeEntry, User } from '../../models';
+import Header from './components/Header';
 import AboutTab from './tabs/AboutTab';
 import EpisodesTab from './tabs/EpisodesTab';
 
@@ -69,72 +68,17 @@ export default function AnimeScreen({ route }: Props) {
     );
   }
 
-  const progress = anime['anime-entry']
-    ? (anime['anime-entry'].episodesWatch / anime.episodeCount) * 100
-    : 0;
-
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View
-          style={{
-            alignItems: 'flex-start',
-            flexDirection: 'row',
-          }}
-        >
-          <MaterialIcons
-            name="arrow-back"
-            color="#000"
-            size={24}
-            onPress={() => {
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else if (typeof window !== 'undefined') {
-                window.history.back();
-              }
-            }}
-            style={{
-              padding: 12,
-            }}
-          />
-
-          <Text
-            style={{
-              flex: 1,
-              fontSize: 18,
-              fontWeight: 'bold',
-              padding: 12,
-            }}
-          >
-            {anime.title}
-          </Text>
-
-          {user && user.isAdmin ? (
-            <MaterialIcons
-              name="edit"
-              color="#000"
-              size={24}
-              onPress={() => navigation.navigate('AnimeUpdate', { id: anime.id })}
-              style={{
-                padding: 12,
-              }}
-            />
-          ) : null}
-        </View>
-
-        <ProgressBar
-          progress={progress}
-        />
-
-        <TabBar
-          selected={selectedTab}
-          tabs={[
-            { key: 'about', title: 'À propos' },
-            { key: 'episodes', title: 'Épisodes' },
-          ]}
-          onTabChange={(key) => setSelectedTab(key)}
-        />
-      </View>
+      <Header
+        anime={anime}
+        tabs={[
+          { key: 'about', title: 'À propos' },
+          { key: 'episodes', title: 'Épisodes' },
+        ]}
+        selectedTab={selectedTab}
+        onTabSelect={(tab) => setSelectedTab(tab)}
+      />
 
       <AboutTab
         anime={anime}
