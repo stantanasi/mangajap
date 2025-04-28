@@ -1,10 +1,10 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../contexts/AuthContext';
-import { Manga, MangaEntry, User } from '../../models';
+import { Manga } from '../../models';
+import AddMangaButton from './components/AddMangaButton';
 import Header from './components/Header';
 import AboutTab from './tabs/AboutTab';
 import VolumesTab from './tabs/VolumesTab';
@@ -18,7 +18,6 @@ export default function MangaScreen({ route }: Props) {
   const { isAuthenticated, user } = useContext(AuthContext);
   const [manga, setManga] = useState<Manga>();
   const [selectedTab, setSelectedTab] = useState<'about' | 'volumes'>('about');
-  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const prepare = async () => {
@@ -103,73 +102,10 @@ export default function MangaScreen({ route }: Props) {
       />
 
       {user && !manga['manga-entry']?.isAdd ? (
-        <Pressable
-          onPress={() => {
-            setIsUpdating(true);
-
-            const updateMangaEntry = async () => {
-              if (manga['manga-entry']) {
-                const mangaEntry = manga['manga-entry'].copy({
-                  isAdd: true,
-                });
-                await mangaEntry.save();
-
-                setManga((prev) => prev?.copy({
-                  'manga-entry': mangaEntry,
-                }));
-              } else {
-                const mangaEntry = new MangaEntry({
-                  isAdd: true,
-
-                  user: new User({ id: user.id }),
-                  manga: manga,
-                });
-                await mangaEntry.save();
-
-                setManga((prev) => prev?.copy({
-                  'manga-entry': mangaEntry,
-                }));
-              }
-            };
-
-            updateMangaEntry()
-              .catch((err) => console.error(err))
-              .finally(() => setIsUpdating(false));
-          }}
-          style={{
-            alignItems: 'center',
-            backgroundColor: '#4281f5',
-            flexDirection: 'row',
-            gap: 10,
-            justifyContent: 'center',
-            padding: 16,
-          }}
-        >
-          {!isUpdating ? (
-            <MaterialIcons
-              name="add"
-              color="#fff"
-              size={24}
-            />
-          ) : (
-            <ActivityIndicator
-              animating
-              color="#fff"
-              size={24}
-            />
-          )}
-
-          <Text
-            style={{
-              color: '#fff',
-              fontSize: 16,
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-            }}
-          >
-            Ajouter le manga
-          </Text>
-        </Pressable>
+        <AddMangaButton
+          manga={manga}
+          onMangaChange={(manga) => setManga(manga)}
+        />
       ) : null}
     </SafeAreaView>
   );
