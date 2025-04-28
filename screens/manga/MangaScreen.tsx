@@ -1,12 +1,11 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ProgressBar from '../../components/atoms/ProgressBar';
-import TabBar from '../../components/atoms/TabBar';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Manga, MangaEntry, User } from '../../models';
+import Header from './components/Header';
 import AboutTab from './tabs/AboutTab';
 import VolumesTab from './tabs/VolumesTab';
 
@@ -76,66 +75,15 @@ export default function MangaScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View
-          style={{
-            alignItems: 'flex-start',
-            flexDirection: 'row',
-          }}
-        >
-          <MaterialIcons
-            name="arrow-back"
-            color="#000"
-            size={24}
-            onPress={() => {
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else if (typeof window !== 'undefined') {
-                window.history.back();
-              }
-            }}
-            style={{
-              padding: 12,
-            }}
-          />
-
-          <Text
-            style={{
-              flex: 1,
-              fontSize: 18,
-              fontWeight: 'bold',
-              padding: 12,
-            }}
-          >
-            {manga.title}
-          </Text>
-
-          {user && user.isAdmin ? (
-            <MaterialIcons
-              name="edit"
-              color="#000"
-              size={24}
-              onPress={() => navigation.navigate('MangaUpdate', { id: manga.id })}
-              style={{
-                padding: 12,
-              }}
-            />
-          ) : null}
-        </View>
-
-        <ProgressBar
-          progress={progress}
-        />
-
-        <TabBar
-          selected={selectedTab}
-          tabs={[
-            { key: 'about', title: 'À propos' },
-            { key: 'volumes', title: 'Tomes' },
-          ]}
-          onTabChange={(key) => setSelectedTab(key)}
-        />
-      </View>
+      <Header
+        manga={manga}
+        tabs={[
+          { key: 'about', title: 'À propos' },
+          { key: 'volumes', title: 'Tomes' },
+        ]}
+        selectedTab={selectedTab}
+        onTabSelect={(tab) => setSelectedTab(tab)}
+      />
 
       <AboutTab
         manga={manga}
