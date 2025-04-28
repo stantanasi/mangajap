@@ -41,6 +41,45 @@ export default function SeasonCard({
     ? (episodesWatchedCount / episodesCount) * 100
     : 0;
 
+  const updateSeasonEpisodesEntries = async (add: boolean) => {
+    if (!user) return
+
+    const episodes = await Promise.all(season.episodes?.map(async (episode) => {
+      if (add && !episode['episode-entry']) {
+        onEpisodeUpdatingChange(episode.id, true);
+
+        const episodeEntry = new EpisodeEntry({
+          user: new User({ id: user.id }),
+          episode: episode,
+        });
+
+        return episodeEntry.save()
+          .then((entry) => episode.copy({ 'episode-entry': entry }))
+          .catch((err) => {
+            console.error(err);
+            return episode;
+          })
+          .finally(() => onEpisodeUpdatingChange(episode.id, false));
+      } else if (!add && episode['episode-entry']) {
+        onEpisodeUpdatingChange(episode.id, true);
+
+        return episode['episode-entry'].delete()
+          .then(() => episode.copy({ 'episode-entry': null }))
+          .catch((err) => {
+            console.error(err);
+            return episode;
+          })
+          .finally(() => onEpisodeUpdatingChange(episode.id, false));
+      }
+
+      return episode;
+    }) ?? []);
+
+    onSeasonChange(season.copy({
+      episodes: episodes,
+    }));
+  };
+
   return (
     <Pressable
       {...props}
@@ -91,44 +130,7 @@ export default function SeasonCard({
               onWatchedChange(value);
               onUpdatingChange(true);
 
-              const updateSeasonEpisodesEntries = async () => {
-                const episodes = await Promise.all(season.episodes?.map(async (episode) => {
-                  if (value && !episode['episode-entry']) {
-                    onEpisodeUpdatingChange(episode.id, true);
-
-                    const episodeEntry = new EpisodeEntry({
-                      user: new User({ id: user.id }),
-                      episode: episode,
-                    });
-
-                    return episodeEntry.save()
-                      .then((entry) => episode.copy({ 'episode-entry': entry }))
-                      .catch((err) => {
-                        console.error(err);
-                        return episode;
-                      })
-                      .finally(() => onEpisodeUpdatingChange(episode.id, false));
-                  } else if (!value && episode['episode-entry']) {
-                    onEpisodeUpdatingChange(episode.id, true);
-
-                    return episode['episode-entry'].delete()
-                      .then(() => episode.copy({ 'episode-entry': null }))
-                      .catch((err) => {
-                        console.error(err);
-                        return episode;
-                      })
-                      .finally(() => onEpisodeUpdatingChange(episode.id, false));
-                  }
-
-                  return episode;
-                }) ?? []);
-
-                onSeasonChange(season.copy({
-                  episodes: episodes,
-                }));
-              };
-
-              updateSeasonEpisodesEntries()
+              updateSeasonEpisodesEntries(value)
                 .catch((err) => console.error(err))
                 .finally(() => onUpdatingChange(false));
             }}
