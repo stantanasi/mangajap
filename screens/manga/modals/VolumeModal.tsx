@@ -49,29 +49,33 @@ export default function VolumeModal({
     );
   }
 
-  const updateVolumeEntry = async (value: boolean) => {
+  const updateVolumeEntry = async (add: boolean) => {
     if (!user) return
 
-    if (value && !volume['volume-entry']) {
-      const volumeEntry = new VolumeEntry({
-        user: new User({ id: user.id }),
-        volume: volume,
+    const volumeEntry = await (async () => {
+      if (add && !volume['volume-entry']) {
+        const volumeEntry = new VolumeEntry({
+          user: new User({ id: user.id }),
+          volume: volume,
+        });
+        await volumeEntry.save();
+
+        return volumeEntry;
+      } else if (!add && volume['volume-entry']) {
+        await volume['volume-entry'].delete();
+
+        return null;
+      }
+
+      return volume['volume-entry'];
+    })()
+      .catch((err) => {
+        console.error(err);
+        return volume['volume-entry'];
       });
-      await volumeEntry.save();
-
-      onVolumeChange(volume.copy({
-        'volume-entry': volumeEntry,
-      }));
-    } else if (!value && volume['volume-entry']) {
-      await volume['volume-entry'].delete();
-
-      onVolumeChange(volume.copy({
-        'volume-entry': null,
-      }));
-    }
 
     const chapters = await Promise.all(volume.chapters?.map(async (chapter, i) => {
-      if (value && !chapter['chapter-entry']) {
+      if (add && !chapter['chapter-entry']) {
         onChapterUpdatingChange(chapter.id, true);
 
         const chapterEntry = new ChapterEntry({
@@ -86,7 +90,7 @@ export default function VolumeModal({
             return chapter;
           })
           .finally(() => onChapterUpdatingChange(chapter.id, false));
-      } else if (!value && chapter['chapter-entry']) {
+      } else if (!add && chapter['chapter-entry']) {
         onChapterUpdatingChange(chapter.id, true);
 
         return chapter['chapter-entry'].delete()
@@ -103,6 +107,7 @@ export default function VolumeModal({
 
     onVolumeChange(volume.copy({
       chapters: chapters,
+      'volume-entry': volumeEntry,
     }));
   };
 
