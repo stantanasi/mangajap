@@ -160,6 +160,35 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
 
       <SeasonModal
         season={selectedSeason}
+        onSeasonChange={(season) => {
+          onAnimeChange(anime.copy({
+            seasons: anime.seasons?.map((s) => s.id === season.id ? season : s),
+          }));
+          setSelectedSeason(season);
+        }}
+        onWatchedChange={(value) => {
+          if (!value) return
+
+          const previousUnwatched = findPreviousSeasonsEpisodes(selectedSeason!)
+            .filter((value) => value instanceof Season
+              ? value.episodes!.some((e) => !e['episode-entry'])
+              : !value['episode-entry']
+            );
+
+          if (previousUnwatched.length > 0) {
+            setPreviousUnwatched(previousUnwatched);
+          }
+        }}
+        updating={selectedSeason ? updating[selectedSeason.id] : false}
+        onUpdatingChange={(value) => setUpdating((prev) => ({
+          ...prev,
+          [selectedSeason!.id]: value,
+          ...selectedSeason!.episodes?.reduce((acc, episode) => {
+            acc[episode.id] = value;
+            return acc;
+          }, {} as typeof updating),
+        }))}
+        onEpisodeUpdatingChange={(id, value) => setUpdating((prev) => ({ ...prev, [id]: value }))}
         onRequestClose={() => setSelectedSeason(undefined)}
         visible={!!selectedSeason}
       />
