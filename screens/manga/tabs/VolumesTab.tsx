@@ -202,6 +202,38 @@ export default function VolumesTab({ manga, onMangaChange, style }: Props) {
 
       <ChapterModal
         chapter={selectedChapter}
+        onChapterChange={(chapter) => {
+          if (chapter.volume) {
+            onMangaChange(manga.copy({
+              volumes: manga.volumes?.map((v) => v.id === chapter.volume!.id
+                ? chapter.volume!.copy({
+                  chapters: chapter.volume!.chapters?.map((c) => c.id === chapter.id ? chapter : c)
+                })
+                : v,
+              ),
+            }));
+          } else {
+            onMangaChange(manga.copy({
+              chapters: manga.chapters?.map((c) => c.id === chapter.id ? chapter : c),
+            }));
+          }
+          setSelectedChapter(chapter);
+        }}
+        onReadChange={(value) => {
+          if (!value) return
+
+          const previousUnread = findPreviousVolumesChapters(selectedChapter!)
+            .filter((value) => value instanceof Volume
+              ? !value['volume-entry']
+              : !value['chapter-entry']
+            );
+
+          if (previousUnread.length > 0) {
+            setPreviousUnread(previousUnread);
+          }
+        }}
+        updating={selectedChapter ? updating[selectedChapter.id] : false}
+        onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [selectedChapter!.id]: value }))}
         onRequestClose={() => setSelectedChapter(undefined)}
         visible={!!selectedChapter}
       />
