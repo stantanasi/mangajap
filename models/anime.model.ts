@@ -139,18 +139,34 @@ Anime.register('anime');
 export default Anime;
 
 
-export const AnimeType: Record<IAnime['animeType'], string> = {
+export const AnimeType = {
   tv: 'Série TV',
   ova: 'OVA',
   ona: 'ONA',
   movie: 'Film',
   music: 'Musique',
   special: 'Spécial',
+
+  entries() {
+    return Object.entries(this)
+      .filter(([key]) => key !== 'entries')
+      .map(([key, value]) => ([key, value]) as [IAnime['animeType'], string]);
+  },
+} satisfies Record<IAnime['animeType'], string> & {
+  entries: () => [IAnime['animeType'], string][];
 };
 
-export const AnimeStatus: Record<IAnime['status'], string> = {
+export const AnimeStatus = {
   airing: 'En cours',
   finished: 'Terminé',
   unreleased: 'À sortir',
   upcoming: 'À venir',
+
+  entries() {
+    return Object.entries(this)
+      .filter(([key]) => key !== 'entries')
+      .map(([key, value]) => ([key, value]) as [IAnime['status'], string]);
+  },
+} satisfies Record<IAnime['status'], string> & {
+  entries: () => [IAnime['status'], string][];
 };

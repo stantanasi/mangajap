@@ -127,8 +127,8 @@ export default function MangaSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Type de manga *"
-          items={Object.entries(MangaType).map(([key, value]) => ({
-            value: key as IManga['mangaType'],
+          items={MangaType.entries().map(([key, value]) => ({
+            value: key,
             label: value,
           }))}
           selectedValue={form.mangaType}
@@ -141,8 +141,8 @@ export default function MangaSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Status *"
-          items={Object.entries(MangaStatus).map(([key, value]) => ({
-            value: key as IManga['status'],
+          items={MangaStatus.entries().map(([key, value]) => ({
+            value: key,
             label: value,
           }))}
           selectedValue={form.status}

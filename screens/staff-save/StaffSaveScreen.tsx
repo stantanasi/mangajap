@@ -210,8 +210,8 @@ export default function StaffSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Role *"
-          items={Object.entries(StaffRole).map(([key, value]) => ({
-            value: key as IStaff['role'],
+          items={StaffRole.entries().map(([key, value]) => ({
+            value: key,
             label: value,
           }))}
           selectedValue={form.role}

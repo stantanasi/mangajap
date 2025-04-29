@@ -47,7 +47,7 @@ Staff.register('staff');
 export default Staff;
 
 
-export const StaffRole: Record<IStaff['role'], string> = {
+export const StaffRole = {
   author: 'Scénariste',
   illustrator: 'Dessinateur',
   story_and_art: 'Créateur',
@@ -55,4 +55,12 @@ export const StaffRole: Record<IStaff['role'], string> = {
   producer: 'Producteur',
   studio: 'Studio',
   original_creator: 'Créateur original',
+
+  entries() {
+    return Object.entries(this)
+      .filter(([key]) => key !== 'entries')
+      .map(([key, value]) => ([key, value]) as [IStaff['role'], string]);
+  },
+} satisfies Record<IStaff['role'], string> & {
+  entries: () => [IStaff['role'], string][];
 };

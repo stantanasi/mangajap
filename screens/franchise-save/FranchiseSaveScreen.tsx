@@ -273,8 +273,8 @@ export default function FranchiseSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Role *"
-          items={Object.entries(FranchiseRole).map(([key, value]) => ({
-            value: key as IFranchise['role'],
+          items={FranchiseRole.entries().map(([key, value]) => ({
+            value: key,
             label: value,
           }))}
           selectedValue={form.role}

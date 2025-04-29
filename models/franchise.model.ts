@@ -43,7 +43,7 @@ Franchise.register('franchises');
 export default Franchise;
 
 
-export const FranchiseRole: Record<IFranchise['role'], string> = {
+export const FranchiseRole = {
   adaptation: 'Adaptation',
   alternative_setting: 'Univers alternatif',
   alternative_version: 'Version alternative',
@@ -56,4 +56,12 @@ export const FranchiseRole: Record<IFranchise['role'], string> = {
   side_story: 'Histoire parallèle',
   spinoff: 'Spin-off',
   summary: 'Résumé',
+
+  entries() {
+    return Object.entries(this)
+      .filter(([key]) => key !== 'entries')
+      .map(([key, value]) => ([key, value]) as [IFranchise['role'], string]);
+  },
+} satisfies Record<IFranchise['role'], string> & {
+  entries: () => [IFranchise['role'], string][];
 };

@@ -127,8 +127,8 @@ export default function AnimeSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Type d'animé *"
-          items={Object.entries(AnimeType).map(([key, value]) => ({
-            value: key as IAnime['animeType'],
+          items={AnimeType.entries().map(([key, value]) => ({
+            value: key,
             label: value,
           }))}
           selectedValue={form.animeType}
@@ -141,8 +141,8 @@ export default function AnimeSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Status *"
-          items={Object.entries(AnimeStatus).map(([key, value]) => ({
-            value: key as IAnime['status'],
+          items={AnimeStatus.entries().map(([key, value]) => ({
+            value: key,
             label: value,
           }))}
           selectedValue={form.status}

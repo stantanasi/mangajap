@@ -70,7 +70,15 @@ Episode.register('episodes');
 export default Episode;
 
 
-export const EpisodeType: Record<IEpisode['episodeType'], string> = {
+export const EpisodeType = {
   '': '',
   oav: 'OAV',
+
+  entries() {
+    return Object.entries(this)
+      .filter(([key]) => key !== 'entries')
+      .map(([key, value]) => ([key, value]) as [IEpisode['episodeType'], string]);
+  },
+} satisfies Record<IEpisode['episodeType'], string> & {
+  entries: () => [IEpisode['episodeType'], string][];
 };
