@@ -2,6 +2,8 @@ export { default as AnimeEntry } from './anime-entry.model';
 
 export { default as Anime } from './anime.model';
 
+export { default as Change } from './change.model';
+
 export { default as ChapterEntry } from './chapter-entry.model';
 
 export { default as Chapter } from './chapter.model';
