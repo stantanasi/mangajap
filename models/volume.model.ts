@@ -1,4 +1,5 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import Change from './change.model';
 import Chapter from './chapter.model';
 import Manga from './manga.model';
 import VolumeEntry from './volume-entry.model';
@@ -17,6 +18,7 @@ export interface IVolume {
 
   manga?: Manga;
   chapters?: Chapter[];
+  changes?: Change[];
   'volume-entry'?: VolumeEntry | null;
 }
 
@@ -56,6 +58,8 @@ export const VolumeSchema = new Schema<IVolume>({
     manga: {},
 
     chapters: {},
+
+    changes: {},
 
     'volume-entry': {},
   },

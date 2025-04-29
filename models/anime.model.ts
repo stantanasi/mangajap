@@ -1,5 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
 import AnimeEntry from './anime-entry.model';
+import Change from './change.model';
 import Episode from './episode.model';
 import Franchise from './franchise.model';
 import Genre from './genre.model';
@@ -42,6 +43,7 @@ export interface IAnime {
   staff?: Staff[];
   reviews?: Review[];
   franchises?: Franchise[];
+  changes?: Change[];
   'anime-entry'?: AnimeEntry | null;
 }
 
@@ -122,6 +124,8 @@ export const AnimeSchema = new Schema<IAnime>({
     reviews: {},
 
     franchises: {},
+
+    changes: {},
 
     'anime-entry': {},
   },

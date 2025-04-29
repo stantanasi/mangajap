@@ -1,4 +1,5 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import Change from './change.model';
 import Chapter from './chapter.model';
 import Franchise from './franchise.model';
 import Genre from './genre.model';
@@ -39,6 +40,7 @@ export interface IManga {
   staff?: Staff[];
   reviews?: Review[];
   franchises?: Franchise[];
+  changes?: Change[];
   'manga-entry'?: MangaEntry | null;
 }
 
@@ -113,6 +115,8 @@ export const MangaSchema = new Schema<IManga>({
     reviews: {},
 
     franchises: {},
+
+    changes: {},
 
     'manga-entry': {},
   },

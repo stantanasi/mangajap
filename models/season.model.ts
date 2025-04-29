@@ -1,5 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
 import Anime from './anime.model';
+import Change from './change.model';
 import Episode from './episode.model';
 
 export interface ISeason {
@@ -14,6 +15,7 @@ export interface ISeason {
 
   anime?: Anime;
   episodes?: Episode[];
+  changes?: Change[];
 }
 
 export const SeasonSchema = new Schema<ISeason>({
@@ -48,6 +50,8 @@ export const SeasonSchema = new Schema<ISeason>({
     anime: {},
 
     episodes: {},
+
+    changes: {},
   },
 });
 

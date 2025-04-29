@@ -1,5 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
 import Anime from './anime.model';
+import Change from './change.model';
 import Manga from './manga.model';
 
 export interface ITheme {
@@ -9,6 +10,7 @@ export interface ITheme {
 
   animes?: Anime[];
   mangas?: Manga[];
+  changes?: Change[];
 }
 
 export const ThemeSchema = new Schema<ITheme>({
@@ -28,6 +30,8 @@ export const ThemeSchema = new Schema<ITheme>({
     animes: {},
 
     mangas: {},
+
+    changes: {},
   },
 });
 
