@@ -1,4 +1,5 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import Change from './change.model';
 import ChapterEntry from './chapter-entry.model';
 import Manga from './manga.model';
 import Volume from './volume.model';
@@ -14,6 +15,7 @@ export interface IChapter {
 
   manga?: Manga;
   volume?: Volume | null;
+  changes?: Change[];
   'chapter-entry'?: ChapterEntry | null;
 }
 
@@ -47,6 +49,8 @@ export const ChapterSchema = new Schema<IChapter>({
     manga: {},
 
     volume: {},
+
+    changes: {},
 
     'chapter-entry': {},
   },

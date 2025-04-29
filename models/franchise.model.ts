@@ -1,5 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
 import Anime from './anime.model';
+import Change from './change.model';
 import Manga from './manga.model';
 
 export interface IFranchise {
@@ -9,6 +10,7 @@ export interface IFranchise {
 
   source?: Anime | Manga;
   destination?: Anime | Manga;
+  changes?: Change[];
 }
 
 export const FranchiseSchema = new Schema<IFranchise>({
@@ -28,6 +30,8 @@ export const FranchiseSchema = new Schema<IFranchise>({
     source: {},
 
     destination: {},
+
+    changes: {},
   },
 });
 
