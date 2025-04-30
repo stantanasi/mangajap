@@ -1,7 +1,8 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
 import ImageInput from '../../components/atoms/ImageInput';
@@ -60,6 +61,57 @@ export default function VolumeSaveScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View
+        style={{
+          alignItems: 'center',
+          flexDirection: 'row',
+        }}
+      >
+        <MaterialIcons
+          name="arrow-back"
+          size={24}
+          color="#000"
+          onPress={() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            } else if (typeof window !== 'undefined') {
+              window.history.back();
+            }
+          }}
+          style={{ padding: 16 }}
+        />
+
+        <Text
+          style={{
+            flex: 1,
+            fontSize: 16,
+            fontWeight: 'bold',
+            textAlign: 'center',
+          }}
+        >
+          {volume.isNew
+            ? 'Ajouter un tome'
+            : 'Modifier le tome'}
+        </Text>
+
+        <MaterialIcons
+          name="save"
+          color="#000"
+          size={24}
+          onPress={() => {
+            setIsSaving(true);
+
+            volume.assign(form);
+
+            volume.save()
+              .then(() => navigation.goBack())
+              .catch((err) => console.error(err))
+              .finally(() => setIsSaving(false));
+          }}
+          style={{ padding: 16 }}
+        />
+      </View>
+
       <ScrollView>
         <ImageInput
           label="Couverture"
@@ -115,50 +167,29 @@ export default function VolumeSaveScreen({ route }: Props) {
           }))}
           style={styles.input}
         />
+      </ScrollView>
 
+      <Modal
+        animationType="fade"
+        onRequestClose={() => navigation.goBack()}
+        transparent
+        visible={isSaving}
+      >
         <Pressable
-          disabled={isSaving}
-          onPress={() => {
-            setIsSaving(true);
-
-            volume.assign(form);
-
-            volume.save()
-              .then(() => navigation.goBack())
-              .catch((err) => console.error(err))
-              .finally(() => setIsSaving(false));
-          }}
           style={{
             alignItems: 'center',
-            alignSelf: 'flex-start',
-            backgroundColor: '#ddd',
-            borderRadius: 4,
-            flexDirection: 'row',
-            gap: 10,
-            marginHorizontal: 16,
-            marginTop: 24,
-            paddingHorizontal: 12,
-            paddingVertical: 6,
+            backgroundColor: '#00000052',
+            flex: 1,
+            justifyContent: 'center',
           }}
         >
-          {isSaving && (
-            <ActivityIndicator
-              animating
-              color="#000"
-              size={20}
-            />
-          )}
-
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 'bold',
-            }}
-          >
-            Enregistrer
-          </Text>
+          <ActivityIndicator
+            animating
+            color="#fff"
+            size="large"
+          />
         </Pressable>
-      </ScrollView>
+      </Modal>
     </SafeAreaView>
   );
 }
