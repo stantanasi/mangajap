@@ -31,6 +31,10 @@ export default function DateTimePicker({
     setInputValue(value.toLocaleDateString());
   }, [value]);
 
+  useEffect(() => {
+    setDisplay('calendar');
+  }, [visible]);
+
   const days: Date[] = (() => {
     const month = activeDate.getMonth();
     const year = activeDate.getFullYear();
@@ -191,6 +195,15 @@ export default function DateTimePicker({
               }}
               numColumns={3}
               ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+              initialScrollIndex={Math.floor(YEARS.indexOf(activeDate.getFullYear()) / 3)}
+              getItemLayout={(_, index) => {
+                const height = 54; // 44 + 10 (approx. height + separator)
+                return {
+                  length: height,
+                  offset: height * index,
+                  index: index,
+                };
+              }}
             />
           ) : (
             <View>
