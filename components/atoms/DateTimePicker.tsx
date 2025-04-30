@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Modal from './Modal';
 
-const DAYS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 const MONTHS = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 const YEARS = Array.from({ length: 2101 - 1900 }, (_, k) => 1900 + k);
 
@@ -46,7 +46,7 @@ export default function DateTimePicker({
   })();
 
   const weeks: (Date | null)[][] = (() => {
-    const startDay = days[0].getDay() % 7;
+    const startDay = (days[0].getDay() + 6) % 7;
 
     const allDays: (Date | null)[] = [
       ...Array.from({ length: startDay }, () => null),
