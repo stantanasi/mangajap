@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Modal from './Modal';
 
 const DAYS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
@@ -19,12 +19,15 @@ export default function DateTimePicker({
   onRequestClose,
   visible,
 }: Props) {
+  const [display, setDisplay] = useState<'calendar' | 'input'>('calendar');
   const [activeDate, setActiveDate] = useState<Date>(value);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value);
+  const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
     setActiveDate(value);
     setSelectedDate(value);
+    setInputValue(value.toLocaleDateString());
   }, [value]);
 
   const days: Date[] = (() => {
@@ -77,100 +80,135 @@ export default function DateTimePicker({
         <Text>
           {selectedDate?.toLocaleDateString() ?? 'Date sélectionnée'}
         </Text>
+
+        <MaterialIcons
+          name={display === 'calendar' ? 'edit' : 'calendar-month'}
+          color="#000"
+          size={24}
+          onPress={() => setDisplay(display === 'calendar' ? 'input' : 'calendar')}
+        />
       </View>
 
-      <View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Pressable style={{ flexDirection: 'row' }}>
-            <Text>
-              {MONTHS[activeDate.getMonth()]} {activeDate.getFullYear()}
-            </Text>
-          </Pressable>
-
-          <View style={{ flexDirection: 'row' }}>
-            <MaterialIcons
-              name="keyboard-arrow-left"
-              color="#000"
-              size={24}
-              onPress={() => setActiveDate((prev) => {
-                const date = new Date(prev);
-                date.setMonth(date.getMonth() - 1);
-                return date;
-              })}
-            />
-
-            <MaterialIcons
-              name="keyboard-arrow-right"
-              color="#000"
-              size={24}
-              onPress={() => setActiveDate((prev) => {
-                const date = new Date(prev);
-                date.setMonth(date.getMonth() + 1);
-                return date;
-              })}
-            />
-          </View>
-        </View>
-
+      {display === 'input' ? (
         <View>
-          <View style={{ flexDirection: 'row' }}>
-            {DAYS.map((day) => (
+          <Text>
+            Date
+          </Text>
+
+          <TextInput
+            autoFocus
+            value={inputValue}
+            onChangeText={(text) => {
+              setInputValue(text);
+
+              const [day, month, year] = text.match(/^\d{2}\/\d{2}\/\d{4}$/)?.[0].split('/').map(Number) ?? [];
+              const parsed = new Date(year, month - 1, day);
+
+              if (!isNaN(parsed.getTime())) {
+                setSelectedDate(parsed);
+              } else {
+                setSelectedDate(null);
+              }
+            }}
+            placeholder="jj/mm/aaaa"
+            placeholderTextColor="#666"
+            inputMode="numeric"
+          />
+        </View>
+      ) : (
+        <View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Pressable style={{ flexDirection: 'row' }}>
+              <Text>
+                {MONTHS[activeDate.getMonth()]} {activeDate.getFullYear()}
+              </Text>
+            </Pressable>
+
+            <View style={{ flexDirection: 'row' }}>
+              <MaterialIcons
+                name="keyboard-arrow-left"
+                color="#000"
+                size={24}
+                onPress={() => setActiveDate((prev) => {
+                  const date = new Date(prev);
+                  date.setMonth(date.getMonth() - 1);
+                  return date;
+                })}
+              />
+
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                color="#000"
+                size={24}
+                onPress={() => setActiveDate((prev) => {
+                  const date = new Date(prev);
+                  date.setMonth(date.getMonth() + 1);
+                  return date;
+                })}
+              />
+            </View>
+          </View>
+
+          <View>
+            <View style={{ flexDirection: 'row' }}>
+              {DAYS.map((day) => (
+                <View
+                  key={day}
+                  style={{ alignItems: 'center', aspectRatio: 1 / 1, flex: 1, justifyContent: 'center', margin: 2 }}
+                >
+                  <Text>
+                    {day.substring(0, 1)}
+                  </Text>
+                </View>
+              ))}
+            </View>
+
+            {weeks.map((week, i) => (
               <View
-                key={day}
-                style={{ alignItems: 'center', aspectRatio: 1 / 1, flex: 1, justifyContent: 'center', margin: 2 }}
+                key={i}
+                style={{ flexDirection: 'row' }}
               >
-                <Text>
-                  {day.substring(0, 1)}
-                </Text>
+                {week.map((day, j) => {
+                  if (day === null) {
+                    return (
+                      <View
+                        key={j}
+                        style={{ alignItems: 'center', aspectRatio: 1 / 1, flex: 1, justifyContent: 'center', margin: 2 }}
+                      />
+                    );
+                  }
+
+                  const isToday = isSameDay(new Date(), day);
+                  const isSelected = selectedDate ? isSameDay(selectedDate, day) : false;
+
+                  return (
+                    <Pressable
+                      key={j}
+                      onPress={() => setSelectedDate(day)}
+                      style={[{ alignItems: 'center', aspectRatio: 1 / 1, flex: 1, justifyContent: 'center', margin: 2 }, isToday ? {
+                        borderColor: '#4281f5',
+                        borderRadius: 360,
+                        borderWidth: 1,
+                      } : {}, isSelected ? {
+                        backgroundColor: '#4281f5',
+                        borderRadius: 360,
+                      } : {}]}
+                    >
+                      <Text style={[{}, isToday ? {
+                        color: '#4281f5',
+                      } : {}, isSelected ? {
+                        color: '#fff',
+                      } : {}]}>
+                        {day.getDate()}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
               </View>
             ))}
           </View>
-
-          {weeks.map((week, i) => (
-            <View
-              key={i}
-              style={{ flexDirection: 'row' }}
-            >
-              {week.map((day, j) => {
-                if (day === null) {
-                  return (
-                    <View
-                      key={j}
-                      style={{ alignItems: 'center', aspectRatio: 1 / 1, flex: 1, justifyContent: 'center', margin: 2 }}
-                    />
-                  );
-                }
-
-                const isToday = isSameDay(new Date(), day);
-                const isSelected = selectedDate ? isSameDay(selectedDate, day) : false;
-
-                return (
-                  <Pressable
-                    key={j}
-                    onPress={() => setSelectedDate(day)}
-                    style={[{ alignItems: 'center', aspectRatio: 1 / 1, flex: 1, justifyContent: 'center', margin: 2 }, isToday ? {
-                      borderColor: '#4281f5',
-                      borderRadius: 360,
-                      borderWidth: 1,
-                    } : {}, isSelected ? {
-                      backgroundColor: '#4281f5',
-                      borderRadius: 360,
-                    } : {}]}
-                  >
-                    <Text style={[{}, isToday ? {
-                      color: '#4281f5',
-                    } : {}, isSelected ? {
-                      color: '#fff',
-                    } : {}]}>
-                      {day.getDate()}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          ))}
         </View>
-      </View>
+      )}
 
       <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
         <Text
