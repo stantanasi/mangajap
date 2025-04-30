@@ -1,6 +1,6 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useState } from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import DateTimePicker from './DateTimePicker';
 import InputLabel from './InputLabel';
 
 type Props = {
@@ -30,16 +30,12 @@ export default function DateInput({ label, value, onValueChange, style }: Props)
         {value?.toLocaleDateString() ?? 'jj/mm/aaaa'}
       </Text>
 
-      {visiblePicker && (
-        <DateTimePicker
-          value={value ?? new Date()}
-          onChange={(_, date) => {
-            onValueChange(date);
-            setVisiblePicker(false);
-          }}
-          mode="date"
-        />
-      )}
+      <DateTimePicker
+        value={value ?? new Date()}
+        onValueChange={(value) => onValueChange(value)}
+        onRequestClose={() => setVisiblePicker(false)}
+        visible={visiblePicker}
+      />
     </View>
   );
 }
