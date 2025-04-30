@@ -81,8 +81,15 @@ export default function DateTimePicker({
         Sélectionner une date
       </Text>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text>
+      <View
+        style={{
+          alignItems: 'center',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginTop: 26,
+        }}
+      >
+        <Text style={styles.selectedDate}>
           {selectedDate?.toLocaleDateString() ?? 'Date sélectionnée'}
         </Text>
 
@@ -95,8 +102,8 @@ export default function DateTimePicker({
       </View>
 
       {display === 'input' ? (
-        <View>
-          <Text>
+        <View style={{ marginTop: 16 }}>
+          <Text style={{ fontSize: 12 }}>
             Date
           </Text>
 
@@ -118,14 +125,27 @@ export default function DateTimePicker({
             placeholder="jj/mm/aaaa"
             placeholderTextColor="#666"
             inputMode="numeric"
+            style={{
+              paddingVertical: 10,
+            }}
           />
         </View>
       ) : (
-        <View style={{ flex: 1 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ flex: 1, marginTop: 16 }}>
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+            }}
+          >
             <Pressable
               onPress={() => setDisplay(display === 'calendar' ? 'year' : 'calendar')}
-              style={{ flexDirection: 'row' }}
+              style={{
+                alignItems: 'center',
+                flexDirection: 'row',
+              }}
             >
               <Text>
                 {MONTHS[activeDate.getMonth()]} {activeDate.getFullYear()}
@@ -139,7 +159,12 @@ export default function DateTimePicker({
             </Pressable>
 
             {display === 'calendar' ? (
-              <View style={{ flexDirection: 'row' }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  gap: 20,
+                }}
+              >
                 <MaterialIcons
                   name="keyboard-arrow-left"
                   color="#000"
@@ -182,12 +207,12 @@ export default function DateTimePicker({
                       });
                       setDisplay('calendar');
                     }}
-                    style={[{ alignItems: 'center', flex: 1, marginHorizontal: 5, padding: 10 }, isActive ? {
+                    style={[styles.year, isActive ? {
                       backgroundColor: '#4281f5',
                       borderRadius: 360,
                     } : {}]}
                   >
-                    <Text style={[{}, isActive ? { color: '#fff' } : {}]}>
+                    <Text style={[isActive ? { color: '#fff' } : {}]}>
                       {year}
                     </Text>
                   </Pressable>
@@ -206,12 +231,12 @@ export default function DateTimePicker({
               }}
             />
           ) : (
-            <View>
-              <View style={{ flexDirection: 'row' }}>
+            <View style={styles.calendar}>
+              <View style={styles.week}>
                 {DAYS.map((day) => (
                   <View
                     key={day}
-                    style={{ alignItems: 'center', aspectRatio: 1 / 1, flex: 1, justifyContent: 'center', margin: 2 }}
+                    style={styles.day}
                   >
                     <Text>
                       {day.substring(0, 1)}
@@ -223,14 +248,14 @@ export default function DateTimePicker({
               {weeks.map((week, i) => (
                 <View
                   key={i}
-                  style={{ flexDirection: 'row' }}
+                  style={styles.week}
                 >
                   {week.map((day, j) => {
                     if (day === null) {
                       return (
                         <View
                           key={j}
-                          style={{ alignItems: 'center', aspectRatio: 1 / 1, flex: 1, justifyContent: 'center', margin: 2 }}
+                          style={styles.day}
                         />
                       );
                     }
@@ -242,7 +267,7 @@ export default function DateTimePicker({
                       <Pressable
                         key={j}
                         onPress={() => setSelectedDate(day)}
-                        style={[{ alignItems: 'center', aspectRatio: 1 / 1, flex: 1, justifyContent: 'center', margin: 2 }, isToday ? {
+                        style={[styles.day, isToday ? {
                           borderColor: '#4281f5',
                           borderRadius: 360,
                           borderWidth: 1,
@@ -251,11 +276,7 @@ export default function DateTimePicker({
                           borderRadius: 360,
                         } : {}]}
                       >
-                        <Text style={[{}, isToday ? {
-                          color: '#4281f5',
-                        } : {}, isSelected ? {
-                          color: '#fff',
-                        } : {}]}>
+                        <Text style={[isToday ? { color: '#4281f5' } : {}, isSelected ? { color: '#fff' } : {}]}>
                           {day.getDate()}
                         </Text>
                       </Pressable>
@@ -268,9 +289,19 @@ export default function DateTimePicker({
         </View>
       )}
 
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          gap: 24,
+          justifyContent: 'flex-end',
+          marginTop: 10,
+        }}
+      >
         <Text
           onPress={() => onRequestClose()}
+          style={{
+            color: '#4281f5'
+          }}
         >
           Annuler
         </Text>
@@ -282,6 +313,9 @@ export default function DateTimePicker({
             onValueChange(selectedDate);
             onRequestClose();
           }}
+          style={{
+            color: '#4281f5'
+          }}
         >
           OK
         </Text>
@@ -291,5 +325,33 @@ export default function DateTimePicker({
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
+  selectedDate: {
+    fontSize: 26,
+  },
+  calendar: {},
+  week: {
+    flexDirection: 'row',
+  },
+  day: {
+    alignItems: 'center',
+    aspectRatio: 1 / 1,
+    color: '#000',
+    flex: 1,
+    justifyContent: 'center',
+    margin: 2,
+  },
+  years: {
+    marginHorizontal: 10,
+  },
+  year: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    marginHorizontal: 10,
+    padding: 10,
+  },
 });
