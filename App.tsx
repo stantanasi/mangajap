@@ -40,6 +40,7 @@ const MainTabs = createBottomTabNavigator({
     tabBarStyle: {
       height: 'auto',
     },
+    title: 'MangaJap',
   },
   screens: {
     AgendaAnime: {
@@ -116,6 +117,7 @@ const RootStack = createNativeStackNavigator({
     contentStyle: {
       backgroundColor: '#fafafa',
     },
+    title: 'MangaJap',
   },
   screens: {
     Main: {
