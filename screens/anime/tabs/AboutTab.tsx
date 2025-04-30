@@ -75,16 +75,19 @@ export default function AboutTab({ anime, style }: Props) {
         </Text>
       </View>
 
-      <View style={styles.genres}>
-        {anime.genres?.map((genre) => (
-          <Text
-            key={genre.id}
-            style={styles.genre}
-          >
-            {genre.name}
-          </Text>
+      <Text style={styles.genres}>
+        {anime.genres?.map((genre, index, genres) => (
+          <React.Fragment key={genre.id}>
+            <Text style={styles.genre}>
+              {genre.name}
+            </Text>
+
+            {index < genres.length - 1 ? (
+              <Text>, </Text>
+            ) : null}
+          </React.Fragment>
         ))}
-      </View>
+      </Text>
 
       <Text style={styles.overview}>
         {anime.overview}
@@ -278,16 +281,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   genres: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    justifyContent: 'center',
+    color: '#888',
     marginHorizontal: 16,
     marginTop: 8,
+    textAlign: 'center',
   },
-  genre: {
-    color: '#888',
-  },
+  genre: {},
   overview: {
     marginTop: 14,
     marginHorizontal: 16,
