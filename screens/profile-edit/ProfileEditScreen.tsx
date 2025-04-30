@@ -54,18 +54,23 @@ export default function ProfileEditScreen({ route }: Props) {
           flexDirection: 'row',
         }}
       >
-        <View style={{ flex: 1 }}>
-          <MaterialIcons
-            name="close"
-            size={24}
-            color="#000"
-            onPress={() => navigation.goBack()}
-            style={{ padding: 16 }}
-          />
-        </View>
+        <MaterialIcons
+          name="arrow-back"
+          size={24}
+          color="#000"
+          onPress={() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            } else if (typeof window !== 'undefined') {
+              window.history.back();
+            }
+          }}
+          style={{ padding: 16 }}
+        />
 
         <Text
           style={{
+            flex: 1,
             fontSize: 16,
             fontWeight: 'bold',
             textAlign: 'center',
@@ -74,32 +79,28 @@ export default function ProfileEditScreen({ route }: Props) {
           Modifier le profil
         </Text>
 
-        <View style={{ flex: 1 }}>
-          <Text
-            onPress={() => {
-              setIsUpdating(true);
+        <MaterialIcons
+          name="save"
+          color="#000"
+          size={24}
+          onPress={() => {
+            setIsUpdating(true);
 
-              user.assign(form);
+            user.assign(form);
 
-              if (!user.isModified()) {
-                navigation.goBack();
-                setIsUpdating(false);
-                return
-              }
+            if (!user.isModified()) {
+              navigation.goBack();
+              setIsUpdating(false);
+              return
+            }
 
-              user.save()
-                .then(() => navigation.goBack())
-                .catch((err) => console.error(err))
-                .finally(() => setIsUpdating(false));
-            }}
-            style={{
-              padding: 16,
-              textAlign: 'right',
-            }}
-          >
-            Enregistrer
-          </Text>
-        </View>
+            user.save()
+              .then(() => navigation.goBack())
+              .catch((err) => console.error(err))
+              .finally(() => setIsUpdating(false));
+          }}
+          style={{ padding: 16 }}
+        />
       </View>
 
       <ScrollView
