@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext, useState } from 'react';
-import { Image, ImageStyle, Pressable, PressableProps, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, AnimeEntry, Franchise, User } from '../../models';
 import { FranchiseRole } from '../../models/franchise.model';
@@ -34,18 +34,13 @@ export default function AnimeCard({
   return (
     <Pressable
       {...props}
-      style={[styles.container, styles[variant].container, style]}
+      style={[styles.base.container, styles[variant].container, style]}
     >
-      <View
-        style={{
-          width: styles[variant].image.width ?? styles.image.width,
-          height: styles[variant].image.height ?? styles.image.height,
-        }}
-      >
+      <View style={[styles.base.imageContainer, styles[variant].imageContainer]}>
         <Image
           source={{ uri: anime.poster ?? undefined }}
           resizeMode="cover"
-          style={[styles.image, styles[variant].image]}
+          style={[styles.base.image, styles[variant].image]}
         />
 
         {editable ? (
@@ -58,7 +53,6 @@ export default function AnimeCard({
               top: 0,
               alignItems: 'center',
               backgroundColor: '#00000080',
-              borderRadius: styles.image.borderRadius,
               justifyContent: 'center',
             }}
           >
@@ -71,10 +65,10 @@ export default function AnimeCard({
         ) : null}
       </View>
 
-      <View style={[styles.infos, styles[variant].infos]}>
+      <View style={[styles.base.infos, styles[variant].infos]}>
         <Text
           numberOfLines={2}
-          style={[styles.title, styles[variant].title, [{}]]}
+          style={[styles.base.title, styles[variant].title, [{}]]}
         >
           {anime.title}
         </Text>
@@ -100,7 +94,7 @@ export default function AnimeCard({
         ) : null}
 
         {franchise ? (
-          <Text style={[styles.role, styles[variant].role]}>
+          <Text style={[styles.base.role, styles[variant].role]}>
             {FranchiseRole[franchise.role]}
           </Text>
         ) : null}
@@ -142,27 +136,23 @@ export default function AnimeCard({
               .finally(() => setIsUpdating(false));
           }}
           loading={isUpdating}
-          style={[styles.checkbox, styles[variant].checkbox]}
+          style={[styles.base.checkbox, styles[variant].checkbox]}
         />
       ) : null}
     </Pressable>
   );
 }
 
-type Style = {
-  container: ViewStyle;
-  image: ImageStyle;
-  infos: ViewStyle;
-  title: TextStyle;
-  role: TextStyle;
-  checkbox: ViewStyle;
-};
-
-const styles: Style & Record<Variants, Style> = {
-  ...StyleSheet.create<Style>({
+const styles = {
+  base: StyleSheet.create({
     container: {},
-    image: {
+    imageContainer: {
       aspectRatio: 2 / 3,
+      overflow: 'hidden',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
       backgroundColor: '#ccc',
     },
     infos: {},
@@ -171,13 +161,14 @@ const styles: Style & Record<Variants, Style> = {
     checkbox: {},
   }),
 
-  default: StyleSheet.create<Style>({
+  default: StyleSheet.create({
     container: {
       width: 130,
     },
-    image: {
+    imageContainer: {
       width: '100%',
     },
+    image: {},
     infos: {},
     title: {
       textAlign: 'center',
@@ -194,14 +185,15 @@ const styles: Style & Record<Variants, Style> = {
     },
   }),
 
-  horizontal: StyleSheet.create<Style>({
+  horizontal: StyleSheet.create({
     container: {
       alignItems: 'center',
       flexDirection: 'row',
     },
-    image: {
+    imageContainer: {
       width: 80,
     },
+    image: {},
     infos: {
       flex: 1,
       gap: 3,
@@ -214,4 +206,4 @@ const styles: Style & Record<Variants, Style> = {
     role: {},
     checkbox: {},
   }),
-};
+} satisfies Record<'base' | Variants, Record<string, any>>;
