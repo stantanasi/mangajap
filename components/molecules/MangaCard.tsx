@@ -79,6 +79,26 @@ export default function MangaCard({
           {manga.title}
         </Text>
 
+        {variant === 'horizontal' ? (
+          <>
+            <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
+              <MaterialIcons
+                name="menu-book"
+                color="#000"
+                size={20}
+              />
+
+              <Text>
+                Manga
+              </Text>
+            </View>
+
+            <Text>
+              {manga.startDate.getFullYear()}
+            </Text>
+          </>
+        ) : null}
+
         {franchise ? (
           <Text style={[styles.role, styles[variant].role]}>
             {FranchiseRole[franchise.role]}
@@ -184,6 +204,7 @@ const styles: Style & Record<Variants, Style> = {
     },
     infos: {
       flex: 1,
+      gap: 3,
       padding: 10,
     },
     title: {
