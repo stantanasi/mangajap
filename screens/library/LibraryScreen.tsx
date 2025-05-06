@@ -110,10 +110,10 @@ export default function LibraryScreen({ route }: Props) {
             padding: 12,
           }}
         >
-          {type === 'anime-library' ? 'Animé'
-            : type === 'anime-favorites' ? 'Animé favoris'
+          {type === 'anime-library' ? 'Anime'
+            : type === 'anime-favorites' ? 'Anime préférés'
               : type === 'manga-library' ? 'Manga'
-                : type === 'manga-favorites' ? 'Manga favoris'
+                : type === 'manga-favorites' ? 'Manga préférés'
                   : ''}
         </Text>
       </View>

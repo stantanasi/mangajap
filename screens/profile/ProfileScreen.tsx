@@ -190,7 +190,7 @@ export default function ProfileScreen({ route }: Props) {
               fontWeight: 'bold',
             }}
           >
-            Animes
+            Anime
           </Text>
 
           <MaterialIcons
@@ -237,7 +237,7 @@ export default function ProfileScreen({ route }: Props) {
                   fontWeight: 'bold',
                 }}
               >
-                Animes préférées
+                Anime préférés
               </Text>
 
               <MaterialIcons
@@ -284,7 +284,7 @@ export default function ProfileScreen({ route }: Props) {
               fontWeight: 'bold',
             }}
           >
-            Mangas
+            Manga
           </Text>
 
           <MaterialIcons
@@ -331,7 +331,7 @@ export default function ProfileScreen({ route }: Props) {
                   fontWeight: 'bold',
                 }}
               >
-                Mangas préférées
+                Manga préférés
               </Text>
 
               <MaterialIcons
