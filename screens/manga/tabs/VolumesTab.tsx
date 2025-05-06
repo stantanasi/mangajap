@@ -1,12 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
-import { Modal, Pressable, SectionList, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { SectionList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import ChapterCard from '../../../components/molecules/ChapterCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import VolumeCard from '../../../components/molecules/VolumeCard';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { Chapter, ChapterEntry, Manga, User, Volume, VolumeEntry } from '../../../models';
+import { Chapter, Manga, Volume } from '../../../models';
 import ChapterModal from '../modals/ChapterModal';
+import MarkPreviousAsReadModal from '../modals/MarkPreviousAsReadModal';
 import VolumeModal from '../modals/VolumeModal';
 
 type Props = {
@@ -238,128 +239,14 @@ export default function VolumesTab({ manga, onMangaChange, style }: Props) {
         visible={!!selectedChapter}
       />
 
-      <Modal
-        animationType="fade"
+      <MarkPreviousAsReadModal
+        manga={manga}
+        onMangaChange={(manga) => onMangaChange(manga)}
+        previousUnread={previousUnread ?? []}
+        onUpdatingChange={(updating) => setUpdating((prev) => ({ ...prev, ...updating }))}
         onRequestClose={() => setPreviousUnread(undefined)}
-        transparent
         visible={!!previousUnread}
-      >
-        <Pressable
-          onPress={() => setPreviousUnread(undefined)}
-          style={{
-            alignItems: 'center',
-            backgroundColor: '#00000052',
-            flex: 1,
-            justifyContent: 'center',
-          }}
-        >
-          <Pressable
-            style={{
-              width: '90%',
-              backgroundColor: '#fff',
-              borderRadius: 4,
-              padding: 16,
-              gap: 12,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: 'bold',
-              }}
-            >
-              Marquer les volumes et chapitres précédents ?
-            </Text>
-
-            <Text>
-              Voulez-vous marquer les volumes et chapitres précédents comme lus ?
-            </Text>
-
-            <View style={{ alignSelf: 'flex-end', flexDirection: 'row', gap: 16 }}>
-              <Text
-                onPress={() => {
-                  setUpdating((prev) => ({
-                    ...prev,
-                    ...Object.fromEntries(previousUnread!.map((value) => [value.id, true])),
-                  }));
-
-                  Promise.all(previousUnread!.map(async (value) => {
-                    if (value instanceof Volume) {
-                      let volume = value;
-
-                      const volumeEntry = new VolumeEntry({
-                        user: new User({ id: user!.id }),
-                        volume: volume,
-                      });
-
-                      volume = await volumeEntry.save()
-                        .then((entry) => volume.copy({ 'volume-entry': entry }))
-                        .catch((err) => {
-                          console.error(err);
-                          return volume;
-                        });;
-
-                      onMangaChange(manga.copy({
-                        volumes: manga.volumes?.map((v) => v.id === volume.id ? volume : v),
-                      }));
-                    } else {
-                      let chapter = value;
-
-                      const chapterEntry = new ChapterEntry({
-                        user: new User({ id: user!.id }),
-                        chapter: chapter,
-                      });
-
-                      chapter = await chapterEntry.save()
-                        .then((entry) => chapter.copy({ 'chapter-entry': entry }))
-                        .catch((err) => {
-                          console.error(err);
-                          return chapter;
-                        });
-
-                      const volume = manga.volumes!.find((volume) => volume.chapters!.some((c) => c.id === chapter.id));
-                      if (volume) {
-                        onMangaChange(manga.copy({
-                          volumes: manga.volumes?.map((v) => v.id === volume.id
-                            ? volume.copy({
-                              chapters: volume.chapters?.map((c) => c.id === chapter.id ? chapter : c)
-                            })
-                            : v,
-                          ),
-                        }));
-                      } else {
-                        onMangaChange(manga.copy({
-                          chapters: manga.chapters?.map((c) => c.id === chapter.id ? chapter : c),
-                        }));
-                      }
-                    }
-
-                    setUpdating((prev) => ({ ...prev, [value.id]: false }));
-                  }))
-                    .catch((err) => console.error(err));
-
-                  setPreviousUnread(undefined);
-                }}
-                style={{
-                  fontWeight: 'bold',
-                  padding: 10,
-                }}
-              >
-                Oui
-              </Text>
-
-              <Text
-                onPress={() => setPreviousUnread(undefined)}
-                style={{
-                  padding: 10,
-                }}
-              >
-                Non
-              </Text>
-            </View>
-          </Pressable>
-        </Pressable>
-      </Modal>
+      />
     </View>
   );
 }
