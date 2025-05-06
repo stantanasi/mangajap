@@ -1,12 +1,13 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Follow, User } from '../../models';
+import Header from './components/Header';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 
@@ -19,9 +20,8 @@ export default function ProfileScreen({ route }: Props) {
   const { user: authenticatedUser } = useContext(AuthContext);
   const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
   const [user, setUser] = useState<User>();
-  const [isFollowingUser, setIsFollowingUser] = useState<Follow | null>();
-  const [isFollowedByUser, setIsFollowedByUser] = useState<Follow | null>();
-  const [isFollowUpdating, setIsFollowUpdating] = useState(false);
+  const [followingUser, setFollowingUser] = useState<Follow | null>();
+  const [followedByUser, setFollowedByUser] = useState<Follow | null>();
 
   const id = route.params?.id ?? authenticatedUser?.id;
 
@@ -53,8 +53,8 @@ export default function ProfileScreen({ route }: Props) {
       ]);
 
       setUser(user);
-      setIsFollowingUser(isFollowingUser);
-      setIsFollowedByUser(isFollowedByUser);
+      setFollowingUser(isFollowingUser);
+      setFollowedByUser(isFollowedByUser);
     }
 
     const unsubscribe = navigation.addListener('focus', () => {
@@ -83,7 +83,7 @@ export default function ProfileScreen({ route }: Props) {
     }
   }
 
-  if (!user || isFollowingUser === undefined || isFollowedByUser === undefined) {
+  if (!user || followingUser === undefined || followedByUser === undefined) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -102,193 +102,13 @@ export default function ProfileScreen({ route }: Props) {
           paddingBottom: 16,
         }}
       >
-        <View>
-          <View
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              flexDirection: 'row',
-            }}
-          >
-            {route.params ? (
-              <MaterialIcons
-                name="arrow-back"
-                color="#000"
-                size={24}
-                onPress={() => {
-                  if (navigation.canGoBack()) {
-                    navigation.goBack();
-                  } else if (typeof window !== 'undefined') {
-                    window.history.back();
-                  }
-                }}
-                style={{
-                  padding: 12,
-                }}
-              />
-            ) : null}
-
-            <View style={{ flex: 1 }} />
-
-            <MaterialIcons
-              name="settings"
-              color="#000"
-              size={24}
-              onPress={() => navigation.navigate('Settings')}
-              style={{
-                padding: 12,
-              }}
-            />
-          </View>
-
-          <Image
-            source={{ uri: user.avatar ?? undefined }}
-            style={styles.avatar}
-          />
-
-          <Text style={styles.username}>
-            {user.name}
-          </Text>
-
-          <Text style={styles.pseudo}>
-            @{user.pseudo}
-          </Text>
-
-          <Text style={styles.bio}>
-            {user.bio}
-          </Text>
-
-          <View style={styles.metas}>
-            <Pressable
-              onPress={() => navigation.navigate('ProfileFollowers', { userId: id })}
-              style={styles.meta}
-            >
-              <Text style={styles.metaValue}>
-                {user.followersCount}
-              </Text>
-              <Text style={styles.metaLabel}>
-                Abonnés
-              </Text>
-            </Pressable>
-
-            <View style={styles.metaDivider} />
-
-            <Pressable
-              onPress={() => navigation.navigate('ProfileFollowing', { userId: id })}
-              style={styles.meta}
-            >
-              <Text style={styles.metaValue}>
-                {user.followingCount}
-              </Text>
-              <Text style={styles.metaLabel}>
-                Abonnements
-              </Text>
-            </Pressable>
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 16,
-              marginHorizontal: 16,
-              marginTop: 24,
-            }}
-          >
-            {authenticatedUser ? (
-              id === authenticatedUser.id ? (
-                <Text
-                  onPress={() => navigation.navigate('ProfileEdit', { id: id })}
-                  style={{
-                    backgroundColor: '#ccc',
-                    borderRadius: 4,
-                    flex: 1,
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                    paddingHorizontal: 12,
-                    paddingVertical: 10,
-                    textAlign: 'center',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  Modifier
-                </Text>
-              ) : (
-                <View
-                  style={{
-                    flex: 1,
-                  }}
-                >
-                  <Pressable
-                    disabled={isFollowUpdating}
-                    onPress={() => {
-                      setIsFollowUpdating(true);
-
-                      const updateFollow = async () => {
-                        if (!isFollowingUser) {
-                          const isFollowingUser = new Follow({
-                            follower: new User({ id: authenticatedUser.id }),
-                            followed: user,
-                          });
-
-                          return isFollowingUser.save()
-                            .then((follow) => setIsFollowingUser(follow));
-                        } else {
-                          return isFollowingUser.delete()
-                            .then(() => setIsFollowingUser(null));
-                        }
-                      };
-
-                      updateFollow()
-                        .catch((err) => console.error(err))
-                        .finally(() => setIsFollowUpdating(false));
-                    }}
-                    style={{
-                      alignItems: 'center',
-                      backgroundColor: '#ccc',
-                      borderRadius: 4,
-                      flexDirection: 'row',
-                      gap: 10,
-                      justifyContent: 'center',
-                      paddingHorizontal: 12,
-                      paddingVertical: 10,
-                    }}
-                  >
-                    {isFollowUpdating && (
-                      <ActivityIndicator
-                        animating
-                        color="#000"
-                      />
-                    )}
-                    <Text
-                      style={{
-                        color: '#000',
-                        fontWeight: 'bold',
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      {!isFollowingUser ? "S'abonner" : 'Abonné'}
-                    </Text>
-                  </Pressable>
-
-                  {isFollowedByUser ? (
-                    <Text
-                      style={{
-                        alignSelf: 'center',
-                        color: '#888',
-                        fontSize: 12,
-                        marginTop: 2,
-                      }}
-                    >
-                      Vous suit
-                    </Text>
-                  ) : null}
-                </View>
-              )
-            ) : null}
-          </View>
-        </View>
+        <Header
+          route={route}
+          user={user}
+          followingUser={followingUser}
+          followedByUser={followedByUser}
+          onFollowingChange={(follow) => setFollowingUser(follow)}
+        />
 
         <Text
           style={{
