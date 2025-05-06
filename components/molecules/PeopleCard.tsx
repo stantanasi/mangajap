@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
-import { Image, ImageStyle, Pressable, PressableProps, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { People, Staff } from '../../models';
 import { StaffRole } from '../../models/staff.model';
 
@@ -25,17 +25,12 @@ export default function PeopleCard({
   return (
     <Pressable
       {...props}
-      style={[styles.container, styles[variant].container, style]}
+      style={[styles.base.container, styles[variant].container, style]}
     >
-      <View
-        style={{
-          width: styles[variant].image.width ?? styles.image.width,
-          height: styles[variant].image.height ?? styles.image.height,
-        }}
-      >
+      <View style={[styles.base.imageContainer, styles[variant].imageContainer]}>
         <Image
           source={{ uri: people.portrait ?? undefined }}
-          style={[styles.image, styles[variant].image]}
+          style={[styles.base.image, styles[variant].image]}
         />
 
         {editable ? (
@@ -48,7 +43,6 @@ export default function PeopleCard({
               top: 0,
               alignItems: 'center',
               backgroundColor: '#00000080',
-              borderRadius: styles.image.borderRadius,
               justifyContent: 'center',
             }}
           >
@@ -61,13 +55,13 @@ export default function PeopleCard({
         ) : null}
       </View>
 
-      <View style={[styles.infos, styles[variant].infos]}>
-        <Text style={[styles.name, styles[variant].name]}>
+      <View style={[styles.base.infos, styles[variant].infos]}>
+        <Text style={[styles.base.name, styles[variant].name]}>
           {people.name}
         </Text>
 
         {staff ? (
-          <Text style={[styles.role, styles[variant].role]}>
+          <Text style={[styles.base.role, styles[variant].role]}>
             {StaffRole[staff.role]}
           </Text>
         ) : null}
@@ -76,35 +70,34 @@ export default function PeopleCard({
   );
 }
 
-type Style = {
-  container: ViewStyle;
-  image: ImageStyle;
-  infos: ViewStyle;
-  name: TextStyle;
-  role: TextStyle;
-};
-
-const styles: Style & Record<Variants, Style> = {
-  ...StyleSheet.create<Style>({
+const styles = {
+  base: StyleSheet.create({
     container: {
       alignItems: 'center',
     },
-    image: {
+    imageContainer: {
       aspectRatio: 1 / 1,
-      backgroundColor: '#ccc',
       borderRadius: 360,
+      overflow: 'hidden',
+    },
+    image: {
+      backgroundColor: '#ccc',
     },
     infos: {},
     name: {},
     role: {},
   }),
 
-  default: StyleSheet.create<Style>({
+  default: StyleSheet.create({
     container: {
       width: 130,
     },
+    imageContainer: {
+      width: '100%',
+    },
     image: {
       width: '100%',
+      height: '100%',
     },
     infos: {
       alignItems: 'center',
@@ -118,12 +111,16 @@ const styles: Style & Record<Variants, Style> = {
     },
   }),
 
-  horizontal: StyleSheet.create<Style>({
+  horizontal: StyleSheet.create({
     container: {
       flexDirection: 'row',
     },
-    image: {
+    imageContainer: {
       width: 80,
+    },
+    image: {
+      width: '100%',
+      height: '100%',
     },
     infos: {
       flex: 1,
@@ -135,4 +132,4 @@ const styles: Style & Record<Variants, Style> = {
     },
     role: {},
   }),
-};
+} satisfies Record<'base' | Variants, Record<string, any>>;
