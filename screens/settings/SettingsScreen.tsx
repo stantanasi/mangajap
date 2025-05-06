@@ -39,6 +39,17 @@ export default function SettingsScreen({ }: Props) {
               padding: 12,
             }}
           />
+
+          <Text
+            style={{
+              flex: 1,
+              fontSize: 18,
+              fontWeight: 'bold',
+              padding: 12,
+            }}
+          >
+            Paramètres
+          </Text>
         </View>
 
         <Text
