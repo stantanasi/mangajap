@@ -1,12 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
-import { Modal, Pressable, SectionList, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { SectionList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import EpisodeCard from '../../../components/molecules/EpisodeCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import SeasonCard from '../../../components/molecules/SeasonCard';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { Anime, Episode, EpisodeEntry, Season, User } from '../../../models';
+import { Anime, Episode, Season } from '../../../models';
 import EpisodeModal from '../modals/EpisodeModal';
+import MarkPreviousAsWatchedModal from '../modals/MarkPreviousAsWatchedModal';
 import SeasonModal from '../modals/SeasonModal';
 
 type Props = {
@@ -224,107 +225,14 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
         visible={!!selectedEpisode}
       />
 
-      <Modal
-        animationType="fade"
+      <MarkPreviousAsWatchedModal
+        anime={anime}
+        onAnimeChange={(anime) => onAnimeChange(anime)}
+        previousUnwatched={previousUnwatched ?? []}
+        onUpdatingChange={(updating) => setUpdating((prev) => ({ ...prev, ...updating }))}
         onRequestClose={() => setPreviousUnwatched(undefined)}
-        transparent
         visible={!!previousUnwatched}
-      >
-        <Pressable
-          onPress={() => setPreviousUnwatched(undefined)}
-          style={{
-            alignItems: 'center',
-            backgroundColor: '#00000052',
-            flex: 1,
-            justifyContent: 'center',
-          }}
-        >
-          <Pressable
-            style={{
-              width: '90%',
-              backgroundColor: '#fff',
-              borderRadius: 4,
-              padding: 16,
-              gap: 12,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: 'bold',
-              }}
-            >
-              Marquer les épisodes précédents ?
-            </Text>
-
-            <Text>
-              Voulez-vous marquer les épisodes précédents comme vus ?
-            </Text>
-
-            <View style={{ alignSelf: 'flex-end', flexDirection: 'row', gap: 16 }}>
-              <Text
-                onPress={() => {
-                  setUpdating((prev) => ({
-                    ...prev,
-                    ...Object.fromEntries(previousUnwatched!.map((value) => [value.id, true])),
-                  }));
-
-                  Promise.all(previousUnwatched!.map(async (value) => {
-                    if (value instanceof Episode) {
-                      let episode = value;
-
-                      const episodeEntry = new EpisodeEntry({
-                        user: new User({ id: user!.id }),
-                        episode: episode,
-                      });
-
-                      episode = await episodeEntry.save()
-                        .then((entry) => episode.copy({ 'episode-entry': entry }))
-                        .catch((err) => {
-                          console.error(err);
-                          return episode;
-                        });
-
-                      const season = anime.seasons!.find((season) => season.episodes!.some((e) => e.id === episode.id))!;
-
-                      onAnimeChange(anime.copy({
-                        seasons: anime.seasons?.map((s) => s.id === season.id
-                          ? s.copy({
-                            episodes: s.episodes?.map((e) => e.id === episode.id ? episode : e),
-                          })
-                          : s),
-                      }));
-                      setUpdating((prev) => ({ ...prev, [episode.id]: false }));
-                    }
-                  }))
-                    .catch((err) => console.error(err))
-                    .finally(() => setUpdating((prev) => ({
-                      ...prev,
-                      ...Object.fromEntries(previousUnwatched!.map((value) => [value.id, false])),
-                    })));
-
-                  setPreviousUnwatched(undefined);
-                }}
-                style={{
-                  fontWeight: 'bold',
-                  padding: 10,
-                }}
-              >
-                Oui
-              </Text>
-
-              <Text
-                onPress={() => setPreviousUnwatched(undefined)}
-                style={{
-                  padding: 10,
-                }}
-              >
-                Non
-              </Text>
-            </View>
-          </Pressable>
-        </Pressable>
-      </Modal>
+      />
     </View>
   );
 }
