@@ -1,9 +1,10 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
+import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
@@ -31,6 +32,8 @@ export default function VolumeModal({
 }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
+  const [readDatePickerVisible, setReadDatePickerVisible] = useState(false);
+  const [isSavingReadDate, setIsSavingReadDate] = useState(false);
 
   if (!volume) {
     return (
@@ -191,14 +194,54 @@ export default function VolumeModal({
         {user ? (
           <>
             <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
-              <MaterialIcons
-                name="visibility"
-                color={styles.date.color}
-                size={20}
-              />
-              <Text style={styles.date}>
-                {volume['volume-entry']?.readDate.toLocaleDateString() ?? 'Pas lu'}
+              {!isSavingReadDate ? (
+                <MaterialIcons
+                  name="visibility"
+                  color={styles.date.color}
+                  size={20}
+                />
+              ) : (
+                <ActivityIndicator
+                  animating
+                  color={styles.date.color}
+                  size={20}
+                />
+              )}
+              <Text
+                onPress={() => {
+                  if (!volume['volume-entry']) return
+                  setReadDatePickerVisible(true);
+                }}
+                style={styles.date}
+              >
+                {volume['volume-entry']?.readDate.toLocaleDateString() ?? 'Pas vu'}
               </Text>
+
+              {volume['volume-entry'] ? (
+                <DateTimePicker
+                  value={volume['volume-entry'].readDate}
+                  onValueChange={(value) => {
+                    setIsSavingReadDate(true);
+
+                    const updateReadDate = async () => {
+                      const volumeEntry = volume['volume-entry']!.copy({
+                        readDate: value,
+                      });
+                      await volumeEntry.save();
+
+                      onVolumeChange(volume.copy({
+                        'volume-entry': volumeEntry,
+                      }));
+                    };
+
+                    updateReadDate()
+                      .catch((err) => console.error(err))
+                      .finally(() => setIsSavingReadDate(false))
+                  }}
+                  onRequestClose={() => setReadDatePickerVisible(false)}
+                  visible={readDatePickerVisible}
+                />
+              ) : null}
             </View>
 
             <View style={{ flex: 1 }} />
@@ -221,6 +264,10 @@ export default function VolumeModal({
 
       <Text style={styles.overview}>
         {volume.overview || 'Synopsis non disponible'}
+      </Text>
+
+      <Text>
+        Chapitres {volume.chapters?.[0]?.number} - {volume.chapters?.[volume.chapters!.length - 1]?.number}
       </Text>
     </Modal>
   );
