@@ -47,13 +47,15 @@ export default function Header({
 
         <View style={{ flex: 1 }} />
 
-        <MaterialIcons
-          name="settings"
-          color="#000"
-          size={24}
-          onPress={() => navigation.navigate('Settings')}
-          style={styles.icon}
-        />
+        {user.id === authenticatedUser?.id ? (
+          <MaterialIcons
+            name="settings"
+            color="#000"
+            size={24}
+            onPress={() => navigation.navigate('Settings')}
+            style={styles.icon}
+          />
+        ) : null}
       </View>
 
       <Image
