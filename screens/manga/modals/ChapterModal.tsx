@@ -1,9 +1,10 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
+import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../../models';
@@ -29,6 +30,8 @@ export default function ChapterModal({
 }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
+  const [readDatePickerVisible, setReadDatePickerVisible] = useState(false);
+  const [isSavingReadDate, setIsSavingReadDate] = useState(false);
 
   if (!chapter) {
     return (
@@ -157,14 +160,54 @@ export default function ChapterModal({
         {user ? (
           <>
             <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
-              <MaterialIcons
-                name="visibility"
-                color={styles.date.color}
-                size={20}
-              />
-              <Text style={styles.date}>
-                {chapter['chapter-entry']?.readDate.toLocaleDateString() ?? 'Pas lu'}
+              {!isSavingReadDate ? (
+                <MaterialIcons
+                  name="visibility"
+                  color={styles.date.color}
+                  size={20}
+                />
+              ) : (
+                <ActivityIndicator
+                  animating
+                  color={styles.date.color}
+                  size={20}
+                />
+              )}
+              <Text
+                onPress={() => {
+                  if (!chapter['chapter-entry']) return
+                  setReadDatePickerVisible(true);
+                }}
+                style={styles.date}
+              >
+                {chapter['chapter-entry']?.readDate.toLocaleDateString() ?? 'Pas vu'}
               </Text>
+
+              {chapter['chapter-entry'] ? (
+                <DateTimePicker
+                  value={chapter['chapter-entry'].readDate}
+                  onValueChange={(value) => {
+                    setIsSavingReadDate(true);
+
+                    const updateReadDate = async () => {
+                      const chapterEntry = chapter['chapter-entry']!.copy({
+                        readDate: value,
+                      });
+                      await chapterEntry.save();
+
+                      onChapterChange(chapter.copy({
+                        'chapter-entry': chapterEntry,
+                      }));
+                    };
+
+                    updateReadDate()
+                      .catch((err) => console.error(err))
+                      .finally(() => setIsSavingReadDate(false))
+                  }}
+                  onRequestClose={() => setReadDatePickerVisible(false)}
+                  visible={readDatePickerVisible}
+                />
+              ) : null}
             </View>
 
             <View style={{ flex: 1 }} />
