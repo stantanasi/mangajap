@@ -1,9 +1,10 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
+import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../../models';
@@ -29,6 +30,8 @@ export default function EpisodeModal({
 }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
+  const [watchedDatePickerVisible, setWatchedDatePickerVisible] = useState(false);
+  const [isSavingWatchedDate, setIsSavingWatchedDate] = useState(false);
 
   if (!episode) {
     return (
@@ -157,14 +160,54 @@ export default function EpisodeModal({
         {user ? (
           <>
             <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
-              <MaterialIcons
-                name="visibility"
-                color={styles.date.color}
-                size={20}
-              />
-              <Text style={styles.date}>
+              {!isSavingWatchedDate ? (
+                <MaterialIcons
+                  name="visibility"
+                  color={styles.date.color}
+                  size={20}
+                />
+              ) : (
+                <ActivityIndicator
+                  animating
+                  color={styles.date.color}
+                  size={20}
+                />
+              )}
+              <Text
+                onPress={() => {
+                  if (!episode['episode-entry']) return
+                  setWatchedDatePickerVisible(true);
+                }}
+                style={styles.date}
+              >
                 {episode['episode-entry']?.watchedDate.toLocaleDateString() ?? 'Pas vu'}
               </Text>
+
+              {episode['episode-entry'] ? (
+                <DateTimePicker
+                  value={episode['episode-entry'].watchedDate}
+                  onValueChange={(value) => {
+                    setIsSavingWatchedDate(true);
+
+                    const updateWatchedDate = async () => {
+                      const episodeEntry = episode['episode-entry']!.copy({
+                        watchedDate: value,
+                      });
+                      await episodeEntry.save();
+
+                      onEpisodeChange(episode.copy({
+                        'episode-entry': episodeEntry,
+                      }));
+                    };
+
+                    updateWatchedDate()
+                      .catch((err) => console.error(err))
+                      .finally(() => setIsSavingWatchedDate(false))
+                  }}
+                  onRequestClose={() => setWatchedDatePickerVisible(false)}
+                  visible={watchedDatePickerVisible}
+                />
+              ) : null}
             </View>
 
             <View style={{ flex: 1 }} />
