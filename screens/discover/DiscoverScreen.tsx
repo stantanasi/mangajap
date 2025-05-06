@@ -174,26 +174,28 @@ export default function DiscoverScreen({ route }: Props) {
         </ScrollView>
       )}
 
-      <ExpandableFloatingActionButton
-        icon="add"
-        menuItems={[
-          {
-            icon: 'tv',
-            label: 'Animé',
-            onPress: () => navigation.navigate('AnimeCreate'),
-          },
-          {
-            icon: 'menu-book',
-            label: 'Manga',
-            onPress: () => navigation.navigate('MangaCreate'),
-          },
-          {
-            icon: 'person',
-            label: 'Personnalité',
-            onPress: () => navigation.navigate('PeopleCreate'),
-          },
-        ]}
-      />
+      {user && user.isAdmin ? (
+        <ExpandableFloatingActionButton
+          icon="add"
+          menuItems={[
+            {
+              icon: 'tv',
+              label: 'Animé',
+              onPress: () => navigation.navigate('AnimeCreate'),
+            },
+            {
+              icon: 'menu-book',
+              label: 'Manga',
+              onPress: () => navigation.navigate('MangaCreate'),
+            },
+            {
+              icon: 'person',
+              label: 'Personnalité',
+              onPress: () => navigation.navigate('PeopleCreate'),
+            },
+          ]}
+        />
+      ) : null}
     </SafeAreaView>
   );
 }
