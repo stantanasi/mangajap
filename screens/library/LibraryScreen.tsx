@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
@@ -13,35 +13,40 @@ type Props = StaticScreenProps<{
 
 export default function LibraryScreen({ route }: Props) {
   const navigation = useNavigation();
+  const state = navigation.getState()!;
+  const routeName = state.routes.at(state.index)?.name as keyof ReactNavigation.RootParamList;
   const [library, setLibrary] = useState<(AnimeEntry | MangaEntry)[]>();
 
-  useEffect(() => {
-    const state = navigation.getState()!;
-    const routeName = state.routes.at(state.index)?.name as keyof ReactNavigation.RootParamList;
+  const type = routeName === 'ProfileAnimeLibrary' ? 'anime-library'
+    : routeName === 'ProfileAnimeFavorites' ? 'anime-favorites'
+      : routeName === 'ProfileMangaLibrary' ? 'manga-library'
+        : routeName === 'ProfileMangaFavorites' ? 'manga-favorites'
+          : null;
 
+  useEffect(() => {
     const prepare = async () => {
-      if (routeName === 'ProfileAnimeLibrary') {
+      if (type === 'anime-library') {
         const animeLibrary = await User.findById(route.params.userId).get('anime-library')
           .include({ anime: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(animeLibrary);
-      } else if (routeName === 'ProfileAnimeFavorites') {
+      } else if (type === 'anime-favorites') {
         const animeFavorites = await User.findById(route.params.userId).get('anime-favorites')
           .include({ anime: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(animeFavorites);
-      } else if (routeName === 'ProfileMangaLibrary') {
+      } else if (type === 'manga-library') {
         const mangaLibrary = await User.findById(route.params.userId).get('manga-library')
           .include({ manga: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(mangaLibrary);
-      } else if (routeName === 'ProfileMangaFavorites') {
+      } else if (type === 'manga-favorites') {
         const mangaFavorites = await User.findById(route.params.userId).get('manga-favorites')
           .include({ manga: true })
           .sort({ updatedAt: 'desc' })
@@ -96,6 +101,21 @@ export default function LibraryScreen({ route }: Props) {
             padding: 12,
           }}
         />
+
+        <Text
+          style={{
+            flex: 1,
+            fontSize: 18,
+            fontWeight: 'bold',
+            padding: 12,
+          }}
+        >
+          {type === 'anime-library' ? 'Animé'
+            : type === 'anime-favorites' ? 'Animé favoris'
+              : type === 'manga-library' ? 'Manga'
+                : type === 'manga-favorites' ? 'Manga favoris'
+                  : ''}
+        </Text>
       </View>
 
       <FlatList
