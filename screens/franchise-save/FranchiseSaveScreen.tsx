@@ -264,7 +264,13 @@ export default function FranchiseSaveScreen({ route }: Props) {
             franchise.assign(form);
 
             franchise.save()
-              .then(() => navigation.goBack())
+              .then(() => {
+                if (navigation.canGoBack()) {
+                  navigation.goBack();
+                } else if (typeof window !== 'undefined') {
+                  window.history.back();
+                }
+              })
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}
@@ -340,7 +346,13 @@ export default function FranchiseSaveScreen({ route }: Props) {
 
       <Modal
         animationType="fade"
-        onRequestClose={() => navigation.goBack()}
+        onRequestClose={() => {
+          if (navigation.canGoBack()) {
+            navigation.goBack();
+          } else if (typeof window !== 'undefined') {
+            window.history.back();
+          }
+        }}
         transparent
         visible={isSaving}
       >

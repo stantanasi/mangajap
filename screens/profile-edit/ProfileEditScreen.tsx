@@ -89,13 +89,23 @@ export default function ProfileEditScreen({ route }: Props) {
             user.assign(form);
 
             if (!user.isModified()) {
-              navigation.goBack();
+              if (navigation.canGoBack()) {
+                navigation.goBack();
+              } else if (typeof window !== 'undefined') {
+                window.history.back();
+              }
               setIsUpdating(false);
               return
             }
 
             user.save()
-              .then(() => navigation.goBack())
+              .then(() => {
+                if (navigation.canGoBack()) {
+                  navigation.goBack();
+                } else if (typeof window !== 'undefined') {
+                  window.history.back();
+                }
+              })
               .catch((err) => console.error(err))
               .finally(() => setIsUpdating(false));
           }}
@@ -202,7 +212,13 @@ export default function ProfileEditScreen({ route }: Props) {
 
       <Modal
         animationType="fade"
-        onRequestClose={() => navigation.goBack()}
+        onRequestClose={() => {
+          if (navigation.canGoBack()) {
+            navigation.goBack();
+          } else if (typeof window !== 'undefined') {
+            window.history.back();
+          }
+        }}
         transparent
         visible={isUpdating}
       >

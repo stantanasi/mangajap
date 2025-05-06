@@ -104,7 +104,13 @@ export default function VolumeSaveScreen({ route }: Props) {
             volume.assign(form);
 
             volume.save()
-              .then(() => navigation.goBack())
+              .then(() => {
+                if (navigation.canGoBack()) {
+                  navigation.goBack();
+                } else if (typeof window !== 'undefined') {
+                  window.history.back();
+                }
+              })
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}
@@ -171,7 +177,13 @@ export default function VolumeSaveScreen({ route }: Props) {
 
       <Modal
         animationType="fade"
-        onRequestClose={() => navigation.goBack()}
+        onRequestClose={() => {
+          if (navigation.canGoBack()) {
+            navigation.goBack();
+          } else if (typeof window !== 'undefined') {
+            window.history.back();
+          }
+        }}
         transparent
         visible={isSaving}
       >
