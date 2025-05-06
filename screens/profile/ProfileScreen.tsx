@@ -95,8 +95,6 @@ export default function ProfileScreen({ route }: Props) {
     );
   }
 
-  console.log(route.params)
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -104,178 +102,192 @@ export default function ProfileScreen({ route }: Props) {
           paddingBottom: 16,
         }}
       >
-        {!!route.params ? (
+        <View>
           <View
             style={{
-              alignItems: 'flex-start',
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
               flexDirection: 'row',
             }}
           >
+            {route.params ? (
+              <MaterialIcons
+                name="arrow-back"
+                color="#000"
+                size={24}
+                onPress={() => {
+                  if (navigation.canGoBack()) {
+                    navigation.goBack();
+                  } else if (typeof window !== 'undefined') {
+                    window.history.back();
+                  }
+                }}
+                style={{
+                  padding: 12,
+                }}
+              />
+            ) : null}
+
+            <View style={{ flex: 1 }} />
+
             <MaterialIcons
-              name="arrow-back"
+              name="settings"
               color="#000"
               size={24}
-              onPress={() => {
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              }}
+              onPress={() => navigation.navigate('Settings')}
               style={{
                 padding: 12,
               }}
             />
           </View>
-        ) : null}
 
-        <View
-          style={{
-            alignItems: 'center',
-            flexDirection: 'row',
-            marginHorizontal: 16,
-            marginTop: !route.params ? 16 : 0,
-          }}
-        >
           <Image
             source={{ uri: user.avatar ?? undefined }}
             style={styles.avatar}
           />
 
+          <Text style={styles.username}>
+            {user.name}
+          </Text>
+
+          <Text style={styles.pseudo}>
+            @{user.pseudo}
+          </Text>
+
+          <Text style={styles.bio}>
+            {user.bio}
+          </Text>
+
+          <View style={styles.metas}>
+            <Pressable
+              onPress={() => navigation.navigate('ProfileFollowers', { userId: id })}
+              style={styles.meta}
+            >
+              <Text style={styles.metaValue}>
+                {user.followersCount}
+              </Text>
+              <Text style={styles.metaLabel}>
+                Abonnés
+              </Text>
+            </Pressable>
+
+            <View style={styles.metaDivider} />
+
+            <Pressable
+              onPress={() => navigation.navigate('ProfileFollowing', { userId: id })}
+              style={styles.meta}
+            >
+              <Text style={styles.metaValue}>
+                {user.followingCount}
+              </Text>
+              <Text style={styles.metaLabel}>
+                Abonnements
+              </Text>
+            </Pressable>
+          </View>
+
           <View
             style={{
-              flex: 1,
-              marginLeft: 16,
+              flexDirection: 'row',
+              gap: 16,
+              marginHorizontal: 16,
+              marginTop: 24,
             }}
           >
-            <Text style={styles.pseudo}>
-              {user.pseudo}
-            </Text>
-
-            <Text style={styles.bio}>
-              {user.bio}
-            </Text>
-
-            <Text
-              style={{
-                color: '#888',
-                fontSize: 13,
-                marginTop: 6,
-              }}
-            >
-              <Text onPress={() => navigation.navigate('ProfileFollowers', { userId: id })}>
-                <Text style={{ color: '#000', fontWeight: 'bold' }}>{user.followersCount}</Text>
-                <Text> abonnées</Text>
-              </Text>
-              <Text style={{ color: '#000', fontWeight: 'bold' }}> • </Text>
-              <Text onPress={() => navigation.navigate('ProfileFollowing', { userId: id })}>
-                <Text style={{ color: '#000', fontWeight: 'bold' }}>{user.followingCount}</Text>
-                <Text> abonnements</Text>
-              </Text>
-            </Text>
-          </View>
-        </View>
-
-        <View
-          style={{
-            alignItems: 'flex-start',
-            marginBottom: 10,
-            marginHorizontal: 16,
-            marginTop: 20,
-          }}
-        >
-          {authenticatedUser ? (
-            id === authenticatedUser.id ? (
-              <View style={{ alignItems: 'center', flexDirection: 'row', gap: 10 }}>
+            {authenticatedUser ? (
+              id === authenticatedUser.id ? (
                 <Text
                   onPress={() => navigation.navigate('ProfileEdit', { id: id })}
                   style={{
-                    alignSelf: 'flex-start',
-                    borderColor: '#000',
-                    borderRadius: 360,
-                    borderWidth: 1,
-                    color: '#000',
+                    backgroundColor: '#ccc',
+                    borderRadius: 4,
+                    flex: 1,
+                    fontSize: 16,
                     fontWeight: 'bold',
                     paddingHorizontal: 12,
-                    paddingVertical: 4,
+                    paddingVertical: 10,
+                    textAlign: 'center',
+                    textTransform: 'uppercase',
                   }}
                 >
                   Modifier
                 </Text>
-
-                <MaterialIcons
-                  name="settings"
-                  size={24}
-                  color="#000"
-                  onPress={() => navigation.navigate('Settings')}
-                />
-              </View>
-            ) : (
-              <View style={{ alignItems: 'center' }}>
-                <Pressable
-                  disabled={isFollowUpdating}
-                  onPress={() => {
-                    setIsFollowUpdating(true);
-
-                    const updateFollow = async () => {
-                      if (!isFollowingUser) {
-                        const isFollowingUser = new Follow({
-                          follower: new User({ id: authenticatedUser.id }),
-                          followed: user,
-                        });
-
-                        return isFollowingUser.save()
-                          .then((follow) => setIsFollowingUser(follow));
-                      } else {
-                        return isFollowingUser.delete()
-                          .then(() => setIsFollowingUser(null));
-                      }
-                    };
-
-                    updateFollow()
-                      .catch((err) => console.error(err))
-                      .finally(() => setIsFollowUpdating(false));
-                  }}
+              ) : (
+                <View
                   style={{
-                    borderColor: !isFollowingUser ? '#ccc' : '#000',
-                    borderRadius: 360,
-                    borderWidth: 1,
-                    flexDirection: 'row',
-                    gap: 10,
-                    paddingHorizontal: 12,
-                    paddingVertical: 4,
+                    flex: 1,
                   }}
                 >
-                  {isFollowUpdating && (
-                    <ActivityIndicator
-                      animating
-                      color="#000"
-                    />
-                  )}
-                  <Text
-                    style={{
-                      color: '#000',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {!isFollowingUser ? "S'abonner" : 'Abonné'}
-                  </Text>
-                </Pressable>
+                  <Pressable
+                    disabled={isFollowUpdating}
+                    onPress={() => {
+                      setIsFollowUpdating(true);
 
-                {isFollowedByUser ? (
-                  <Text
+                      const updateFollow = async () => {
+                        if (!isFollowingUser) {
+                          const isFollowingUser = new Follow({
+                            follower: new User({ id: authenticatedUser.id }),
+                            followed: user,
+                          });
+
+                          return isFollowingUser.save()
+                            .then((follow) => setIsFollowingUser(follow));
+                        } else {
+                          return isFollowingUser.delete()
+                            .then(() => setIsFollowingUser(null));
+                        }
+                      };
+
+                      updateFollow()
+                        .catch((err) => console.error(err))
+                        .finally(() => setIsFollowUpdating(false));
+                    }}
                     style={{
-                      color: '#888',
-                      fontSize: 12,
-                      marginTop: 2,
+                      alignItems: 'center',
+                      backgroundColor: '#ccc',
+                      borderRadius: 4,
+                      flexDirection: 'row',
+                      gap: 10,
+                      justifyContent: 'center',
+                      paddingHorizontal: 12,
+                      paddingVertical: 10,
                     }}
                   >
-                    Vous suit
-                  </Text>
-                ) : null}
-              </View>
-            )
-          ) : null}
+                    {isFollowUpdating && (
+                      <ActivityIndicator
+                        animating
+                        color="#000"
+                      />
+                    )}
+                    <Text
+                      style={{
+                        color: '#000',
+                        fontWeight: 'bold',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      {!isFollowingUser ? "S'abonner" : 'Abonné'}
+                    </Text>
+                  </Pressable>
+
+                  {isFollowedByUser ? (
+                    <Text
+                      style={{
+                        alignSelf: 'center',
+                        color: '#888',
+                        fontSize: 12,
+                        marginTop: 2,
+                      }}
+                    >
+                      Vous suit
+                    </Text>
+                  ) : null}
+                </View>
+              )
+            ) : null}
+          </View>
         </View>
 
         <Text
@@ -540,14 +552,46 @@ const styles = StyleSheet.create({
   avatar: {
     width: 100,
     height: 100,
+    alignSelf: 'center',
     backgroundColor: '#ccc',
     borderRadius: 360,
+    marginHorizontal: 16,
+    marginTop: 16,
   },
-  pseudo: {
+  username: {
     fontSize: 20,
     fontWeight: 'bold',
+    marginTop: 16,
+    paddingHorizontal: 16,
+    textAlign: 'center',
+  },
+  pseudo: {
+    color: '#a1a1a1',
+    marginHorizontal: 16,
+    textAlign: 'center',
   },
   bio: {
-    color: '#444',
+    marginHorizontal: 16,
+    marginTop: 12,
+    textAlign: 'center',
+  },
+  metas: {
+    flexDirection: 'row',
+    gap: 8,
+    marginHorizontal: 48,
+    marginTop: 16,
+  },
+  meta: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  metaValue: {
+    fontSize: 17,
+    fontWeight: 'bold',
+  },
+  metaLabel: {},
+  metaDivider: {
+    width: 1,
+    backgroundColor: '#ccc',
   },
 });
