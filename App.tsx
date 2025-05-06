@@ -130,48 +130,80 @@ const RootStack = createNativeStackNavigator({
       },
     },
     AnimeCreate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: AnimeSaveScreen,
       linking: {
         path: 'mangajap/anime/add',
       },
     },
     AnimeUpdate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: AnimeSaveScreen,
       linking: {
         path: 'mangajap/anime/:id/edit',
       },
     },
     SeasonCreate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: SeasonSaveScreen,
       linking: {
         path: 'mangajap/anime/:animeId/season/add',
       },
     },
     SeasonUpdate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: SeasonSaveScreen,
       linking: {
         path: 'mangajap/season/:seasonId/edit',
       },
     },
     EpisodeCreate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: EpisodeSaveScreen,
       linking: {
         path: 'mangajap/anime/:animeId/episode/add',
       },
     },
     EpisodeUpdate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: EpisodeSaveScreen,
       linking: {
         path: 'mangajap/episode/:episodeId/edit',
       },
     },
     AnimeStaffCreate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: StaffSaveScreen,
       linking: {
         path: 'mangajap/anime/:animeId/staff/create',
       },
     },
     AnimeFranchiseCreate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: FranchiseSaveScreen,
       linking: {
         path: 'mangajap/anime/:animeId/franchise/create',
@@ -184,60 +216,100 @@ const RootStack = createNativeStackNavigator({
       },
     },
     MangaCreate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: MangaSaveScreen,
       linking: {
         path: 'mangajap/manga/add',
       },
     },
     MangaUpdate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: MangaSaveScreen,
       linking: {
         path: 'mangajap/manga/:id/edit',
       },
     },
     VolumeCreate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: VolumeSaveScreen,
       linking: {
         path: 'mangajap/manga/:mangaId/volume/add',
       },
     },
     VolumeUpdate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: VolumeSaveScreen,
       linking: {
         path: 'mangajap/volume/:volumeId/edit',
       },
     },
     ChapterCreate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: ChapterSaveScreen,
       linking: {
         path: 'mangajap/manga/:mangaId/chapter/add',
       },
     },
     ChapterUpdate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: ChapterSaveScreen,
       linking: {
         path: 'mangajap/chapter/:chapterId/edit',
       },
     },
     MangaStaffCreate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: StaffSaveScreen,
       linking: {
         path: 'mangajap/manga/:mangaId/staff/create',
       },
     },
     StaffUpdate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: StaffSaveScreen,
       linking: {
         path: 'mangajap/staff/:staffId/edit',
       },
     },
     MangaFranchiseCreate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: FranchiseSaveScreen,
       linking: {
         path: 'mangajap/manga/:mangaId/franchise/create',
       },
     },
     FranchiseUpdate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: FranchiseSaveScreen,
       linking: {
         path: 'mangajap/franchise/:franchiseId/edit',
@@ -256,6 +328,10 @@ const RootStack = createNativeStackNavigator({
       },
     },
     ProfileEdit: {
+      if: () => {
+        const { isAuthenticated } = useContext(AuthContext);
+        return isAuthenticated;
+      },
       screen: ProfileEditScreen,
       linking: {
         path: 'mangajap/profile/:id/edit',
@@ -304,18 +380,30 @@ const RootStack = createNativeStackNavigator({
       },
     },
     PeopleCreate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: PeopleSaveScreen,
       linking: {
         path: 'mangajap/people/add',
       },
     },
     PeopleUpdate: {
+      if: () => {
+        const { user } = useContext(AuthContext);
+        return user != null && user.isAdmin;
+      },
       screen: PeopleSaveScreen,
       linking: {
         path: 'mangajap/people/:peopleId/edit',
       },
     },
     Settings: {
+      if: () => {
+        const { isAuthenticated } = useContext(AuthContext);
+        return isAuthenticated;
+      },
       screen: SettingsScreen,
       linking: {
         path: 'mangajap/settings',
