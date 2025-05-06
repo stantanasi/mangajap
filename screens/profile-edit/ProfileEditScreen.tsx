@@ -133,6 +133,7 @@ export default function ProfileEditScreen({ route }: Props) {
           style={{
             alignSelf: 'center',
             marginBottom: 16,
+            marginHorizontal: 16,
           }}
         >
           <Image
@@ -233,7 +234,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1,
     backgroundColor: '#ccc',
     borderRadius: 360,
-    marginHorizontal: 16,
   },
   row: {
     alignItems: 'flex-start',
