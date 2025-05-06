@@ -1,6 +1,7 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import UserCard from '../../components/molecules/UserCard';
 import { Follow, User } from '../../models';
@@ -11,19 +12,22 @@ type Props = StaticScreenProps<{
 
 export default function FollowsScreen({ route }: Props) {
   const navigation = useNavigation();
+  const state = navigation.getState()!;
+  const routeName = state.routes.at(state.index)?.name as keyof ReactNavigation.RootParamList;
   const [follows, setFollows] = useState<Follow[]>();
 
-  useEffect(() => {
-    const state = navigation.getState()!;
-    const routeName = state.routes.at(state.index)?.name as keyof ReactNavigation.RootParamList;
+  const type = routeName === 'ProfileFollowers' ? 'followers'
+    : routeName === 'ProfileFollowing' ? 'following'
+      : null;
 
+  useEffect(() => {
     const prepare = async () => {
-      if (routeName === 'ProfileFollowers') {
+      if (type === 'followers') {
         const followers = await User.findById(route.params.userId).get('followers')
           .include({ follower: true });
 
         setFollows(followers);
-      } else if (routeName === 'ProfileFollowing') {
+      } else if (type === 'following') {
         const following = await User.findById(route.params.userId).get('following')
           .include({ followed: true });
 
@@ -55,6 +59,42 @@ export default function FollowsScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View
+        style={{
+          alignItems: 'flex-start',
+          flexDirection: 'row',
+        }}
+      >
+        <MaterialIcons
+          name="arrow-back"
+          color="#000"
+          size={24}
+          onPress={() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            } else if (typeof window !== 'undefined') {
+              window.history.back();
+            }
+          }}
+          style={{
+            padding: 12,
+          }}
+        />
+
+        <Text
+          style={{
+            flex: 1,
+            fontSize: 18,
+            fontWeight: 'bold',
+            padding: 12,
+          }}
+        >
+          {type === 'followers' ? 'Abonnés'
+            : type === 'following' ? 'Abonnements'
+              : ''}
+        </Text>
+      </View>
+
       <FlatList
         data={follows}
         keyExtractor={(item) => item.id}
