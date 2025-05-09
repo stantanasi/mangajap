@@ -19,6 +19,7 @@ export interface IAnime {
   status: 'airing' | 'finished' | 'unreleased' | 'upcoming';
   inProduction: boolean;
   youtubeVideoId: string;
+  episodeLength: number;
   poster: string | null;
   banner: string | null;
   links: {
@@ -26,13 +27,11 @@ export interface IAnime {
   };
   seasonCount: number;
   episodeCount: number;
-  episodeLength: number;
   averageRating: number | null;
-  ratingRank: number | null;
-  popularity: number;
   userCount: number;
   favoritesCount: number;
   reviewCount: number;
+  popularity: number;
   createdAt: Date;
   updatedAt: Date;
 
@@ -77,6 +76,8 @@ export const AnimeSchema = new Schema<IAnime>({
 
     youtubeVideoId: {},
 
+    episodeLength: {},
+
     poster: {},
 
     banner: {},
@@ -87,19 +88,15 @@ export const AnimeSchema = new Schema<IAnime>({
 
     episodeCount: {},
 
-    episodeLength: {},
-
     averageRating: {},
-
-    ratingRank: {},
-
-    popularity: {},
 
     userCount: {},
 
     favoritesCount: {},
 
     reviewCount: {},
+
+    popularity: {},
 
     createdAt: {
       type: Date,

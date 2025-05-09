@@ -25,11 +25,10 @@ export interface IManga {
   volumeCount: number;
   chapterCount: number;
   averageRating: number | null;
-  ratingRank: number | null;
-  popularity: number;
   userCount: number;
   favoritesCount: number;
   reviewCount: number;
+  popularity: number;
   createdAt: Date;
   updatedAt: Date;
 
@@ -82,15 +81,13 @@ export const MangaSchema = new Schema<IManga>({
 
     averageRating: {},
 
-    ratingRank: {},
-
-    popularity: {},
-
     userCount: {},
 
     favoritesCount: {},
 
     reviewCount: {},
+
+    popularity: {},
 
     createdAt: {
       type: Date,
