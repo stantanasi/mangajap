@@ -87,9 +87,11 @@ export default function MangaCard({
               </Text>
             </View>
 
-            <Text>
-              {manga.startDate.getFullYear()}
-            </Text>
+            {manga.startDate ? (
+              <Text>
+                {manga.startDate.getFullYear()}
+              </Text>
+            ) : null}
           </>
         ) : null}
 

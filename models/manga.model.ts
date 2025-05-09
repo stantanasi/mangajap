@@ -12,7 +12,7 @@ import Volume from './volume.model';
 export interface IManga {
   title: string;
   overview: string;
-  startDate: Date;
+  startDate: Date | null;
   endDate: Date | null;
   origin: string[];
   mangaType: 'bd' | 'comics' | 'josei' | 'kodomo' | 'seijin' | 'seinen' | 'shojo' | 'shonen' | 'doujin' | 'novel' | 'oneshot' | 'webtoon';
@@ -52,7 +52,7 @@ export const MangaSchema = new Schema<IManga>({
     startDate: {
       type: Date,
       transform: function (val) {
-        return val.toISOString().slice(0, 10);
+        return val?.toISOString().slice(0, 10) ?? val;
       },
     },
 

@@ -59,16 +59,18 @@ export default function AboutTab({ manga, style }: Props) {
           </Text>
         </View>
 
-        <Text style={{ color: '#666' }}>
-          {(() => {
-            const startYear = manga.startDate.getFullYear();
-            const endYear = manga.endDate?.getFullYear();
+        {manga.startDate ? (
+          <Text style={{ color: '#666' }}>
+            {(() => {
+              const startYear = manga.startDate.getFullYear();
+              const endYear = manga.endDate?.getFullYear();
 
-            return endYear && startYear !== endYear
-              ? `${startYear} - ${endYear}`
-              : `${startYear}`;
-          })()}
-        </Text>
+              return endYear && startYear !== endYear
+                ? `${startYear} - ${endYear}`
+                : `${startYear}`;
+            })()}
+          </Text>
+        ) : null}
 
         <Text style={{ color: '#666' }}>
           {MangaType[manga.mangaType]}
