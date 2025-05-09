@@ -174,8 +174,8 @@ export default function AnimeSaveScreen({ route }: Props) {
         />
 
         <DateInput
-          label="Date de début *"
-          value={form.startDate}
+          label="Date de début"
+          value={form.startDate ?? undefined}
           onValueChange={(text) => setForm((prev) => ({
             ...prev,
             startDate: text,

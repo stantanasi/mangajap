@@ -87,9 +87,11 @@ export default function AnimeCard({
               </Text>
             </View>
 
-            <Text>
-              {anime.startDate.getFullYear()}
-            </Text>
+            {anime.startDate ? (
+              <Text>
+                {anime.startDate.getFullYear()}
+              </Text>
+            ) : null}
           </>
         ) : null}
 

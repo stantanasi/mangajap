@@ -12,7 +12,7 @@ import Theme from './theme.model';
 export interface IAnime {
   title: string;
   overview: string;
-  startDate: Date;
+  startDate: Date | null;
   endDate: Date | null;
   origin: string[];
   animeType: 'tv' | 'ova' | 'ona' | 'movie' | 'music' | 'special';
@@ -55,7 +55,7 @@ export const AnimeSchema = new Schema<IAnime>({
     startDate: {
       type: Date,
       transform: function (val) {
-        return val.toISOString().slice(0, 10);
+        return val?.toISOString().slice(0, 10) ?? val;
       },
     },
 

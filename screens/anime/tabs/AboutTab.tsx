@@ -59,16 +59,18 @@ export default function AboutTab({ anime, style }: Props) {
           </Text>
         </View>
 
-        <Text style={{ color: '#666' }}>
-          {(() => {
-            const startYear = anime.startDate.getFullYear();
-            const endYear = anime.endDate?.getFullYear();
+        {anime.startDate ? (
+          <Text style={{ color: '#666' }}>
+            {(() => {
+              const startYear = anime.startDate.getFullYear();
+              const endYear = anime.endDate?.getFullYear();
 
-            return endYear && startYear !== endYear
-              ? `${startYear} - ${endYear}`
-              : `${startYear}`;
-          })()}
-        </Text>
+              return endYear && startYear !== endYear
+                ? `${startYear} - ${endYear}`
+                : `${startYear}`;
+            })()}
+          </Text>
+        ) : null}
 
         <Text style={{ color: '#666' }}>
           {AnimeType[anime.animeType]}
