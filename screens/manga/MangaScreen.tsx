@@ -66,12 +66,6 @@ export default function MangaScreen({ route }: Props) {
     );
   }
 
-  const progress = manga['manga-entry']
-    ? manga.chapterCount > 0
-      ? (manga['manga-entry'].chaptersRead / manga.chapterCount) * 100
-      : (manga['manga-entry'].volumesRead / manga.volumeCount) * 100
-    : 0;
-
   return (
     <SafeAreaView style={styles.container}>
       <Header

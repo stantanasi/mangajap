@@ -25,8 +25,10 @@ export default function AgendaMangaScreen({ }: Props) {
         .limit(500);
 
       const mangas = mangaLibrary
-        .filter((entry) => {
-          const progress = (entry.chaptersRead / entry.manga!.chapterCount) * 100;
+        .filter((mangaEntry) => {
+          const progress = mangaEntry.manga!.chapterCount > 0
+            ? (mangaEntry.chaptersRead / mangaEntry.manga!.chapterCount) * 100
+            : (mangaEntry.volumesRead / mangaEntry.manga!.volumeCount) * 100;
           return progress < 100;
         })
         .map((entry) => entry.manga!.copy({
