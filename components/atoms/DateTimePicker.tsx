@@ -310,7 +310,17 @@ export default function DateTimePicker({
           onPress={() => {
             if (!selectedDate) return
 
-            onValueChange(selectedDate);
+            const date = new Date(
+              selectedDate.getFullYear(),
+              selectedDate.getMonth(),
+              selectedDate.getDate(),
+              value.getHours(),
+              value.getMinutes(),
+              value.getSeconds(),
+              value.getMilliseconds()
+            );
+
+            onValueChange(date);
             onRequestClose();
           }}
           style={{
