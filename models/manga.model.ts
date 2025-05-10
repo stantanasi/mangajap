@@ -16,7 +16,7 @@ export interface IManga {
   endDate: Date | null;
   origin: string[];
   mangaType: 'bd' | 'comics' | 'josei' | 'kodomo' | 'seijin' | 'seinen' | 'shojo' | 'shonen' | 'doujin' | 'novel' | 'oneshot' | 'webtoon';
-  status: 'publishing' | 'finished' | 'unreleased' | 'upcoming';
+  status: 'publishing' | 'finished';
   poster: string | null;
   banner: string | null;
   links: {
@@ -153,8 +153,6 @@ export const MangaType = {
 export const MangaStatus = {
   publishing: 'En cours',
   finished: 'Terminé',
-  unreleased: 'À sortir',
-  upcoming: 'À venir',
 
   entries() {
     return Object.entries(this)

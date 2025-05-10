@@ -16,7 +16,7 @@ export interface IAnime {
   endDate: Date | null;
   origin: string[];
   animeType: 'tv' | 'ova' | 'ona' | 'movie' | 'music' | 'special';
-  status: 'airing' | 'finished' | 'unreleased' | 'upcoming';
+  status: 'airing' | 'finished';
   inProduction: boolean;
   youtubeVideoId: string;
   episodeLength: number;
@@ -156,8 +156,6 @@ export const AnimeType = {
 export const AnimeStatus = {
   airing: 'En cours',
   finished: 'Terminé',
-  unreleased: 'À sortir',
-  upcoming: 'À venir',
 
   entries() {
     return Object.entries(this)
