@@ -5,7 +5,6 @@ import Checkbox from 'expo-checkbox';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import DateInput from '../../components/atoms/DateInput';
 import ImageInput from '../../components/atoms/ImageInput';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
@@ -170,16 +169,6 @@ export default function MangaSaveScreen({ route }: Props) {
             overview: text,
           }))}
           multiline
-          style={styles.input}
-        />
-
-        <DateInput
-          label="Date de début"
-          value={form.startDate ?? undefined}
-          onValueChange={(text) => setForm((prev) => ({
-            ...prev,
-            startDate: text,
-          }))}
           style={styles.input}
         />
 

@@ -12,8 +12,6 @@ import Volume from './volume.model';
 export interface IManga {
   title: string;
   overview: string;
-  startDate: Date | null;
-  endDate: Date | null;
   origin: string[];
   mangaType: 'bd' | 'comics' | 'josei' | 'kodomo' | 'seijin' | 'seinen' | 'shojo' | 'shonen' | 'doujin' | 'novel' | 'oneshot' | 'webtoon';
   status: 'publishing' | 'finished';
@@ -22,6 +20,8 @@ export interface IManga {
   links: {
     [site: string]: string;
   };
+  startDate: Date | null;
+  endDate: Date | null;
   volumeCount: number;
   chapterCount: number;
   averageRating: number | null;
@@ -49,6 +49,18 @@ export const MangaSchema = new Schema<IManga>({
 
     overview: {},
 
+    origin: {},
+
+    mangaType: {},
+
+    status: {},
+
+    poster: {},
+
+    banner: {},
+
+    links: {},
+
     startDate: {
       type: Date,
       transform: function (val) {
@@ -62,18 +74,6 @@ export const MangaSchema = new Schema<IManga>({
         return val?.toISOString().slice(0, 10) ?? val;
       },
     },
-
-    origin: {},
-
-    mangaType: {},
-
-    status: {},
-
-    poster: {},
-
-    banner: {},
-
-    links: {},
 
     volumeCount: {},
 
