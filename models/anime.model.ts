@@ -12,8 +12,6 @@ import Theme from './theme.model';
 export interface IAnime {
   title: string;
   overview: string;
-  startDate: Date | null;
-  endDate: Date | null;
   origin: string[];
   animeType: 'tv' | 'ova' | 'ona' | 'movie' | 'music' | 'special';
   status: 'airing' | 'finished';
@@ -25,6 +23,8 @@ export interface IAnime {
   links: {
     [site: string]: string;
   };
+  startDate: Date | null;
+  endDate: Date | null;
   seasonCount: number;
   episodeCount: number;
   averageRating: number | null;
@@ -52,20 +52,6 @@ export const AnimeSchema = new Schema<IAnime>({
 
     overview: {},
 
-    startDate: {
-      type: Date,
-      transform: function (val) {
-        return val?.toISOString().slice(0, 10) ?? val;
-      },
-    },
-
-    endDate: {
-      type: Date,
-      transform: function (val) {
-        return val?.toISOString().slice(0, 10) ?? val;
-      },
-    },
-
     origin: {},
 
     animeType: {},
@@ -83,6 +69,20 @@ export const AnimeSchema = new Schema<IAnime>({
     banner: {},
 
     links: {},
+
+    startDate: {
+      type: Date,
+      transform: function (val) {
+        return val?.toISOString().slice(0, 10) ?? val;
+      },
+    },
+
+    endDate: {
+      type: Date,
+      transform: function (val) {
+        return val?.toISOString().slice(0, 10) ?? val;
+      },
+    },
 
     seasonCount: {},
 
