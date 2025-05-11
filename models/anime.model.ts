@@ -17,7 +17,6 @@ export interface IAnime {
   status: 'airing' | 'finished';
   inProduction: boolean;
   youtubeVideoId: string;
-  episodeLength: number;
   poster: string | null;
   banner: string | null;
   links: {
@@ -61,8 +60,6 @@ export const AnimeSchema = new Schema<IAnime>({
     inProduction: {},
 
     youtubeVideoId: {},
-
-    episodeLength: {},
 
     poster: {},
 
