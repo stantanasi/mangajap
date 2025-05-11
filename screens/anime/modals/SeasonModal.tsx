@@ -166,7 +166,7 @@ export default function SeasonModal({
             size={20}
           />
           <Text style={styles.airDate}>
-            {season.airDate?.toLocaleDateString() ?? 'Indisponible'}
+            {season.startDate?.toLocaleDateString() ?? 'Indisponible'}
           </Text>
         </View>
 
