@@ -12,14 +12,9 @@ export default function MangaAgendaCard({ manga, style, ...props }: Props) {
   const volumeReadCount = manga['manga-entry']?.volumesRead ?? 0;
   const chapterReadCount = manga['manga-entry']?.chaptersRead ?? 0;
 
-  const volumeProgress = (volumeReadCount / manga.volumeCount) * 100;
-  const chapterProgress = (chapterReadCount / manga.chapterCount) * 100;
-
-  const progress = volumeProgress - chapterProgress >= 1 && volumeProgress - chapterProgress <= 5
-    ? chapterProgress
-    : chapterProgress - volumeProgress >= 1 && chapterProgress - volumeProgress <= 5
-      ? volumeProgress
-      : Math.max(volumeProgress, chapterProgress);
+  const progress = manga.chapterCount > 0
+    ? (chapterReadCount / manga.chapterCount) * 100
+    : (volumeReadCount / manga.volumeCount) * 100;
 
   return (
     <Pressable
