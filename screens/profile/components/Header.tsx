@@ -77,7 +77,7 @@ export default function Header({
 
       <View style={styles.metas}>
         <Pressable
-          onPress={() => navigation.navigate('ProfileFollowers', { userId: user.id })}
+          onPress={() => navigation.navigate('ProfileFollows', { type: 'followers', userId: user.id })}
           style={styles.meta}
         >
           <Text style={styles.metaValue}>
@@ -91,7 +91,7 @@ export default function Header({
         <View style={styles.metaDivider} />
 
         <Pressable
-          onPress={() => navigation.navigate('ProfileFollowing', { userId: user.id })}
+          onPress={() => navigation.navigate('ProfileFollows', { type: 'following', userId: user.id })}
           style={styles.meta}
         >
           <Text style={styles.metaValue}>

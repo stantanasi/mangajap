@@ -174,7 +174,7 @@ export default function ProfileScreen({ route }: Props) {
         />
 
         <Pressable
-          onPress={() => navigation.navigate('ProfileAnimeLibrary', { userId: user.id })}
+          onPress={() => navigation.navigate('ProfileLibrary', { type: 'anime-library', userId: user.id })}
           style={{
             alignItems: 'center',
             flexDirection: 'row',
@@ -221,7 +221,7 @@ export default function ProfileScreen({ route }: Props) {
         {user['anime-favorites']!.length > 0 ? (
           <>
             <Pressable
-              onPress={() => navigation.navigate('ProfileAnimeFavorites', { userId: user.id })}
+              onPress={() => navigation.navigate('ProfileLibrary', { type: 'anime-favorites', userId: user.id })}
               style={{
                 alignItems: 'center',
                 flexDirection: 'row',
@@ -268,7 +268,7 @@ export default function ProfileScreen({ route }: Props) {
         ) : null}
 
         <Pressable
-          onPress={() => navigation.navigate('ProfileMangaLibrary', { userId: user.id })}
+          onPress={() => navigation.navigate('ProfileLibrary', { type: 'manga-library', userId: user.id })}
           style={{
             alignItems: 'center',
             flexDirection: 'row',
@@ -315,7 +315,7 @@ export default function ProfileScreen({ route }: Props) {
         {user['manga-favorites']!.length > 0 ? (
           <>
             <Pressable
-              onPress={() => navigation.navigate('ProfileMangaFavorites', { userId: user.id })}
+              onPress={() => navigation.navigate('ProfileLibrary', { type: 'manga-favorites', userId: user.id })}
               style={{
                 alignItems: 'center',
                 flexDirection: 'row',

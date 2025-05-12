@@ -337,40 +337,16 @@ const RootStack = createNativeStackNavigator({
         path: 'mangajap/profile/:id/edit',
       },
     },
-    ProfileFollowers: {
+    ProfileFollows: {
       screen: FollowsScreen,
       linking: {
-        path: 'mangajap/profile/:userId/followers',
+        path: 'mangajap/profile/:userId/:type(followers|following)',
       },
     },
-    ProfileFollowing: {
-      screen: FollowsScreen,
-      linking: {
-        path: 'mangajap/profile/:userId/following',
-      },
-    },
-    ProfileAnimeLibrary: {
+    ProfileLibrary: {
       screen: LibraryScreen,
       linking: {
-        path: 'mangajap/profile/:userId/anime-library',
-      },
-    },
-    ProfileMangaLibrary: {
-      screen: LibraryScreen,
-      linking: {
-        path: 'mangajap/profile/:userId/manga-library',
-      },
-    },
-    ProfileAnimeFavorites: {
-      screen: LibraryScreen,
-      linking: {
-        path: 'mangajap/profile/:userId/anime-favorites',
-      },
-    },
-    ProfileMangaFavorites: {
-      screen: LibraryScreen,
-      linking: {
-        path: 'mangajap/profile/:userId/manga-favorites',
+        path: 'mangajap/profile/:userId/:type(anime-library|anime-favorites|manga-library|manga-favorites)',
       },
     },
     People: {

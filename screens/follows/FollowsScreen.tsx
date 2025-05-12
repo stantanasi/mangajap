@@ -7,27 +7,22 @@ import UserCard from '../../components/molecules/UserCard';
 import { Follow, User } from '../../models';
 
 type Props = StaticScreenProps<{
+  type: 'followers' | 'following';
   userId: string;
 }>;
 
 export default function FollowsScreen({ route }: Props) {
   const navigation = useNavigation();
-  const state = navigation.getState()!;
-  const routeName = state.routes.at(state.index)?.name as keyof ReactNavigation.RootParamList;
   const [follows, setFollows] = useState<Follow[]>();
-
-  const type = routeName === 'ProfileFollowers' ? 'followers'
-    : routeName === 'ProfileFollowing' ? 'following'
-      : null;
 
   useEffect(() => {
     const prepare = async () => {
-      if (type === 'followers') {
+      if (route.params.type === 'followers') {
         const followers = await User.findById(route.params.userId).get('followers')
           .include({ follower: true });
 
         setFollows(followers);
-      } else if (type === 'following') {
+      } else if (route.params.type === 'following') {
         const following = await User.findById(route.params.userId).get('following')
           .include({ followed: true });
 
@@ -89,8 +84,8 @@ export default function FollowsScreen({ route }: Props) {
             padding: 12,
           }}
         >
-          {type === 'followers' ? 'Abonnés'
-            : type === 'following' ? 'Abonnements'
+          {route.params.type === 'followers' ? 'Abonnés'
+            : route.params.type === 'following' ? 'Abonnements'
               : ''}
         </Text>
       </View>
@@ -99,10 +94,7 @@ export default function FollowsScreen({ route }: Props) {
         data={follows}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          const state = navigation.getState()!;
-          const routeName = state.routes.at(state.index)?.name as keyof ReactNavigation.RootParamList;
-
-          const user = routeName === 'ProfileFollowers'
+          const user = route.params.type === 'followers'
             ? item.follower!
             : item.followed!;
           return (

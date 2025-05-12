@@ -8,45 +8,38 @@ import MangaCard from '../../components/molecules/MangaCard';
 import { Anime, AnimeEntry, MangaEntry, User } from '../../models';
 
 type Props = StaticScreenProps<{
+  type: 'anime-library' | 'manga-library' | 'anime-favorites' | 'manga-favorites';
   userId: string;
 }>;
 
 export default function LibraryScreen({ route }: Props) {
   const navigation = useNavigation();
-  const state = navigation.getState()!;
-  const routeName = state.routes.at(state.index)?.name as keyof ReactNavigation.RootParamList;
   const [library, setLibrary] = useState<(AnimeEntry | MangaEntry)[]>();
-
-  const type = routeName === 'ProfileAnimeLibrary' ? 'anime-library'
-    : routeName === 'ProfileAnimeFavorites' ? 'anime-favorites'
-      : routeName === 'ProfileMangaLibrary' ? 'manga-library'
-        : routeName === 'ProfileMangaFavorites' ? 'manga-favorites'
-          : null;
 
   useEffect(() => {
     const prepare = async () => {
-      if (type === 'anime-library') {
+      if (route.params.type === 'anime-library') {
         const animeLibrary = await User.findById(route.params.userId).get('anime-library')
           .include({ anime: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(animeLibrary);
-      } else if (type === 'anime-favorites') {
+      } else if (route.params.type === 'anime-favorites') {
         const animeFavorites = await User.findById(route.params.userId).get('anime-favorites')
           .include({ anime: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(animeFavorites);
-      } else if (type === 'manga-library') {
+      } else if (route.params.type === 'manga-library') {
         const mangaLibrary = await User.findById(route.params.userId).get('manga-library')
           .include({ manga: true })
           .sort({ updatedAt: 'desc' })
           .limit(500);
 
         setLibrary(mangaLibrary);
-      } else if (type === 'manga-favorites') {
+      } else if (route.params.type === 'manga-favorites') {
         const mangaFavorites = await User.findById(route.params.userId).get('manga-favorites')
           .include({ manga: true })
           .sort({ updatedAt: 'desc' })
@@ -110,10 +103,10 @@ export default function LibraryScreen({ route }: Props) {
             padding: 12,
           }}
         >
-          {type === 'anime-library' ? 'Anime'
-            : type === 'anime-favorites' ? 'Anime préférés'
-              : type === 'manga-library' ? 'Manga'
-                : type === 'manga-favorites' ? 'Manga préférés'
+          {route.params.type === 'anime-library' ? 'Anime'
+            : route.params.type === 'anime-favorites' ? 'Anime préférés'
+              : route.params.type === 'manga-library' ? 'Manga'
+                : route.params.type === 'manga-favorites' ? 'Manga préférés'
                   : ''}
         </Text>
       </View>
