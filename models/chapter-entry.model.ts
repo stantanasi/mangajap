@@ -1,4 +1,5 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
 import Chapter from './chapter.model';
 import User from './user.model';
 
@@ -40,7 +41,10 @@ export const ChapterEntrySchema = new Schema<IChapterEntry>({
 });
 
 
-class ChapterEntry extends model<IChapterEntry>(ChapterEntrySchema) { }
+class ChapterEntry extends model<IChapterEntry>(ChapterEntrySchema) {
+
+  static redux = createReduxHelpers<IChapterEntry, typeof ChapterEntry>(ChapterEntry).register('chapter-entries');
+}
 
 ChapterEntry.register('chapter-entries');
 

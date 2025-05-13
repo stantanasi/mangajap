@@ -1,4 +1,5 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
 import Anime from './anime.model';
 import Change from './change.model';
 import Manga from './manga.model';
@@ -36,7 +37,10 @@ export const ThemeSchema = new Schema<ITheme>({
 });
 
 
-class Theme extends model<ITheme>(ThemeSchema) { }
+class Theme extends model<ITheme>(ThemeSchema) {
+
+  static redux = createReduxHelpers<ITheme, typeof Theme>(Theme).register('themes');
+}
 
 Theme.register('themes');
 

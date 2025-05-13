@@ -1,4 +1,5 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
 import Anime from './anime.model';
 import Change from './change.model';
 import EpisodeEntry from './episode-entry.model';
@@ -63,7 +64,10 @@ export const EpisodeSchema = new Schema<IEpisode>({
 });
 
 
-class Episode extends model<IEpisode>(EpisodeSchema) { }
+class Episode extends model<IEpisode>(EpisodeSchema) {
+
+  static redux = createReduxHelpers<IEpisode, typeof Episode>(Episode).register('episodes');
+}
 
 Episode.register('episodes');
 

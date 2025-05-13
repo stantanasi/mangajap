@@ -1,4 +1,5 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
 import Anime from './anime.model';
 import Change from './change.model';
 import Manga from './manga.model';
@@ -36,7 +37,10 @@ export const FranchiseSchema = new Schema<IFranchise>({
 });
 
 
-class Franchise extends model<IFranchise>(FranchiseSchema) { }
+class Franchise extends model<IFranchise>(FranchiseSchema) {
+
+  static redux = createReduxHelpers<IFranchise, typeof Franchise>(Franchise).register('franchises');
+}
 
 Franchise.register('franchises');
 

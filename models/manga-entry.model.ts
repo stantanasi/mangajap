@@ -1,4 +1,5 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
 import Manga from './manga.model';
 import User from './user.model';
 
@@ -57,7 +58,10 @@ export const MangaEntrySchema = new Schema<IMangaEntry>({
 });
 
 
-class MangaEntry extends model<IMangaEntry>(MangaEntrySchema) { }
+class MangaEntry extends model<IMangaEntry>(MangaEntrySchema) {
+
+  static redux = createReduxHelpers<IMangaEntry, typeof MangaEntry>(MangaEntry).register('manga-entries');
+}
 
 MangaEntry.register('manga-entries');
 

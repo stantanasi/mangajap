@@ -1,4 +1,5 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
 import User from './user.model';
 
 export interface IFollow {
@@ -28,7 +29,10 @@ export const FollowSchema = new Schema<IFollow>({
 });
 
 
-class Follow extends model<IFollow>(FollowSchema) { }
+class Follow extends model<IFollow>(FollowSchema) {
+
+  static redux = createReduxHelpers<IFollow, typeof Follow>(Follow).register('follows');
+}
 
 Follow.register('follows');
 

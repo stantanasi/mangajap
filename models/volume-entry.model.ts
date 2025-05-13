@@ -1,4 +1,5 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
 import User from './user.model';
 import Volume from './volume.model';
 
@@ -40,7 +41,10 @@ export const VolumeEntrySchema = new Schema<IVolumeEntry>({
 });
 
 
-class VolumeEntry extends model<IVolumeEntry>(VolumeEntrySchema) { }
+class VolumeEntry extends model<IVolumeEntry>(VolumeEntrySchema) {
+
+  static redux = createReduxHelpers<IVolumeEntry, typeof VolumeEntry>(VolumeEntry).register('volume-entries');
+}
 
 VolumeEntry.register('volume-entries');
 
