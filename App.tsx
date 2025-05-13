@@ -8,7 +8,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Image, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider } from 'react-redux';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
+import store from './redux/store';
 import AgendaAnimeScreen from './screens/agenda-anime/AgendaAnimeScreen';
 import AgendaMangaScreen from './screens/agenda-manga/AgendaMangaScreen';
 import AnimeSaveScreen from './screens/anime-save/AnimeSaveScreen';
@@ -452,8 +454,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <Provider store={store}>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </Provider>
   );
 }
