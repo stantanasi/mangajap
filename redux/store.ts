@@ -1,5 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { Json, JsonApiIdentifier } from '@stantanasi/jsonapi-client';
 import { useDispatch, useSelector } from 'react-redux';
+
+export type State<DocType> = {
+  entities: {
+    [id: string]: Json<DocType> | undefined;
+  };
+
+  relations: {
+    [relation: string]: {
+      [id: string]: JsonApiIdentifier | JsonApiIdentifier[] | null | undefined;
+    };
+  };
+};
+
 
 const store = configureStore({
   reducer: {},
