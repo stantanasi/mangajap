@@ -1,9 +1,9 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
-import { ChapterEntry, User, Volume, VolumeEntry } from '../../models';
+import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../models';
+import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 import ProgressBar from '../atoms/ProgressBar';
 
@@ -31,7 +31,7 @@ export default function VolumeCard({
   style,
   ...props
 }: Props) {
-  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
 
   const chaptersReadCount = volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0;
@@ -52,9 +52,15 @@ export default function VolumeCard({
         });
         await volumeEntry.save();
 
+        dispatch(VolumeEntry.redux.actions.setOne(volumeEntry));
+        dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, volumeEntry));
+
         return volumeEntry;
       } else if (!add && volume['volume-entry']) {
         await volume['volume-entry'].delete();
+
+        dispatch(VolumeEntry.redux.actions.removeOne(volume['volume-entry']));
+        dispatch(Volume.redux.actions.relations['volume-entry'].remove(volume.id, volume['volume-entry']));
 
         return null;
       }
@@ -66,7 +72,7 @@ export default function VolumeCard({
         return volume['volume-entry'];
       });
 
-    const chapters = await Promise.all(volume.chapters?.map(async (chapter, i) => {
+    const chapters = await Promise.all(volume.chapters?.map(async (chapter) => {
       if (add && !chapter['chapter-entry']) {
         onChapterUpdatingChange(chapter.id, true);
 
@@ -76,7 +82,12 @@ export default function VolumeCard({
         });
 
         return chapterEntry.save()
-          .then((entry) => chapter.copy({ 'chapter-entry': entry }))
+          .then((entry) => {
+            dispatch(ChapterEntry.redux.actions.setOne(entry));
+            dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, entry));
+
+            return chapter.copy({ 'chapter-entry': entry });
+          })
           .catch((err) => {
             console.error(err);
             return chapter;
@@ -86,7 +97,12 @@ export default function VolumeCard({
         onChapterUpdatingChange(chapter.id, true);
 
         return chapter['chapter-entry'].delete()
-          .then(() => chapter.copy({ 'chapter-entry': null }))
+          .then(() => {
+            dispatch(ChapterEntry.redux.actions.removeOne(chapter['chapter-entry']!));
+            dispatch(Chapter.redux.actions.relations['chapter-entry'].remove(chapter.id, chapter['chapter-entry']!));
+
+            return chapter.copy({ 'chapter-entry': null });
+          })
           .catch((err) => {
             console.error(err);
             return chapter;

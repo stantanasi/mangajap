@@ -1,8 +1,8 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../models';
+import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 
 type Props = PressableProps & {
@@ -23,7 +23,7 @@ export default function ChapterCard({
   style,
   ...props
 }: Props) {
-  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
 
   const updateChapterEntry = async (add: boolean) => {
@@ -37,9 +37,15 @@ export default function ChapterCard({
         });
         await chapterEntry.save();
 
+        dispatch(ChapterEntry.redux.actions.setOne(chapterEntry));
+        dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
+
         return chapterEntry;
       } else if (!add && chapter['chapter-entry']) {
         await chapter['chapter-entry'].delete();
+
+        dispatch(ChapterEntry.redux.actions.removeOne(chapter['chapter-entry']));
+        dispatch(Chapter.redux.actions.relations['chapter-entry'].remove(chapter.id, chapter['chapter-entry']));
 
         return null;
       }

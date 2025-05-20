@@ -4,6 +4,7 @@ import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, Vi
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, AnimeEntry, Franchise, User } from '../../models';
 import { FranchiseRole } from '../../models/franchise.model';
+import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 
 type Variants = 'default' | 'horizontal';
@@ -28,6 +29,7 @@ export default function AnimeCard({
   style,
   ...props
 }: Props) {
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -115,6 +117,13 @@ export default function AnimeCard({
                 });
                 await animeEntry.save();
 
+                dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
+                dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
+                dispatch(value
+                  ? User.redux.actions.relations['anime-library'].add(user.id, animeEntry)
+                  : User.redux.actions.relations['anime-library'].remove(user.id, animeEntry)
+                );
+
                 onAnimeChange(anime.copy({
                   'anime-entry': animeEntry,
                 }));
@@ -126,6 +135,14 @@ export default function AnimeCard({
                   anime: anime,
                 });
                 await animeEntry.save();
+
+                dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
+                dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
+                dispatch(Anime.redux.actions.relations['anime-entry'].set(anime.id, animeEntry));
+                dispatch(value
+                  ? User.redux.actions.relations['anime-library'].add(user.id, animeEntry)
+                  : User.redux.actions.relations['anime-library'].remove(user.id, animeEntry)
+                );
 
                 onAnimeChange(anime.copy({
                   'anime-entry': animeEntry,

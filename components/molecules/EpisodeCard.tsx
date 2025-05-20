@@ -1,8 +1,8 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../models';
+import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 
 type Props = PressableProps & {
@@ -23,7 +23,7 @@ export default function EpisodeCard({
   style,
   ...props
 }: Props) {
-  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
 
   const updateEpisodeEntry = async (add: boolean) => {
@@ -37,9 +37,15 @@ export default function EpisodeCard({
         });
         await episodeEntry.save();
 
+        dispatch(EpisodeEntry.redux.actions.setOne(episodeEntry));
+        dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, episodeEntry));
+
         return episodeEntry;
       } else if (!add && episode['episode-entry']) {
         await episode['episode-entry'].delete();
+
+        dispatch(EpisodeEntry.redux.actions.removeOne(episode['episode-entry']));
+        dispatch(Episode.redux.actions.relations['episode-entry'].remove(episode.id, episode['episode-entry']));
 
         return null;
       }

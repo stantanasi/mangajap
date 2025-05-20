@@ -1,9 +1,9 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
-import { EpisodeEntry, Season, User } from '../../models';
+import { Episode, EpisodeEntry, Season, User } from '../../models';
+import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 import ProgressBar from '../atoms/ProgressBar';
 
@@ -31,7 +31,7 @@ export default function SeasonCard({
   style,
   ...props
 }: Props) {
-  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
 
   const episodesWatchedCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
@@ -54,7 +54,12 @@ export default function SeasonCard({
         });
 
         return episodeEntry.save()
-          .then((entry) => episode.copy({ 'episode-entry': entry }))
+          .then((entry) => {
+            dispatch(EpisodeEntry.redux.actions.setOne(entry));
+            dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, entry));
+
+            return episode.copy({ 'episode-entry': entry });
+          })
           .catch((err) => {
             console.error(err);
             return episode;
@@ -64,7 +69,12 @@ export default function SeasonCard({
         onEpisodeUpdatingChange(episode.id, true);
 
         return episode['episode-entry'].delete()
-          .then(() => episode.copy({ 'episode-entry': null }))
+          .then(() => {
+            dispatch(EpisodeEntry.redux.actions.removeOne(episode['episode-entry']!));
+            dispatch(Episode.redux.actions.relations['episode-entry'].remove(episode.id, episode['episode-entry']!));
+
+            return episode.copy({ 'episode-entry': null });
+          })
           .catch((err) => {
             console.error(err);
             return episode;

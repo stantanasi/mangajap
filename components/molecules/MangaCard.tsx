@@ -4,6 +4,7 @@ import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, Vi
 import { AuthContext } from '../../contexts/AuthContext';
 import { Franchise, Manga, MangaEntry, User } from '../../models';
 import { FranchiseRole } from '../../models/franchise.model';
+import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 
 type Variants = 'default' | 'horizontal';
@@ -28,6 +29,7 @@ export default function MangaCard({
   style,
   ...props
 }: Props) {
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -115,6 +117,13 @@ export default function MangaCard({
                 });
                 await mangaEntry.save();
 
+                dispatch(MangaEntry.redux.actions.setOne(mangaEntry));
+                dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
+                dispatch(value
+                  ? User.redux.actions.relations['manga-library'].add(user.id, mangaEntry)
+                  : User.redux.actions.relations['manga-library'].remove(user.id, mangaEntry)
+                );
+
                 onMangaChange(manga.copy({
                   'manga-entry': mangaEntry,
                 }));
@@ -126,6 +135,14 @@ export default function MangaCard({
                   manga: manga,
                 });
                 await mangaEntry.save();
+
+                dispatch(MangaEntry.redux.actions.setOne(mangaEntry));
+                dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
+                dispatch(Manga.redux.actions.relations['manga-entry'].set(manga.id, mangaEntry));
+                dispatch(value
+                  ? User.redux.actions.relations['manga-library'].add(user.id, mangaEntry)
+                  : User.redux.actions.relations['manga-library'].remove(user.id, mangaEntry)
+                );
 
                 onMangaChange(manga.copy({
                   'manga-entry': mangaEntry,
