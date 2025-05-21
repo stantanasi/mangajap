@@ -1,9 +1,10 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../contexts/AuthContext';
-import { Anime, User } from '../../models';
+import { AnimeEntry, User } from '../../models';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 import AnimeAgendaCard from './components/AnimeAgendaCard';
 
 type Props = StaticScreenProps<undefined>;
@@ -11,38 +12,16 @@ type Props = StaticScreenProps<undefined>;
 export default function AgendaAnimeScreen({ }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
-  const [animes, setAnimes] = useState<Anime[]>();
+  const { isLoading, animeLibrary } = useAgendaAnime();
 
-  useEffect(() => {
-    const prepare = async () => {
-      if (!user) return
-
-      const animeLibrary = await User.findById(user.id).get('anime-library')
-        .include({
-          anime: true,
-        })
-        .sort({ updatedAt: 'desc' })
-        .limit(500);
-
-      const animes = animeLibrary
-        .filter((entry) => {
-          const progress = (entry.episodesWatch / entry.anime!.episodeCount) * 100;
-          return progress < 100;
-        })
-        .map((entry) => entry.anime!.copy({
-          'anime-entry': entry,
-        }));
-
-      setAnimes(animes);
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [user]);
+  const animes = animeLibrary
+    ?.filter((entry) => {
+      const progress = (entry.episodesWatch / entry.anime!.episodeCount) * 100;
+      return progress < 100;
+    })
+    .map((entry) => entry.anime!.copy({
+      'anime-entry': entry,
+    }));
 
   if (!user) {
     return (
@@ -78,7 +57,7 @@ export default function AgendaAnimeScreen({ }: Props) {
     );
   }
 
-  if (!animes) {
+  if (isLoading || !animes) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -117,3 +96,48 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+
+const useAgendaAnime = () => {
+  const dispatch = useAppDispatch();
+  const { user } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const animeLibrary = useAppSelector(useMemo(() => {
+    if (!user) {
+      return () => undefined;
+    }
+
+    return User.redux.selectors.selectRelation(user.id, 'anime-library', {
+      include: {
+        anime: true,
+      },
+      sort: {
+        updatedAt: 'desc',
+      },
+    });
+  }, [user]));
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (!user) return
+
+      const animeLibrary = await User.findById(user.id).get('anime-library')
+        .include({
+          anime: true,
+        })
+        .sort({ updatedAt: 'desc' })
+        .limit(500);
+
+      dispatch(AnimeEntry.redux.actions.setMany(animeLibrary));
+      dispatch(User.redux.actions.relations['anime-library'].set(user.id, animeLibrary));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [user]);
+
+  return { isLoading, animeLibrary };
+};
