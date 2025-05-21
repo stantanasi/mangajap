@@ -8,6 +8,7 @@ import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   chapter: Chapter | undefined;
@@ -28,6 +29,7 @@ export default function ChapterModal({
   onRequestClose,
   visible,
 }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [readDatePickerVisible, setReadDatePickerVisible] = useState(false);
@@ -61,9 +63,15 @@ export default function ChapterModal({
         });
         await chapterEntry.save();
 
+        dispatch(ChapterEntry.redux.actions.setOne(chapterEntry));
+        dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
+
         return chapterEntry;
       } else if (!add && chapter['chapter-entry']) {
         await chapter['chapter-entry'].delete();
+
+        dispatch(ChapterEntry.redux.actions.removeOne(chapter['chapter-entry']));
+        dispatch(Chapter.redux.actions.relations['chapter-entry'].remove(chapter.id, chapter['chapter-entry']));
 
         return null;
       }
@@ -194,6 +202,8 @@ export default function ChapterModal({
                         readDate: value,
                       });
                       await chapterEntry.save();
+
+                      dispatch(ChapterEntry.redux.actions.setOne(chapterEntry));
 
                       onChapterChange(chapter.copy({
                         'chapter-entry': chapterEntry,

@@ -12,11 +12,11 @@ import VolumeModal from '../modals/VolumeModal';
 
 type Props = {
   manga: Manga;
-  onMangaChange: (manga: Manga) => void;
+  onMangaChange?: (manga: Manga) => void;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function VolumesTab({ manga, onMangaChange, style }: Props) {
+export default function VolumesTab({ manga, onMangaChange = () => { }, style }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean }>({});

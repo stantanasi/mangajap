@@ -3,10 +3,11 @@ import { StyleSheet, Text, View } from 'react-native';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, Manga, User, Volume, VolumeEntry } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   manga: Manga;
-  onMangaChange: (manga: Manga) => void;
+  onMangaChange?: (manga: Manga) => void;
   previousUnread: (Volume | Chapter)[];
   onUpdatingChange: (updating: { [id: string]: boolean }) => void;
   onRequestClose: () => void;
@@ -15,18 +16,19 @@ type Props = {
 
 export default function MarkPreviousAsReadModal({
   manga,
-  onMangaChange,
+  onMangaChange = () => { },
   previousUnread,
   onUpdatingChange,
   onRequestClose,
   visible,
 }: Props) {
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
 
   const markPreviousAsRead = async () => {
     if (!user) return
 
-    onUpdatingChange(Object.fromEntries(previousUnread!.map((value) => [value.id, true])));
+    onUpdatingChange(Object.fromEntries(previousUnread.map((value) => [value.id, true])));
 
     Promise.all(previousUnread.map(async (value) => {
       if (value instanceof Volume) {
@@ -38,7 +40,12 @@ export default function MarkPreviousAsReadModal({
         });
 
         volume = await volumeEntry.save()
-          .then((entry) => volume.copy({ 'volume-entry': entry }))
+          .then((entry) => {
+            dispatch(VolumeEntry.redux.actions.setOne(entry));
+            dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, entry));
+
+            return volume.copy({ 'volume-entry': entry });
+          })
           .catch((err) => {
             console.error(err);
             return volume;
@@ -54,7 +61,12 @@ export default function MarkPreviousAsReadModal({
         });
 
         chapter = await chapterEntry.save()
-          .then((entry) => chapter.copy({ 'chapter-entry': entry }))
+          .then((entry) => {
+            dispatch(ChapterEntry.redux.actions.setOne(entry));
+            dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, entry));
+
+            return chapter.copy({ 'chapter-entry': entry });
+          })
           .catch((err) => {
             console.error(err);
             return chapter;

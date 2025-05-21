@@ -7,7 +7,8 @@ import Checkbox from '../../../components/atoms/Checkbox';
 import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
+import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   volume: Volume | undefined;
@@ -30,6 +31,7 @@ export default function VolumeModal({
   onRequestClose,
   visible,
 }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [readDatePickerVisible, setReadDatePickerVisible] = useState(false);
@@ -63,9 +65,15 @@ export default function VolumeModal({
         });
         await volumeEntry.save();
 
+        dispatch(VolumeEntry.redux.actions.setOne(volumeEntry));
+        dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, volumeEntry));
+
         return volumeEntry;
       } else if (!add && volume['volume-entry']) {
         await volume['volume-entry'].delete();
+
+        dispatch(VolumeEntry.redux.actions.removeOne(volume['volume-entry']));
+        dispatch(Volume.redux.actions.relations['volume-entry'].remove(volume.id, volume['volume-entry']));
 
         return null;
       }
@@ -87,7 +95,12 @@ export default function VolumeModal({
         });
 
         return chapterEntry.save()
-          .then((entry) => chapter.copy({ 'chapter-entry': entry }))
+          .then((entry) => {
+            dispatch(ChapterEntry.redux.actions.setOne(entry));
+            dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, entry));
+
+            return chapter.copy({ 'chapter-entry': entry });
+          })
           .catch((err) => {
             console.error(err);
             return chapter;
@@ -97,7 +110,12 @@ export default function VolumeModal({
         onChapterUpdatingChange(chapter.id, true);
 
         return chapter['chapter-entry'].delete()
-          .then(() => chapter.copy({ 'chapter-entry': null }))
+          .then(() => {
+            dispatch(ChapterEntry.redux.actions.removeOne(chapter['chapter-entry']!));
+            dispatch(Chapter.redux.actions.relations['chapter-entry'].remove(chapter.id, chapter['chapter-entry']!));
+
+            return chapter.copy({ 'chapter-entry': null });
+          })
           .catch((err) => {
             console.error(err);
             return chapter;
@@ -228,6 +246,8 @@ export default function VolumeModal({
                         readDate: value,
                       });
                       await volumeEntry.save();
+
+                      dispatch(VolumeEntry.redux.actions.setOne(volumeEntry));
 
                       onVolumeChange(volume.copy({
                         'volume-entry': volumeEntry,
