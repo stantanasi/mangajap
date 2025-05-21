@@ -2,39 +2,29 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
 import { launchImageLibraryAsync } from 'expo-image-picker';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { User } from '../../models';
 import { IUser } from '../../models/user.model';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 type Props = StaticScreenProps<{
   id: string;
 }>;
 
 export default function ProfileEditScreen({ route }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [user, setUser] = useState<User>();
+  const { isLoading, user } = useProfileEdit(route.params);
   const [form, setForm] = useState<Partial<Object<IUser>>>();
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    const prepare = async () => {
-      const user = await User.findById(route.params.id);
+    setForm(user?.toObject());
+  }, [user]);
 
-      setUser(user);
-      setForm(user.toObject());
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!user || !form) {
+  if (isLoading || !user || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -100,6 +90,8 @@ export default function ProfileEditScreen({ route }: Props) {
 
             user.save()
               .then(() => {
+                dispatch(User.redux.actions.setOne(user));
+
                 if (navigation.canGoBack()) {
                   navigation.goBack();
                 } else if (typeof window !== 'undefined') {
@@ -268,3 +260,28 @@ const styles = StyleSheet.create({
     padding: 0,
   },
 });
+
+
+const useProfileEdit = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const user = useAppSelector(useMemo(() => {
+    return User.redux.selectors.selectById(params.id);
+  }, [params]));
+
+  useEffect(() => {
+    const prepare = async () => {
+      const user = await User.findById(params.id);
+
+      dispatch(User.redux.actions.setOne(user));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, user };
+};
