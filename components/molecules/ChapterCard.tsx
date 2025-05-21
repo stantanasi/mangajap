@@ -7,7 +7,6 @@ import Checkbox from '../atoms/Checkbox';
 
 type Props = PressableProps & {
   chapter: Chapter;
-  onChapterChange?: (chapter: Chapter) => void;
   onReadChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -16,7 +15,6 @@ type Props = PressableProps & {
 
 export default function ChapterCard({
   chapter,
-  onChapterChange = () => { },
   onReadChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
@@ -29,37 +27,21 @@ export default function ChapterCard({
   const updateChapterEntry = async (add: boolean) => {
     if (!user) return
 
-    const chapterEntry = await (async () => {
-      if (add && !chapter['chapter-entry']) {
-        const chapterEntry = new ChapterEntry({
-          user: new User({ id: user.id }),
-          chapter: chapter,
-        });
-        await chapterEntry.save();
-
-        dispatch(ChapterEntry.redux.actions.setOne(chapterEntry));
-        dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
-
-        return chapterEntry;
-      } else if (!add && chapter['chapter-entry']) {
-        await chapter['chapter-entry'].delete();
-
-        dispatch(ChapterEntry.redux.actions.removeOne(chapter['chapter-entry']));
-        dispatch(Chapter.redux.actions.relations['chapter-entry'].remove(chapter.id, chapter['chapter-entry']));
-
-        return null;
-      }
-
-      return chapter['chapter-entry'];
-    })()
-      .catch((err) => {
-        console.error(err);
-        return chapter['chapter-entry'];
+    if (add && !chapter['chapter-entry']) {
+      const chapterEntry = new ChapterEntry({
+        user: new User({ id: user.id }),
+        chapter: chapter,
       });
+      await chapterEntry.save();
 
-    onChapterChange(chapter.copy({
-      'chapter-entry': chapterEntry,
-    }));
+      dispatch(ChapterEntry.redux.actions.setOne(chapterEntry));
+      dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
+    } else if (!add && chapter['chapter-entry']) {
+      await chapter['chapter-entry'].delete();
+
+      dispatch(ChapterEntry.redux.actions.removeOne(chapter['chapter-entry']));
+      dispatch(Chapter.redux.actions.relations['chapter-entry'].remove(chapter.id, chapter['chapter-entry']));
+    }
   };
 
   return (

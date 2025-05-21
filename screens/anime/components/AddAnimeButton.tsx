@@ -7,10 +7,9 @@ import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   anime: Anime;
-  onAnimeChange?: (anime: Anime) => void;
 }
 
-export default function AddAnimeButton({ anime, onAnimeChange = () => { } }: Props) {
+export default function AddAnimeButton({ anime }: Props) {
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -27,10 +26,6 @@ export default function AddAnimeButton({ anime, onAnimeChange = () => { } }: Pro
       dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
       dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
       dispatch(User.redux.actions.relations['anime-library'].add(user.id, animeEntry));
-
-      onAnimeChange(anime.copy({
-        'anime-entry': animeEntry,
-      }));
     } else {
       const animeEntry = new AnimeEntry({
         isAdd: true,
@@ -44,10 +39,6 @@ export default function AddAnimeButton({ anime, onAnimeChange = () => { } }: Pro
       dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
       dispatch(Anime.redux.actions.relations['anime-entry'].set(anime.id, animeEntry));
       dispatch(User.redux.actions.relations['anime-library'].add(user.id, animeEntry));
-
-      onAnimeChange(anime.copy({
-        'anime-entry': animeEntry,
-      }));
     }
   };
 

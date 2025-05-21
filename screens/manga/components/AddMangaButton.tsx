@@ -7,10 +7,9 @@ import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   manga: Manga;
-  onMangaChange?: (manga: Manga) => void;
 }
 
-export default function AddMangaButton({ manga, onMangaChange = () => { } }: Props) {
+export default function AddMangaButton({ manga }: Props) {
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -27,10 +26,6 @@ export default function AddMangaButton({ manga, onMangaChange = () => { } }: Pro
       dispatch(MangaEntry.redux.actions.setOne(mangaEntry));
       dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
       dispatch(User.redux.actions.relations['manga-library'].add(user.id, mangaEntry));
-
-      onMangaChange(manga.copy({
-        'manga-entry': mangaEntry,
-      }));
     } else {
       const mangaEntry = new MangaEntry({
         isAdd: true,
@@ -44,10 +39,6 @@ export default function AddMangaButton({ manga, onMangaChange = () => { } }: Pro
       dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
       dispatch(Manga.redux.actions.relations['manga-entry'].set(manga.id, mangaEntry));
       dispatch(User.redux.actions.relations['manga-library'].add(user.id, mangaEntry));
-
-      onMangaChange(manga.copy({
-        'manga-entry': mangaEntry,
-      }));
     }
   };
 

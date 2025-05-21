@@ -7,7 +7,6 @@ import Checkbox from '../atoms/Checkbox';
 
 type Props = PressableProps & {
   episode: Episode;
-  onEpisodeChange?: (episode: Episode) => void;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -16,7 +15,6 @@ type Props = PressableProps & {
 
 export default function EpisodeCard({
   episode,
-  onEpisodeChange = () => { },
   onWatchedChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
@@ -29,37 +27,21 @@ export default function EpisodeCard({
   const updateEpisodeEntry = async (add: boolean) => {
     if (!user) return
 
-    const episodeEntry = await (async () => {
-      if (add && !episode['episode-entry']) {
-        const episodeEntry = new EpisodeEntry({
-          user: new User({ id: user.id }),
-          episode: episode,
-        });
-        await episodeEntry.save();
-
-        dispatch(EpisodeEntry.redux.actions.setOne(episodeEntry));
-        dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, episodeEntry));
-
-        return episodeEntry;
-      } else if (!add && episode['episode-entry']) {
-        await episode['episode-entry'].delete();
-
-        dispatch(EpisodeEntry.redux.actions.removeOne(episode['episode-entry']));
-        dispatch(Episode.redux.actions.relations['episode-entry'].remove(episode.id, episode['episode-entry']));
-
-        return null;
-      }
-
-      return episode['episode-entry'];
-    })()
-      .catch((err) => {
-        console.error(err);
-        return episode['episode-entry'];
+    if (add && !episode['episode-entry']) {
+      const episodeEntry = new EpisodeEntry({
+        user: new User({ id: user.id }),
+        episode: episode,
       });
+      await episodeEntry.save();
 
-    onEpisodeChange(episode.copy({
-      'episode-entry': episodeEntry,
-    }));
+      dispatch(EpisodeEntry.redux.actions.setOne(episodeEntry));
+      dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, episodeEntry));
+    } else if (!add && episode['episode-entry']) {
+      await episode['episode-entry'].delete();
+
+      dispatch(EpisodeEntry.redux.actions.removeOne(episode['episode-entry']));
+      dispatch(Episode.redux.actions.relations['episode-entry'].remove(episode.id, episode['episode-entry']));
+    }
   };
 
   return (

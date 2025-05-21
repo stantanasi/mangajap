@@ -2,12 +2,10 @@ import React, { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { Anime, Episode, EpisodeEntry, Season, User } from '../../../models';
+import { Episode, EpisodeEntry, Season, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
-  anime: Anime;
-  onAnimeChange?: (anime: Anime) => void;
   previousUnwatched: (Season | Episode)[];
   onUpdatingChange: (updating: { [id: string]: boolean }) => void;
   onRequestClose: () => void;
@@ -15,8 +13,6 @@ type Props = {
 }
 
 export default function MarkPreviousAsWatchedModal({
-  anime,
-  onAnimeChange = () => { },
   previousUnwatched,
   onUpdatingChange,
   onRequestClose,
@@ -32,38 +28,23 @@ export default function MarkPreviousAsWatchedModal({
 
     await Promise.all(previousUnwatched!.map(async (value) => {
       if (value instanceof Episode) {
-        let episode = value;
+        const episode = value;
 
         const episodeEntry = new EpisodeEntry({
           user: new User({ id: user!.id }),
           episode: episode,
         });
 
-        episode = await episodeEntry.save()
+        await episodeEntry.save()
           .then((entry) => {
             dispatch(EpisodeEntry.redux.actions.setOne(entry));
             dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, entry));
-
-            return episode.copy({ 'episode-entry': entry });
           })
-          .catch((err) => {
-            console.error(err);
-            return episode;
-          });
-
-        const season = anime.seasons!.find((season) => season.episodes!.some((e) => e.id === episode.id))!;
-
-        onAnimeChange(anime.copy({
-          seasons: anime.seasons?.map((s) => s.id === season.id
-            ? s.copy({
-              episodes: s.episodes?.map((e) => e.id === episode.id ? episode : e),
-            })
-            : s),
-        }));
-        onUpdatingChange({ [episode.id]: false });
+          .catch((err) => console.error(err));
       }
-    }))
-      .catch((err) => console.error(err));
+
+      onUpdatingChange({ [value.id]: false });
+    }));
   }
 
   return (

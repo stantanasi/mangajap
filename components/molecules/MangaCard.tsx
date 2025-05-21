@@ -11,7 +11,6 @@ type Variants = 'default' | 'horizontal';
 
 type Props = PressableProps & {
   manga: Manga;
-  onMangaChange?: (manga: Manga) => void;
   franchise?: Franchise;
   showCheckbox?: boolean;
   variant?: Variants;
@@ -21,7 +20,6 @@ type Props = PressableProps & {
 
 export default function MangaCard({
   manga,
-  onMangaChange = () => { },
   franchise,
   showCheckbox = true,
   variant = 'default',
@@ -32,6 +30,40 @@ export default function MangaCard({
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const updateMangaEntry = async (add: boolean) => {
+    if (!user) return
+
+    if (manga['manga-entry']) {
+      const mangaEntry = manga['manga-entry'].copy({
+        isAdd: add,
+      });
+      await mangaEntry.save();
+
+      dispatch(MangaEntry.redux.actions.setOne(mangaEntry));
+      dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
+      dispatch(add
+        ? User.redux.actions.relations['manga-library'].add(user.id, mangaEntry)
+        : User.redux.actions.relations['manga-library'].remove(user.id, mangaEntry)
+      );
+    } else {
+      const mangaEntry = new MangaEntry({
+        isAdd: add,
+
+        user: new User({ id: user.id }),
+        manga: manga,
+      });
+      await mangaEntry.save();
+
+      dispatch(MangaEntry.redux.actions.setOne(mangaEntry));
+      dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
+      dispatch(Manga.redux.actions.relations['manga-entry'].set(manga.id, mangaEntry));
+      dispatch(add
+        ? User.redux.actions.relations['manga-library'].add(user.id, mangaEntry)
+        : User.redux.actions.relations['manga-library'].remove(user.id, mangaEntry)
+      );
+    }
+  };
 
   return (
     <Pressable
@@ -110,47 +142,7 @@ export default function MangaCard({
           onValueChange={(value) => {
             setIsUpdating(true);
 
-            const updateMangaEntry = async () => {
-              if (manga['manga-entry']) {
-                const mangaEntry = manga['manga-entry'].copy({
-                  isAdd: value,
-                });
-                await mangaEntry.save();
-
-                dispatch(MangaEntry.redux.actions.setOne(mangaEntry));
-                dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
-                dispatch(value
-                  ? User.redux.actions.relations['manga-library'].add(user.id, mangaEntry)
-                  : User.redux.actions.relations['manga-library'].remove(user.id, mangaEntry)
-                );
-
-                onMangaChange(manga.copy({
-                  'manga-entry': mangaEntry,
-                }));
-              } else {
-                const mangaEntry = new MangaEntry({
-                  isAdd: value,
-
-                  user: new User({ id: user.id }),
-                  manga: manga,
-                });
-                await mangaEntry.save();
-
-                dispatch(MangaEntry.redux.actions.setOne(mangaEntry));
-                dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
-                dispatch(Manga.redux.actions.relations['manga-entry'].set(manga.id, mangaEntry));
-                dispatch(value
-                  ? User.redux.actions.relations['manga-library'].add(user.id, mangaEntry)
-                  : User.redux.actions.relations['manga-library'].remove(user.id, mangaEntry)
-                );
-
-                onMangaChange(manga.copy({
-                  'manga-entry': mangaEntry,
-                }));
-              }
-            };
-
-            updateMangaEntry()
+            updateMangaEntry(value)
               .catch((err) => console.error(err))
               .finally(() => setIsUpdating(false));
           }}

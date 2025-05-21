@@ -7,13 +7,12 @@ import { Manga } from '../../../models';
 type Props = {
   isLoading: boolean;
   list: Manga[];
-  onItemChange?: (item: Manga) => void;
   onLoadMore: () => void;
   hasMore: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function MangaTab({ isLoading, list, onItemChange = () => { }, onLoadMore, hasMore, style }: Props) {
+export default function MangaTab({ isLoading, list, onLoadMore, hasMore, style }: Props) {
   const navigation = useNavigation();
 
   if (isLoading) {
@@ -36,7 +35,6 @@ export default function MangaTab({ isLoading, list, onItemChange = () => { }, on
         renderItem={({ item }) => (
           <MangaCard
             manga={item}
-            onMangaChange={(manga) => onItemChange(manga)}
             onPress={() => navigation.navigate('Manga', { id: item.id })}
             variant="horizontal"
             style={{

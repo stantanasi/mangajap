@@ -11,7 +11,6 @@ import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   season: Season | undefined;
-  onSeasonChange?: (season: Season) => void;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -22,7 +21,6 @@ type Props = {
 
 export default function SeasonModal({
   season,
-  onSeasonChange = () => { },
   onWatchedChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
@@ -57,50 +55,31 @@ export default function SeasonModal({
   const updateSeasonEpisodesEntries = async (add: boolean) => {
     if (!user) return
 
-    const episodes = await Promise.all(season.episodes?.map(async (episode) => {
+    const updateEpisodeEntry = async (episode: Episode) => {
       if (add && !episode['episode-entry']) {
-        onEpisodeUpdatingChange(episode.id, true);
-
         const episodeEntry = new EpisodeEntry({
           user: new User({ id: user.id }),
           episode: episode,
         });
+        await episodeEntry.save();
 
-        return episodeEntry.save()
-          .then((entry) => {
-            dispatch(EpisodeEntry.redux.actions.setOne(entry));
-            dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, entry));
-
-            return episode.copy({ 'episode-entry': entry });
-          })
-          .catch((err) => {
-            console.error(err);
-            return episode;
-          })
-          .finally(() => onEpisodeUpdatingChange(episode.id, false));
+        dispatch(EpisodeEntry.redux.actions.setOne(episodeEntry));
+        dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, episodeEntry));
       } else if (!add && episode['episode-entry']) {
-        onEpisodeUpdatingChange(episode.id, true);
+        await episode['episode-entry'].delete();
 
-        return episode['episode-entry'].delete()
-          .then(() => {
-            dispatch(EpisodeEntry.redux.actions.removeOne(episode['episode-entry']!));
-            dispatch(Episode.redux.actions.relations['episode-entry'].remove(episode.id, episode['episode-entry']!));
-
-            return episode.copy({ 'episode-entry': null });
-          })
-          .catch((err) => {
-            console.error(err);
-            return episode;
-          })
-          .finally(() => onEpisodeUpdatingChange(episode.id, false));
+        dispatch(EpisodeEntry.redux.actions.removeOne(episode['episode-entry']));
+        dispatch(Episode.redux.actions.relations['episode-entry'].remove(episode.id, episode['episode-entry']));
       }
+    };
 
-      return episode;
+    await Promise.all(season.episodes?.map(async (episode) => {
+      onEpisodeUpdatingChange(episode.id, true);
+
+      await updateEpisodeEntry(episode)
+        .catch((err) => console.error(err))
+        .finally(() => onEpisodeUpdatingChange(episode.id, false));
     }) ?? []);
-
-    onSeasonChange(season.copy({
-      episodes: episodes,
-    }));
   };
 
   return (

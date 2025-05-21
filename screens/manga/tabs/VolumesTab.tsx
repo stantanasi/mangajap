@@ -12,11 +12,10 @@ import VolumeModal from '../modals/VolumeModal';
 
 type Props = {
   manga: Manga;
-  onMangaChange?: (manga: Manga) => void;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function VolumesTab({ manga, onMangaChange = () => { }, style }: Props) {
+export default function VolumesTab({ manga, style }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean }>({});
@@ -76,11 +75,6 @@ export default function VolumesTab({ manga, onMangaChange = () => { }, style }: 
         renderSectionHeader={({ section: { volume } }) => !volume ? null : (
           <VolumeCard
             volume={volume}
-            onVolumeChange={(volume) => {
-              onMangaChange(manga.copy({
-                volumes: manga.volumes?.map((v) => v.id === volume.id ? volume : v),
-              }));
-            }}
             onReadChange={(value) => {
               if (!value) return
 
@@ -110,22 +104,6 @@ export default function VolumesTab({ manga, onMangaChange = () => { }, style }: 
         renderItem={({ item, section: { volume } }) => (
           <ChapterCard
             chapter={item}
-            onChapterChange={(chapter) => {
-              if (volume) {
-                onMangaChange(manga.copy({
-                  volumes: manga.volumes?.map((v) => v.id === volume.id
-                    ? volume.copy({
-                      chapters: volume.chapters?.map((c) => c.id === chapter.id ? chapter : c)
-                    })
-                    : v,
-                  ),
-                }));
-              } else {
-                onMangaChange(manga.copy({
-                  chapters: manga.chapters?.map((c) => c.id === chapter.id ? chapter : c),
-                }));
-              }
-            }}
             onReadChange={(value) => {
               if (!value) return
 
@@ -175,12 +153,6 @@ export default function VolumesTab({ manga, onMangaChange = () => { }, style }: 
 
       <VolumeModal
         volume={selectedVolume}
-        onVolumeChange={(volume) => {
-          onMangaChange(manga.copy({
-            volumes: manga.volumes?.map((v) => v.id === volume.id ? volume : v),
-          }));
-          setSelectedVolume(volume);
-        }}
         onReadChange={(value) => {
           if (!value) return
 
@@ -203,23 +175,6 @@ export default function VolumesTab({ manga, onMangaChange = () => { }, style }: 
 
       <ChapterModal
         chapter={selectedChapter}
-        onChapterChange={(chapter) => {
-          if (chapter.volume) {
-            onMangaChange(manga.copy({
-              volumes: manga.volumes?.map((v) => v.id === chapter.volume!.id
-                ? chapter.volume!.copy({
-                  chapters: chapter.volume!.chapters?.map((c) => c.id === chapter.id ? chapter : c)
-                })
-                : v,
-              ),
-            }));
-          } else {
-            onMangaChange(manga.copy({
-              chapters: manga.chapters?.map((c) => c.id === chapter.id ? chapter : c),
-            }));
-          }
-          setSelectedChapter(chapter);
-        }}
         onReadChange={(value) => {
           if (!value) return
 
@@ -240,8 +195,6 @@ export default function VolumesTab({ manga, onMangaChange = () => { }, style }: 
       />
 
       <MarkPreviousAsReadModal
-        manga={manga}
-        onMangaChange={(manga) => onMangaChange(manga)}
         previousUnread={previousUnread ?? []}
         onUpdatingChange={(updating) => setUpdating((prev) => ({ ...prev, ...updating }))}
         onRequestClose={() => setPreviousUnread(undefined)}

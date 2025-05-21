@@ -11,7 +11,6 @@ type Props = React.ComponentProps<typeof ProfileScreen> & {
   user: User;
   followingUser: Follow | null;
   followedByUser: Follow | null;
-  onFollowingChange?: (follow: Follow | null) => void;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -20,13 +19,38 @@ export default function Header({
   user,
   followingUser: followingUser,
   followedByUser: followedByUser,
-  onFollowingChange = () => { },
   style,
 }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { user: authenticatedUser } = useContext(AuthContext);
   const [isFollowUpdating, setIsFollowUpdating] = useState(false);
+
+  const updateFollow = async () => {
+    if (!authenticatedUser) return
+
+    if (!followingUser) {
+      const isFollowingUser = new Follow({
+        follower: new User({ id: authenticatedUser.id }),
+        followed: user,
+      });
+      await isFollowingUser.save();
+
+      dispatch(Follow.redux.actions.setOne(isFollowingUser));
+      dispatch(Follow.redux.actions.relations.follower.set(isFollowingUser.id, new User({ id: authenticatedUser.id })));
+      dispatch(Follow.redux.actions.relations.followed.set(isFollowingUser.id, user));
+
+      dispatch(User.redux.actions.relations.following.add(authenticatedUser.id, isFollowingUser));
+      dispatch(User.redux.actions.relations.followers.add(user.id, isFollowingUser));
+    } else {
+      await followingUser.delete();
+
+      dispatch(Follow.redux.actions.removeOne(followingUser));
+
+      dispatch(User.redux.actions.relations.following.remove(authenticatedUser.id, followingUser));
+      dispatch(User.redux.actions.relations.followers.remove(user.id, followingUser));
+    }
+  };
 
   return (
     <View style={[styles.container, style]}>
@@ -141,37 +165,6 @@ export default function Header({
                 disabled={isFollowUpdating}
                 onPress={() => {
                   setIsFollowUpdating(true);
-
-                  const updateFollow = async () => {
-                    if (!followingUser) {
-                      const isFollowingUser = new Follow({
-                        follower: new User({ id: authenticatedUser.id }),
-                        followed: user,
-                      });
-
-                      return isFollowingUser.save()
-                        .then((follow) => {
-                          dispatch(Follow.redux.actions.setOne(follow));
-                          dispatch(Follow.redux.actions.relations.follower.set(follow.id, new User({ id: authenticatedUser.id })));
-                          dispatch(Follow.redux.actions.relations.followed.set(follow.id, user));
-
-                          dispatch(User.redux.actions.relations.following.add(authenticatedUser.id, follow));
-                          dispatch(User.redux.actions.relations.followers.add(user.id, follow));
-
-                          onFollowingChange(follow);
-                        });
-                    } else {
-                      return followingUser.delete()
-                        .then(() => {
-                          dispatch(Follow.redux.actions.removeOne(followingUser));
-
-                          dispatch(User.redux.actions.relations.following.remove(authenticatedUser.id, followingUser));
-                          dispatch(User.redux.actions.relations.followers.remove(user.id, followingUser));
-
-                          onFollowingChange(null);
-                        });
-                    }
-                  };
 
                   updateFollow()
                     .catch((err) => console.error(err))

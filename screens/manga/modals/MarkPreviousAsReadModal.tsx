@@ -2,12 +2,10 @@ import React, { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { Chapter, ChapterEntry, Manga, User, Volume, VolumeEntry } from '../../../models';
+import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
-  manga: Manga;
-  onMangaChange?: (manga: Manga) => void;
   previousUnread: (Volume | Chapter)[];
   onUpdatingChange: (updating: { [id: string]: boolean }) => void;
   onRequestClose: () => void;
@@ -15,8 +13,6 @@ type Props = {
 }
 
 export default function MarkPreviousAsReadModal({
-  manga,
-  onMangaChange = () => { },
   previousUnread,
   onUpdatingChange,
   onRequestClose,
@@ -30,68 +26,39 @@ export default function MarkPreviousAsReadModal({
 
     onUpdatingChange(Object.fromEntries(previousUnread.map((value) => [value.id, true])));
 
-    Promise.all(previousUnread.map(async (value) => {
+    await Promise.all(previousUnread.map(async (value) => {
       if (value instanceof Volume) {
-        let volume = value;
+        const volume = value;
 
         const volumeEntry = new VolumeEntry({
           user: new User({ id: user.id }),
           volume: volume,
         });
 
-        volume = await volumeEntry.save()
+        await volumeEntry.save()
           .then((entry) => {
             dispatch(VolumeEntry.redux.actions.setOne(entry));
             dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, entry));
-
-            return volume.copy({ 'volume-entry': entry });
           })
-          .catch((err) => {
-            console.error(err);
-            return volume;
-          });;
-
-        return volume;
+          .catch((err) => console.error(err));;
       } else {
-        let chapter = value;
+        const chapter = value;
 
         const chapterEntry = new ChapterEntry({
           user: new User({ id: user!.id }),
           chapter: chapter,
         });
 
-        chapter = await chapterEntry.save()
+        await chapterEntry.save()
           .then((entry) => {
             dispatch(ChapterEntry.redux.actions.setOne(entry));
             dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, entry));
-
-            return chapter.copy({ 'chapter-entry': entry });
           })
-          .catch((err) => {
-            console.error(err);
-            return chapter;
-          });
-
-        const volume = manga.volumes!.find((volume) => volume.chapters!.some((c) => c.id === chapter.id));
-        if (volume) {
-          onMangaChange(manga.copy({
-            volumes: manga.volumes?.map((v) => v.id === volume.id
-              ? volume.copy({
-                chapters: volume.chapters?.map((c) => c.id === chapter.id ? chapter : c)
-              })
-              : v,
-            ),
-          }));
-        } else {
-          onMangaChange(manga.copy({
-            chapters: manga.chapters?.map((c) => c.id === chapter.id ? chapter : c),
-          }));
-        }
+          .catch((err) => console.error(err));
       }
 
       onUpdatingChange({ [value.id]: false });
-    }))
-      .catch((err) => console.error(err));
+    }));
   };
 
   return (

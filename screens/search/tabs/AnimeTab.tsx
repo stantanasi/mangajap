@@ -7,13 +7,12 @@ import { Anime } from '../../../models';
 type Props = {
   isLoading: boolean;
   list: Anime[];
-  onItemChange?: (item: Anime) => void;
   onLoadMore: () => void;
   hasMore: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function AnimeTab({ isLoading, list, onItemChange = () => { }, onLoadMore, hasMore, style }: Props) {
+export default function AnimeTab({ isLoading, list, onLoadMore, hasMore, style }: Props) {
   const navigation = useNavigation();
 
   if (isLoading) {
@@ -36,7 +35,6 @@ export default function AnimeTab({ isLoading, list, onItemChange = () => { }, on
         renderItem={({ item }) => (
           <AnimeCard
             anime={item}
-            onAnimeChange={(anime) => onItemChange(anime)}
             onPress={() => navigation.navigate('Anime', { id: item.id })}
             variant="horizontal"
             style={{

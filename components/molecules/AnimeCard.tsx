@@ -11,7 +11,6 @@ type Variants = 'default' | 'horizontal';
 
 type Props = PressableProps & {
   anime: Anime;
-  onAnimeChange?: (anime: Anime) => void;
   franchise?: Franchise;
   showCheckbox?: boolean;
   variant?: Variants;
@@ -21,7 +20,6 @@ type Props = PressableProps & {
 
 export default function AnimeCard({
   anime,
-  onAnimeChange = () => { },
   franchise,
   showCheckbox = true,
   variant = 'default',
@@ -32,6 +30,40 @@ export default function AnimeCard({
   const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const updateAnimeEntry = async (add: boolean) => {
+    if (!user) return
+
+    if (anime['anime-entry']) {
+      const animeEntry = anime['anime-entry'].copy({
+        isAdd: add,
+      });
+      await animeEntry.save();
+
+      dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
+      dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
+      dispatch(add
+        ? User.redux.actions.relations['anime-library'].add(user.id, animeEntry)
+        : User.redux.actions.relations['anime-library'].remove(user.id, animeEntry)
+      );
+    } else {
+      const animeEntry = new AnimeEntry({
+        isAdd: add,
+
+        user: new User({ id: user.id }),
+        anime: anime,
+      });
+      await animeEntry.save();
+
+      dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
+      dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
+      dispatch(Anime.redux.actions.relations['anime-entry'].set(anime.id, animeEntry));
+      dispatch(add
+        ? User.redux.actions.relations['anime-library'].add(user.id, animeEntry)
+        : User.redux.actions.relations['anime-library'].remove(user.id, animeEntry)
+      );
+    }
+  };
 
   return (
     <Pressable
@@ -110,47 +142,7 @@ export default function AnimeCard({
           onValueChange={(value) => {
             setIsUpdating(true);
 
-            const updateAnimeEntry = async () => {
-              if (anime['anime-entry']) {
-                const animeEntry = anime['anime-entry'].copy({
-                  isAdd: value,
-                });
-                await animeEntry.save();
-
-                dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
-                dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
-                dispatch(value
-                  ? User.redux.actions.relations['anime-library'].add(user.id, animeEntry)
-                  : User.redux.actions.relations['anime-library'].remove(user.id, animeEntry)
-                );
-
-                onAnimeChange(anime.copy({
-                  'anime-entry': animeEntry,
-                }));
-              } else {
-                const animeEntry = new AnimeEntry({
-                  isAdd: value,
-
-                  user: new User({ id: user.id }),
-                  anime: anime,
-                });
-                await animeEntry.save();
-
-                dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
-                dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
-                dispatch(Anime.redux.actions.relations['anime-entry'].set(anime.id, animeEntry));
-                dispatch(value
-                  ? User.redux.actions.relations['anime-library'].add(user.id, animeEntry)
-                  : User.redux.actions.relations['anime-library'].remove(user.id, animeEntry)
-                );
-
-                onAnimeChange(anime.copy({
-                  'anime-entry': animeEntry,
-                }));
-              }
-            };
-
-            updateAnimeEntry()
+            updateAnimeEntry(value)
               .catch((err) => console.error(err))
               .finally(() => setIsUpdating(false));
           }}
