@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputLabel from '../../components/atoms/InputLabel';
@@ -10,16 +10,20 @@ import SelectInput from '../../components/atoms/SelectInput';
 import PeopleCard from '../../components/molecules/PeopleCard';
 import { Anime, Manga, People, Staff } from '../../models';
 import { IStaff, StaffRole } from '../../models/staff.model';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 const SelectDestinationModal = ({ onSelect, onRequestClose, visible }: {
   onSelect: (people: People) => void;
   onRequestClose: () => void;
   visible: boolean;
 }) => {
-  const [peoples, setPeoples] = useState<People[]>();
+  const dispatch = useAppDispatch();
+  const [peopleIds, setPeopleIds] = useState<string[]>();
+
+  const peoples = useAppSelector(People.redux.selectors.selectByIds(peopleIds ?? []));
 
   useEffect(() => {
-    setPeoples(undefined);
+    setPeopleIds(undefined);
   }, [visible]);
 
   return (
@@ -49,13 +53,16 @@ const SelectDestinationModal = ({ onSelect, onRequestClose, visible }: {
         >
           <SearchBar
             onChangeText={() => {
-              setPeoples(undefined);
+              setPeopleIds(undefined);
             }}
             onSearch={(query) => {
-              setPeoples(undefined);
+              setPeopleIds(undefined);
 
               People.find({ query: query })
-                .then((peoples) => setPeoples(peoples))
+                .then((peoples) => {
+                  dispatch(People.redux.actions.setMany(peoples));
+                  setPeopleIds(peoples.map((people) => people.id));
+                })
                 .catch((err) => console.error(err));
             }}
             delay={500}
@@ -69,7 +76,7 @@ const SelectDestinationModal = ({ onSelect, onRequestClose, visible }: {
             }}
           />
 
-          {!peoples ? (
+          {!peopleIds ? (
             <ActivityIndicator
               animating
               color="#000"
@@ -109,42 +116,18 @@ type Props = StaticScreenProps<{
 }>
 
 export default function StaffSaveScreen({ route }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [staff, setStaff] = useState<Staff>();
+  const { isLoading, staff } = useStaffSave(route.params);
   const [form, setForm] = useState<Partial<Object<IStaff>>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const prepare = async () => {
-      let staff = new Staff();
+    setForm(staff?.toObject());
+  }, [staff]);
 
-      if ('animeId' in route.params) {
-        staff = new Staff({
-          anime: new Anime({ id: route.params.animeId }),
-        });
-      } else if ('mangaId' in route.params) {
-        staff = new Staff({
-          manga: new Manga({ id: route.params.mangaId }),
-        });
-      } else {
-        staff = await Staff.findById(route.params.staffId)
-          .include({ people: true });
-      }
-
-      setStaff(staff);
-      setForm(staff.toObject());
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!staff || !form) {
+  if (isLoading || !staff || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -198,10 +181,32 @@ export default function StaffSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
+            const prevPeopleId = staff.people?.id;
+
             staff.assign(form);
+
+            const newPeople = staff.people;
+            const newPeopleId = newPeople?.id;
 
             staff.save()
               .then(() => {
+                dispatch(Staff.redux.actions.setOne(staff));
+                if (newPeople)
+                  dispatch(Staff.redux.actions.relations.people.set(staff.id, newPeople));
+                if ('animeId' in route.params) {
+                  dispatch(Anime.redux.actions.relations.staff.add(route.params.animeId, staff));
+                } else if ('mangaId' in route.params) {
+                  dispatch(Manga.redux.actions.relations.staff.add(route.params.mangaId, staff));
+                }
+                if (!prevPeopleId && newPeopleId) {
+                  dispatch(People.redux.actions.relations.staff.add(newPeopleId, staff));
+                } else if (prevPeopleId !== newPeopleId) {
+                  if (prevPeopleId)
+                    dispatch(People.redux.actions.relations.staff.remove(prevPeopleId, staff));
+                  if (newPeopleId)
+                    dispatch(People.redux.actions.relations.staff.add(newPeopleId, staff));
+                }
+
                 if (navigation.canGoBack()) {
                   navigation.goBack();
                 } else if (typeof window !== 'undefined') {
@@ -321,3 +326,45 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
+
+
+const useStaffSave = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const staff = useAppSelector(useMemo(() => {
+    if ('animeId' in params) {
+      return () => new Staff({
+        anime: new Anime({ id: params.animeId }),
+      });
+    } else if ('mangaId' in params) {
+      return () => new Staff({
+        manga: new Manga({ id: params.mangaId }),
+      });
+    }
+
+    return Staff.redux.selectors.selectById(params.staffId, {
+      include: {
+        people: true,
+      },
+    });
+  }, [params]));
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (!('staffId' in params)) return
+
+      const staff = await Staff.findById(params.staffId)
+        .include({ people: true });
+
+      dispatch(Staff.redux.actions.setOne(staff));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, staff };
+};
