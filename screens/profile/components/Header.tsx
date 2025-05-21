@@ -5,6 +5,7 @@ import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View,
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
 import ProfileScreen from '../ProfileScreen';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = React.ComponentProps<typeof ProfileScreen> & {
   user: User;
@@ -22,6 +23,7 @@ export default function Header({
   onFollowingChange = () => { },
   style,
 }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { user: authenticatedUser } = useContext(AuthContext);
   const [isFollowUpdating, setIsFollowUpdating] = useState(false);
@@ -148,10 +150,26 @@ export default function Header({
                       });
 
                       return isFollowingUser.save()
-                        .then((follow) => onFollowingChange(follow));
+                        .then((follow) => {
+                          dispatch(Follow.redux.actions.setOne(follow));
+                          dispatch(Follow.redux.actions.relations.follower.set(follow.id, new User({ id: authenticatedUser.id })));
+                          dispatch(Follow.redux.actions.relations.followed.set(follow.id, user));
+
+                          dispatch(User.redux.actions.relations.following.add(authenticatedUser.id, follow));
+                          dispatch(User.redux.actions.relations.followers.add(user.id, follow));
+
+                          onFollowingChange(follow);
+                        });
                     } else {
                       return followingUser.delete()
-                        .then(() => onFollowingChange(null));
+                        .then(() => {
+                          dispatch(Follow.redux.actions.removeOne(followingUser));
+
+                          dispatch(User.redux.actions.relations.following.remove(authenticatedUser.id, followingUser));
+                          dispatch(User.redux.actions.relations.followers.remove(user.id, followingUser));
+
+                          onFollowingChange(null);
+                        });
                     }
                   };
 
