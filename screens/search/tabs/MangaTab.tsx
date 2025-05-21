@@ -7,13 +7,13 @@ import { Manga } from '../../../models';
 type Props = {
   isLoading: boolean;
   list: Manga[];
-  onItemChange: (item: Manga) => void;
+  onItemChange?: (item: Manga) => void;
   onLoadMore: () => void;
   hasMore: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function MangaTab({ isLoading, list, onItemChange, onLoadMore, hasMore, style }: Props) {
+export default function MangaTab({ isLoading, list, onItemChange = () => { }, onLoadMore, hasMore, style }: Props) {
   const navigation = useNavigation();
 
   if (isLoading) {

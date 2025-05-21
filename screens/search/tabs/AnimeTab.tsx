@@ -7,13 +7,13 @@ import { Anime } from '../../../models';
 type Props = {
   isLoading: boolean;
   list: Anime[];
-  onItemChange: (item: Anime) => void;
+  onItemChange?: (item: Anime) => void;
   onLoadMore: () => void;
   hasMore: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function AnimeTab({ isLoading, list, onItemChange, onLoadMore, hasMore, style }: Props) {
+export default function AnimeTab({ isLoading, list, onItemChange = () => { }, onLoadMore, hasMore, style }: Props) {
   const navigation = useNavigation();
 
   if (isLoading) {
