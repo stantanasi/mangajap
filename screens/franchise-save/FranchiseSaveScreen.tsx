@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputLabel from '../../components/atoms/InputLabel';
@@ -12,19 +12,24 @@ import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { Anime, Franchise, Manga } from '../../models';
 import { FranchiseRole, IFranchise } from '../../models/franchise.model';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 const SelectDestinationModal = ({ onSelect, onRequestClose, visible }: {
   onSelect: (destination: Anime | Manga) => void;
   onRequestClose: () => void;
   visible: boolean;
 }) => {
-  const [animes, setAnimes] = useState<Anime[]>();
-  const [mangas, setMangas] = useState<Manga[]>();
+  const dispatch = useAppDispatch();
+  const [animeIds, setAnimeIds] = useState<string[]>();
+  const [mangaIds, setMangaIds] = useState<string[]>();
   const [selectedTab, setSelectedTab] = useState<'anime' | 'manga'>('anime');
 
+  const animes = useAppSelector(Anime.redux.selectors.selectByIds(animeIds ?? []));
+  const mangas = useAppSelector(Manga.redux.selectors.selectByIds(mangaIds ?? []));
+
   useEffect(() => {
-    setAnimes(undefined);
-    setMangas(undefined);
+    setAnimeIds(undefined);
+    setMangaIds(undefined);
   }, [visible]);
 
   return (
@@ -54,20 +59,23 @@ const SelectDestinationModal = ({ onSelect, onRequestClose, visible }: {
         >
           <SearchBar
             onChangeText={() => {
-              setAnimes(undefined);
-              setMangas(undefined);
+              setAnimeIds(undefined);
+              setMangaIds(undefined);
             }}
             onSearch={(query) => {
-              setAnimes(undefined);
-              setMangas(undefined);
+              setAnimeIds(undefined);
+              setMangaIds(undefined);
 
               Promise.all([
                 Anime.find({ query: query }),
                 Manga.find({ query: query }),
               ])
                 .then(([animes, mangas]) => {
-                  setAnimes(animes);
-                  setMangas(mangas);
+                  dispatch(Anime.redux.actions.setMany(animes));
+                  dispatch(Manga.redux.actions.setMany(mangas));
+
+                  setAnimeIds(animes.map((anime) => anime.id));
+                  setMangaIds(mangas.map((manga) => manga.id));
                 })
                 .catch((err) => console.error(err));
             }}
@@ -97,7 +105,7 @@ const SelectDestinationModal = ({ onSelect, onRequestClose, visible }: {
               flex: 1,
             }}
           >
-            {!animes ? (
+            {!animeIds ? (
               <ActivityIndicator
                 animating
                 color="#000"
@@ -130,7 +138,7 @@ const SelectDestinationModal = ({ onSelect, onRequestClose, visible }: {
               flex: 1,
             }}
           >
-            {!mangas ? (
+            {!mangaIds ? (
               <ActivityIndicator
                 animating
                 color="#000"
@@ -172,42 +180,18 @@ type Props = StaticScreenProps<{
 }>
 
 export default function FranchiseSaveScreen({ route }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [franchise, setFranchise] = useState<Franchise>();
+  const { isLoading, franchise } = useFranchiseSave(route.params);
   const [form, setForm] = useState<Partial<Object<IFranchise>>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const prepare = async () => {
-      let franchise = new Franchise();
+    setForm(franchise?.toObject());
+  }, [franchise]);
 
-      if ('animeId' in route.params) {
-        franchise = new Franchise({
-          source: new Anime({ id: route.params.animeId }),
-        });
-      } else if ('mangaId' in route.params) {
-        franchise = new Franchise({
-          source: new Manga({ id: route.params.mangaId }),
-        });
-      } else {
-        franchise = await Franchise.findById(route.params.franchiseId)
-          .include({ destination: true });
-      }
-
-      setFranchise(franchise);
-      setForm(franchise.toObject());
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!franchise || !form) {
+  if (isLoading || !franchise || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -263,8 +247,19 @@ export default function FranchiseSaveScreen({ route }: Props) {
 
             franchise.assign(form);
 
+            const newDestination = franchise.destination;
+
             franchise.save()
               .then(() => {
+                dispatch(Franchise.redux.actions.setOne(franchise));
+                if (newDestination)
+                  dispatch(Franchise.redux.actions.relations.destination.set(franchise.id, newDestination));
+                if ('animeId' in route.params) {
+                  dispatch(Anime.redux.actions.relations.franchises.add(route.params.animeId, franchise));
+                } else if ('mangaId' in route.params) {
+                  dispatch(Manga.redux.actions.relations.franchises.add(route.params.mangaId, franchise));
+                }
+
                 if (navigation.canGoBack()) {
                   navigation.goBack();
                 } else if (typeof window !== 'undefined') {
@@ -384,3 +379,45 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
+
+
+const useFranchiseSave = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const franchise = useAppSelector(useMemo(() => {
+    if ('animeId' in params) {
+      return () => new Franchise({
+        source: new Anime({ id: params.animeId }),
+      });
+    } else if ('mangaId' in params) {
+      return () => new Franchise({
+        source: new Manga({ id: params.mangaId }),
+      });
+    }
+
+    return Franchise.redux.selectors.selectById(params.franchiseId, {
+      include: {
+        destination: true,
+      },
+    });
+  }, [params]));
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (!('franchiseId' in params)) return
+
+      const franchise = await Franchise.findById(params.franchiseId)
+        .include({ destination: true });
+
+      dispatch(Franchise.redux.actions.setOne(franchise));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, franchise };
+};
