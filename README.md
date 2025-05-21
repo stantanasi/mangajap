@@ -55,6 +55,7 @@ MangaJap is a modern platform that helps you track the anime you're watching and
 - [React Native](https://reactnative.dev)
 - [React Navigation](https://reactnavigation.org)
 - [JSON:API](https://jsonapi.org)
+- [Redux Toolkit](https://redux-toolkit.js.org)
 
 ## Getting started
 
