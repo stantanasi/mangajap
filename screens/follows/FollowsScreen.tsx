@@ -1,10 +1,11 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import UserCard from '../../components/molecules/UserCard';
 import { Follow, User } from '../../models';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 type Props = StaticScreenProps<{
   type: 'followers' | 'following';
@@ -13,34 +14,9 @@ type Props = StaticScreenProps<{
 
 export default function FollowsScreen({ route }: Props) {
   const navigation = useNavigation();
-  const [follows, setFollows] = useState<Follow[]>();
+  const { isLoading, follows } = useFollows(route.params);
 
-  useEffect(() => {
-    const prepare = async () => {
-      if (route.params.type === 'followers') {
-        const followers = await User.findById(route.params.userId).get('followers')
-          .include({ follower: true });
-
-        setFollows(followers);
-      } else if (route.params.type === 'following') {
-        const following = await User.findById(route.params.userId).get('following')
-          .include({ followed: true });
-
-        setFollows(following);
-      } else {
-        throw Error('Library type not supported');
-      }
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!follows) {
+  if (isLoading || !follows) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -127,3 +103,60 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+
+const useFollows = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const follows = useAppSelector(useMemo(() => {
+    if (params.type === 'followers') {
+      return User.redux.selectors.selectRelation(params.userId, 'followers', {
+        include: {
+          follower: true,
+        },
+        sort: {
+          createdAt: 'desc',
+        },
+      });
+    } else if (params.type === 'following') {
+      return User.redux.selectors.selectRelation(params.userId, 'following', {
+        include: {
+          followed: true,
+        },
+        sort: {
+          createdAt: 'desc',
+        },
+      });
+    }
+
+    return () => undefined;
+  }, [params]));
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (params.type === 'followers') {
+        const followers = await User.findById(params.userId).get('followers')
+          .include({ follower: true })
+          .sort({ createdAt: 'desc' });
+
+        dispatch(Follow.redux.actions.setMany(followers));
+        dispatch(User.redux.actions.relations['followers'].set(params.userId, followers));
+      } else if (params.type === 'following') {
+        const following = await User.findById(params.userId).get('following')
+          .include({ followed: true })
+          .sort({ createdAt: 'desc' });
+
+        dispatch(Follow.redux.actions.setMany(following));
+        dispatch(User.redux.actions.relations['following'].set(params.userId, following));
+      }
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, follows };
+};
