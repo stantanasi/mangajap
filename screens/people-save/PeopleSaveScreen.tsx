@@ -1,45 +1,31 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
 import TextInput from '../../components/atoms/TextInput';
 import { People } from '../../models';
 import { IPeople } from '../../models/people.model';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 type Props = StaticScreenProps<{
   peopleId: string;
 } | undefined>
 
 export default function PeopleSaveScreen({ route }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [people, setPeople] = useState<People>();
+  const { isLoading, people } = usePeopleSave(route.params);
   const [form, setForm] = useState<Partial<Object<IPeople>>>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const prepare = async () => {
-      let people = new People();
+    setForm(people?.toObject());
+  }, [people]);
 
-      if (route.params) {
-        people = await People.findById(route.params.peopleId);
-      }
-
-      setPeople(people);
-      setForm(people.toObject());
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!people || !form) {
+  if (isLoading || !people || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -97,6 +83,8 @@ export default function PeopleSaveScreen({ route }: Props) {
 
             people.save()
               .then(() => {
+                dispatch(People.redux.actions.setOne(people));
+
                 if (navigation.canGoBack()) {
                   navigation.goBack();
                 } else if (typeof window !== 'undefined') {
@@ -176,3 +164,34 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
+
+
+const usePeopleSave = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const people = useAppSelector(useMemo(() => {
+    if (!params) {
+      return () => new People();
+    }
+
+    return People.redux.selectors.selectById(params.peopleId);
+  }, [params]));
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (!params) return
+
+      const people = await People.findById(params.peopleId);
+
+      dispatch(People.redux.actions.setOne(people));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, people };
+};
