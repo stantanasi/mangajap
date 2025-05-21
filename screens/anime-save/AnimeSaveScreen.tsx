@@ -2,7 +2,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
 import Checkbox from 'expo-checkbox';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
@@ -10,62 +10,24 @@ import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { Anime, Genre, Theme } from '../../models';
 import { AnimeStatus, AnimeType, IAnime } from '../../models/anime.model';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 type Props = StaticScreenProps<{
   id: string;
 } | undefined>
 
 export default function AnimeSaveScreen({ route }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [anime, setAnime] = useState<Anime>();
+  const { isLoading, anime, genres, themes } = useAnimeSave(route.params);
   const [form, setForm] = useState<Partial<Object<IAnime>>>();
-  const [genres, setGenres] = useState<Genre[]>();
-  const [themes, setThemes] = useState<Theme[]>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const prepare = async () => {
-      let anime = new Anime({
-        genres: [],
-        themes: [],
-      });
+    setForm(anime?.toObject());
+  }, [anime]);
 
-      if (route.params) {
-        anime = await Anime.findById(route.params.id)
-          .include({
-            genres: true,
-            themes: true,
-          });
-      }
-
-      const [genres, themes] = await Promise.all([
-        Genre.find()
-          .sort({
-            name: 'asc',
-          })
-          .limit(1000),
-        Theme.find()
-          .sort({
-            name: 'asc',
-          })
-          .limit(1000),
-      ]);
-
-      setAnime(anime);
-      setForm(anime.toObject());
-      setGenres(genres);
-      setThemes(themes);
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!anime || !form || !genres || !themes) {
+  if (isLoading || !anime || !form || !genres || !themes) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -123,6 +85,8 @@ export default function AnimeSaveScreen({ route }: Props) {
 
             anime.save()
               .then(() => {
+                dispatch(Anime.redux.actions.setOne(anime));
+
                 if (navigation.canGoBack()) {
                   navigation.goBack();
                 } else if (typeof window !== 'undefined') {
@@ -367,3 +331,66 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
+
+const useAnimeSave = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const anime = useAppSelector(useMemo(() => {
+    if (!params) {
+      return () => new Anime({
+        genres: [],
+        themes: [],
+      });
+    }
+
+    return Anime.redux.selectors.selectById(params.id, {
+      include: {
+        genres: true,
+        themes: true,
+      },
+    });
+  }, [params]));
+
+  const genres = useAppSelector(Genre.redux.selectors.select());
+
+  const themes = useAppSelector(Genre.redux.selectors.select());
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (params) {
+        const anime = await Anime.findById(params.id)
+          .include({
+            genres: true,
+            themes: true,
+          });
+
+        dispatch(Anime.redux.actions.setOne(anime));
+      }
+
+      const [genres, themes] = await Promise.all([
+        Genre.find()
+          .sort({
+            name: 'asc',
+          })
+          .limit(1000),
+        Theme.find()
+          .sort({
+            name: 'asc',
+          })
+          .limit(1000),
+      ]);
+
+      dispatch(Genre.redux.actions.setMany(genres));
+      dispatch(Theme.redux.actions.setMany(themes));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, anime, genres, themes };
+};
