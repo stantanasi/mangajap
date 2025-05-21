@@ -9,49 +9,14 @@ import MangaCard from '../../components/molecules/MangaCard';
 import PeopleCard from '../../components/molecules/PeopleCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, Manga, People } from '../../models';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 type Props = StaticScreenProps<undefined>;
 
 export default function DiscoverScreen({ route }: Props) {
   const navigation = useNavigation();
-  const { isAuthenticated, user } = useContext(AuthContext);
-  const [peoples, setPeoples] = useState<People[]>();
-  const [animes, setAnimes] = useState<Anime[]>();
-  const [mangas, setMangas] = useState<Manga[]>();
-
-  useEffect(() => {
-    const prepare = async () => {
-      const [peoples, animes, mangas] = await Promise.all([
-        People.find()
-          .sort({ random: 'asc' }),
-        Anime.find()
-          .include({
-            'anime-entry': isAuthenticated,
-          })
-          .sort({
-            createdAt: 'desc',
-          }),
-        Manga.find()
-          .include({
-            'manga-entry': isAuthenticated,
-          })
-          .sort({
-            createdAt: 'desc',
-          }),
-      ]);
-
-      setPeoples(peoples);
-      setAnimes(animes);
-      setMangas(mangas);
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, []);
+  const { user } = useContext(AuthContext);
+  const { isLoading, peoples, animes, mangas } = useDiscover();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -76,7 +41,7 @@ export default function DiscoverScreen({ route }: Props) {
         </Text>
       </Pressable>
 
-      {!peoples || !animes || !mangas ? (
+      {isLoading || !peoples || !animes || !mangas ? (
         <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
           <ActivityIndicator
             animating
@@ -131,9 +96,6 @@ export default function DiscoverScreen({ route }: Props) {
             renderItem={({ item }) => (
               <AnimeCard
                 anime={item}
-                onAnimeChange={(anime) => {
-                  setAnimes((prev) => prev?.map((a) => a.id === anime.id ? anime : a));
-                }}
                 onPress={() => navigation.navigate('Anime', { id: item.id })}
               />
             )}
@@ -161,9 +123,6 @@ export default function DiscoverScreen({ route }: Props) {
             renderItem={({ item }) => (
               <MangaCard
                 manga={item}
-                onMangaChange={(manga) => {
-                  setMangas((prev) => prev?.map((m) => m.id === manga.id ? manga : m));
-                }}
                 onPress={() => navigation.navigate('Manga', { id: item.id })}
               />
             )}
@@ -216,3 +175,69 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 });
+
+
+const useDiscover = () => {
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
+  const [peoplesIds, setPeoplesIds] = useState<string[]>([]);
+
+  const peoples = useAppSelector(People.redux.selectors.selectByIds(peoplesIds));
+
+  const animes = useAppSelector(Anime.redux.selectors.select({
+    include: {
+      'anime-entry': isAuthenticated,
+    },
+    sort: {
+      createdAt: 'desc',
+    },
+    limit: 10,
+  }));
+
+  const mangas = useAppSelector(Manga.redux.selectors.select({
+    include: {
+      'manga-entry': isAuthenticated,
+    },
+    sort: {
+      createdAt: 'desc',
+    },
+    limit: 10,
+  }));
+
+  useEffect(() => {
+    const prepare = async () => {
+      const [peoples, animes, mangas] = await Promise.all([
+        People.find()
+          .sort({ random: 'asc' }),
+        Anime.find()
+          .include({
+            'anime-entry': isAuthenticated,
+          })
+          .sort({
+            createdAt: 'desc',
+          }),
+        Manga.find()
+          .include({
+            'manga-entry': isAuthenticated,
+          })
+          .sort({
+            createdAt: 'desc',
+          }),
+      ]);
+
+      dispatch(People.redux.actions.setMany(peoples));
+      dispatch(Anime.redux.actions.setMany(animes));
+      dispatch(Manga.redux.actions.setMany(mangas));
+
+      setPeoplesIds(peoples.map((people) => people.id));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  return { isLoading, peoples, animes, mangas };
+};
