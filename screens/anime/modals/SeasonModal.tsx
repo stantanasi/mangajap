@@ -6,7 +6,8 @@ import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { EpisodeEntry, Season, User } from '../../../models';
+import { Episode, EpisodeEntry, Season, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   season: Season | undefined;
@@ -29,6 +30,7 @@ export default function SeasonModal({
   onRequestClose,
   visible,
 }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
@@ -65,7 +67,12 @@ export default function SeasonModal({
         });
 
         return episodeEntry.save()
-          .then((entry) => episode.copy({ 'episode-entry': entry }))
+          .then((entry) => {
+            dispatch(EpisodeEntry.redux.actions.setOne(entry));
+            dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, entry));
+
+            return episode.copy({ 'episode-entry': entry });
+          })
           .catch((err) => {
             console.error(err);
             return episode;
@@ -75,7 +82,12 @@ export default function SeasonModal({
         onEpisodeUpdatingChange(episode.id, true);
 
         return episode['episode-entry'].delete()
-          .then(() => episode.copy({ 'episode-entry': null }))
+          .then(() => {
+            dispatch(EpisodeEntry.redux.actions.removeOne(episode['episode-entry']!));
+            dispatch(Episode.redux.actions.relations['episode-entry'].remove(episode.id, episode['episode-entry']!));
+
+            return episode.copy({ 'episode-entry': null });
+          })
           .catch((err) => {
             console.error(err);
             return episode;

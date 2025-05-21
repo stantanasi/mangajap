@@ -3,13 +3,15 @@ import React, { useContext, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime, AnimeEntry, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   anime: Anime;
-  onAnimeChange: (anime: Anime) => void;
+  onAnimeChange?: (anime: Anime) => void;
 }
 
-export default function AddAnimeButton({ anime, onAnimeChange }: Props) {
+export default function AddAnimeButton({ anime, onAnimeChange = () => { } }: Props) {
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -22,6 +24,10 @@ export default function AddAnimeButton({ anime, onAnimeChange }: Props) {
       });
       await animeEntry.save();
 
+      dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
+      dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
+      dispatch(User.redux.actions.relations['anime-library'].add(user.id, animeEntry));
+
       onAnimeChange(anime.copy({
         'anime-entry': animeEntry,
       }));
@@ -33,6 +39,11 @@ export default function AddAnimeButton({ anime, onAnimeChange }: Props) {
         anime: anime,
       });
       await animeEntry.save();
+
+      dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
+      dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
+      dispatch(Anime.redux.actions.relations['anime-entry'].set(anime.id, animeEntry));
+      dispatch(User.redux.actions.relations['anime-library'].add(user.id, animeEntry));
 
       onAnimeChange(anime.copy({
         'anime-entry': animeEntry,

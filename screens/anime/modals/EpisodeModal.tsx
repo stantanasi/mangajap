@@ -8,6 +8,7 @@ import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   episode: Episode | undefined;
@@ -28,6 +29,7 @@ export default function EpisodeModal({
   onRequestClose,
   visible,
 }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [watchedDatePickerVisible, setWatchedDatePickerVisible] = useState(false);
@@ -61,9 +63,15 @@ export default function EpisodeModal({
         });
         await episodeEntry.save();
 
+        dispatch(EpisodeEntry.redux.actions.setOne(episodeEntry));
+        dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, episodeEntry));
+
         return episodeEntry;
       } else if (!add && episode['episode-entry']) {
         await episode['episode-entry'].delete();
+
+        dispatch(EpisodeEntry.redux.actions.removeOne(episode['episode-entry']));
+        dispatch(Episode.redux.actions.relations['episode-entry'].remove(episode.id, episode['episode-entry']));
 
         return null;
       }
@@ -194,6 +202,8 @@ export default function EpisodeModal({
                         watchedDate: value,
                       });
                       await episodeEntry.save();
+
+                      dispatch(EpisodeEntry.redux.actions.setOne(episodeEntry));
 
                       onEpisodeChange(episode.copy({
                         'episode-entry': episodeEntry,

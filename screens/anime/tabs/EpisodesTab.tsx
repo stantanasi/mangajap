@@ -12,11 +12,11 @@ import SeasonModal from '../modals/SeasonModal';
 
 type Props = {
   anime: Anime;
-  onAnimeChange: (anime: Anime) => void;
+  onAnimeChange?: (anime: Anime) => void;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
+export default function EpisodesTab({ anime, onAnimeChange = () => { }, style }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [expandedSeasons, setExpandedSeasons] = useState<{ [seasonId: string]: boolean }>({});

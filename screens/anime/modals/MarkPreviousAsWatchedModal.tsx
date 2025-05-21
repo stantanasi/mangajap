@@ -3,10 +3,11 @@ import { StyleSheet, Text, View } from 'react-native';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime, Episode, EpisodeEntry, Season, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   anime: Anime;
-  onAnimeChange: (anime: Anime) => void;
+  onAnimeChange?: (anime: Anime) => void;
   previousUnwatched: (Season | Episode)[];
   onUpdatingChange: (updating: { [id: string]: boolean }) => void;
   onRequestClose: () => void;
@@ -15,12 +16,13 @@ type Props = {
 
 export default function MarkPreviousAsWatchedModal({
   anime,
-  onAnimeChange,
+  onAnimeChange = () => { },
   previousUnwatched,
   onUpdatingChange,
   onRequestClose,
   visible
 }: Props) {
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
 
   const markPreviousAsWatched = async () => {
@@ -38,7 +40,12 @@ export default function MarkPreviousAsWatchedModal({
         });
 
         episode = await episodeEntry.save()
-          .then((entry) => episode.copy({ 'episode-entry': entry }))
+          .then((entry) => {
+            dispatch(EpisodeEntry.redux.actions.setOne(entry));
+            dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, entry));
+
+            return episode.copy({ 'episode-entry': entry });
+          })
           .catch((err) => {
             console.error(err);
             return episode;
