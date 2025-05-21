@@ -35,16 +35,14 @@ export default function AnimeCard({
     if (!user) return
 
     if (anime['anime-entry']) {
-      const animeEntry = anime['anime-entry'].copy({
-        isAdd: add,
-      });
-      await animeEntry.save();
+      anime['anime-entry'].isAdd = add;
+      await anime['anime-entry'].save();
 
-      dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
-      dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
+      dispatch(AnimeEntry.redux.actions.setOne(anime['anime-entry']));
+      dispatch(AnimeEntry.redux.actions.relations.anime.set(anime['anime-entry'].id, anime));
       dispatch(add
-        ? User.redux.actions.relations['anime-library'].add(user.id, animeEntry)
-        : User.redux.actions.relations['anime-library'].remove(user.id, animeEntry)
+        ? User.redux.actions.relations['anime-library'].add(user.id, anime['anime-entry'])
+        : User.redux.actions.relations['anime-library'].remove(user.id, anime['anime-entry'])
       );
     } else {
       const animeEntry = new AnimeEntry({

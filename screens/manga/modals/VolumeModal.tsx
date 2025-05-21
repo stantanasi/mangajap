@@ -98,6 +98,15 @@ export default function VolumeModal({
     }) ?? []);
   };
 
+  const updateReadDate = async (date: Date) => {
+    if (!volume['volume-entry']) return
+
+    volume['volume-entry'].readDate = date;
+    await volume['volume-entry'].save();
+
+    dispatch(VolumeEntry.redux.actions.setOne(volume['volume-entry']));
+  };
+
   return (
     <Modal
       onRequestClose={onRequestClose}
@@ -207,16 +216,7 @@ export default function VolumeModal({
                   onValueChange={(value) => {
                     setIsSavingReadDate(true);
 
-                    const updateReadDate = async () => {
-                      const volumeEntry = volume['volume-entry']!.copy({
-                        readDate: value,
-                      });
-                      await volumeEntry.save();
-
-                      dispatch(VolumeEntry.redux.actions.setOne(volumeEntry));
-                    };
-
-                    updateReadDate()
+                    updateReadDate(value)
                       .catch((err) => console.error(err))
                       .finally(() => setIsSavingReadDate(false))
                   }}

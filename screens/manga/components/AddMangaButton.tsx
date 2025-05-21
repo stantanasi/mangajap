@@ -18,14 +18,12 @@ export default function AddMangaButton({ manga }: Props) {
 
   const addMangaEntry = async () => {
     if (manga['manga-entry']) {
-      const mangaEntry = manga['manga-entry'].copy({
-        isAdd: true,
-      });
-      await mangaEntry.save();
+      manga['manga-entry'].isAdd = true;
+      await manga['manga-entry'].save();
 
-      dispatch(MangaEntry.redux.actions.setOne(mangaEntry));
-      dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
-      dispatch(User.redux.actions.relations['manga-library'].add(user.id, mangaEntry));
+      dispatch(MangaEntry.redux.actions.setOne(manga['manga-entry']));
+      dispatch(MangaEntry.redux.actions.relations.manga.set(manga['manga-entry'].id, manga));
+      dispatch(User.redux.actions.relations['manga-library'].add(user.id, manga['manga-entry']));
     } else {
       const mangaEntry = new MangaEntry({
         isAdd: true,

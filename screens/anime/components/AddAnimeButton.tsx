@@ -18,14 +18,12 @@ export default function AddAnimeButton({ anime }: Props) {
 
   const addAnimeEntry = async () => {
     if (anime['anime-entry']) {
-      const animeEntry = anime['anime-entry'].copy({
-        isAdd: true,
-      });
-      await animeEntry.save();
+      anime['anime-entry'].isAdd = true;
+      await anime['anime-entry'].save();
 
-      dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
-      dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
-      dispatch(User.redux.actions.relations['anime-library'].add(user.id, animeEntry));
+      dispatch(AnimeEntry.redux.actions.setOne(anime['anime-entry']));
+      dispatch(AnimeEntry.redux.actions.relations.anime.set(anime['anime-entry'].id, anime));
+      dispatch(User.redux.actions.relations['anime-library'].add(user.id, anime['anime-entry']));
     } else {
       const animeEntry = new AnimeEntry({
         isAdd: true,

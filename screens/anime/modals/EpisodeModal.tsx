@@ -70,6 +70,15 @@ export default function EpisodeModal({
     }
   };
 
+  const updateWatchedDate = async (date: Date) => {
+    if (!episode['episode-entry']) return
+
+    episode['episode-entry'].watchedDate = date;
+    await episode['episode-entry'].save();
+
+    dispatch(EpisodeEntry.redux.actions.setOne(episode['episode-entry']));
+  };
+
   return (
     <Modal
       onRequestClose={onRequestClose}
@@ -179,16 +188,7 @@ export default function EpisodeModal({
                   onValueChange={(value) => {
                     setIsSavingWatchedDate(true);
 
-                    const updateWatchedDate = async () => {
-                      const episodeEntry = episode['episode-entry']!.copy({
-                        watchedDate: value,
-                      });
-                      await episodeEntry.save();
-
-                      dispatch(EpisodeEntry.redux.actions.setOne(episodeEntry));
-                    };
-
-                    updateWatchedDate()
+                    updateWatchedDate(value)
                       .catch((err) => console.error(err))
                       .finally(() => setIsSavingWatchedDate(false))
                   }}

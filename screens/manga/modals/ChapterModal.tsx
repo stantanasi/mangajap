@@ -70,6 +70,15 @@ export default function ChapterModal({
     }
   };
 
+  const updateReadDate = async (date: Date) => {
+    if (!chapter['chapter-entry']) return
+
+    chapter['chapter-entry'].readDate = date;
+    await chapter['chapter-entry'].save();
+
+    dispatch(ChapterEntry.redux.actions.setOne(chapter['chapter-entry']));
+  };
+
   return (
     <Modal
       onRequestClose={onRequestClose}
@@ -179,16 +188,7 @@ export default function ChapterModal({
                   onValueChange={(value) => {
                     setIsSavingReadDate(true);
 
-                    const updateReadDate = async () => {
-                      const chapterEntry = chapter['chapter-entry']!.copy({
-                        readDate: value,
-                      });
-                      await chapterEntry.save();
-
-                      dispatch(ChapterEntry.redux.actions.setOne(chapterEntry));
-                    };
-
-                    updateReadDate()
+                    updateReadDate(value)
                       .catch((err) => console.error(err))
                       .finally(() => setIsSavingReadDate(false))
                   }}
