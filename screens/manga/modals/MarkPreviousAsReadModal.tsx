@@ -26,34 +26,40 @@ export default function MarkPreviousAsReadModal({
 
     onUpdatingChange(Object.fromEntries(previousUnread.map((value) => [value.id, true])));
 
+    const updateVolumeEntry = async (volume: Volume) => {
+      const volumeEntry = new VolumeEntry({
+        user: new User({ id: user.id }),
+        volume: volume,
+      });
+
+      await volumeEntry.save();
+
+      dispatch(VolumeEntry.redux.actions.saveOne(volumeEntry));
+      dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, volumeEntry));
+    };
+
+    const updateChapterEntry = async (chapter: Chapter) => {
+      const chapterEntry = new ChapterEntry({
+        user: new User({ id: user.id }),
+        chapter: chapter,
+      });
+
+      await chapterEntry.save();
+
+      dispatch(ChapterEntry.redux.actions.saveOne(chapterEntry));
+      dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
+    };
+
     await Promise.all(previousUnread.map(async (value) => {
       if (value instanceof Volume) {
         const volume = value;
 
-        const volumeEntry = new VolumeEntry({
-          user: new User({ id: user.id }),
-          volume: volume,
-        });
-
-        await volumeEntry.save()
-          .then((entry) => {
-            dispatch(VolumeEntry.redux.actions.saveOne(entry));
-            dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, entry));
-          })
+        updateVolumeEntry(volume)
           .catch((err) => console.error(err));;
       } else {
         const chapter = value;
 
-        const chapterEntry = new ChapterEntry({
-          user: new User({ id: user!.id }),
-          chapter: chapter,
-        });
-
-        await chapterEntry.save()
-          .then((entry) => {
-            dispatch(ChapterEntry.redux.actions.saveOne(entry));
-            dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, entry));
-          })
+        updateChapterEntry(chapter)
           .catch((err) => console.error(err));
       }
 

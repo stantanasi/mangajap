@@ -24,22 +24,25 @@ export default function MarkPreviousAsWatchedModal({
   const markPreviousAsWatched = async () => {
     if (!user) return
 
-    onUpdatingChange(Object.fromEntries(previousUnwatched!.map((value) => [value.id, true])));
+    onUpdatingChange(Object.fromEntries(previousUnwatched.map((value) => [value.id, true])));
 
-    await Promise.all(previousUnwatched!.map(async (value) => {
+    const updateEpisodeEntry = async (episode: Episode) => {
+      const episodeEntry = new EpisodeEntry({
+        user: new User({ id: user.id }),
+        episode: episode,
+      });
+
+      await episodeEntry.save();
+
+      dispatch(EpisodeEntry.redux.actions.saveOne(episodeEntry));
+      dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, episodeEntry));
+    };
+
+    await Promise.all(previousUnwatched.map(async (value) => {
       if (value instanceof Episode) {
         const episode = value;
 
-        const episodeEntry = new EpisodeEntry({
-          user: new User({ id: user!.id }),
-          episode: episode,
-        });
-
-        await episodeEntry.save()
-          .then((entry) => {
-            dispatch(EpisodeEntry.redux.actions.saveOne(entry));
-            dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, entry));
-          })
+        updateEpisodeEntry(episode)
           .catch((err) => console.error(err));
       }
 
