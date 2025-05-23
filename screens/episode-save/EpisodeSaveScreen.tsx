@@ -42,6 +42,35 @@ export default function EpisodeSaveScreen({ route }: Props) {
     );
   }
 
+  const save = async () => {
+    const prevSeasonId = episode.season?.id;
+
+    episode.assign(form);
+
+    const newSeasonId = episode.season?.id;
+
+    await episode.save();
+
+    dispatch(Episode.redux.actions.saveOne(episode));
+    if ('animeId' in route.params) {
+      dispatch(Anime.redux.actions.relations.episodes.add(route.params.animeId, episode));
+    }
+    if (!prevSeasonId && newSeasonId) {
+      dispatch(Season.redux.actions.relations.episodes.add(newSeasonId, episode));
+    } else if (prevSeasonId !== newSeasonId) {
+      if (prevSeasonId)
+        dispatch(Season.redux.actions.relations.episodes.remove(prevSeasonId, episode));
+      if (newSeasonId)
+        dispatch(Season.redux.actions.relations.episodes.add(newSeasonId, episode));
+    }
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -84,33 +113,7 @@ export default function EpisodeSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            const prevSeasonId = episode.season?.id;
-
-            episode.assign(form);
-
-            const newSeasonId = episode.season?.id;
-
-            episode.save()
-              .then(() => {
-                dispatch(Episode.redux.actions.saveOne(episode));
-                if ('animeId' in route.params) {
-                  dispatch(Anime.redux.actions.relations.episodes.add(route.params.animeId, episode));
-                }
-                if (!prevSeasonId && newSeasonId) {
-                  dispatch(Season.redux.actions.relations.episodes.add(newSeasonId, episode));
-                } else if (prevSeasonId !== newSeasonId) {
-                  if (prevSeasonId)
-                    dispatch(Season.redux.actions.relations.episodes.remove(prevSeasonId, episode));
-                  if (newSeasonId)
-                    dispatch(Season.redux.actions.relations.episodes.add(newSeasonId, episode));
-                }
-
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}

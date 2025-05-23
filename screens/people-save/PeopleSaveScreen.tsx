@@ -37,6 +37,20 @@ export default function PeopleSaveScreen({ route }: Props) {
     );
   }
 
+  const save = async () => {
+    people.assign(form);
+
+    await people.save();
+
+    dispatch(People.redux.actions.saveOne(people));
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -79,18 +93,7 @@ export default function PeopleSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            people.assign(form);
-
-            people.save()
-              .then(() => {
-                dispatch(People.redux.actions.saveOne(people));
-
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}

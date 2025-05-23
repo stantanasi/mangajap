@@ -203,6 +203,29 @@ export default function FranchiseSaveScreen({ route }: Props) {
     );
   }
 
+  const save = async () => {
+    franchise.assign(form);
+
+    const newDestination = franchise.destination;
+
+    await franchise.save();
+
+    dispatch(Franchise.redux.actions.saveOne(franchise));
+    if (newDestination)
+      dispatch(Franchise.redux.actions.relations.destination.set(franchise.id, newDestination));
+    if ('animeId' in route.params) {
+      dispatch(Anime.redux.actions.relations.franchises.add(route.params.animeId, franchise));
+    } else if ('mangaId' in route.params) {
+      dispatch(Manga.redux.actions.relations.franchises.add(route.params.mangaId, franchise));
+    }
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -245,27 +268,7 @@ export default function FranchiseSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            franchise.assign(form);
-
-            const newDestination = franchise.destination;
-
-            franchise.save()
-              .then(() => {
-                dispatch(Franchise.redux.actions.saveOne(franchise));
-                if (newDestination)
-                  dispatch(Franchise.redux.actions.relations.destination.set(franchise.id, newDestination));
-                if ('animeId' in route.params) {
-                  dispatch(Anime.redux.actions.relations.franchises.add(route.params.animeId, franchise));
-                } else if ('mangaId' in route.params) {
-                  dispatch(Manga.redux.actions.relations.franchises.add(route.params.mangaId, franchise));
-                }
-
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}

@@ -39,6 +39,20 @@ export default function MangaSaveScreen({ route }: Props) {
     );
   }
 
+  const save = async () => {
+    manga.assign(form);
+
+    await manga.save();
+
+    dispatch(Manga.redux.actions.saveOne(manga));
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -81,18 +95,7 @@ export default function MangaSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            manga.assign(form);
-
-            manga.save()
-              .then(() => {
-                dispatch(Manga.redux.actions.saveOne(manga));
-
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}

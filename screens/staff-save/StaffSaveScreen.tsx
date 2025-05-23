@@ -139,6 +139,40 @@ export default function StaffSaveScreen({ route }: Props) {
     );
   }
 
+  const save = async () => {
+    const prevPeopleId = staff.people?.id;
+
+    staff.assign(form);
+
+    const newPeople = staff.people;
+    const newPeopleId = newPeople?.id;
+
+    await staff.save();
+
+    dispatch(Staff.redux.actions.saveOne(staff));
+    if (newPeople)
+      dispatch(Staff.redux.actions.relations.people.set(staff.id, newPeople));
+    if ('animeId' in route.params) {
+      dispatch(Anime.redux.actions.relations.staff.add(route.params.animeId, staff));
+    } else if ('mangaId' in route.params) {
+      dispatch(Manga.redux.actions.relations.staff.add(route.params.mangaId, staff));
+    }
+    if (!prevPeopleId && newPeopleId) {
+      dispatch(People.redux.actions.relations.staff.add(newPeopleId, staff));
+    } else if (prevPeopleId !== newPeopleId) {
+      if (prevPeopleId)
+        dispatch(People.redux.actions.relations.staff.remove(prevPeopleId, staff));
+      if (newPeopleId)
+        dispatch(People.redux.actions.relations.staff.add(newPeopleId, staff));
+    }
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -181,38 +215,7 @@ export default function StaffSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            const prevPeopleId = staff.people?.id;
-
-            staff.assign(form);
-
-            const newPeople = staff.people;
-            const newPeopleId = newPeople?.id;
-
-            staff.save()
-              .then(() => {
-                dispatch(Staff.redux.actions.saveOne(staff));
-                if (newPeople)
-                  dispatch(Staff.redux.actions.relations.people.set(staff.id, newPeople));
-                if ('animeId' in route.params) {
-                  dispatch(Anime.redux.actions.relations.staff.add(route.params.animeId, staff));
-                } else if ('mangaId' in route.params) {
-                  dispatch(Manga.redux.actions.relations.staff.add(route.params.mangaId, staff));
-                }
-                if (!prevPeopleId && newPeopleId) {
-                  dispatch(People.redux.actions.relations.staff.add(newPeopleId, staff));
-                } else if (prevPeopleId !== newPeopleId) {
-                  if (prevPeopleId)
-                    dispatch(People.redux.actions.relations.staff.remove(prevPeopleId, staff));
-                  if (newPeopleId)
-                    dispatch(People.redux.actions.relations.staff.add(newPeopleId, staff));
-                }
-
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}

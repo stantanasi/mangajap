@@ -42,6 +42,35 @@ export default function ChapterSaveScreen({ route }: Props) {
     );
   }
 
+  const save = async () => {
+    const prevVolumeId = chapter.volume?.id;
+
+    chapter.assign(form);
+
+    const newVolumeId = chapter.volume?.id;
+
+    await chapter.save();
+
+    dispatch(Chapter.redux.actions.saveOne(chapter));
+    if ('mangaId' in route.params) {
+      dispatch(Manga.redux.actions.relations.chapters.add(route.params.mangaId, chapter));
+    }
+    if (!prevVolumeId && newVolumeId) {
+      dispatch(Volume.redux.actions.relations.chapters.add(newVolumeId, chapter));
+    } else if (prevVolumeId !== newVolumeId) {
+      if (prevVolumeId)
+        dispatch(Volume.redux.actions.relations.chapters.remove(prevVolumeId, chapter));
+      if (newVolumeId)
+        dispatch(Volume.redux.actions.relations.chapters.add(newVolumeId, chapter));
+    }
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -84,33 +113,7 @@ export default function ChapterSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            const prevVolumeId = chapter.volume?.id;
-
-            chapter.assign(form);
-
-            const newVolumeId = chapter.volume?.id;
-
-            chapter.save()
-              .then(() => {
-                dispatch(Chapter.redux.actions.saveOne(chapter));
-                if ('mangaId' in route.params) {
-                  dispatch(Manga.redux.actions.relations.chapters.add(route.params.mangaId, chapter));
-                }
-                if (!prevVolumeId && newVolumeId) {
-                  dispatch(Volume.redux.actions.relations.chapters.add(newVolumeId, chapter));
-                } else if (prevVolumeId !== newVolumeId) {
-                  if (prevVolumeId)
-                    dispatch(Volume.redux.actions.relations.chapters.remove(prevVolumeId, chapter));
-                  if (newVolumeId)
-                    dispatch(Volume.redux.actions.relations.chapters.add(newVolumeId, chapter));
-                }
-
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}

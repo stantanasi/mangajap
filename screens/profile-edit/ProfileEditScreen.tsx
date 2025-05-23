@@ -36,6 +36,31 @@ export default function ProfileEditScreen({ route }: Props) {
     );
   }
 
+  const save = async () => {
+    user.assign(form);
+
+    if (!user.isModified()) {
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+      } else if (typeof window !== 'undefined') {
+        window.history.back();
+      }
+      setIsUpdating(false);
+      return
+    }
+
+
+    await user.save();
+
+    dispatch(User.redux.actions.saveOne(user));
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -76,28 +101,7 @@ export default function ProfileEditScreen({ route }: Props) {
           onPress={() => {
             setIsUpdating(true);
 
-            user.assign(form);
-
-            if (!user.isModified()) {
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else if (typeof window !== 'undefined') {
-                window.history.back();
-              }
-              setIsUpdating(false);
-              return
-            }
-
-            user.save()
-              .then(() => {
-                dispatch(User.redux.actions.saveOne(user));
-
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsUpdating(false));
           }}

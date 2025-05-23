@@ -40,6 +40,23 @@ export default function SeasonSaveScreen({ route }: Props) {
     );
   }
 
+  const save = async () => {
+    season.assign(form);
+
+    await season.save();
+
+    dispatch(Season.redux.actions.saveOne(season));
+    if ('animeId' in route.params) {
+      dispatch(Anime.redux.actions.relations.seasons.add(route.params.animeId, season));
+    }
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -82,21 +99,7 @@ export default function SeasonSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            season.assign(form);
-
-            season.save()
-              .then(() => {
-                dispatch(Season.redux.actions.saveOne(season));
-                if ('animeId' in route.params) {
-                  dispatch(Anime.redux.actions.relations.seasons.add(route.params.animeId, season));
-                }
-
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}

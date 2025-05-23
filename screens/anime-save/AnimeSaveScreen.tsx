@@ -39,6 +39,20 @@ export default function AnimeSaveScreen({ route }: Props) {
     );
   }
 
+  const save = async () => {
+    anime.assign(form);
+
+    await anime.save();
+
+    dispatch(Anime.redux.actions.saveOne(anime));
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -81,18 +95,7 @@ export default function AnimeSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            anime.assign(form);
-
-            anime.save()
-              .then(() => {
-                dispatch(Anime.redux.actions.saveOne(anime));
-
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}

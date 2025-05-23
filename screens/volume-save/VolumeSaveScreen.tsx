@@ -41,6 +41,23 @@ export default function VolumeSaveScreen({ route }: Props) {
     );
   }
 
+  const save = async () => {
+    volume.assign(form);
+
+    await volume.save();
+
+    dispatch(Volume.redux.actions.saveOne(volume));
+    if ('mangaId' in route.params) {
+      dispatch(Manga.redux.actions.relations.volumes.add(route.params.mangaId, volume));
+    }
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -83,21 +100,7 @@ export default function VolumeSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            volume.assign(form);
-
-            volume.save()
-              .then(() => {
-                dispatch(Volume.redux.actions.saveOne(volume));
-                if ('mangaId' in route.params) {
-                  dispatch(Manga.redux.actions.relations.volumes.add(route.params.mangaId, volume));
-                }
-
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}
