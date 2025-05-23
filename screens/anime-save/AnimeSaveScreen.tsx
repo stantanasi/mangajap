@@ -85,7 +85,7 @@ export default function AnimeSaveScreen({ route }: Props) {
 
             anime.save()
               .then(() => {
-                dispatch(Anime.redux.actions.setOne(anime));
+                dispatch(Anime.redux.actions.saveOne(anime));
 
                 if (navigation.canGoBack()) {
                   navigation.goBack();

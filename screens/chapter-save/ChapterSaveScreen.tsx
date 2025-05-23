@@ -92,7 +92,7 @@ export default function ChapterSaveScreen({ route }: Props) {
 
             chapter.save()
               .then(() => {
-                dispatch(Chapter.redux.actions.setOne(chapter));
+                dispatch(Chapter.redux.actions.saveOne(chapter));
                 if ('mangaId' in route.params) {
                   dispatch(Manga.redux.actions.relations.chapters.add(route.params.mangaId, chapter));
                 }

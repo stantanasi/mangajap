@@ -60,7 +60,7 @@ export default function ChapterModal({
       });
       await chapterEntry.save();
 
-      dispatch(ChapterEntry.redux.actions.setOne(chapterEntry));
+      dispatch(ChapterEntry.redux.actions.saveOne(chapterEntry));
       dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
     } else if (!add && chapter['chapter-entry']) {
       await chapter['chapter-entry'].delete();
@@ -76,7 +76,7 @@ export default function ChapterModal({
     chapter['chapter-entry'].readDate = date;
     await chapter['chapter-entry'].save();
 
-    dispatch(ChapterEntry.redux.actions.setOne(chapter['chapter-entry']));
+    dispatch(ChapterEntry.redux.actions.saveOne(chapter['chapter-entry']));
   };
 
   return (

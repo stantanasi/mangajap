@@ -37,7 +37,7 @@ export default function MarkPreviousAsWatchedModal({
 
         await episodeEntry.save()
           .then((entry) => {
-            dispatch(EpisodeEntry.redux.actions.setOne(entry));
+            dispatch(EpisodeEntry.redux.actions.saveOne(entry));
             dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, entry));
           })
           .catch((err) => console.error(err));

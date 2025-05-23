@@ -38,7 +38,7 @@ export default function MangaCard({
       manga['manga-entry'].isAdd = add;
       await manga['manga-entry'].save();
 
-      dispatch(MangaEntry.redux.actions.setOne(manga['manga-entry']));
+      dispatch(MangaEntry.redux.actions.saveOne(manga['manga-entry']));
       dispatch(MangaEntry.redux.actions.relations.manga.set(manga['manga-entry'].id, manga));
       dispatch(add
         ? User.redux.actions.relations['manga-library'].add(user.id, manga['manga-entry'])
@@ -53,7 +53,7 @@ export default function MangaCard({
       });
       await mangaEntry.save();
 
-      dispatch(MangaEntry.redux.actions.setOne(mangaEntry));
+      dispatch(MangaEntry.redux.actions.saveOne(mangaEntry));
       dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
       dispatch(Manga.redux.actions.relations['manga-entry'].set(manga.id, mangaEntry));
       dispatch(add

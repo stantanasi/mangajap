@@ -83,7 +83,7 @@ export default function PeopleSaveScreen({ route }: Props) {
 
             people.save()
               .then(() => {
-                dispatch(People.redux.actions.setOne(people));
+                dispatch(People.redux.actions.saveOne(people));
 
                 if (navigation.canGoBack()) {
                   navigation.goBack();

@@ -87,7 +87,7 @@ export default function VolumeSaveScreen({ route }: Props) {
 
             volume.save()
               .then(() => {
-                dispatch(Volume.redux.actions.setOne(volume));
+                dispatch(Volume.redux.actions.saveOne(volume));
                 if ('mangaId' in route.params) {
                   dispatch(Manga.redux.actions.relations.volumes.add(route.params.mangaId, volume));
                 }

@@ -62,7 +62,7 @@ export default function VolumeModal({
       });
       await volumeEntry.save();
 
-      dispatch(VolumeEntry.redux.actions.setOne(volumeEntry));
+      dispatch(VolumeEntry.redux.actions.saveOne(volumeEntry));
       dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, volumeEntry));
     } else if (!add && volume['volume-entry']) {
       await volume['volume-entry'].delete();
@@ -79,7 +79,7 @@ export default function VolumeModal({
         });
         await chapterEntry.save();
 
-        dispatch(ChapterEntry.redux.actions.setOne(chapterEntry));
+        dispatch(ChapterEntry.redux.actions.saveOne(chapterEntry));
         dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
       } else if (!add && chapter['chapter-entry']) {
         await chapter['chapter-entry'].delete();
@@ -104,7 +104,7 @@ export default function VolumeModal({
     volume['volume-entry'].readDate = date;
     await volume['volume-entry'].save();
 
-    dispatch(VolumeEntry.redux.actions.setOne(volume['volume-entry']));
+    dispatch(VolumeEntry.redux.actions.saveOne(volume['volume-entry']));
   };
 
   return (

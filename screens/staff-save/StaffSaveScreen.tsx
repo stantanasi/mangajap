@@ -190,7 +190,7 @@ export default function StaffSaveScreen({ route }: Props) {
 
             staff.save()
               .then(() => {
-                dispatch(Staff.redux.actions.setOne(staff));
+                dispatch(Staff.redux.actions.saveOne(staff));
                 if (newPeople)
                   dispatch(Staff.redux.actions.relations.people.set(staff.id, newPeople));
                 if ('animeId' in route.params) {

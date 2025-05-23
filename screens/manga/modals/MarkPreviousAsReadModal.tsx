@@ -37,7 +37,7 @@ export default function MarkPreviousAsReadModal({
 
         await volumeEntry.save()
           .then((entry) => {
-            dispatch(VolumeEntry.redux.actions.setOne(entry));
+            dispatch(VolumeEntry.redux.actions.saveOne(entry));
             dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, entry));
           })
           .catch((err) => console.error(err));;
@@ -51,7 +51,7 @@ export default function MarkPreviousAsReadModal({
 
         await chapterEntry.save()
           .then((entry) => {
-            dispatch(ChapterEntry.redux.actions.setOne(entry));
+            dispatch(ChapterEntry.redux.actions.saveOne(entry));
             dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, entry));
           })
           .catch((err) => console.error(err));

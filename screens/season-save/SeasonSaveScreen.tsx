@@ -86,7 +86,7 @@ export default function SeasonSaveScreen({ route }: Props) {
 
             season.save()
               .then(() => {
-                dispatch(Season.redux.actions.setOne(season));
+                dispatch(Season.redux.actions.saveOne(season));
                 if ('animeId' in route.params) {
                   dispatch(Anime.redux.actions.relations.seasons.add(route.params.animeId, season));
                 }

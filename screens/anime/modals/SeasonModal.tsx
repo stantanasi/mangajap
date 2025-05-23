@@ -63,7 +63,7 @@ export default function SeasonModal({
         });
         await episodeEntry.save();
 
-        dispatch(EpisodeEntry.redux.actions.setOne(episodeEntry));
+        dispatch(EpisodeEntry.redux.actions.saveOne(episodeEntry));
         dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, episodeEntry));
       } else if (!add && episode['episode-entry']) {
         await episode['episode-entry'].delete();

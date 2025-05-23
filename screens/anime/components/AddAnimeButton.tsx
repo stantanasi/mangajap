@@ -21,7 +21,7 @@ export default function AddAnimeButton({ anime }: Props) {
       anime['anime-entry'].isAdd = true;
       await anime['anime-entry'].save();
 
-      dispatch(AnimeEntry.redux.actions.setOne(anime['anime-entry']));
+      dispatch(AnimeEntry.redux.actions.saveOne(anime['anime-entry']));
       dispatch(AnimeEntry.redux.actions.relations.anime.set(anime['anime-entry'].id, anime));
       dispatch(User.redux.actions.relations['anime-library'].add(user.id, anime['anime-entry']));
     } else {
@@ -33,7 +33,7 @@ export default function AddAnimeButton({ anime }: Props) {
       });
       await animeEntry.save();
 
-      dispatch(AnimeEntry.redux.actions.setOne(animeEntry));
+      dispatch(AnimeEntry.redux.actions.saveOne(animeEntry));
       dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
       dispatch(Anime.redux.actions.relations['anime-entry'].set(anime.id, animeEntry));
       dispatch(User.redux.actions.relations['anime-library'].add(user.id, animeEntry));

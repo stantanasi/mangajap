@@ -251,7 +251,7 @@ export default function FranchiseSaveScreen({ route }: Props) {
 
             franchise.save()
               .then(() => {
-                dispatch(Franchise.redux.actions.setOne(franchise));
+                dispatch(Franchise.redux.actions.saveOne(franchise));
                 if (newDestination)
                   dispatch(Franchise.redux.actions.relations.destination.set(franchise.id, newDestination));
                 if ('animeId' in route.params) {

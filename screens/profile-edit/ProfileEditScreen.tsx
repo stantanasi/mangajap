@@ -90,7 +90,7 @@ export default function ProfileEditScreen({ route }: Props) {
 
             user.save()
               .then(() => {
-                dispatch(User.redux.actions.setOne(user));
+                dispatch(User.redux.actions.saveOne(user));
 
                 if (navigation.canGoBack()) {
                   navigation.goBack();

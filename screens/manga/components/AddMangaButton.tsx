@@ -21,7 +21,7 @@ export default function AddMangaButton({ manga }: Props) {
       manga['manga-entry'].isAdd = true;
       await manga['manga-entry'].save();
 
-      dispatch(MangaEntry.redux.actions.setOne(manga['manga-entry']));
+      dispatch(MangaEntry.redux.actions.saveOne(manga['manga-entry']));
       dispatch(MangaEntry.redux.actions.relations.manga.set(manga['manga-entry'].id, manga));
       dispatch(User.redux.actions.relations['manga-library'].add(user.id, manga['manga-entry']));
     } else {
@@ -33,7 +33,7 @@ export default function AddMangaButton({ manga }: Props) {
       });
       await mangaEntry.save();
 
-      dispatch(MangaEntry.redux.actions.setOne(mangaEntry));
+      dispatch(MangaEntry.redux.actions.saveOne(mangaEntry));
       dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
       dispatch(Manga.redux.actions.relations['manga-entry'].set(manga.id, mangaEntry));
       dispatch(User.redux.actions.relations['manga-library'].add(user.id, mangaEntry));

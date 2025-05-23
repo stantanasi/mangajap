@@ -92,7 +92,7 @@ export default function EpisodeSaveScreen({ route }: Props) {
 
             episode.save()
               .then(() => {
-                dispatch(Episode.redux.actions.setOne(episode));
+                dispatch(Episode.redux.actions.saveOne(episode));
                 if ('animeId' in route.params) {
                   dispatch(Anime.redux.actions.relations.episodes.add(route.params.animeId, episode));
                 }

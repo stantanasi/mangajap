@@ -34,7 +34,7 @@ export default function ChapterCard({
       });
       await chapterEntry.save();
 
-      dispatch(ChapterEntry.redux.actions.setOne(chapterEntry));
+      dispatch(ChapterEntry.redux.actions.saveOne(chapterEntry));
       dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
     } else if (!add && chapter['chapter-entry']) {
       await chapter['chapter-entry'].delete();

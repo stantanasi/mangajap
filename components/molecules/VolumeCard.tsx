@@ -49,7 +49,7 @@ export default function VolumeCard({
       });
       await volumeEntry.save();
 
-      dispatch(VolumeEntry.redux.actions.setOne(volumeEntry));
+      dispatch(VolumeEntry.redux.actions.saveOne(volumeEntry));
       dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, volumeEntry));
     } else if (!add && volume['volume-entry']) {
       await volume['volume-entry'].delete();
@@ -66,7 +66,7 @@ export default function VolumeCard({
         });
         await chapterEntry.save();
 
-        dispatch(ChapterEntry.redux.actions.setOne(chapterEntry));
+        dispatch(ChapterEntry.redux.actions.saveOne(chapterEntry));
         dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
       } else if (!add && chapter['chapter-entry']) {
         await chapter['chapter-entry'].delete();

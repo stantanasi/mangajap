@@ -128,6 +128,8 @@ export type ReduxHelpers<DocType, ModelType extends ModelConstructor<DocType>> =
 
       setMany: (docs: InstanceType<ModelType>[]) => AppThunk;
 
+      saveOne: (doc: InstanceType<ModelType>) => AppThunk;
+
       removeOne: (doc: InstanceType<ModelType>) => AppThunk;
 
       removeMany: (docs: InstanceType<ModelType>[]) => AppThunk;
@@ -232,6 +234,10 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
 
               dispatch(slice.actions.setOne(doc.toJSON() as any));
             }
+          },
+
+          saveOne: (doc) => (dispatch) => {
+            dispatch(slice.actions.setOne(doc.toJSON() as any));
           },
 
           removeOne: (doc) => (dispatch) => {

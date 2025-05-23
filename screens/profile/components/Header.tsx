@@ -36,17 +36,15 @@ export default function Header({
       });
       await isFollowingUser.save();
 
-      dispatch(Follow.redux.actions.setOne(isFollowingUser));
+      dispatch(Follow.redux.actions.saveOne(isFollowingUser));
       dispatch(Follow.redux.actions.relations.follower.set(isFollowingUser.id, new User({ id: authenticatedUser.id })));
       dispatch(Follow.redux.actions.relations.followed.set(isFollowingUser.id, user));
-
       dispatch(User.redux.actions.relations.following.add(authenticatedUser.id, isFollowingUser));
       dispatch(User.redux.actions.relations.followers.add(user.id, isFollowingUser));
     } else {
       await followingUser.delete();
 
       dispatch(Follow.redux.actions.removeOne(followingUser));
-
       dispatch(User.redux.actions.relations.following.remove(authenticatedUser.id, followingUser));
       dispatch(User.redux.actions.relations.followers.remove(user.id, followingUser));
     }
