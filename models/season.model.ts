@@ -1,5 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
 import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import Anime from './anime.model';
 import Change from './change.model';
 import Episode from './episode.model';
@@ -67,7 +68,16 @@ export const SeasonSchema = new Schema<ISeason>({
 
 class Season extends model<ISeason>(SeasonSchema) {
 
-  static redux = createReduxHelpers<ISeason, typeof Season>(Season).register('seasons');
+  static redux = {
+    ...createReduxHelpers<ISeason, typeof Season>(Season).register('seasons'),
+    sync: (dispatch: AppDispatch, season: Season) => {
+      dispatch(Season.redux.actions.saveOne(season));
+
+      if (season.anime) {
+        dispatch(Anime.redux.actions.relations.seasons.add(season.anime.id, season));
+      }
+    },
+  };
 }
 
 Season.register('seasons');

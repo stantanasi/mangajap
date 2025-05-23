@@ -1,5 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
 import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import Manga from './manga.model';
 import User from './user.model';
 
@@ -60,7 +61,23 @@ export const MangaEntrySchema = new Schema<IMangaEntry>({
 
 class MangaEntry extends model<IMangaEntry>(MangaEntrySchema) {
 
-  static redux = createReduxHelpers<IMangaEntry, typeof MangaEntry>(MangaEntry).register('manga-entries');
+  static redux = {
+    ...createReduxHelpers<IMangaEntry, typeof MangaEntry>(MangaEntry).register('manga-entries'),
+    sync: (dispatch: AppDispatch, mangaEntry: MangaEntry, { user, manga }: {
+      user: User;
+      manga: Manga;
+    }) => {
+      dispatch(MangaEntry.redux.actions.saveOne(mangaEntry));
+
+      dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
+      dispatch(Manga.redux.actions.relations['manga-entry'].set(manga.id, mangaEntry));
+
+      dispatch(mangaEntry.isAdd
+        ? User.redux.actions.relations['manga-library'].add(user.id, mangaEntry)
+        : User.redux.actions.relations['manga-library'].remove(user.id, mangaEntry)
+      );
+    },
+  };
 }
 
 MangaEntry.register('manga-entries');

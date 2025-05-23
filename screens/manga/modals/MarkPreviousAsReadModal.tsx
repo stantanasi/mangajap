@@ -34,8 +34,9 @@ export default function MarkPreviousAsReadModal({
 
       await volumeEntry.save();
 
-      dispatch(VolumeEntry.redux.actions.saveOne(volumeEntry));
-      dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, volumeEntry));
+      VolumeEntry.redux.sync(dispatch, volumeEntry, {
+        volume: volume,
+      });
     };
 
     const updateChapterEntry = async (chapter: Chapter) => {
@@ -46,8 +47,9 @@ export default function MarkPreviousAsReadModal({
 
       await chapterEntry.save();
 
-      dispatch(ChapterEntry.redux.actions.saveOne(chapterEntry));
-      dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
+      ChapterEntry.redux.sync(dispatch, chapterEntry, {
+        chapter: chapter,
+      });
     };
 
     await Promise.all(previousUnread.map(async (value) => {

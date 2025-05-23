@@ -34,13 +34,15 @@ export default function ChapterCard({
       });
       await chapterEntry.save();
 
-      dispatch(ChapterEntry.redux.actions.saveOne(chapterEntry));
-      dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
+      ChapterEntry.redux.sync(dispatch, chapterEntry, {
+        chapter: chapter,
+      });
     } else if (!add && chapter['chapter-entry']) {
       await chapter['chapter-entry'].delete();
 
-      dispatch(ChapterEntry.redux.actions.removeOne(chapter['chapter-entry']));
-      dispatch(Chapter.redux.actions.relations['chapter-entry'].remove(chapter.id, chapter['chapter-entry']));
+      ChapterEntry.redux.sync(dispatch, chapter['chapter-entry'], {
+        chapter: chapter,
+      });
     }
   };
 

@@ -34,8 +34,9 @@ export default function MarkPreviousAsWatchedModal({
 
       await episodeEntry.save();
 
-      dispatch(EpisodeEntry.redux.actions.saveOne(episodeEntry));
-      dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, episodeEntry));
+      EpisodeEntry.redux.sync(dispatch, episodeEntry, {
+        episode: episode,
+      });
     };
 
     await Promise.all(previousUnwatched.map(async (value) => {

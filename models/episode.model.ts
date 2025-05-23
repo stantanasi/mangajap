@@ -1,5 +1,6 @@
-import { model, Schema } from '@stantanasi/jsonapi-client';
+import { Json, model, Schema } from '@stantanasi/jsonapi-client';
 import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import Anime from './anime.model';
 import Change from './change.model';
 import EpisodeEntry from './episode-entry.model';
@@ -66,7 +67,24 @@ export const EpisodeSchema = new Schema<IEpisode>({
 
 class Episode extends model<IEpisode>(EpisodeSchema) {
 
-  static redux = createReduxHelpers<IEpisode, typeof Episode>(Episode).register('episodes');
+  static redux = {
+    ...createReduxHelpers<IEpisode, typeof Episode>(Episode).register('episodes'),
+    sync: (dispatch: AppDispatch, episode: Episode, prev: Json<IEpisode>) => {
+      dispatch(Episode.redux.actions.saveOne(episode));
+
+      if (episode.anime) {
+        dispatch(Anime.redux.actions.relations.episodes.add(episode.anime.id, episode));
+      }
+
+      if (episode.season) {
+        dispatch(Season.redux.actions.relations.episodes.add(episode.season.id, episode));
+
+        if (prev.season && prev.season.id !== episode.season.id) {
+          dispatch(Season.redux.actions.relations.episodes.remove(prev.season.id, episode));
+        }
+      }
+    },
+  };
 }
 
 Episode.register('episodes');

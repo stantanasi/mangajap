@@ -73,7 +73,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 
           await signInWithEmailAndPassword(auth, email, password);
 
-          dispatch(User.redux.actions.saveOne(user));
+          User.redux.sync(dispatch, user);
         },
 
         login: async (email, password) => {

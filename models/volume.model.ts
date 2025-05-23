@@ -1,5 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
 import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import Change from './change.model';
 import Chapter from './chapter.model';
 import Manga from './manga.model';
@@ -69,7 +70,16 @@ export const VolumeSchema = new Schema<IVolume>({
 
 class Volume extends model<IVolume>(VolumeSchema) {
 
-  static redux = createReduxHelpers<IVolume, typeof Volume>(Volume).register('volumes');
+  static redux = {
+    ...createReduxHelpers<IVolume, typeof Volume>(Volume).register('volumes'),
+    sync: (dispatch: AppDispatch, volume: Volume) => {
+      dispatch(Volume.redux.actions.saveOne(volume));
+
+      if (volume.manga) {
+        dispatch(Manga.redux.actions.relations.volumes.add(volume.manga.id, volume));
+      }
+    },
+  };
 }
 
 Volume.register('volumes');

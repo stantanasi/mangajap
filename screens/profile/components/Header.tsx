@@ -4,8 +4,8 @@ import React, { useContext, useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
-import ProfileScreen from '../ProfileScreen';
 import { useAppDispatch } from '../../../redux/store';
+import ProfileScreen from '../ProfileScreen';
 
 type Props = React.ComponentProps<typeof ProfileScreen> & {
   user: User;
@@ -17,8 +17,8 @@ type Props = React.ComponentProps<typeof ProfileScreen> & {
 export default function Header({
   route,
   user,
-  followingUser: followingUser,
-  followedByUser: followedByUser,
+  followingUser,
+  followedByUser,
   style,
 }: Props) {
   const dispatch = useAppDispatch();
@@ -30,23 +30,23 @@ export default function Header({
     if (!authenticatedUser) return
 
     if (!followingUser) {
-      const isFollowingUser = new Follow({
+      const followingUser = new Follow({
         follower: new User({ id: authenticatedUser.id }),
         followed: user,
       });
-      await isFollowingUser.save();
+      await followingUser.save();
 
-      dispatch(Follow.redux.actions.saveOne(isFollowingUser));
-      dispatch(Follow.redux.actions.relations.follower.set(isFollowingUser.id, new User({ id: authenticatedUser.id })));
-      dispatch(Follow.redux.actions.relations.followed.set(isFollowingUser.id, user));
-      dispatch(User.redux.actions.relations.following.add(authenticatedUser.id, isFollowingUser));
-      dispatch(User.redux.actions.relations.followers.add(user.id, isFollowingUser));
+      Follow.redux.sync(dispatch, followingUser, {
+        follower: new User({ id: authenticatedUser.id }),
+        followed: user,
+      });
     } else {
       await followingUser.delete();
 
-      dispatch(Follow.redux.actions.removeOne(followingUser));
-      dispatch(User.redux.actions.relations.following.remove(authenticatedUser.id, followingUser));
-      dispatch(User.redux.actions.relations.followers.remove(user.id, followingUser));
+      Follow.redux.sync(dispatch, followingUser, {
+        follower: new User({ id: authenticatedUser.id }),
+        followed: user,
+      });
     }
   };
 

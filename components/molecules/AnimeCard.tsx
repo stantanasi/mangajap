@@ -38,12 +38,10 @@ export default function AnimeCard({
       anime['anime-entry'].isAdd = add;
       await anime['anime-entry'].save();
 
-      dispatch(AnimeEntry.redux.actions.saveOne(anime['anime-entry']));
-      dispatch(AnimeEntry.redux.actions.relations.anime.set(anime['anime-entry'].id, anime));
-      dispatch(add
-        ? User.redux.actions.relations['anime-library'].add(user.id, anime['anime-entry'])
-        : User.redux.actions.relations['anime-library'].remove(user.id, anime['anime-entry'])
-      );
+      AnimeEntry.redux.sync(dispatch, anime['anime-entry'], {
+        user: new User({ id: user.id }),
+        anime: anime,
+      });
     } else {
       const animeEntry = new AnimeEntry({
         isAdd: add,
@@ -53,13 +51,10 @@ export default function AnimeCard({
       });
       await animeEntry.save();
 
-      dispatch(AnimeEntry.redux.actions.saveOne(animeEntry));
-      dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
-      dispatch(Anime.redux.actions.relations['anime-entry'].set(anime.id, animeEntry));
-      dispatch(add
-        ? User.redux.actions.relations['anime-library'].add(user.id, animeEntry)
-        : User.redux.actions.relations['anime-library'].remove(user.id, animeEntry)
-      );
+      AnimeEntry.redux.sync(dispatch, animeEntry, {
+        user: new User({ id: user.id }),
+        anime: anime,
+      });
     }
   };
 

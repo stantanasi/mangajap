@@ -38,12 +38,10 @@ export default function MangaCard({
       manga['manga-entry'].isAdd = add;
       await manga['manga-entry'].save();
 
-      dispatch(MangaEntry.redux.actions.saveOne(manga['manga-entry']));
-      dispatch(MangaEntry.redux.actions.relations.manga.set(manga['manga-entry'].id, manga));
-      dispatch(add
-        ? User.redux.actions.relations['manga-library'].add(user.id, manga['manga-entry'])
-        : User.redux.actions.relations['manga-library'].remove(user.id, manga['manga-entry'])
-      );
+      MangaEntry.redux.sync(dispatch, manga['manga-entry'], {
+        user: new User({ id: user.id }),
+        manga: manga,
+      });
     } else {
       const mangaEntry = new MangaEntry({
         isAdd: add,
@@ -53,13 +51,10 @@ export default function MangaCard({
       });
       await mangaEntry.save();
 
-      dispatch(MangaEntry.redux.actions.saveOne(mangaEntry));
-      dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
-      dispatch(Manga.redux.actions.relations['manga-entry'].set(manga.id, mangaEntry));
-      dispatch(add
-        ? User.redux.actions.relations['manga-library'].add(user.id, mangaEntry)
-        : User.redux.actions.relations['manga-library'].remove(user.id, mangaEntry)
-      );
+      MangaEntry.redux.sync(dispatch, mangaEntry, {
+        user: new User({ id: user.id }),
+        manga: manga,
+      });
     }
   };
 

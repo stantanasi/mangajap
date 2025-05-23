@@ -1,5 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
 import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import AnimeEntry from './anime-entry.model';
 import Follow from './follow.model';
 import MangaEntry from './manga-entry.model';
@@ -105,7 +106,12 @@ export const UserSchema = new Schema<IUser>({
 
 class User extends model<IUser>(UserSchema) {
 
-  static redux = createReduxHelpers<IUser, typeof User>(User).register('users');
+  static redux = {
+    ...createReduxHelpers<IUser, typeof User>(User).register('users'),
+    sync: (dispatch: AppDispatch, user: User) => {
+      dispatch(User.redux.actions.saveOne(user));
+    },
+  };
 }
 
 User.register('users');

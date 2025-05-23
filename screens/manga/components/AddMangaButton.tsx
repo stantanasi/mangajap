@@ -21,9 +21,10 @@ export default function AddMangaButton({ manga }: Props) {
       manga['manga-entry'].isAdd = true;
       await manga['manga-entry'].save();
 
-      dispatch(MangaEntry.redux.actions.saveOne(manga['manga-entry']));
-      dispatch(MangaEntry.redux.actions.relations.manga.set(manga['manga-entry'].id, manga));
-      dispatch(User.redux.actions.relations['manga-library'].add(user.id, manga['manga-entry']));
+      MangaEntry.redux.sync(dispatch, manga['manga-entry'], {
+        user: new User({ id: user.id }),
+        manga: manga,
+      });
     } else {
       const mangaEntry = new MangaEntry({
         isAdd: true,
@@ -33,10 +34,10 @@ export default function AddMangaButton({ manga }: Props) {
       });
       await mangaEntry.save();
 
-      dispatch(MangaEntry.redux.actions.saveOne(mangaEntry));
-      dispatch(MangaEntry.redux.actions.relations.manga.set(mangaEntry.id, manga));
-      dispatch(Manga.redux.actions.relations['manga-entry'].set(manga.id, mangaEntry));
-      dispatch(User.redux.actions.relations['manga-library'].add(user.id, mangaEntry));
+      MangaEntry.redux.sync(dispatch, mangaEntry, {
+        user: new User({ id: user.id }),
+        manga: manga,
+      });
     }
   };
 

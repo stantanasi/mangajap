@@ -63,13 +63,15 @@ export default function SeasonModal({
         });
         await episodeEntry.save();
 
-        dispatch(EpisodeEntry.redux.actions.saveOne(episodeEntry));
-        dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, episodeEntry));
+        EpisodeEntry.redux.sync(dispatch, episodeEntry, {
+          episode: episode,
+        });
       } else if (!add && episode['episode-entry']) {
         await episode['episode-entry'].delete();
 
-        dispatch(EpisodeEntry.redux.actions.removeOne(episode['episode-entry']));
-        dispatch(Episode.redux.actions.relations['episode-entry'].remove(episode.id, episode['episode-entry']));
+        EpisodeEntry.redux.sync(dispatch, episode['episode-entry'], {
+          episode: episode,
+        });
       }
     };
 

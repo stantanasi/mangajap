@@ -44,7 +44,7 @@ export default function MangaSaveScreen({ route }: Props) {
 
     await manga.save();
 
-    dispatch(Manga.redux.actions.saveOne(manga));
+    Manga.redux.sync(dispatch, manga);
 
     if (navigation.canGoBack()) {
       navigation.goBack();

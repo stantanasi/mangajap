@@ -43,26 +43,13 @@ export default function EpisodeSaveScreen({ route }: Props) {
   }
 
   const save = async () => {
-    const prevSeasonId = episode.season?.id;
+    const prev = episode.toJSON();
 
     episode.assign(form);
 
-    const newSeasonId = episode.season?.id;
-
     await episode.save();
 
-    dispatch(Episode.redux.actions.saveOne(episode));
-    if ('animeId' in route.params) {
-      dispatch(Anime.redux.actions.relations.episodes.add(route.params.animeId, episode));
-    }
-    if (!prevSeasonId && newSeasonId) {
-      dispatch(Season.redux.actions.relations.episodes.add(newSeasonId, episode));
-    } else if (prevSeasonId !== newSeasonId) {
-      if (prevSeasonId)
-        dispatch(Season.redux.actions.relations.episodes.remove(prevSeasonId, episode));
-      if (newSeasonId)
-        dispatch(Season.redux.actions.relations.episodes.add(newSeasonId, episode));
-    }
+    Episode.redux.sync(dispatch, episode, prev);
 
     if (navigation.canGoBack()) {
       navigation.goBack();

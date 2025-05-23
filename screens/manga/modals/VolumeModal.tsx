@@ -62,13 +62,15 @@ export default function VolumeModal({
       });
       await volumeEntry.save();
 
-      dispatch(VolumeEntry.redux.actions.saveOne(volumeEntry));
-      dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, volumeEntry));
+      VolumeEntry.redux.sync(dispatch, volumeEntry, {
+        volume: volume,
+      });
     } else if (!add && volume['volume-entry']) {
       await volume['volume-entry'].delete();
 
-      dispatch(VolumeEntry.redux.actions.removeOne(volume['volume-entry']));
-      dispatch(Volume.redux.actions.relations['volume-entry'].remove(volume.id, volume['volume-entry']));
+      VolumeEntry.redux.sync(dispatch, volume['volume-entry'], {
+        volume: volume,
+      });
     }
 
     const updateChapterEntry = async (chapter: Chapter) => {
@@ -79,13 +81,15 @@ export default function VolumeModal({
         });
         await chapterEntry.save();
 
-        dispatch(ChapterEntry.redux.actions.saveOne(chapterEntry));
-        dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
+        ChapterEntry.redux.sync(dispatch, chapterEntry, {
+          chapter: chapter,
+        });
       } else if (!add && chapter['chapter-entry']) {
         await chapter['chapter-entry'].delete();
 
-        dispatch(ChapterEntry.redux.actions.removeOne(chapter['chapter-entry']));
-        dispatch(Chapter.redux.actions.relations['chapter-entry'].remove(chapter.id, chapter['chapter-entry']));
+        ChapterEntry.redux.sync(dispatch, chapter['chapter-entry'], {
+          chapter: chapter,
+        });
       }
     };
 
@@ -104,7 +108,9 @@ export default function VolumeModal({
     volume['volume-entry'].readDate = date;
     await volume['volume-entry'].save();
 
-    dispatch(VolumeEntry.redux.actions.saveOne(volume['volume-entry']));
+    VolumeEntry.redux.sync(dispatch, volume['volume-entry'], {
+      volume: volume,
+    });
   };
 
   return (

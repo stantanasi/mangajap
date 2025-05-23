@@ -52,7 +52,7 @@ export default function ProfileEditScreen({ route }: Props) {
 
     await user.save();
 
-    dispatch(User.redux.actions.saveOne(user));
+    User.redux.sync(dispatch, user);
 
     if (navigation.canGoBack()) {
       navigation.goBack();

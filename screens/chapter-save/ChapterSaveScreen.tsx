@@ -43,26 +43,13 @@ export default function ChapterSaveScreen({ route }: Props) {
   }
 
   const save = async () => {
-    const prevVolumeId = chapter.volume?.id;
+    const prev = chapter.toJSON();
 
     chapter.assign(form);
 
-    const newVolumeId = chapter.volume?.id;
-
     await chapter.save();
 
-    dispatch(Chapter.redux.actions.saveOne(chapter));
-    if ('mangaId' in route.params) {
-      dispatch(Manga.redux.actions.relations.chapters.add(route.params.mangaId, chapter));
-    }
-    if (!prevVolumeId && newVolumeId) {
-      dispatch(Volume.redux.actions.relations.chapters.add(newVolumeId, chapter));
-    } else if (prevVolumeId !== newVolumeId) {
-      if (prevVolumeId)
-        dispatch(Volume.redux.actions.relations.chapters.remove(prevVolumeId, chapter));
-      if (newVolumeId)
-        dispatch(Volume.redux.actions.relations.chapters.add(newVolumeId, chapter));
-    }
+    Chapter.redux.sync(dispatch, chapter, prev);
 
     if (navigation.canGoBack()) {
       navigation.goBack();

@@ -1,5 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
 import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import Anime from './anime.model';
 import User from './user.model';
 
@@ -57,7 +58,23 @@ export const AnimeEntrySchema = new Schema<IAnimeEntry>({
 
 class AnimeEntry extends model<IAnimeEntry>(AnimeEntrySchema) {
 
-  static redux = createReduxHelpers<IAnimeEntry, typeof AnimeEntry>(AnimeEntry).register('anime-entries');
+  static redux = {
+    ...createReduxHelpers<IAnimeEntry, typeof AnimeEntry>(AnimeEntry).register('anime-entries'),
+    sync: (dispatch: AppDispatch, animeEntry: AnimeEntry, { anime, user }: {
+      user: User;
+      anime: Anime;
+    }) => {
+      dispatch(AnimeEntry.redux.actions.saveOne(animeEntry));
+
+      dispatch(AnimeEntry.redux.actions.relations.anime.set(animeEntry.id, anime));
+      dispatch(Anime.redux.actions.relations['anime-entry'].set(anime.id, animeEntry));
+
+      dispatch(animeEntry.isAdd
+        ? User.redux.actions.relations['anime-library'].add(user.id, animeEntry)
+        : User.redux.actions.relations['anime-library'].remove(user.id, animeEntry)
+      );
+    },
+  };
 }
 
 AnimeEntry.register('anime-entries');
