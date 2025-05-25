@@ -174,11 +174,15 @@ const usePeopleSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const people = !params
-    ? useMemo(() => new People(), [params])
-    : useAppSelector((state) => {
+  const people = (() => {
+    if (!params) {
+      return useMemo(() => new People(), [params]);
+    }
+
+    return useAppSelector((state) => {
       return People.redux.selectors.selectById(state, params.peopleId);
-    })
+    });
+  })();
 
   useEffect(() => {
     const prepare = async () => {

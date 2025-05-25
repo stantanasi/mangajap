@@ -321,21 +321,25 @@ const useStaffSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const staff = 'animeId' in params
-    ? useMemo(() => new Staff({
-      anime: new Anime({ id: params.animeId }),
-    }), [params])
-    : 'mangaId' in params
-      ? useMemo(() => new Staff({
+  const staff = (() => {
+    if ('animeId' in params) {
+      return useMemo(() => new Staff({
+        anime: new Anime({ id: params.animeId }),
+      }), [params]);
+    } else if ('mangaId' in params) {
+      return useMemo(() => new Staff({
         manga: new Manga({ id: params.mangaId }),
-      }), [params])
-      : useAppSelector((state) => {
-        return Staff.redux.selectors.selectById(state, params.staffId, {
-          include: {
-            people: true,
-          },
-        });
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
+      return Staff.redux.selectors.selectById(state, params.staffId, {
+        include: {
+          people: true,
+        },
       });
+    });
+  })();
 
   useEffect(() => {
     const prepare = async () => {

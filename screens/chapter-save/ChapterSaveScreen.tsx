@@ -226,11 +226,14 @@ const useChapterSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const chapter = 'mangaId' in params
-    ? useMemo(() => new Chapter({
-      manga: new Manga({ id: params.mangaId }),
-    }), [params])
-    : useAppSelector((state) => {
+  const chapter = (() => {
+    if ('mangaId' in params) {
+      return useMemo(() => new Chapter({
+        manga: new Manga({ id: params.mangaId }),
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
       return Chapter.redux.selectors.selectById(state, params.chapterId, {
         include: {
           manga: true,
@@ -238,6 +241,7 @@ const useChapterSave = (params: Props['route']['params']) => {
         },
       });
     });
+  })();
 
   const volumes = useAppSelector((state) => {
     if (!chapter || !chapter.manga) return undefined;

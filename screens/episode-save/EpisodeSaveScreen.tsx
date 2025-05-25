@@ -226,11 +226,14 @@ const useEpisodeSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const episode = 'animeId' in params
-    ? useMemo(() => new Episode({
-      anime: new Anime({ id: params.animeId }),
-    }), [params])
-    : useAppSelector((state) => {
+  const episode = (() => {
+    if ('animeId' in params) {
+      return useMemo(() => new Episode({
+        anime: new Anime({ id: params.animeId }),
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
       return Episode.redux.selectors.selectById(state, params.episodeId, {
         include: {
           anime: true,
@@ -238,6 +241,7 @@ const useEpisodeSave = (params: Props['route']['params']) => {
         },
       });
     });
+  })();
 
   const seasons = useAppSelector((state) => {
     if (!episode || !episode.anime) return undefined;

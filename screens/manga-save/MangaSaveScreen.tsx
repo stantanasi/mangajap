@@ -340,12 +340,15 @@ const useMangaSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const manga = !params
-    ? useMemo(() => new Manga({
-      genres: [],
-      themes: [],
-    }), [params])
-    : useAppSelector((state) => {
+  const manga = (() => {
+    if (!params) {
+      return useMemo(() => new Manga({
+        genres: [],
+        themes: [],
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
       return Manga.redux.selectors.selectById(state, params.id, {
         include: {
           genres: true,
@@ -353,6 +356,7 @@ const useMangaSave = (params: Props['route']['params']) => {
         },
       });
     });
+  })();
 
   const genres = useAppSelector((state) => {
     return Genre.redux.selectors.select(state);

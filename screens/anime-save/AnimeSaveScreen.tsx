@@ -341,12 +341,15 @@ const useAnimeSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const anime = !params
-    ? useMemo(() => new Anime({
-      genres: [],
-      themes: [],
-    }), [params])
-    : useAppSelector((state) => {
+  const anime = (() => {
+    if (!params) {
+      return useMemo(() => new Anime({
+        genres: [],
+        themes: [],
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
       return Anime.redux.selectors.selectById(state, params.id, {
         include: {
           genres: true,
@@ -354,6 +357,7 @@ const useAnimeSave = (params: Props['route']['params']) => {
         },
       });
     });
+  })();
 
   const genres = useAppSelector((state) => {
     return Genre.redux.selectors.select(state);

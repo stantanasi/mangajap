@@ -198,13 +198,17 @@ const useSeasonSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const season = 'animeId' in params
-    ? useMemo(() => new Season({
-      anime: new Anime({ id: params.animeId }),
-    }), [params])
-    : useAppSelector((state) => {
+  const season = (() => {
+    if ('animeId' in params) {
+      return useMemo(() => new Season({
+        anime: new Anime({ id: params.animeId }),
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
       return Season.redux.selectors.selectById(state, params.seasonId);
     });
+  })();
 
   useEffect(() => {
     const prepare = async () => {
