@@ -387,7 +387,7 @@ const useProfile = (params: Props['route']['params']) => {
       return undefined;
     }
 
-    return User.redux.selectors.selectById(userId, {
+    return User.redux.selectors.selectById(state, userId, {
       include: {
         'anime-library': {
           include: {
@@ -426,7 +426,7 @@ const useProfile = (params: Props['route']['params']) => {
           limit: 20,
         },
       }
-    })(state);
+    });
   });
 
   const followingUser = useAppSelector((state) => {
@@ -434,12 +434,12 @@ const useProfile = (params: Props['route']['params']) => {
       return null;
     }
 
-    return Follow.redux.selectors.select({
+    return Follow.redux.selectors.select(state, {
       filter: {
         follower: new User({ id: authenticatedUser.id }),
         followed: new User({ id: userId }),
       },
-    })(state)?.[0] ?? null;
+    })?.[0] ?? null;
   });
 
   const followedByUser = useAppSelector((state) => {
@@ -447,12 +447,12 @@ const useProfile = (params: Props['route']['params']) => {
       return null;
     }
 
-    return Follow.redux.selectors.select({
+    return Follow.redux.selectors.select(state, {
       filter: {
         follower: new User({ id: userId }),
         followed: new User({ id: authenticatedUser.id }),
       },
-    })(state)?.[0] ?? null;
+    })?.[0] ?? null;
   });
 
   useEffect(() => {

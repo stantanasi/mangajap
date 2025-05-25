@@ -183,27 +183,33 @@ const useDiscover = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [peoplesIds, setPeoplesIds] = useState<string[]>([]);
 
-  const peoples = useAppSelector(People.redux.selectors.selectByIds(peoplesIds));
+  const peoples = useAppSelector((state) => {
+    return People.redux.selectors.selectByIds(state, peoplesIds);
+  });
 
-  const animes = useAppSelector(Anime.redux.selectors.select({
-    include: {
-      'anime-entry': isAuthenticated,
-    },
-    sort: {
-      createdAt: 'desc',
-    },
-    limit: 10,
-  }));
+  const animes = useAppSelector((state) => {
+    return Anime.redux.selectors.select(state, {
+      include: {
+        'anime-entry': isAuthenticated,
+      },
+      sort: {
+        createdAt: 'desc',
+      },
+      limit: 10,
+    });
+  });
 
-  const mangas = useAppSelector(Manga.redux.selectors.select({
-    include: {
-      'manga-entry': isAuthenticated,
-    },
-    sort: {
-      createdAt: 'desc',
-    },
-    limit: 10,
-  }));
+  const mangas = useAppSelector((state) => {
+    return Manga.redux.selectors.select(state, {
+      include: {
+        'manga-entry': isAuthenticated,
+      },
+      sort: {
+        createdAt: 'desc',
+      },
+      limit: 10,
+    });
+  });
 
   useEffect(() => {
     const prepare = async () => {

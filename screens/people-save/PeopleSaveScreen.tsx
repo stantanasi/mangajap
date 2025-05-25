@@ -176,7 +176,9 @@ const usePeopleSave = (params: Props['route']['params']) => {
 
   const people = !params
     ? useMemo(() => new People(), [params])
-    : useAppSelector(People.redux.selectors.selectById(params.peopleId))
+    : useAppSelector((state) => {
+      return People.redux.selectors.selectById(state, params.peopleId);
+    })
 
   useEffect(() => {
     const prepare = async () => {

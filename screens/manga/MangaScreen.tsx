@@ -84,38 +84,40 @@ const useManga = (params: Props['route']['params']) => {
   const { isAuthenticated } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
 
-  const manga = useAppSelector(Manga.redux.selectors.selectById(params.id, {
-    include: {
-      genres: true,
-      themes: true,
-      volumes: {
-        include: {
-          chapters: {
-            include: {
-              'chapter-entry': isAuthenticated,
+  const manga = useAppSelector((state) => {
+    return Manga.redux.selectors.selectById(state, params.id, {
+      include: {
+        genres: true,
+        themes: true,
+        volumes: {
+          include: {
+            chapters: {
+              include: {
+                'chapter-entry': isAuthenticated,
+              },
             },
+            'volume-entry': isAuthenticated,
           },
-          'volume-entry': isAuthenticated,
         },
-      },
-      chapters: {
-        include: {
-          'chapter-entry': isAuthenticated,
+        chapters: {
+          include: {
+            'chapter-entry': isAuthenticated,
+          },
         },
-      },
-      staff: {
-        include: {
-          people: true,
+        staff: {
+          include: {
+            people: true,
+          },
         },
-      },
-      franchises: {
-        include: {
-          destination: true,
+        franchises: {
+          include: {
+            destination: true,
+          },
         },
+        'manga-entry': isAuthenticated,
       },
-      'manga-entry': isAuthenticated,
-    },
-  }));
+    });
+  });
 
   useEffect(() => {
     const prepare = async () => {

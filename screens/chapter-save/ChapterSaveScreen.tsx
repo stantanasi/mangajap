@@ -230,14 +230,19 @@ const useChapterSave = (params: Props['route']['params']) => {
     ? useMemo(() => new Chapter({
       manga: new Manga({ id: params.mangaId }),
     }), [params])
-    : useAppSelector(Chapter.redux.selectors.selectById(params.chapterId, {
-      include: {
-        manga: true,
-        volume: true,
-      },
-    }));
+    : useAppSelector((state) => {
+      return Chapter.redux.selectors.selectById(state, params.chapterId, {
+        include: {
+          manga: true,
+          volume: true,
+        },
+      });
+    });
 
-  const volumes = useAppSelector(Manga.redux.selectors.selectRelation(chapter?.manga?.id ?? '', 'volumes'));
+  const volumes = useAppSelector((state) => {
+    if (!chapter || !chapter.manga) return undefined;
+    return Manga.redux.selectors.selectRelation(state, chapter.manga.id, 'volumes')
+  });
 
   useEffect(() => {
     const prepare = async () => {

@@ -213,7 +213,9 @@ const useVolumeSave = (params: Props['route']['params']) => {
     ? useMemo(() => new Volume({
       manga: new Manga({ id: params.mangaId }),
     }), [params])
-    : useAppSelector(Volume.redux.selectors.selectById(params.volumeId));
+    : useAppSelector((state) => {
+      return Volume.redux.selectors.selectById(state, params.volumeId);
+    });
 
   useEffect(() => {
     const prepare = async () => {

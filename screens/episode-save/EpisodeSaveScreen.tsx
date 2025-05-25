@@ -230,14 +230,19 @@ const useEpisodeSave = (params: Props['route']['params']) => {
     ? useMemo(() => new Episode({
       anime: new Anime({ id: params.animeId }),
     }), [params])
-    : useAppSelector(Episode.redux.selectors.selectById(params.episodeId, {
-      include: {
-        anime: true,
-        season: true,
-      },
-    }));
+    : useAppSelector((state) => {
+      return Episode.redux.selectors.selectById(state, params.episodeId, {
+        include: {
+          anime: true,
+          season: true,
+        },
+      });
+    });
 
-  const seasons = useAppSelector(Anime.redux.selectors.selectRelation(episode?.anime?.id ?? '', 'seasons'));
+  const seasons = useAppSelector((state) => {
+    if (!episode || !episode.anime) return undefined;
+    return Anime.redux.selectors.selectRelation(state, episode.anime.id, 'seasons');
+  });
 
   useEffect(() => {
     const prepare = async () => {

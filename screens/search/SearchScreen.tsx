@@ -206,21 +206,29 @@ const useSearch = () => {
     hasMore: boolean;
   }>({ activeQuery: '', isLoading: true, ids: [], isLoadingMore: false, offset: 0, hasMore: true });
 
-  const animes = useAppSelector(Anime.redux.selectors.selectByIds(animeTab.ids, {
-    include: {
-      'anime-entry': isAuthenticated,
-    },
-  }));
+  const animes = useAppSelector((state) => {
+    return Anime.redux.selectors.selectByIds(state, animeTab.ids, {
+      include: {
+        'anime-entry': isAuthenticated,
+      },
+    });
+  });
 
-  const mangas = useAppSelector(Manga.redux.selectors.selectByIds(mangaTab.ids, {
-    include: {
-      'manga-entry': isAuthenticated,
-    },
-  }));
+  const mangas = useAppSelector((state) => {
+    return Manga.redux.selectors.selectByIds(state, mangaTab.ids, {
+      include: {
+        'manga-entry': isAuthenticated,
+      },
+    });
+  });
 
-  const peoples = useAppSelector(People.redux.selectors.selectByIds(peopleTab.ids));
+  const peoples = useAppSelector((state) => {
+    return People.redux.selectors.selectByIds(state, peopleTab.ids);
+  });
 
-  const users = useAppSelector(User.redux.selectors.selectByIds(userTab.ids));
+  const users = useAppSelector((state) => {
+    return User.redux.selectors.selectByIds(state, userTab.ids);
+  });
 
   return {
     animeTab: {

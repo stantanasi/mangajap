@@ -80,32 +80,34 @@ const useAnime = (params: Props['route']['params']) => {
   const { isAuthenticated } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
 
-  const anime = useAppSelector(Anime.redux.selectors.selectById(params.id, {
-    include: {
-      genres: true,
-      themes: true,
-      seasons: {
-        include: {
-          episodes: {
-            include: {
-              'episode-entry': isAuthenticated,
+  const anime = useAppSelector((state) => {
+    return Anime.redux.selectors.selectById(state, params.id, {
+      include: {
+        genres: true,
+        themes: true,
+        seasons: {
+          include: {
+            episodes: {
+              include: {
+                'episode-entry': isAuthenticated,
+              },
             },
           },
         },
-      },
-      staff: {
-        include: {
-          people: true,
+        staff: {
+          include: {
+            people: true,
+          },
         },
-      },
-      franchises: {
-        include: {
-          destination: true,
+        franchises: {
+          include: {
+            destination: true,
+          },
         },
+        'anime-entry': isAuthenticated,
       },
-      'anime-entry': isAuthenticated,
-    },
-  }));
+    });
+  });
 
   useEffect(() => {
     const prepare = async () => {

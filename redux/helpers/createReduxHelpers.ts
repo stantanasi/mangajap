@@ -1,5 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { ExtractDocType, Model, ModelConstructor, ModelInstance, models } from "@stantanasi/jsonapi-client";
+import { ExtractDocType, JsonApiIdentifier, Model, ModelConstructor, ModelInstance, models } from "@stantanasi/jsonapi-client";
 import { AppThunk, RootState, slices } from "../store";
 
 type Unpacked<T> = T extends (infer U)[] ? U : T;
@@ -75,7 +75,14 @@ const fromEntity = <DocType, M extends ModelConstructor<DocType>>(
         .map((identifier) => {
           const relatedModel = models[identifier.type] as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
 
-          return relatedModel.redux.selectors.selectById(identifier.id, relatedParams)(state);
+          return fromEntity(
+            relatedModel.redux.name,
+            relatedModel,
+            state,
+            identifier.id,
+            state[relatedModel.redux.name].entities[identifier.id],
+            relatedParams,
+          );
         })
         .filter((doc) => !!doc);
 
@@ -108,7 +115,14 @@ const fromEntity = <DocType, M extends ModelConstructor<DocType>>(
       const identifier = linkage;
       const relatedModel = models[identifier.type] as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
 
-      relations[relationship] = relatedModel.redux.selectors.selectById(identifier.id, relatedParams)(state);
+      relations[relationship] = fromEntity(
+        relatedModel.redux.name,
+        relatedModel,
+        state,
+        identifier.id,
+        state[relatedModel.redux.name].entities[identifier.id],
+        relatedParams,
+      );
     }
   }
 
@@ -116,6 +130,151 @@ const fromEntity = <DocType, M extends ModelConstructor<DocType>>(
     ...entity,
     ...relations,
   }, { isNew: false }) as InstanceType<M>;
+};
+
+const buildDocs = <DocType, M extends ModelConstructor<DocType>>(
+  docs: InstanceType<M>[],
+  params?: SelectorParams<DocType>
+): InstanceType<M>[] => {
+  if (!docs.length) return [];
+
+  if (params?.sort) {
+    const sort = Object.entries(params.sort);
+    docs.sort((a, b) => {
+      for (const [path, order] of sort) {
+        const aValue = a[path as keyof typeof a];
+        const bValue = b[path as keyof typeof b];
+
+        if (aValue < bValue) {
+          return order === -1 || order === 'desc' || order === 'descending' ? 1 : -1;
+        }
+        if (aValue > bValue) {
+          return order === -1 || order === 'desc' || order === 'descending' ? -1 : 1;
+        }
+      }
+      return 0;
+    });
+  }
+
+  if (params?.limit || params?.offset) {
+    const start = params.offset ?? 0;
+    const end = start + (params.limit ?? docs.length);
+    docs = docs.slice(start, end);
+  }
+
+  return docs;
+};
+
+const selectDocById = <DocType, M extends ModelConstructor<DocType>>(
+  name: keyof typeof slices,
+  model: M,
+  state: RootState,
+  id: string,
+  entity: typeof state[keyof typeof state]['entities'][keyof typeof state[keyof typeof state]['entities']],
+  params?: SelectorParams<DocType>,
+): InstanceType<M> | undefined => {
+  return fromEntity(
+    name,
+    model,
+    state,
+    id,
+    entity,
+    params,
+  );
+};
+
+const selectDocByIds = <DocType, M extends ModelConstructor<DocType>>(
+  name: keyof typeof slices,
+  model: M,
+  state: RootState,
+  ids: string[],
+  entities: typeof state[keyof typeof state]['entities'],
+  params?: SelectorParams<DocType>,
+): InstanceType<M>[] => {
+  let docs = ids
+    .map((id) => {
+      const entity = entities[id];
+      if (!entity) return entity;
+
+      return fromEntity(
+        name,
+        model,
+        state,
+        id,
+        entity,
+        params,
+      );
+    })
+    .filter((doc) => !!doc);
+
+  return buildDocs(docs, params);
+};
+
+const selectDocs = <DocType, M extends ModelConstructor<DocType>>(
+  name: keyof typeof slices,
+  model: M,
+  state: RootState,
+  entities: typeof state[keyof typeof state]['entities'],
+  params?: SelectorParams<DocType>,
+): InstanceType<M>[] => {
+  let docs = Object.values<typeof entities[keyof typeof entities]>(entities)
+    .map((entity) => {
+      const id = entity!.id;
+
+      return fromEntity(
+        name,
+        model,
+        state,
+        id,
+        entity,
+        params,
+      );
+    })
+    .filter((doc) => !!doc);
+
+  return buildDocs(docs, params);
+};
+
+const selectRelation = <DocType, K extends Relationships<DocType>>(
+  state: RootState,
+  relationship: K,
+  linkage: JsonApiIdentifier | JsonApiIdentifier[] | null | undefined,
+  params?: SelectorParams<ExtractDocType<DocType[K]>>,
+): DocType[K] | undefined => {
+  if (Array.isArray(linkage)) {
+    let docs = linkage
+      .map((identifier) => {
+        const relatedModel = models[identifier.type] as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
+
+        return fromEntity(
+          relatedModel.redux.name,
+          relatedModel as ModelConstructor<any>,
+          state,
+          identifier.id,
+          state[relatedModel.redux.name].entities[identifier.id],
+          params,
+        );
+      })
+      .filter((doc) => !!doc);
+
+    return buildDocs(docs, params) as DocType[typeof relationship];
+  } else if (linkage) {
+    const identifier = linkage;
+    const relatedModel = models[identifier.type] as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
+
+    const doc = fromEntity(
+      relatedModel.redux.name,
+      relatedModel as ModelConstructor<any>,
+      state,
+      identifier.id,
+      state[relatedModel.redux.name].entities[identifier.id],
+      params,
+    );
+
+    return doc as DocType[typeof relationship];
+  } else {
+    return undefined;
+  }
 };
 
 
@@ -156,24 +315,28 @@ export type ReduxHelpers<DocType, ModelType extends ModelConstructor<DocType>> =
 
     selectors: {
       selectById: (
+        state: RootState,
         id: string,
         params?: SelectorParams<DocType>,
-      ) => (state: RootState) => InstanceType<ModelType> | undefined;
+      ) => InstanceType<ModelType> | undefined;
 
       selectByIds: (
+        state: RootState,
         ids: string[],
         params?: SelectorParams<DocType>,
-      ) => (state: RootState) => InstanceType<ModelType>[];
+      ) => InstanceType<ModelType>[];
 
       select: (
+        state: RootState,
         params?: SelectorParams<DocType>,
-      ) => (state: RootState) => InstanceType<ModelType>[];
+      ) => InstanceType<ModelType>[];
 
       selectRelation: <K extends Relationships<DocType>> (
+        state: RootState,
         id: string,
         relationship: K,
         params?: SelectorParams<ExtractDocType<DocType[K]>>,
-      ) => (state: RootState) => DocType[K] | undefined;
+      ) => DocType[K] | undefined;
     };
   };
 }
@@ -305,11 +468,13 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
         },
 
         selectors: {
-          selectById: (id, params) => createSelector([
-            (state: RootState) => state[name].entities[id],
+          selectById: createSelector([
             (state: RootState) => state,
-          ], (entity, state) => {
-            return fromEntity(
+            (state: RootState, id: string) => state[name].entities[id],
+            (_state: RootState, id: string) => id,
+            (_state: RootState, _id: string, params?: SelectorParams<DocType>) => params,
+          ], (state, entity, id, params) => {
+            return selectDocById(
               name,
               model,
               state,
@@ -319,148 +484,49 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
             );
           }),
 
-          selectByIds: (ids, params) => createSelector([
+          selectByIds: createSelector([
+            (state: RootState) => state,
             (state: RootState) => state[name].entities,
-            (state: RootState) => state,
-          ], (entities, state) => {
-            let docs = ids
-              .map((id) => {
-                const entity = entities[id];
-                if (!entity) return entity;
-
-                return fromEntity(
-                  name,
-                  model,
-                  state,
-                  id,
-                  entity,
-                  params,
-                );
-              })
-              .filter((doc) => !!doc);
-
-            if (params?.sort) {
-              const sort = Object.entries(params.sort);
-              docs.sort((a, b) => {
-                for (const [path, order] of sort) {
-                  const aValue = a[path as keyof typeof a];
-                  const bValue = b[path as keyof typeof b];
-
-                  if (aValue < bValue) {
-                    return order === -1 || order === 'desc' || order === 'descending' ? 1 : -1;
-                  }
-                  if (aValue > bValue) {
-                    return order === -1 || order === 'desc' || order === 'descending' ? -1 : 1;
-                  }
-                }
-                return 0;
-              });
-            }
-
-            if (params?.limit || params?.offset) {
-              const start = params.offset ?? 0;
-              const end = start + (params.limit ?? docs.length);
-              docs = docs.slice(start, end);
-            }
-
-            return docs;
+            (_state: RootState, ids: string[]) => ids,
+            (_state: RootState, _ids: string[], params?: SelectorParams<DocType>) => params,
+          ], (state, entities, ids, params) => {
+            return selectDocByIds(
+              name,
+              model,
+              state,
+              ids,
+              entities,
+              params,
+            );
           }),
 
-          select: (params) => createSelector([
+          select: createSelector([
+            (state: RootState) => state,
             (state: RootState) => state[name].entities,
-            (state: RootState) => state,
-          ], (entities, state) => {
-            let docs = Object.values<typeof entities[keyof typeof entities]>(entities)
-              .map((entity) => {
-                const id = entity!.id;
-
-                return fromEntity(
-                  name,
-                  model,
-                  state,
-                  id,
-                  entity,
-                  params,
-                );
-              })
-              .filter((doc) => !!doc);
-
-            if (params?.sort) {
-              const sort = Object.entries(params.sort);
-              docs.sort((a, b) => {
-                for (const [path, order] of sort) {
-                  const aValue = a[path as keyof typeof a];
-                  const bValue = b[path as keyof typeof b];
-
-                  if (aValue < bValue) {
-                    return order === -1 || order === 'desc' || order === 'descending' ? 1 : -1;
-                  }
-                  if (aValue > bValue) {
-                    return order === -1 || order === 'desc' || order === 'descending' ? -1 : 1;
-                  }
-                }
-                return 0;
-              });
-            }
-
-            if (params?.limit || params?.offset) {
-              const start = params.offset ?? 0;
-              const end = start + (params.limit ?? docs.length);
-              docs = docs.slice(start, end);
-            }
-
-            return docs;
+            (_state: RootState, params?: SelectorParams<DocType>) => params,
+          ], (state, entities, params) => {
+            return selectDocs(
+              name,
+              model,
+              state,
+              entities,
+              params,
+            );
           }),
 
-          selectRelation: (id, relationship, params) => createSelector([
-            (state: RootState) => state[name].relations[relationship]?.[id],
+          selectRelation: (<K extends Relationships<DocType>>() => createSelector([
             (state: RootState) => state,
-          ], (linkage, state): DocType[typeof relationship] | undefined => {
-            if (Array.isArray(linkage)) {
-              let docs = linkage
-                .map((identifier) => {
-                  const relatedModel = models[identifier.type] as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
-
-                  return relatedModel.redux.selectors.selectById(identifier.id, params)(state);
-                })
-                .filter((doc) => !!doc);
-
-              if (params?.sort) {
-                const sort = Object.entries(params.sort);
-                docs.sort((a, b) => {
-                  for (const [path, order] of sort) {
-                    const aValue = a[path as keyof typeof a];
-                    const bValue = b[path as keyof typeof b];
-
-                    if (aValue < bValue) {
-                      return order === -1 || order === 'desc' || order === 'descending' ? 1 : -1;
-                    }
-                    if (aValue > bValue) {
-                      return order === -1 || order === 'desc' || order === 'descending' ? -1 : 1;
-                    }
-                  }
-                  return 0;
-                });
-              }
-
-              if (params?.limit || params?.offset) {
-                const start = params.offset ?? 0;
-                const end = start + (params.limit ?? docs.length);
-                docs = docs.slice(start, end);
-              }
-
-              return docs as DocType[typeof relationship];
-            } else if (linkage) {
-              const identifier = linkage;
-              const relatedModel = models[identifier.type] as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
-
-              const doc = relatedModel.redux.selectors.selectById(identifier.id, params)(state);
-
-              return doc as DocType[typeof relationship];
-            } else {
-              return undefined;
-            }
-          }),
+            (state: RootState, id: string, relationship: K) => state[name].relations[relationship]?.[id],
+            (_state: RootState, _id: string, relationship: K) => relationship,
+            (_state: RootState, _id: string, _relationship: K, params?: SelectorParams<ExtractDocType<DocType[K]>>) => params,
+          ], (state, linkage, relationship, params): DocType[typeof relationship] | undefined => {
+            return selectRelation(
+              state,
+              relationship,
+              linkage,
+              params,
+            ) as DocType[typeof relationship];
+          }))(),
         },
       };
     },

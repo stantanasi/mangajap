@@ -170,16 +170,18 @@ const usePeople = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const people = useAppSelector(People.redux.selectors.selectById(params.id, {
-    include: {
-      staff: {
-        include: {
-          anime: true,
-          manga: true,
+  const people = useAppSelector((state) => {
+    return People.redux.selectors.selectById(state, params.id, {
+      include: {
+        staff: {
+          include: {
+            anime: true,
+            manga: true,
+          },
         },
       },
-    },
-  }));
+    });
+  });
 
   useEffect(() => {
     const prepare = async () => {

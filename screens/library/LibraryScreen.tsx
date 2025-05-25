@@ -125,41 +125,41 @@ const useLibrary = (params: Props['route']['params']) => {
 
   const library = useAppSelector((state) => {
     if (params.type === 'anime-library') {
-      return User.redux.selectors.selectRelation(params.userId, 'anime-library', {
+      return User.redux.selectors.selectRelation(state, params.userId, 'anime-library', {
         include: {
           anime: true,
         },
         sort: {
           updatedAt: 'desc',
         },
-      })(state);
+      });
     } else if (params.type === 'anime-favorites') {
-      return User.redux.selectors.selectRelation(params.userId, 'anime-favorites', {
+      return User.redux.selectors.selectRelation(state, params.userId, 'anime-favorites', {
         include: {
           anime: true,
         },
         sort: {
           updatedAt: 'desc',
         },
-      })(state);
+      });
     } else if (params.type === 'manga-library') {
-      return User.redux.selectors.selectRelation(params.userId, 'manga-library', {
+      return User.redux.selectors.selectRelation(state, params.userId, 'manga-library', {
         include: {
           manga: true,
         },
         sort: {
           updatedAt: 'desc',
         },
-      })(state);
+      });
     } else if (params.type === 'manga-favorites') {
-      return User.redux.selectors.selectRelation(params.userId, 'manga-favorites', {
+      return User.redux.selectors.selectRelation(state, params.userId, 'manga-favorites', {
         include: {
           manga: true,
         },
         sort: {
           updatedAt: 'desc',
         },
-      })(state);
+      });
     }
 
     return undefined;

@@ -24,8 +24,14 @@ const SelectDestinationModal = ({ onSelect, onRequestClose, visible }: {
   const [mangaIds, setMangaIds] = useState<string[]>();
   const [selectedTab, setSelectedTab] = useState<'anime' | 'manga'>('anime');
 
-  const animes = useAppSelector(Anime.redux.selectors.selectByIds(animeIds ?? []));
-  const mangas = useAppSelector(Manga.redux.selectors.selectByIds(mangaIds ?? []));
+  const animes = useAppSelector((state) => {
+    if (!animeIds) return [];
+    return Anime.redux.selectors.selectByIds(state, animeIds);
+  });
+  const mangas = useAppSelector((state) => {
+    if (!mangaIds) return [];
+    return Manga.redux.selectors.selectByIds(state, mangaIds);
+  });
 
   useEffect(() => {
     setAnimeIds(undefined);
@@ -388,11 +394,13 @@ const useFranchiseSave = (params: Props['route']['params']) => {
       ? useMemo(() => new Franchise({
         source: new Manga({ id: params.mangaId }),
       }), [params])
-      : useAppSelector(Franchise.redux.selectors.selectById(params.franchiseId, {
-        include: {
-          destination: true,
-        },
-      }));
+      : useAppSelector((state) => {
+        return Franchise.redux.selectors.selectById(state, params.franchiseId, {
+          include: {
+            destination: true,
+          },
+        });
+      });
 
   useEffect(() => {
     const prepare = async () => {

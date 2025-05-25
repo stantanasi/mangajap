@@ -345,16 +345,22 @@ const useMangaSave = (params: Props['route']['params']) => {
       genres: [],
       themes: [],
     }), [params])
-    : useAppSelector(Manga.redux.selectors.selectById(params.id, {
-      include: {
-        genres: true,
-        themes: true,
-      },
-    }));
+    : useAppSelector((state) => {
+      return Manga.redux.selectors.selectById(state, params.id, {
+        include: {
+          genres: true,
+          themes: true,
+        },
+      });
+    });
 
-  const genres = useAppSelector(Genre.redux.selectors.select());
+  const genres = useAppSelector((state) => {
+    return Genre.redux.selectors.select(state);
+  });
 
-  const themes = useAppSelector(Theme.redux.selectors.select());
+  const themes = useAppSelector((state) => {
+    return Theme.redux.selectors.select(state);
+  });
 
   useEffect(() => {
     const prepare = async () => {

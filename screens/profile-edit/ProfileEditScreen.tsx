@@ -271,7 +271,9 @@ const useProfileEdit = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const user = useAppSelector(User.redux.selectors.selectById(params.id));
+  const user = useAppSelector((state) => {
+    return User.redux.selectors.selectById(state, params.id);
+  });
 
   useEffect(() => {
     const prepare = async () => {

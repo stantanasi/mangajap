@@ -202,7 +202,9 @@ const useSeasonSave = (params: Props['route']['params']) => {
     ? useMemo(() => new Season({
       anime: new Anime({ id: params.animeId }),
     }), [params])
-    : useAppSelector(Season.redux.selectors.selectById(params.seasonId));
+    : useAppSelector((state) => {
+      return Season.redux.selectors.selectById(state, params.seasonId);
+    });
 
   useEffect(() => {
     const prepare = async () => {

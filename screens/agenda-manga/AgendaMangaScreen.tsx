@@ -110,14 +110,14 @@ const useAgendaManga = () => {
       return undefined;
     }
 
-    return User.redux.selectors.selectRelation(user.id, 'manga-library', {
+    return User.redux.selectors.selectRelation(state, user.id, 'manga-library', {
       include: {
         manga: true,
       },
       sort: {
         updatedAt: 'desc',
       },
-    })(state);
+    });
   });
 
   useEffect(() => {

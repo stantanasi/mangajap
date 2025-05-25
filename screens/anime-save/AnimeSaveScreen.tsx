@@ -346,16 +346,22 @@ const useAnimeSave = (params: Props['route']['params']) => {
       genres: [],
       themes: [],
     }), [params])
-    : useAppSelector(Anime.redux.selectors.selectById(params.id, {
-      include: {
-        genres: true,
-        themes: true,
-      },
-    }));
+    : useAppSelector((state) => {
+      return Anime.redux.selectors.selectById(state, params.id, {
+        include: {
+          genres: true,
+          themes: true,
+        },
+      });
+    });
 
-  const genres = useAppSelector(Genre.redux.selectors.select());
+  const genres = useAppSelector((state) => {
+    return Genre.redux.selectors.select(state);
+  });
 
-  const themes = useAppSelector(Genre.redux.selectors.select());
+  const themes = useAppSelector((state) => {
+    return Genre.redux.selectors.select(state);
+  });
 
   useEffect(() => {
     const prepare = async () => {

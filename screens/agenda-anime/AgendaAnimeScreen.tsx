@@ -108,14 +108,14 @@ const useAgendaAnime = () => {
       return undefined;
     }
 
-    return User.redux.selectors.selectRelation(user.id, 'anime-library', {
+    return User.redux.selectors.selectRelation(state, user.id, 'anime-library', {
       include: {
         anime: true,
       },
       sort: {
         updatedAt: 'desc',
       },
-    })(state);
+    });
   });
 
   useEffect(() => {

@@ -20,7 +20,10 @@ const SelectDestinationModal = ({ onSelect, onRequestClose, visible }: {
   const dispatch = useAppDispatch();
   const [peopleIds, setPeopleIds] = useState<string[]>();
 
-  const peoples = useAppSelector(People.redux.selectors.selectByIds(peopleIds ?? []));
+  const peoples = useAppSelector((state) => {
+    if (!peopleIds) return [];
+    return People.redux.selectors.selectByIds(state, peopleIds);
+  });
 
   useEffect(() => {
     setPeopleIds(undefined);
@@ -326,11 +329,13 @@ const useStaffSave = (params: Props['route']['params']) => {
       ? useMemo(() => new Staff({
         manga: new Manga({ id: params.mangaId }),
       }), [params])
-      : useAppSelector(Staff.redux.selectors.selectById(params.staffId, {
-        include: {
-          people: true,
-        },
-      }));
+      : useAppSelector((state) => {
+        return Staff.redux.selectors.selectById(state, params.staffId, {
+          include: {
+            people: true,
+          },
+        });
+      });
 
   useEffect(() => {
     const prepare = async () => {

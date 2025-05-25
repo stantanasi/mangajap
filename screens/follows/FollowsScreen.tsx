@@ -111,23 +111,23 @@ const useFollows = (params: Props['route']['params']) => {
 
   const follows = useAppSelector((state) => {
     if (params.type === 'followers') {
-      return User.redux.selectors.selectRelation(params.userId, 'followers', {
+      return User.redux.selectors.selectRelation(state, params.userId, 'followers', {
         include: {
           follower: true,
         },
         sort: {
           createdAt: 'desc',
         },
-      })(state);
+      });
     } else if (params.type === 'following') {
-      return User.redux.selectors.selectRelation(params.userId, 'following', {
+      return User.redux.selectors.selectRelation(state, params.userId, 'following', {
         include: {
           followed: true,
         },
         sort: {
           createdAt: 'desc',
         },
-      })(state);
+      });
     }
 
     return undefined;
