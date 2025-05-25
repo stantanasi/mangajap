@@ -109,7 +109,7 @@ const useFollows = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const follows = useAppSelector(useMemo(() => {
+  const follows = useAppSelector((state) => {
     if (params.type === 'followers') {
       return User.redux.selectors.selectRelation(params.userId, 'followers', {
         include: {
@@ -118,7 +118,7 @@ const useFollows = (params: Props['route']['params']) => {
         sort: {
           createdAt: 'desc',
         },
-      });
+      })(state);
     } else if (params.type === 'following') {
       return User.redux.selectors.selectRelation(params.userId, 'following', {
         include: {
@@ -127,11 +127,11 @@ const useFollows = (params: Props['route']['params']) => {
         sort: {
           createdAt: 'desc',
         },
-      });
+      })(state);
     }
 
-    return () => undefined;
-  }, [params]));
+    return undefined;
+  });
 
   useEffect(() => {
     const prepare = async () => {

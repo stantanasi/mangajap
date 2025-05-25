@@ -103,9 +103,9 @@ const useAgendaAnime = () => {
   const { user } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
 
-  const animeLibrary = useAppSelector(useMemo(() => {
+  const animeLibrary = useAppSelector((state) => {
     if (!user) {
-      return () => undefined;
+      return undefined;
     }
 
     return User.redux.selectors.selectRelation(user.id, 'anime-library', {
@@ -115,8 +115,8 @@ const useAgendaAnime = () => {
       sort: {
         updatedAt: 'desc',
       },
-    });
-  }, [user]));
+    })(state);
+  });
 
   useEffect(() => {
     const prepare = async () => {

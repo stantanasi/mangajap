@@ -24,7 +24,8 @@ export default function AnimeSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    setForm(anime?.toObject());
+    if (!anime || form) return
+    setForm(anime.toObject());
   }, [anime]);
 
   if (isLoading || !anime || !form || !genres || !themes) {
@@ -340,21 +341,17 @@ const useAnimeSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const anime = useAppSelector(useMemo(() => {
-    if (!params) {
-      return () => new Anime({
-        genres: [],
-        themes: [],
-      });
-    }
-
-    return Anime.redux.selectors.selectById(params.id, {
+  const anime = !params
+    ? useMemo(() => new Anime({
+      genres: [],
+      themes: [],
+    }), [params])
+    : useAppSelector(Anime.redux.selectors.selectById(params.id, {
       include: {
         genres: true,
         themes: true,
       },
-    });
-  }, [params]));
+    }));
 
   const genres = useAppSelector(Genre.redux.selectors.select());
 

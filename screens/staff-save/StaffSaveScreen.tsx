@@ -124,7 +124,8 @@ export default function StaffSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    setForm(staff?.toObject());
+    if (!staff || form) return
+    setForm(staff.toObject());
   }, [staff]);
 
   if (isLoading || !staff || !form) {
@@ -317,23 +318,19 @@ const useStaffSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const staff = useAppSelector(useMemo(() => {
-    if ('animeId' in params) {
-      return () => new Staff({
-        anime: new Anime({ id: params.animeId }),
-      });
-    } else if ('mangaId' in params) {
-      return () => new Staff({
+  const staff = 'animeId' in params
+    ? useMemo(() => new Staff({
+      anime: new Anime({ id: params.animeId }),
+    }), [params])
+    : 'mangaId' in params
+      ? useMemo(() => new Staff({
         manga: new Manga({ id: params.mangaId }),
-      });
-    }
-
-    return Staff.redux.selectors.selectById(params.staffId, {
-      include: {
-        people: true,
-      },
-    });
-  }, [params]));
+      }), [params])
+      : useAppSelector(Staff.redux.selectors.selectById(params.staffId, {
+        include: {
+          people: true,
+        },
+      }));
 
   useEffect(() => {
     const prepare = async () => {

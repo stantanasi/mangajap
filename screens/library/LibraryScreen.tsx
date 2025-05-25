@@ -1,12 +1,12 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { Anime, AnimeEntry, MangaEntry, User } from '../../models';
-import { RootState, useAppDispatch, useAppSelector } from '../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 type Props = StaticScreenProps<{
   type: 'anime-library' | 'manga-library' | 'anime-favorites' | 'manga-favorites';
@@ -123,7 +123,7 @@ const useLibrary = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const library = useAppSelector(useMemo<(state: RootState) => AnimeEntry[] | MangaEntry[] | undefined>(() => {
+  const library = useAppSelector((state) => {
     if (params.type === 'anime-library') {
       return User.redux.selectors.selectRelation(params.userId, 'anime-library', {
         include: {
@@ -132,7 +132,7 @@ const useLibrary = (params: Props['route']['params']) => {
         sort: {
           updatedAt: 'desc',
         },
-      });
+      })(state);
     } else if (params.type === 'anime-favorites') {
       return User.redux.selectors.selectRelation(params.userId, 'anime-favorites', {
         include: {
@@ -141,7 +141,7 @@ const useLibrary = (params: Props['route']['params']) => {
         sort: {
           updatedAt: 'desc',
         },
-      });
+      })(state);
     } else if (params.type === 'manga-library') {
       return User.redux.selectors.selectRelation(params.userId, 'manga-library', {
         include: {
@@ -150,7 +150,7 @@ const useLibrary = (params: Props['route']['params']) => {
         sort: {
           updatedAt: 'desc',
         },
-      });
+      })(state);
     } else if (params.type === 'manga-favorites') {
       return User.redux.selectors.selectRelation(params.userId, 'manga-favorites', {
         include: {
@@ -159,11 +159,11 @@ const useLibrary = (params: Props['route']['params']) => {
         sort: {
           updatedAt: 'desc',
         },
-      });
+      })(state);
     }
 
-    return () => undefined;
-  }, [params]));
+    return undefined;
+  });
 
   useEffect(() => {
     const prepare = async () => {

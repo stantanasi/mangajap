@@ -24,7 +24,8 @@ export default function MangaSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    setForm(manga?.toObject());
+    if (!manga || form) return
+    setForm(manga.toObject());
   }, [manga]);
 
   if (isLoading || !manga || !form || !genres || !themes) {
@@ -339,21 +340,17 @@ const useMangaSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const manga = useAppSelector(useMemo(() => {
-    if (!params) {
-      return () => new Manga({
-        genres: [],
-        themes: [],
-      });
-    }
-
-    return Manga.redux.selectors.selectById(params.id, {
+  const manga = !params
+    ? useMemo(() => new Manga({
+      genres: [],
+      themes: [],
+    }), [params])
+    : useAppSelector(Manga.redux.selectors.selectById(params.id, {
       include: {
         genres: true,
         themes: true,
       },
-    });
-  }, [params]));
+    }));
 
   const genres = useAppSelector(Genre.redux.selectors.select());
 

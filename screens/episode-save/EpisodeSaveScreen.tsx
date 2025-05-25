@@ -27,7 +27,8 @@ export default function EpisodeSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    setForm(episode?.toObject());
+    if (!episode || form) return
+    setForm(episode.toObject());
   }, [episode]);
 
   if (isLoading || !episode || !form || !seasons) {
@@ -225,28 +226,18 @@ const useEpisodeSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const episode = useAppSelector(useMemo(() => {
-    if ('animeId' in params) {
-      return () => new Episode({
-        anime: new Anime({ id: params.animeId }),
-      });
-    }
-
-    return Episode.redux.selectors.selectById(params.episodeId, {
+  const episode = 'animeId' in params
+    ? useMemo(() => new Episode({
+      anime: new Anime({ id: params.animeId }),
+    }), [params])
+    : useAppSelector(Episode.redux.selectors.selectById(params.episodeId, {
       include: {
         anime: true,
         season: true,
       },
-    });
-  }, [params]));
+    }));
 
-  const seasons = useAppSelector(useMemo(() => {
-    if (!episode || !episode.anime) {
-      return () => undefined;
-    }
-
-    return Anime.redux.selectors.selectRelation(episode.anime.id, 'seasons');
-  }, [episode]));
+  const seasons = useAppSelector(Anime.redux.selectors.selectRelation(episode?.anime?.id ?? '', 'seasons'));
 
   useEffect(() => {
     const prepare = async () => {

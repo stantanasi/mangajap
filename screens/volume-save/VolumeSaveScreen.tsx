@@ -26,7 +26,8 @@ export default function VolumeSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    setForm(volume?.toObject());
+    if (!volume || form) return
+    setForm(volume.toObject());
   }, [volume]);
 
   if (isLoading || !volume || !form) {
@@ -208,15 +209,11 @@ const useVolumeSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const volume = useAppSelector(useMemo(() => {
-    if ('mangaId' in params) {
-      return () => new Volume({
-        manga: new Manga({ id: params.mangaId }),
-      });
-    }
-
-    return Volume.redux.selectors.selectById(params.volumeId);
-  }, [params]));
+  const volume = 'mangaId' in params
+    ? useMemo(() => new Volume({
+      manga: new Manga({ id: params.mangaId }),
+    }), [params])
+    : useAppSelector(Volume.redux.selectors.selectById(params.volumeId));
 
   useEffect(() => {
     const prepare = async () => {

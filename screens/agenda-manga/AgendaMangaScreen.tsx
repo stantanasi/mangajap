@@ -1,5 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -105,9 +105,9 @@ const useAgendaManga = () => {
   const { user } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
 
-  const mangaLibrary = useAppSelector(useMemo(() => {
+  const mangaLibrary = useAppSelector((state) => {
     if (!user) {
-      return () => undefined;
+      return undefined;
     }
 
     return User.redux.selectors.selectRelation(user.id, 'manga-library', {
@@ -117,8 +117,8 @@ const useAgendaManga = () => {
       sort: {
         updatedAt: 'desc',
       },
-    });
-  }, [user]));
+    })(state);
+  });
 
   useEffect(() => {
     const prepare = async () => {

@@ -27,7 +27,8 @@ export default function ChapterSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    setForm(chapter?.toObject());
+    if (!chapter || form) return
+    setForm(chapter.toObject());
   }, [chapter]);
 
   if (isLoading || !chapter || !form || !volumes) {
@@ -225,28 +226,18 @@ const useChapterSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const chapter = useAppSelector(useMemo(() => {
-    if ('mangaId' in params) {
-      return () => new Chapter({
-        manga: new Manga({ id: params.mangaId }),
-      });
-    }
-
-    return Chapter.redux.selectors.selectById(params.chapterId, {
+  const chapter = 'mangaId' in params
+    ? useMemo(() => new Chapter({
+      manga: new Manga({ id: params.mangaId }),
+    }), [params])
+    : useAppSelector(Chapter.redux.selectors.selectById(params.chapterId, {
       include: {
         manga: true,
         volume: true,
       },
-    })
-  }, [params]));
+    }));
 
-  const volumes = useAppSelector(useMemo(() => {
-    if (!chapter || !chapter.manga) {
-      return () => undefined;
-    }
-
-    return Manga.redux.selectors.selectRelation(chapter.manga.id, 'volumes');
-  }, [chapter]));
+  const volumes = useAppSelector(Manga.redux.selectors.selectRelation(chapter?.manga?.id ?? '', 'volumes'));
 
   useEffect(() => {
     const prepare = async () => {

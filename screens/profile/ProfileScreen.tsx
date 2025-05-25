@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
@@ -382,9 +382,9 @@ const useProfile = (params: Props['route']['params']) => {
 
   const userId = params?.id ?? authenticatedUser?.id;
 
-  const user = useAppSelector(useMemo(() => {
+  const user = useAppSelector((state) => {
     if (!userId) {
-      return () => undefined;
+      return undefined;
     }
 
     return User.redux.selectors.selectById(userId, {
@@ -426,12 +426,12 @@ const useProfile = (params: Props['route']['params']) => {
           limit: 20,
         },
       }
-    });
-  }, [userId]));
+    })(state);
+  });
 
-  const followingUser = useAppSelector(useMemo(() => {
+  const followingUser = useAppSelector((state) => {
     if (!authenticatedUser || authenticatedUser.id === userId) {
-      return () => null;
+      return null;
     }
 
     return Follow.redux.selectors.select({
@@ -439,12 +439,12 @@ const useProfile = (params: Props['route']['params']) => {
         follower: new User({ id: authenticatedUser.id }),
         followed: new User({ id: userId }),
       },
-    });
-  }, [authenticatedUser, userId]))?.[0] ?? null;
+    })(state)?.[0] ?? null;
+  });
 
-  const followedByUser = useAppSelector(useMemo(() => {
+  const followedByUser = useAppSelector((state) => {
     if (!authenticatedUser || authenticatedUser.id === userId) {
-      return () => null;
+      return null;
     }
 
     return Follow.redux.selectors.select({
@@ -452,8 +452,8 @@ const useProfile = (params: Props['route']['params']) => {
         follower: new User({ id: userId }),
         followed: new User({ id: authenticatedUser.id }),
       },
-    });
-  }, [authenticatedUser, userId]))?.[0] ?? null;
+    })(state)?.[0] ?? null;
+  });
 
   useEffect(() => {
     if (!userId) return

@@ -188,7 +188,8 @@ export default function FranchiseSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    setForm(franchise?.toObject());
+    if (!franchise || form) return
+    setForm(franchise.toObject());
   }, [franchise]);
 
   if (isLoading || !franchise || !form) {
@@ -379,23 +380,19 @@ const useFranchiseSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const franchise = useAppSelector(useMemo(() => {
-    if ('animeId' in params) {
-      return () => new Franchise({
-        source: new Anime({ id: params.animeId }),
-      });
-    } else if ('mangaId' in params) {
-      return () => new Franchise({
+  const franchise = 'animeId' in params
+    ? useMemo(() => new Franchise({
+      source: new Anime({ id: params.animeId }),
+    }), [params])
+    : 'mangaId' in params
+      ? useMemo(() => new Franchise({
         source: new Manga({ id: params.mangaId }),
-      });
-    }
-
-    return Franchise.redux.selectors.selectById(params.franchiseId, {
-      include: {
-        destination: true,
-      },
-    });
-  }, [params]));
+      }), [params])
+      : useAppSelector(Franchise.redux.selectors.selectById(params.franchiseId, {
+        include: {
+          destination: true,
+        },
+      }));
 
   useEffect(() => {
     const prepare = async () => {

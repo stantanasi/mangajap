@@ -22,7 +22,8 @@ export default function PeopleSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    setForm(people?.toObject());
+    if (!people || form) return
+    setForm(people.toObject());
   }, [people]);
 
   if (isLoading || !people || !form) {
@@ -173,13 +174,9 @@ const usePeopleSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const people = useAppSelector(useMemo(() => {
-    if (!params) {
-      return () => new People();
-    }
-
-    return People.redux.selectors.selectById(params.peopleId);
-  }, [params]));
+  const people = !params
+    ? useMemo(() => new People(), [params])
+    : useAppSelector(People.redux.selectors.selectById(params.peopleId))
 
   useEffect(() => {
     const prepare = async () => {

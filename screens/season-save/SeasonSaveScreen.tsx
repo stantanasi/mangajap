@@ -25,7 +25,8 @@ export default function SeasonSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    setForm(season?.toObject());
+    if (!season || form) return
+    setForm(season.toObject());
   }, [season]);
 
   if (isLoading || !season || !form) {
@@ -197,15 +198,11 @@ const useSeasonSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const season = useAppSelector(useMemo(() => {
-    if ('animeId' in params) {
-      return () => new Season({
-        anime: new Anime({ id: params.animeId }),
-      });
-    }
-
-    return Season.redux.selectors.selectById(params.seasonId);
-  }, [params]));
+  const season = 'animeId' in params
+    ? useMemo(() => new Season({
+      anime: new Anime({ id: params.animeId }),
+    }), [params])
+    : useAppSelector(Season.redux.selectors.selectById(params.seasonId));
 
   useEffect(() => {
     const prepare = async () => {

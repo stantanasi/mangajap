@@ -21,7 +21,8 @@ export default function ProfileEditScreen({ route }: Props) {
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    setForm(user?.toObject());
+    if (!user || form) return
+    setForm(user.toObject());
   }, [user]);
 
   if (isLoading || !user || !form) {
@@ -270,9 +271,7 @@ const useProfileEdit = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  const user = useAppSelector(useMemo(() => {
-    return User.redux.selectors.selectById(params.id);
-  }, [params]));
+  const user = useAppSelector(User.redux.selectors.selectById(params.id));
 
   useEffect(() => {
     const prepare = async () => {
