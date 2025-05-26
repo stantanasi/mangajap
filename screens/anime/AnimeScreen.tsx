@@ -129,11 +129,6 @@ const useAnime = (params: Props['route']['params']) => {
           'anime-entry': isAuthenticated,
         });
 
-      anime.seasons = [
-        ...anime.seasons!.filter((s) => s.number !== 0),
-        ...anime.seasons!.filter((s) => s.number === 0),
-      ];
-
       dispatch(Anime.redux.actions.setOne(anime));
     };
 

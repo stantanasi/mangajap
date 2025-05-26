@@ -25,7 +25,10 @@ export default function EpisodesTab({ anime, style }: Props) {
   const [previousUnwatched, setPreviousUnwatched] = useState<(Season | Episode)[]>();
 
   const findPreviousSeasonsEpisodes = (item: Season | Episode) => {
-    const sections = anime.seasons!.map((season) => ({
+    const sections = [
+      ...anime.seasons!.filter((s) => s.number !== 0),
+      ...anime.seasons!.filter((s) => s.number === 0),
+    ].map((season) => ({
       season: season,
       data: season.episodes!,
     }));
@@ -53,7 +56,10 @@ export default function EpisodesTab({ anime, style }: Props) {
   return (
     <View style={[styles.container, style]}>
       <SectionList
-        sections={anime.seasons!.map((season) => ({
+        sections={[
+          ...anime.seasons!.filter((s) => s.number !== 0),
+          ...anime.seasons!.filter((s) => s.number === 0),
+        ].map((season) => ({
           season: season,
           data: expandedSeasons[season.id] ? season.episodes! : [],
         }))}
