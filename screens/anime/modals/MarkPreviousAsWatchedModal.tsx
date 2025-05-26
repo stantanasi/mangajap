@@ -24,8 +24,6 @@ export default function MarkPreviousAsWatchedModal({
   const markPreviousAsWatched = async () => {
     if (!user) return
 
-    onUpdatingChange(Object.fromEntries(previousUnwatched.map((value) => [value.id, true])));
-
     const updateEpisodeEntry = async (episode: Episode) => {
       const episodeEntry = new EpisodeEntry({
         user: new User({ id: user.id }),
@@ -43,11 +41,12 @@ export default function MarkPreviousAsWatchedModal({
       if (value instanceof Episode) {
         const episode = value;
 
-        updateEpisodeEntry(episode)
-          .catch((err) => console.error(err));
-      }
+        onUpdatingChange({ [episode.id]: true });
 
-      onUpdatingChange({ [value.id]: false });
+        updateEpisodeEntry(episode)
+          .catch((err) => console.error(err))
+          .finally(() => onUpdatingChange({ [episode.id]: false }));
+      }
     }));
   }
 

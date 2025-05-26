@@ -24,8 +24,6 @@ export default function MarkPreviousAsReadModal({
   const markPreviousAsRead = async () => {
     if (!user) return
 
-    onUpdatingChange(Object.fromEntries(previousUnread.map((value) => [value.id, true])));
-
     const updateVolumeEntry = async (volume: Volume) => {
       const volumeEntry = new VolumeEntry({
         user: new User({ id: user.id }),
@@ -56,16 +54,20 @@ export default function MarkPreviousAsReadModal({
       if (value instanceof Volume) {
         const volume = value;
 
+        onUpdatingChange({ [volume.id]: true });
+
         updateVolumeEntry(volume)
-          .catch((err) => console.error(err));;
+          .catch((err) => console.error(err))
+          .finally(() => onUpdatingChange({ [volume.id]: false }));
       } else {
         const chapter = value;
 
-        updateChapterEntry(chapter)
-          .catch((err) => console.error(err));
-      }
+        onUpdatingChange({ [chapter.id]: true });
 
-      onUpdatingChange({ [value.id]: false });
+        updateChapterEntry(chapter)
+          .catch((err) => console.error(err))
+          .finally(() => onUpdatingChange({ [chapter.id]: false }));
+      }
     }));
   };
 
