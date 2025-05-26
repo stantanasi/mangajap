@@ -91,7 +91,13 @@ const useAnime = (params: Props['route']['params']) => {
               include: {
                 'episode-entry': isAuthenticated,
               },
+              sort: {
+                number: 'asc',
+              },
             },
+          },
+          sort: {
+            number: 'asc',
           },
         },
         staff: {
