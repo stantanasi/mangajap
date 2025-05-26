@@ -98,10 +98,16 @@ const useManga = (params: Props['route']['params']) => {
             },
             'volume-entry': isAuthenticated,
           },
+          sort: {
+            number: 'asc',
+          },
         },
         chapters: {
           include: {
             'chapter-entry': isAuthenticated,
+          },
+          sort: {
+            number: 'asc',
           },
         },
         staff: {
