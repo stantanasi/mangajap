@@ -202,6 +202,7 @@ const useSeasonSave = (params: Props['route']['params']) => {
     if ('animeId' in params) {
       return useMemo(() => new Season({
         anime: new Anime({ id: params.animeId }),
+        episodes: [],
       }), [params]);
     }
 
