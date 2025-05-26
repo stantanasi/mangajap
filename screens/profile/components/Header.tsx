@@ -4,27 +4,51 @@ import React, { useContext, useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 import ProfileScreen from '../ProfileScreen';
 
 type Props = React.ComponentProps<typeof ProfileScreen> & {
   user: User;
   followingUser: Follow | null;
   followedByUser: Follow | null;
-  onFollowingChange?: (follow: Follow | null) => void;
   style?: StyleProp<ViewStyle>;
 }
 
 export default function Header({
   route,
   user,
-  followingUser: followingUser,
-  followedByUser: followedByUser,
-  onFollowingChange = () => { },
+  followingUser,
+  followedByUser,
   style,
 }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { user: authenticatedUser } = useContext(AuthContext);
   const [isFollowUpdating, setIsFollowUpdating] = useState(false);
+
+  const updateFollow = async () => {
+    if (!authenticatedUser) return
+
+    if (!followingUser) {
+      const followingUser = new Follow({
+        follower: new User({ id: authenticatedUser.id }),
+        followed: user,
+      });
+      await followingUser.save();
+
+      Follow.redux.sync(dispatch, followingUser, {
+        follower: new User({ id: authenticatedUser.id }),
+        followed: user,
+      });
+    } else {
+      await followingUser.delete();
+
+      Follow.redux.sync(dispatch, followingUser, {
+        follower: new User({ id: authenticatedUser.id }),
+        followed: user,
+      });
+    }
+  };
 
   return (
     <View style={[styles.container, style]}>
@@ -139,21 +163,6 @@ export default function Header({
                 disabled={isFollowUpdating}
                 onPress={() => {
                   setIsFollowUpdating(true);
-
-                  const updateFollow = async () => {
-                    if (!followingUser) {
-                      const isFollowingUser = new Follow({
-                        follower: new User({ id: authenticatedUser.id }),
-                        followed: user,
-                      });
-
-                      return isFollowingUser.save()
-                        .then((follow) => onFollowingChange(follow));
-                    } else {
-                      return followingUser.delete()
-                        .then(() => onFollowingChange(null));
-                    }
-                  };
 
                   updateFollow()
                     .catch((err) => console.error(err))

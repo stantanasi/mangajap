@@ -2,11 +2,10 @@ import React, { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { Anime, Episode, EpisodeEntry, Season, User } from '../../../models';
+import { Episode, EpisodeEntry, Season, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
-  anime: Anime;
-  onAnimeChange: (anime: Anime) => void;
   previousUnwatched: (Season | Episode)[];
   onUpdatingChange: (updating: { [id: string]: boolean }) => void;
   onRequestClose: () => void;
@@ -14,50 +13,41 @@ type Props = {
 }
 
 export default function MarkPreviousAsWatchedModal({
-  anime,
-  onAnimeChange,
   previousUnwatched,
   onUpdatingChange,
   onRequestClose,
   visible
 }: Props) {
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
 
   const markPreviousAsWatched = async () => {
     if (!user) return
 
-    onUpdatingChange(Object.fromEntries(previousUnwatched.map((value) => [value.id, true])));
+    const updateEpisodeEntry = async (episode: Episode) => {
+      const episodeEntry = new EpisodeEntry({
+        user: new User({ id: user.id }),
+        episode: episode,
+      });
+
+      await episodeEntry.save();
+
+      EpisodeEntry.redux.sync(dispatch, episodeEntry, {
+        episode: episode,
+      });
+    };
 
     await Promise.all(previousUnwatched.map(async (value) => {
       if (value instanceof Episode) {
-        let episode = value;
+        const episode = value;
 
-        const episodeEntry = new EpisodeEntry({
-          user: new User({ id: user!.id }),
-          episode: episode,
-        });
+        onUpdatingChange({ [episode.id]: true });
 
-        episode = await episodeEntry.save()
-          .then((entry) => episode.copy({ 'episode-entry': entry }))
-          .catch((err) => {
-            console.error(err);
-            return episode;
-          });
-
-        const season = anime.seasons!.find((season) => season.episodes!.some((e) => e.id === episode.id))!;
-
-        onAnimeChange(anime.copy({
-          seasons: anime.seasons?.map((s) => s.id === season.id
-            ? s.copy({
-              episodes: s.episodes?.map((e) => e.id === episode.id ? episode : e),
-            })
-            : s),
-        }));
+        updateEpisodeEntry(episode)
+          .catch((err) => console.error(err))
+          .finally(() => onUpdatingChange({ [episode.id]: false }));
       }
-
-      onUpdatingChange({ [value.id]: false });
-    }))
-      .catch((err) => console.error(err));
+    }));
   }
 
   return (

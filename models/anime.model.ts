@@ -1,4 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import AnimeEntry from './anime-entry.model';
 import Change from './change.model';
 import Episode from './episode.model';
@@ -126,7 +128,15 @@ export const AnimeSchema = new Schema<IAnime>({
 });
 
 
-class Anime extends model<IAnime>(AnimeSchema) { }
+class Anime extends model<IAnime>(AnimeSchema) {
+
+  static redux = {
+    ...createReduxHelpers<IAnime, typeof Anime>(Anime).register('anime'),
+    sync: (dispatch: AppDispatch, anime: Anime) => {
+      dispatch(Anime.redux.actions.saveOne(anime));
+    },
+  };
+}
 
 Anime.register('anime');
 

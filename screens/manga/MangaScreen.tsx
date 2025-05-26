@@ -1,9 +1,10 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { StaticScreenProps } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Manga } from '../../models';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 import AddMangaButton from './components/AddMangaButton';
 import Header from './components/Header';
 import AboutTab from './tabs/AboutTab';
@@ -14,47 +15,12 @@ type Props = StaticScreenProps<{
 }>;
 
 export default function MangaScreen({ route }: Props) {
-  const navigation = useNavigation();
-  const { isAuthenticated, user } = useContext(AuthContext);
-  const [manga, setManga] = useState<Manga>();
+  const { user } = useContext(AuthContext);
+  const { isLoading, manga } = useManga(route.params);
   const [selectedTab, setSelectedTab] = useState<'about' | 'volumes'>('about');
 
-  useEffect(() => {
-    const prepare = async () => {
-      const manga = await Manga.findById(route.params.id)
-        .include({
-          genres: true,
-          themes: true,
-          volumes: {
-            chapters: {
-              'chapter-entry': isAuthenticated,
-            },
-            'volume-entry': isAuthenticated,
-          },
-          chapters: {
-            'chapter-entry': isAuthenticated,
-          },
-          staff: {
-            people: true,
-          },
-          franchises: {
-            destination: true,
-          },
-          'manga-entry': isAuthenticated,
-        });
 
-      setManga(manga);
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!manga) {
+  if (isLoading || !manga) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -88,7 +54,6 @@ export default function MangaScreen({ route }: Props) {
 
       <VolumesTab
         manga={manga}
-        onMangaChange={(manga) => setManga(manga)}
         style={{
           display: selectedTab === 'volumes' ? 'flex' : 'none',
           flex: 1,
@@ -98,7 +63,6 @@ export default function MangaScreen({ route }: Props) {
       {user && !manga['manga-entry']?.isAdd ? (
         <AddMangaButton
           manga={manga}
-          onMangaChange={(manga) => setManga(manga)}
         />
       ) : null}
     </SafeAreaView>
@@ -113,3 +77,86 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 });
+
+
+const useManga = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const manga = useAppSelector((state) => {
+    return Manga.redux.selectors.selectById(state, params.id, {
+      include: {
+        genres: true,
+        themes: true,
+        volumes: {
+          include: {
+            chapters: {
+              include: {
+                'chapter-entry': isAuthenticated,
+              },
+            },
+            'volume-entry': isAuthenticated,
+          },
+          sort: {
+            number: 'asc',
+          },
+        },
+        chapters: {
+          include: {
+            'chapter-entry': isAuthenticated,
+          },
+          sort: {
+            number: 'asc',
+          },
+        },
+        staff: {
+          include: {
+            people: true,
+          },
+        },
+        franchises: {
+          include: {
+            destination: true,
+          },
+        },
+        'manga-entry': isAuthenticated,
+      },
+    });
+  });
+
+  useEffect(() => {
+    const prepare = async () => {
+      const manga = await Manga.findById(params.id)
+        .include({
+          genres: true,
+          themes: true,
+          volumes: {
+            chapters: {
+              'chapter-entry': isAuthenticated,
+            },
+            'volume-entry': isAuthenticated,
+          },
+          chapters: {
+            'chapter-entry': isAuthenticated,
+          },
+          staff: {
+            people: true,
+          },
+          franchises: {
+            destination: true,
+          },
+          'manga-entry': isAuthenticated,
+        });
+
+      dispatch(Manga.redux.actions.setOne(manga));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, manga };
+};

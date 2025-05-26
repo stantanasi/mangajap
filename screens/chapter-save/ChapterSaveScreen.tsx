@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
@@ -11,6 +11,7 @@ import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { Chapter, Manga, Volume } from '../../models';
 import { IChapter } from '../../models/chapter.model';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 type Props = StaticScreenProps<{
   mangaId: string;
@@ -19,47 +20,18 @@ type Props = StaticScreenProps<{
 }>
 
 export default function ChapterSaveScreen({ route }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [chapter, setChapter] = useState<Chapter>();
+  const { isLoading, chapter, volumes } = useChapterSave(route.params);
   const [form, setForm] = useState<Partial<Object<IChapter>>>();
-  const [volumes, setVolumes] = useState<Volume[]>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const prepare = async () => {
-      let chapter = new Chapter();
+    if (!chapter || form) return
+    setForm(chapter.toObject());
+  }, [chapter]);
 
-      if ('mangaId' in route.params) {
-        chapter = new Chapter({
-          manga: new Manga({
-            id: route.params.mangaId,
-            volumes: await Manga.findById(route.params.mangaId).get('volumes'),
-          }),
-        });
-      } else {
-        chapter = await Chapter.findById(route.params.chapterId)
-          .include({
-            manga: {
-              volumes: true,
-            },
-            volume: true,
-          });
-      }
-
-      setChapter(chapter);
-      setForm(chapter.toObject());
-      setVolumes(chapter.manga?.volumes ?? []);
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!chapter || !form || !volumes) {
+  if (isLoading || !chapter || !form || !volumes) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -70,6 +42,22 @@ export default function ChapterSaveScreen({ route }: Props) {
       </SafeAreaView>
     );
   }
+
+  const save = async () => {
+    const prev = chapter.toJSON();
+
+    chapter.assign(form);
+
+    await chapter.save();
+
+    Chapter.redux.sync(dispatch, chapter, prev);
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -113,16 +101,7 @@ export default function ChapterSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            chapter.assign(form);
-
-            chapter.save()
-              .then(() => {
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}
@@ -241,3 +220,60 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
+
+
+const useChapterSave = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const chapter = (() => {
+    if ('mangaId' in params) {
+      return useMemo(() => new Chapter({
+        manga: new Manga({ id: params.mangaId }),
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
+      return Chapter.redux.selectors.selectById(state, params.chapterId, {
+        include: {
+          manga: true,
+          volume: true,
+        },
+      });
+    });
+  })();
+
+  const volumes = useAppSelector((state) => {
+    if (!chapter || !chapter.manga) return undefined;
+    return Manga.redux.selectors.selectRelation(state, chapter.manga.id, 'volumes')
+  });
+
+  useEffect(() => {
+    const prepare = async () => {
+      if ('mangaId' in params) {
+        const volumes = await Manga.findById(params.mangaId).get('volumes');
+
+        dispatch(Volume.redux.actions.setMany(volumes));
+        dispatch(Manga.redux.actions.relations.volumes.set(params.mangaId, volumes));
+      } else {
+        const chapter = await Chapter.findById(params.chapterId)
+          .include({
+            manga: {
+              volumes: true,
+            },
+            volume: true,
+          });
+
+        dispatch(Chapter.redux.actions.setOne(chapter));
+      }
+
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, chapter, volumes };
+};

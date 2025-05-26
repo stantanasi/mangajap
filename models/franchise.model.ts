@@ -1,4 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import Anime from './anime.model';
 import Change from './change.model';
 import Manga from './manga.model';
@@ -36,7 +38,25 @@ export const FranchiseSchema = new Schema<IFranchise>({
 });
 
 
-class Franchise extends model<IFranchise>(FranchiseSchema) { }
+class Franchise extends model<IFranchise>(FranchiseSchema) {
+
+  static redux = {
+    ...createReduxHelpers<IFranchise, typeof Franchise>(Franchise).register('franchises'),
+    sync: (dispatch: AppDispatch, franchise: Franchise) => {
+      dispatch(Franchise.redux.actions.saveOne(franchise));
+
+      if (franchise.destination) {
+        dispatch(Franchise.redux.actions.relations.destination.set(franchise.id, franchise.destination));
+      }
+
+      if (franchise.source && franchise.source instanceof Anime) {
+        dispatch(Anime.redux.actions.relations.franchises.add(franchise.source.id, franchise));
+      } else if (franchise.source && franchise.source instanceof Manga) {
+        dispatch(Manga.redux.actions.relations.franchises.add(franchise.source.id, franchise));
+      }
+    },
+  };
+}
 
 Franchise.register('franchises');
 

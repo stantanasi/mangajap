@@ -3,6 +3,7 @@ import { ActivityIndicator, FlatList, Modal, Pressable, View } from 'react-nativ
 import SearchBar from '../../../components/atoms/SearchBar';
 import PeopleCard from '../../../components/molecules/PeopleCard';
 import { People } from '../../../models';
+import { useAppDispatch, useAppSelector } from '../../../redux/store';
 
 type Props = {
   onSelect: (people: People) => void;
@@ -11,10 +12,16 @@ type Props = {
 }
 
 export default function SelectPeopleModal({ onSelect, onRequestClose, visible }: Props) {
-  const [peoples, setPeoples] = useState<People[]>();
+  const dispatch = useAppDispatch();
+  const [peopleIds, setPeopleIds] = useState<string[]>();
+
+  const peoples = useAppSelector((state) => {
+    if (!peopleIds) return [];
+    return People.redux.selectors.selectByIds(state, peopleIds);
+  });
 
   useEffect(() => {
-    setPeoples(undefined);
+    setPeopleIds(undefined);
   }, [visible]);
 
   return (
@@ -44,13 +51,16 @@ export default function SelectPeopleModal({ onSelect, onRequestClose, visible }:
         >
           <SearchBar
             onChangeText={() => {
-              setPeoples(undefined);
+              setPeopleIds(undefined);
             }}
             onSearch={(query) => {
-              setPeoples(undefined);
+              setPeopleIds(undefined);
 
               People.find({ query: query })
-                .then((peoples) => setPeoples(peoples))
+                .then((peoples) => {
+                  dispatch(People.redux.actions.setMany(peoples));
+                  setPeopleIds(peoples.map((people) => people.id));
+                })
                 .catch((err) => console.error(err));
             }}
             delay={500}

@@ -1,13 +1,12 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../models';
+import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 
 type Props = PressableProps & {
   chapter: Chapter;
-  onChapterChange?: (chapter: Chapter) => void;
   onReadChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -16,44 +15,35 @@ type Props = PressableProps & {
 
 export default function ChapterCard({
   chapter,
-  onChapterChange = () => { },
   onReadChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
   style,
   ...props
 }: Props) {
-  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
 
   const updateChapterEntry = async (add: boolean) => {
     if (!user) return
 
-    const chapterEntry = await (async () => {
-      if (add && !chapter['chapter-entry']) {
-        const chapterEntry = new ChapterEntry({
-          user: new User({ id: user.id }),
-          chapter: chapter,
-        });
-        await chapterEntry.save();
-
-        return chapterEntry;
-      } else if (!add && chapter['chapter-entry']) {
-        await chapter['chapter-entry'].delete();
-
-        return null;
-      }
-
-      return chapter['chapter-entry'];
-    })()
-      .catch((err) => {
-        console.error(err);
-        return chapter['chapter-entry'];
+    if (add && !chapter['chapter-entry']) {
+      const chapterEntry = new ChapterEntry({
+        user: new User({ id: user.id }),
+        chapter: chapter,
       });
+      await chapterEntry.save();
 
-    onChapterChange(chapter.copy({
-      'chapter-entry': chapterEntry,
-    }));
+      ChapterEntry.redux.sync(dispatch, chapterEntry, {
+        chapter: chapter,
+      });
+    } else if (!add && chapter['chapter-entry']) {
+      await chapter['chapter-entry'].delete();
+
+      ChapterEntry.redux.sync(dispatch, chapter['chapter-entry'], {
+        chapter: chapter,
+      });
+    }
   };
 
   return (

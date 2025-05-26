@@ -1,4 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import Change from './change.model';
 import Staff from './staff.model';
 
@@ -41,7 +43,15 @@ export const PeopleSchema = new Schema<IPeople>({
 });
 
 
-class People extends model<IPeople>(PeopleSchema) { }
+class People extends model<IPeople>(PeopleSchema) {
+
+  static redux = {
+    ...createReduxHelpers<IPeople, typeof People>(People).register('peoples'),
+    sync: (dispatch: AppDispatch, people: People) => {
+      dispatch(People.redux.actions.saveOne(people));
+    },
+  };
+}
 
 People.register('peoples');
 

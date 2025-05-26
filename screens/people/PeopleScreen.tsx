@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { Anime, People } from '../../models';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 import Header from './components/Header';
 
 type Props = StaticScreenProps<{
@@ -13,30 +14,9 @@ type Props = StaticScreenProps<{
 
 export default function PeopleScreen({ route }: Props) {
   const navigation = useNavigation();
-  const [people, setPeople] = useState<People>();
+  const { isLoading, people } = usePeople(route.params);
 
-  useEffect(() => {
-    const prepare = async () => {
-      const people = await People.findById(route.params.id)
-        .include({
-          staff: {
-            anime: true,
-            manga: true,
-          },
-        });
-
-      setPeople(people);
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!people) {
+  if (isLoading || !people) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -99,3 +79,43 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+
+const usePeople = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const people = useAppSelector((state) => {
+    return People.redux.selectors.selectById(state, params.id, {
+      include: {
+        staff: {
+          include: {
+            anime: true,
+            manga: true,
+          },
+        },
+      },
+    });
+  });
+
+  useEffect(() => {
+    const prepare = async () => {
+      const people = await People.findById(params.id)
+        .include({
+          staff: {
+            anime: true,
+            manga: true,
+          },
+        });
+
+      dispatch(People.redux.actions.setOne(people));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, people };
+};

@@ -3,6 +3,7 @@ import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebas
 import React, { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import { auth } from '../firebaseConfig';
 import { User } from '../models';
+import { useAppDispatch } from '../redux/store';
 
 interface IAuthContext {
   isReady: boolean;
@@ -26,6 +27,7 @@ export const AuthContext = createContext<IAuthContext>({
 });
 
 export default function AuthProvider({ children }: PropsWithChildren) {
+  const dispatch = useAppDispatch();
   const [isReady, setIsReady] = useState(false);
   const [user, setUser] = useState<IAuthContext['user']>(null);
 
@@ -70,6 +72,8 @@ export default function AuthProvider({ children }: PropsWithChildren) {
           await user.save();
 
           await signInWithEmailAndPassword(auth, email, password);
+
+          User.redux.sync(dispatch, user);
         },
 
         login: async (email, password) => {

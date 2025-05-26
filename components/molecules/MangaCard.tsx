@@ -4,13 +4,13 @@ import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, Vi
 import { AuthContext } from '../../contexts/AuthContext';
 import { Franchise, Manga, MangaEntry, User } from '../../models';
 import { FranchiseRole } from '../../models/franchise.model';
+import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 
 type Variants = 'default' | 'horizontal';
 
 type Props = PressableProps & {
   manga: Manga;
-  onMangaChange?: (manga: Manga) => void;
   franchise?: Franchise;
   showCheckbox?: boolean;
   variant?: Variants;
@@ -20,7 +20,6 @@ type Props = PressableProps & {
 
 export default function MangaCard({
   manga,
-  onMangaChange = () => { },
   franchise,
   showCheckbox = true,
   variant = 'default',
@@ -28,8 +27,36 @@ export default function MangaCard({
   style,
   ...props
 }: Props) {
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const updateMangaEntry = async (add: boolean) => {
+    if (!user) return
+
+    if (manga['manga-entry']) {
+      manga['manga-entry'].isAdd = add;
+      await manga['manga-entry'].save();
+
+      MangaEntry.redux.sync(dispatch, manga['manga-entry'], {
+        user: new User({ id: user.id }),
+        manga: manga,
+      });
+    } else {
+      const mangaEntry = new MangaEntry({
+        isAdd: add,
+
+        user: new User({ id: user.id }),
+        manga: manga,
+      });
+      await mangaEntry.save();
+
+      MangaEntry.redux.sync(dispatch, mangaEntry, {
+        user: new User({ id: user.id }),
+        manga: manga,
+      });
+    }
+  };
 
   return (
     <Pressable
@@ -108,32 +135,7 @@ export default function MangaCard({
           onValueChange={(value) => {
             setIsUpdating(true);
 
-            const updateMangaEntry = async () => {
-              if (manga['manga-entry']) {
-                const mangaEntry = manga['manga-entry'].copy({
-                  isAdd: value,
-                });
-                await mangaEntry.save();
-
-                onMangaChange(manga.copy({
-                  'manga-entry': mangaEntry,
-                }));
-              } else {
-                const mangaEntry = new MangaEntry({
-                  isAdd: value,
-
-                  user: new User({ id: user.id }),
-                  manga: manga,
-                });
-                await mangaEntry.save();
-
-                onMangaChange(manga.copy({
-                  'manga-entry': mangaEntry,
-                }));
-              }
-            };
-
-            updateMangaEntry()
+            updateMangaEntry(value)
               .catch((err) => console.error(err))
               .finally(() => setIsUpdating(false));
           }}

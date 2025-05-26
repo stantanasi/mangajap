@@ -1,4 +1,5 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
 import Anime from './anime.model';
 import Manga from './manga.model';
 import User from './user.model';
@@ -36,7 +37,10 @@ export const ReviewSchema = new Schema<IReview>({
 });
 
 
-class Review extends model<IReview>(ReviewSchema) { }
+class Review extends model<IReview>(ReviewSchema) {
+
+  static redux = createReduxHelpers<IReview, typeof Review>(Review).register('reviews');
+}
 
 Review.register('reviews');
 

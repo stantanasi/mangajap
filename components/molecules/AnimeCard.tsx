@@ -4,13 +4,13 @@ import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, Vi
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, AnimeEntry, Franchise, User } from '../../models';
 import { FranchiseRole } from '../../models/franchise.model';
+import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 
 type Variants = 'default' | 'horizontal';
 
 type Props = PressableProps & {
   anime: Anime;
-  onAnimeChange?: (anime: Anime) => void;
   franchise?: Franchise;
   showCheckbox?: boolean;
   variant?: Variants;
@@ -20,7 +20,6 @@ type Props = PressableProps & {
 
 export default function AnimeCard({
   anime,
-  onAnimeChange = () => { },
   franchise,
   showCheckbox = true,
   variant = 'default',
@@ -28,8 +27,36 @@ export default function AnimeCard({
   style,
   ...props
 }: Props) {
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const updateAnimeEntry = async (add: boolean) => {
+    if (!user) return
+
+    if (anime['anime-entry']) {
+      anime['anime-entry'].isAdd = add;
+      await anime['anime-entry'].save();
+
+      AnimeEntry.redux.sync(dispatch, anime['anime-entry'], {
+        user: new User({ id: user.id }),
+        anime: anime,
+      });
+    } else {
+      const animeEntry = new AnimeEntry({
+        isAdd: add,
+
+        user: new User({ id: user.id }),
+        anime: anime,
+      });
+      await animeEntry.save();
+
+      AnimeEntry.redux.sync(dispatch, animeEntry, {
+        user: new User({ id: user.id }),
+        anime: anime,
+      });
+    }
+  };
 
   return (
     <Pressable
@@ -108,32 +135,7 @@ export default function AnimeCard({
           onValueChange={(value) => {
             setIsUpdating(true);
 
-            const updateAnimeEntry = async () => {
-              if (anime['anime-entry']) {
-                const animeEntry = anime['anime-entry'].copy({
-                  isAdd: value,
-                });
-                await animeEntry.save();
-
-                onAnimeChange(anime.copy({
-                  'anime-entry': animeEntry,
-                }));
-              } else {
-                const animeEntry = new AnimeEntry({
-                  isAdd: value,
-
-                  user: new User({ id: user.id }),
-                  anime: anime,
-                });
-                await animeEntry.save();
-
-                onAnimeChange(anime.copy({
-                  'anime-entry': animeEntry,
-                }));
-              }
-            };
-
-            updateAnimeEntry()
+            updateAnimeEntry(value)
               .catch((err) => console.error(err))
               .finally(() => setIsUpdating(false));
           }}

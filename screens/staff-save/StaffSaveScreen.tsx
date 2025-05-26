@@ -1,13 +1,14 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputLabel from '../../components/atoms/InputLabel';
 import SelectInput from '../../components/atoms/SelectInput';
 import { Anime, Manga, Staff } from '../../models';
 import { IStaff, StaffRole } from '../../models/staff.model';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 import SelectPeopleModal from './modals/SelectPeopleModal';
 
 type Props = StaticScreenProps<{
@@ -19,42 +20,19 @@ type Props = StaticScreenProps<{
 }>
 
 export default function StaffSaveScreen({ route }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [staff, setStaff] = useState<Staff>();
+  const { isLoading, staff } = useStaffSave(route.params);
   const [form, setForm] = useState<Partial<Object<IStaff>>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const prepare = async () => {
-      let staff = new Staff();
+    if (!staff || form) return
+    setForm(staff.toObject());
+  }, [staff]);
 
-      if ('animeId' in route.params) {
-        staff = new Staff({
-          anime: new Anime({ id: route.params.animeId }),
-        });
-      } else if ('mangaId' in route.params) {
-        staff = new Staff({
-          manga: new Manga({ id: route.params.mangaId }),
-        });
-      } else {
-        staff = await Staff.findById(route.params.staffId)
-          .include({ people: true });
-      }
-
-      setStaff(staff);
-      setForm(staff.toObject());
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!staff || !form) {
+  if (isLoading || !staff || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -65,6 +43,22 @@ export default function StaffSaveScreen({ route }: Props) {
       </SafeAreaView>
     );
   }
+
+  const save = async () => {
+    const prev = staff.toJSON();
+
+    staff.assign(form);
+
+    await staff.save();
+
+    Staff.redux.sync(dispatch, staff, prev);
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -108,16 +102,7 @@ export default function StaffSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            staff.assign(form);
-
-            staff.save()
-              .then(() => {
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}
@@ -231,3 +216,47 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
+
+
+const useStaffSave = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const staff = (() => {
+    if ('animeId' in params) {
+      return useMemo(() => new Staff({
+        anime: new Anime({ id: params.animeId }),
+      }), [params]);
+    } else if ('mangaId' in params) {
+      return useMemo(() => new Staff({
+        manga: new Manga({ id: params.mangaId }),
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
+      return Staff.redux.selectors.selectById(state, params.staffId, {
+        include: {
+          people: true,
+        },
+      });
+    });
+  })();
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (!('staffId' in params)) return
+
+      const staff = await Staff.findById(params.staffId)
+        .include({ people: true });
+
+      dispatch(Staff.redux.actions.setOne(staff));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, staff };
+};

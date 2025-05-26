@@ -1,13 +1,12 @@
-import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../models';
+import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 
 type Props = PressableProps & {
   episode: Episode;
-  onEpisodeChange?: (episode: Episode) => void;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -16,44 +15,35 @@ type Props = PressableProps & {
 
 export default function EpisodeCard({
   episode,
-  onEpisodeChange = () => { },
   onWatchedChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
   style,
   ...props
 }: Props) {
-  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
 
   const updateEpisodeEntry = async (add: boolean) => {
     if (!user) return
 
-    const episodeEntry = await (async () => {
-      if (add && !episode['episode-entry']) {
-        const episodeEntry = new EpisodeEntry({
-          user: new User({ id: user.id }),
-          episode: episode,
-        });
-        await episodeEntry.save();
-
-        return episodeEntry;
-      } else if (!add && episode['episode-entry']) {
-        await episode['episode-entry'].delete();
-
-        return null;
-      }
-
-      return episode['episode-entry'];
-    })()
-      .catch((err) => {
-        console.error(err);
-        return episode['episode-entry'];
+    if (add && !episode['episode-entry']) {
+      const episodeEntry = new EpisodeEntry({
+        user: new User({ id: user.id }),
+        episode: episode,
       });
+      await episodeEntry.save();
 
-    onEpisodeChange(episode.copy({
-      'episode-entry': episodeEntry,
-    }));
+      EpisodeEntry.redux.sync(dispatch, episodeEntry, {
+        episode: episode,
+      });
+    } else if (!add && episode['episode-entry']) {
+      await episode['episode-entry'].delete();
+
+      EpisodeEntry.redux.sync(dispatch, episode['episode-entry'], {
+        episode: episode,
+      });
+    }
   };
 
   return (

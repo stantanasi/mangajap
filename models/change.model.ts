@@ -1,5 +1,6 @@
 import { Theme } from '@react-navigation/native';
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
 import Anime from './anime.model';
 import Chapter from './chapter.model';
 import Episode from './episode.model';
@@ -48,7 +49,10 @@ export const ChangeSchema = new Schema<IChange>({
 });
 
 
-class Change extends model<IChange>(ChangeSchema) { }
+class Change extends model<IChange>(ChangeSchema) {
+
+  static redux = createReduxHelpers<IChange, typeof Change>(Change).register('changes');
+}
 
 Change.register('changes');
 

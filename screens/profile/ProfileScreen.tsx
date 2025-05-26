@@ -7,6 +7,7 @@ import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Follow, User } from '../../models';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 import Header from './components/Header';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -19,53 +20,11 @@ export default function ProfileScreen({ route }: Props) {
   const navigation = useNavigation();
   const { user: authenticatedUser } = useContext(AuthContext);
   const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
-  const [user, setUser] = useState<User>();
-  const [followingUser, setFollowingUser] = useState<Follow | null>();
-  const [followedByUser, setFollowedByUser] = useState<Follow | null>();
+  const { isLoading, user, followingUser, followedByUser } = useProfile(route.params);
 
-  const id = route.params?.id ?? authenticatedUser?.id;
+  const userId = route.params?.id ?? authenticatedUser?.id;
 
-  useEffect(() => {
-    if (!id) return
-
-    const prepare = async () => {
-      const [user, isFollowingUser, isFollowedByUser] = await Promise.all([
-        User.findById(id)
-          .include({
-            'anime-library': { anime: true },
-            'manga-library': { manga: true },
-            'anime-favorites': { anime: true },
-            'manga-favorites': { manga: true },
-          }),
-
-        ...(authenticatedUser && id !== authenticatedUser.id
-          ? [
-            Follow.find({
-              'follower': authenticatedUser.id,
-              'followed': id,
-            } as any).then((follows) => follows[0] ?? null),
-            Follow.find({
-              'follower': id,
-              'followed': authenticatedUser.id,
-            } as any).then((follows) => follows[0] ?? null),
-          ]
-          : [null, null]),
-      ]);
-
-      setUser(user);
-      setFollowingUser(isFollowingUser);
-      setFollowedByUser(isFollowedByUser);
-    }
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [id]);
-
-  if (!id) {
+  if (!userId) {
     if (authScreen === 'login') {
       return (
         <LoginScreen
@@ -83,7 +42,7 @@ export default function ProfileScreen({ route }: Props) {
     }
   }
 
-  if (!user || followingUser === undefined || followedByUser === undefined) {
+  if (isLoading || !user || followingUser === undefined || followedByUser === undefined) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -107,7 +66,6 @@ export default function ProfileScreen({ route }: Props) {
           user={user}
           followingUser={followingUser}
           followedByUser={followedByUser}
-          onFollowingChange={(follow) => setFollowingUser(follow)}
         />
 
         <Text
@@ -415,3 +373,133 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
   },
 });
+
+
+const useProfile = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const { user: authenticatedUser } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const userId = params?.id ?? authenticatedUser?.id;
+
+  const user = useAppSelector((state) => {
+    if (!userId) {
+      return undefined;
+    }
+
+    return User.redux.selectors.selectById(state, userId, {
+      include: {
+        'anime-library': {
+          include: {
+            anime: true,
+          },
+          sort: {
+            updatedAt: 'desc',
+          },
+          limit: 20,
+        },
+        'manga-library': {
+          include: {
+            manga: true,
+          },
+          sort: {
+            updatedAt: 'desc',
+          },
+          limit: 20,
+        },
+        'anime-favorites': {
+          include: {
+            anime: true,
+          },
+          sort: {
+            updatedAt: 'desc',
+          },
+          limit: 20,
+        },
+        'manga-favorites': {
+          include: {
+            manga: true,
+          },
+          sort: {
+            updatedAt: 'desc',
+          },
+          limit: 20,
+        },
+      }
+    });
+  });
+
+  const followingUser = useAppSelector((state) => {
+    if (!authenticatedUser || authenticatedUser.id === userId) {
+      return null;
+    }
+
+    return Follow.redux.selectors.select(state, {
+      filter: {
+        follower: new User({ id: authenticatedUser.id }),
+        followed: new User({ id: userId }),
+      },
+    })?.[0] ?? null;
+  });
+
+  const followedByUser = useAppSelector((state) => {
+    if (!authenticatedUser || authenticatedUser.id === userId) {
+      return null;
+    }
+
+    return Follow.redux.selectors.select(state, {
+      filter: {
+        follower: new User({ id: userId }),
+        followed: new User({ id: authenticatedUser.id }),
+      },
+    })?.[0] ?? null;
+  });
+
+  useEffect(() => {
+    if (!userId) return
+
+    const prepare = async () => {
+      const [user, followingUser, followedByUser] = await Promise.all([
+        User.findById(userId)
+          .include({
+            'anime-library': { anime: true },
+            'manga-library': { manga: true },
+            'anime-favorites': { anime: true },
+            'manga-favorites': { manga: true },
+          }),
+
+        ...(authenticatedUser && userId !== authenticatedUser.id
+          ? [
+            Follow.find({
+              follower: authenticatedUser.id,
+              followed: userId,
+            } as any).then((follows) => follows[0] ?? null),
+            Follow.find({
+              follower: userId,
+              followed: authenticatedUser.id,
+            } as any).then((follows) => follows[0] ?? null),
+          ]
+          : [null, null]),
+      ]);
+
+      dispatch(User.redux.actions.setOne(user));
+      if (followingUser && authenticatedUser) {
+        dispatch(Follow.redux.actions.setOne(followingUser));
+        dispatch(Follow.redux.actions.relations.follower.set(followingUser.id, new User({ id: authenticatedUser.id })));
+        dispatch(Follow.redux.actions.relations.followed.set(followingUser.id, new User({ id: userId })));
+      }
+      if (followedByUser && authenticatedUser) {
+        dispatch(Follow.redux.actions.setOne(followedByUser));
+        dispatch(Follow.redux.actions.relations.follower.set(followedByUser.id, new User({ id: userId })));
+        dispatch(Follow.redux.actions.relations.followed.set(followedByUser.id, new User({ id: authenticatedUser.id })));
+      }
+    }
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [userId]);
+
+  return { isLoading, user, followingUser, followedByUser };
+};

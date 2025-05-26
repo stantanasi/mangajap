@@ -3,13 +3,14 @@ import React, { useContext, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Manga, MangaEntry, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   manga: Manga;
-  onMangaChange: (manga: Manga) => void;
 }
 
-export default function AddMangaButton({ manga, onMangaChange }: Props) {
+export default function AddMangaButton({ manga }: Props) {
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -17,14 +18,13 @@ export default function AddMangaButton({ manga, onMangaChange }: Props) {
 
   const addMangaEntry = async () => {
     if (manga['manga-entry']) {
-      const mangaEntry = manga['manga-entry'].copy({
-        isAdd: true,
-      });
-      await mangaEntry.save();
+      manga['manga-entry'].isAdd = true;
+      await manga['manga-entry'].save();
 
-      onMangaChange(manga.copy({
-        'manga-entry': mangaEntry,
-      }));
+      MangaEntry.redux.sync(dispatch, manga['manga-entry'], {
+        user: new User({ id: user.id }),
+        manga: manga,
+      });
     } else {
       const mangaEntry = new MangaEntry({
         isAdd: true,
@@ -34,9 +34,10 @@ export default function AddMangaButton({ manga, onMangaChange }: Props) {
       });
       await mangaEntry.save();
 
-      onMangaChange(manga.copy({
-        'manga-entry': mangaEntry,
-      }));
+      MangaEntry.redux.sync(dispatch, mangaEntry, {
+        user: new User({ id: user.id }),
+        manga: manga,
+      });
     }
   };
 

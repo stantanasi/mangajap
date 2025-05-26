@@ -1,15 +1,14 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
-import { EpisodeEntry, Season, User } from '../../models';
+import { Episode, EpisodeEntry, Season, User } from '../../models';
+import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 import ProgressBar from '../atoms/ProgressBar';
 
 type Props = PressableProps & {
   season: Season;
-  onSeasonChange?: (season: Season) => void;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -21,7 +20,6 @@ type Props = PressableProps & {
 
 export default function SeasonCard({
   season,
-  onSeasonChange = () => { },
   onWatchedChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
@@ -31,7 +29,7 @@ export default function SeasonCard({
   style,
   ...props
 }: Props) {
-  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
 
   const episodesWatchedCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
@@ -44,40 +42,33 @@ export default function SeasonCard({
   const updateSeasonEpisodesEntries = async (add: boolean) => {
     if (!user) return
 
-    const episodes = await Promise.all(season.episodes?.map(async (episode) => {
+    const updateEpisodeEntry = async (episode: Episode) => {
       if (add && !episode['episode-entry']) {
-        onEpisodeUpdatingChange(episode.id, true);
-
         const episodeEntry = new EpisodeEntry({
           user: new User({ id: user.id }),
           episode: episode,
         });
+        await episodeEntry.save();
 
-        return episodeEntry.save()
-          .then((entry) => episode.copy({ 'episode-entry': entry }))
-          .catch((err) => {
-            console.error(err);
-            return episode;
-          })
-          .finally(() => onEpisodeUpdatingChange(episode.id, false));
+        EpisodeEntry.redux.sync(dispatch, episodeEntry, {
+          episode: episode,
+        });
       } else if (!add && episode['episode-entry']) {
-        onEpisodeUpdatingChange(episode.id, true);
+        await episode['episode-entry'].delete();
 
-        return episode['episode-entry'].delete()
-          .then(() => episode.copy({ 'episode-entry': null }))
-          .catch((err) => {
-            console.error(err);
-            return episode;
-          })
-          .finally(() => onEpisodeUpdatingChange(episode.id, false));
+        EpisodeEntry.redux.sync(dispatch, episode['episode-entry'], {
+          episode: episode,
+        });
       }
+    };
 
-      return episode;
+    await Promise.all(season.episodes?.map(async (episode) => {
+      onEpisodeUpdatingChange(episode.id, true);
+
+      await updateEpisodeEntry(episode)
+        .catch((err) => console.error(err))
+        .finally(() => onEpisodeUpdatingChange(episode.id, false));
     }) ?? []);
-
-    onSeasonChange(season.copy({
-      episodes: episodes,
-    }));
   };
 
   return (

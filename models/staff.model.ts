@@ -1,4 +1,6 @@
-import { model, Schema } from '@stantanasi/jsonapi-client';
+import { Json, model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import Anime from './anime.model';
 import Change from './change.model';
 import Manga from './manga.model';
@@ -40,7 +42,33 @@ export const StaffSchema = new Schema<IStaff>({
 });
 
 
-class Staff extends model<IStaff>(StaffSchema) { }
+class Staff extends model<IStaff>(StaffSchema) {
+
+  static redux = {
+    ...createReduxHelpers<IStaff, typeof Staff>(Staff).register('staff'),
+    sync: (dispatch: AppDispatch, staff: Staff, prev: Json<IStaff>) => {
+      dispatch(Staff.redux.actions.saveOne(staff));
+
+      if (staff.people) {
+        dispatch(Staff.redux.actions.relations.people.set(staff.id, staff.people));
+      }
+
+      if (staff.anime && staff.anime instanceof Anime) {
+        dispatch(Anime.redux.actions.relations.staff.add(staff.anime.id, staff));
+      } else if (staff.manga && staff.manga instanceof Manga) {
+        dispatch(Manga.redux.actions.relations.staff.add(staff.manga.id, staff));
+      }
+
+      if (staff.people) {
+        dispatch(People.redux.actions.relations.staff.add(staff.people.id, staff));
+
+        if (prev.people && prev.people.id !== staff.people.id) {
+          dispatch(People.redux.actions.relations.staff.remove(prev.people.id, staff));
+        }
+      }
+    },
+  };
+}
 
 Staff.register('staff');
 

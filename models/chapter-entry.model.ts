@@ -1,4 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import Chapter from './chapter.model';
 import User from './user.model';
 
@@ -40,7 +42,24 @@ export const ChapterEntrySchema = new Schema<IChapterEntry>({
 });
 
 
-class ChapterEntry extends model<IChapterEntry>(ChapterEntrySchema) { }
+class ChapterEntry extends model<IChapterEntry>(ChapterEntrySchema) {
+
+  static redux = {
+    ...createReduxHelpers<IChapterEntry, typeof ChapterEntry>(ChapterEntry).register('chapter-entries'),
+    sync: (dispatch: AppDispatch, chapterEntry: ChapterEntry, { chapter }: {
+      chapter: Chapter;
+    }) => {
+      if (chapterEntry.isDeleted) {
+        dispatch(ChapterEntry.redux.actions.removeOne(chapterEntry));
+        dispatch(Chapter.redux.actions.relations['chapter-entry'].remove(chapter.id, chapterEntry));
+        return
+      }
+
+      dispatch(ChapterEntry.redux.actions.saveOne(chapterEntry));
+      dispatch(Chapter.redux.actions.relations['chapter-entry'].set(chapter.id, chapterEntry));
+    },
+  };
+}
 
 ChapterEntry.register('chapter-entries');
 

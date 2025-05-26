@@ -5,6 +5,7 @@ import TabBar from '../../../components/atoms/TabBar';
 import AnimeCard from '../../../components/molecules/AnimeCard';
 import MangaCard from '../../../components/molecules/MangaCard';
 import { Anime, Manga } from '../../../models';
+import { useAppDispatch, useAppSelector } from '../../../redux/store';
 
 type Props = {
   onSelect: (destination: Anime | Manga) => void;
@@ -13,13 +14,23 @@ type Props = {
 }
 
 export default function SelectDestinationModal({ onSelect, onRequestClose, visible }: Props) {
-  const [animes, setAnimes] = useState<Anime[]>();
-  const [mangas, setMangas] = useState<Manga[]>();
+  const dispatch = useAppDispatch();
+  const [animeIds, setAnimeIds] = useState<string[]>();
+  const [mangaIds, setMangaIds] = useState<string[]>();
   const [selectedTab, setSelectedTab] = useState<'anime' | 'manga'>('anime');
 
+  const animes = useAppSelector((state) => {
+    if (!animeIds) return [];
+    return Anime.redux.selectors.selectByIds(state, animeIds);
+  });
+  const mangas = useAppSelector((state) => {
+    if (!mangaIds) return [];
+    return Manga.redux.selectors.selectByIds(state, mangaIds);
+  });
+
   useEffect(() => {
-    setAnimes(undefined);
-    setMangas(undefined);
+    setAnimeIds(undefined);
+    setMangaIds(undefined);
   }, [visible]);
 
   return (
@@ -49,20 +60,23 @@ export default function SelectDestinationModal({ onSelect, onRequestClose, visib
         >
           <SearchBar
             onChangeText={() => {
-              setAnimes(undefined);
-              setMangas(undefined);
+              setAnimeIds(undefined);
+              setMangaIds(undefined);
             }}
             onSearch={(query) => {
-              setAnimes(undefined);
-              setMangas(undefined);
+              setAnimeIds(undefined);
+              setMangaIds(undefined);
 
               Promise.all([
                 Anime.find({ query: query }),
                 Manga.find({ query: query }),
               ])
                 .then(([animes, mangas]) => {
-                  setAnimes(animes);
-                  setMangas(mangas);
+                  dispatch(Anime.redux.actions.setMany(animes));
+                  dispatch(Manga.redux.actions.setMany(mangas));
+
+                  setAnimeIds(animes.map((anime) => anime.id));
+                  setMangaIds(mangas.map((manga) => manga.id));
                 })
                 .catch((err) => console.error(err));
             }}

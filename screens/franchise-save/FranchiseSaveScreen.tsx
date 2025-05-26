@@ -1,13 +1,14 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputLabel from '../../components/atoms/InputLabel';
 import SelectInput from '../../components/atoms/SelectInput';
 import { Anime, Franchise, Manga } from '../../models';
 import { FranchiseRole, IFranchise } from '../../models/franchise.model';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 import SelectDestinationModal from './modals/SelectDestinationModal';
 
 type Props = StaticScreenProps<{
@@ -19,42 +20,19 @@ type Props = StaticScreenProps<{
 }>
 
 export default function FranchiseSaveScreen({ route }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [franchise, setFranchise] = useState<Franchise>();
+  const { isLoading, franchise } = useFranchiseSave(route.params);
   const [form, setForm] = useState<Partial<Object<IFranchise>>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const prepare = async () => {
-      let franchise = new Franchise();
+    if (!franchise || form) return
+    setForm(franchise.toObject());
+  }, [franchise]);
 
-      if ('animeId' in route.params) {
-        franchise = new Franchise({
-          source: new Anime({ id: route.params.animeId }),
-        });
-      } else if ('mangaId' in route.params) {
-        franchise = new Franchise({
-          source: new Manga({ id: route.params.mangaId }),
-        });
-      } else {
-        franchise = await Franchise.findById(route.params.franchiseId)
-          .include({ destination: true });
-      }
-
-      setFranchise(franchise);
-      setForm(franchise.toObject());
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!franchise || !form) {
+  if (isLoading || !franchise || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -65,6 +43,20 @@ export default function FranchiseSaveScreen({ route }: Props) {
       </SafeAreaView>
     );
   }
+
+  const save = async () => {
+    franchise.assign(form);
+
+    await franchise.save();
+
+    Franchise.redux.sync(dispatch, franchise);
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -108,16 +100,7 @@ export default function FranchiseSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            franchise.assign(form);
-
-            franchise.save()
-              .then(() => {
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}
@@ -231,3 +214,47 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
+
+
+const useFranchiseSave = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const franchise = (() => {
+    if ('animeId' in params) {
+      return useMemo(() => new Franchise({
+        source: new Anime({ id: params.animeId }),
+      }), [params]);
+    } else if ('mangaId' in params) {
+      return useMemo(() => new Franchise({
+        source: new Manga({ id: params.mangaId }),
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
+      return Franchise.redux.selectors.selectById(state, params.franchiseId, {
+        include: {
+          destination: true,
+        },
+      });
+    });
+  })();
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (!('franchiseId' in params)) return
+
+      const franchise = await Franchise.findById(params.franchiseId)
+        .include({ destination: true });
+
+      dispatch(Franchise.redux.actions.setOne(franchise));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, franchise };
+};

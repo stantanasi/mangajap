@@ -1,4 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import Change from './change.model';
 import Chapter from './chapter.model';
 import Franchise from './franchise.model';
@@ -120,7 +122,15 @@ export const MangaSchema = new Schema<IManga>({
 });
 
 
-class Manga extends model<IManga>(MangaSchema) { }
+class Manga extends model<IManga>(MangaSchema) {
+
+  static redux = {
+    ...createReduxHelpers<IManga, typeof Manga>(Manga).register('manga'),
+    sync: (dispatch: AppDispatch, manga: Manga) => {
+      dispatch(Manga.redux.actions.saveOne(manga));
+    },
+  };
+}
 
 Manga.register('manga');
 

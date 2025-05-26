@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
@@ -9,6 +9,7 @@ import NumberInput from '../../components/atoms/NumberInput';
 import TextInput from '../../components/atoms/TextInput';
 import { Anime, Season } from '../../models';
 import { ISeason } from '../../models/season.model';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 type Props = StaticScreenProps<{
   animeId: string;
@@ -17,36 +18,18 @@ type Props = StaticScreenProps<{
 }>
 
 export default function SeasonSaveScreen({ route }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [season, setSeason] = useState<Season>();
+  const { isLoading, season } = useSeasonSave(route.params);
   const [form, setForm] = useState<Partial<Object<ISeason>>>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const prepare = async () => {
-      let season = new Season();
+    if (!season || form) return
+    setForm(season.toObject());
+  }, [season]);
 
-      if ('animeId' in route.params) {
-        season = new Season({
-          anime: new Anime({ id: route.params.animeId }),
-        });
-      } else {
-        season = await Season.findById(route.params.seasonId);
-      }
-
-      setSeason(season);
-      setForm(season.toObject());
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!season || !form) {
+  if (isLoading || !season || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -57,6 +40,20 @@ export default function SeasonSaveScreen({ route }: Props) {
       </SafeAreaView>
     );
   }
+
+  const save = async () => {
+    season.assign(form);
+
+    await season.save();
+
+    Season.redux.sync(dispatch, season);
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -100,16 +97,7 @@ export default function SeasonSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            season.assign(form);
-
-            season.save()
-              .then(() => {
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}
@@ -204,3 +192,39 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
+
+
+const useSeasonSave = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const season = (() => {
+    if ('animeId' in params) {
+      return useMemo(() => new Season({
+        anime: new Anime({ id: params.animeId }),
+        episodes: [],
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
+      return Season.redux.selectors.selectById(state, params.seasonId);
+    });
+  })();
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (!('seasonId' in params)) return
+
+      const season = await Season.findById(params.seasonId);
+
+      dispatch(Season.redux.actions.setOne(season));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, season };
+};

@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { Anime, AnimeEntry, MangaEntry, User } from '../../models';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 type Props = StaticScreenProps<{
   type: 'anime-library' | 'manga-library' | 'anime-favorites' | 'manga-favorites';
@@ -14,52 +15,9 @@ type Props = StaticScreenProps<{
 
 export default function LibraryScreen({ route }: Props) {
   const navigation = useNavigation();
-  const [library, setLibrary] = useState<(AnimeEntry | MangaEntry)[]>();
+  const { isLoading, library } = useLibrary(route.params);
 
-  useEffect(() => {
-    const prepare = async () => {
-      if (route.params.type === 'anime-library') {
-        const animeLibrary = await User.findById(route.params.userId).get('anime-library')
-          .include({ anime: true })
-          .sort({ updatedAt: 'desc' })
-          .limit(500);
-
-        setLibrary(animeLibrary);
-      } else if (route.params.type === 'anime-favorites') {
-        const animeFavorites = await User.findById(route.params.userId).get('anime-favorites')
-          .include({ anime: true })
-          .sort({ updatedAt: 'desc' })
-          .limit(500);
-
-        setLibrary(animeFavorites);
-      } else if (route.params.type === 'manga-library') {
-        const mangaLibrary = await User.findById(route.params.userId).get('manga-library')
-          .include({ manga: true })
-          .sort({ updatedAt: 'desc' })
-          .limit(500);
-
-        setLibrary(mangaLibrary);
-      } else if (route.params.type === 'manga-favorites') {
-        const mangaFavorites = await User.findById(route.params.userId).get('manga-favorites')
-          .include({ manga: true })
-          .sort({ updatedAt: 'desc' })
-          .limit(500);
-
-        setLibrary(mangaFavorites);
-      } else {
-        throw Error('Library type not supported');
-      }
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!library) {
+  if (isLoading || !library) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -159,3 +117,96 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+
+const useLibrary = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const library = useAppSelector((state) => {
+    if (params.type === 'anime-library') {
+      return User.redux.selectors.selectRelation(state, params.userId, 'anime-library', {
+        include: {
+          anime: true,
+        },
+        sort: {
+          updatedAt: 'desc',
+        },
+      });
+    } else if (params.type === 'anime-favorites') {
+      return User.redux.selectors.selectRelation(state, params.userId, 'anime-favorites', {
+        include: {
+          anime: true,
+        },
+        sort: {
+          updatedAt: 'desc',
+        },
+      });
+    } else if (params.type === 'manga-library') {
+      return User.redux.selectors.selectRelation(state, params.userId, 'manga-library', {
+        include: {
+          manga: true,
+        },
+        sort: {
+          updatedAt: 'desc',
+        },
+      });
+    } else if (params.type === 'manga-favorites') {
+      return User.redux.selectors.selectRelation(state, params.userId, 'manga-favorites', {
+        include: {
+          manga: true,
+        },
+        sort: {
+          updatedAt: 'desc',
+        },
+      });
+    }
+
+    return undefined;
+  });
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (params.type === 'anime-library') {
+        const animeLibrary = await User.findById(params.userId).get('anime-library')
+          .include({ anime: true })
+          .sort({ updatedAt: 'desc' })
+          .limit(500);
+
+        dispatch(AnimeEntry.redux.actions.setMany(animeLibrary));
+        dispatch(User.redux.actions.relations['anime-library'].set(params.userId, animeLibrary));
+      } else if (params.type === 'anime-favorites') {
+        const animeFavorites = await User.findById(params.userId).get('anime-favorites')
+          .include({ anime: true })
+          .sort({ updatedAt: 'desc' })
+          .limit(500);
+
+        dispatch(AnimeEntry.redux.actions.setMany(animeFavorites));
+        dispatch(User.redux.actions.relations['anime-favorites'].set(params.userId, animeFavorites));
+      } else if (params.type === 'manga-library') {
+        const mangaLibrary = await User.findById(params.userId).get('manga-library')
+          .include({ manga: true })
+          .sort({ updatedAt: 'desc' })
+          .limit(500);
+
+        dispatch(MangaEntry.redux.actions.setMany(mangaLibrary));
+        dispatch(User.redux.actions.relations['manga-library'].set(params.userId, mangaLibrary));
+      } else if (params.type === 'manga-favorites') {
+        const mangaFavorites = await User.findById(params.userId).get('manga-favorites')
+          .include({ manga: true })
+          .sort({ updatedAt: 'desc' })
+          .limit(500);
+
+        dispatch(MangaEntry.redux.actions.setMany(mangaFavorites));
+        dispatch(User.redux.actions.relations['manga-favorites'].set(params.userId, mangaFavorites));
+      }
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, library };
+};

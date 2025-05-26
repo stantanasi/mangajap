@@ -7,11 +7,11 @@ import Checkbox from '../../../components/atoms/Checkbox';
 import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
+import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   volume: Volume | undefined;
-  onVolumeChange?: (volume: Volume) => void;
   onReadChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -22,7 +22,6 @@ type Props = {
 
 export default function VolumeModal({
   volume,
-  onVolumeChange = () => { },
   onReadChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
@@ -30,6 +29,7 @@ export default function VolumeModal({
   onRequestClose,
   visible,
 }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [readDatePickerVisible, setReadDatePickerVisible] = useState(false);
@@ -55,63 +55,62 @@ export default function VolumeModal({
   const updateVolumeEntry = async (add: boolean) => {
     if (!user) return
 
-    const volumeEntry = await (async () => {
-      if (add && !volume['volume-entry']) {
-        const volumeEntry = new VolumeEntry({
-          user: new User({ id: user.id }),
-          volume: volume,
-        });
-        await volumeEntry.save();
-
-        return volumeEntry;
-      } else if (!add && volume['volume-entry']) {
-        await volume['volume-entry'].delete();
-
-        return null;
-      }
-
-      return volume['volume-entry'];
-    })()
-      .catch((err) => {
-        console.error(err);
-        return volume['volume-entry'];
+    if (add && !volume['volume-entry']) {
+      const volumeEntry = new VolumeEntry({
+        user: new User({ id: user.id }),
+        volume: volume,
       });
+      await volumeEntry.save();
 
-    const chapters = await Promise.all(volume.chapters?.map(async (chapter, i) => {
+      VolumeEntry.redux.sync(dispatch, volumeEntry, {
+        volume: volume,
+      });
+    } else if (!add && volume['volume-entry']) {
+      await volume['volume-entry'].delete();
+
+      VolumeEntry.redux.sync(dispatch, volume['volume-entry'], {
+        volume: volume,
+      });
+    }
+
+    const updateChapterEntry = async (chapter: Chapter) => {
       if (add && !chapter['chapter-entry']) {
-        onChapterUpdatingChange(chapter.id, true);
-
         const chapterEntry = new ChapterEntry({
           user: new User({ id: user.id }),
           chapter: chapter,
         });
+        await chapterEntry.save();
 
-        return chapterEntry.save()
-          .then((entry) => chapter.copy({ 'chapter-entry': entry }))
-          .catch((err) => {
-            console.error(err);
-            return chapter;
-          })
-          .finally(() => onChapterUpdatingChange(chapter.id, false));
+        ChapterEntry.redux.sync(dispatch, chapterEntry, {
+          chapter: chapter,
+        });
       } else if (!add && chapter['chapter-entry']) {
-        onChapterUpdatingChange(chapter.id, true);
+        await chapter['chapter-entry'].delete();
 
-        return chapter['chapter-entry'].delete()
-          .then(() => chapter.copy({ 'chapter-entry': null }))
-          .catch((err) => {
-            console.error(err);
-            return chapter;
-          })
-          .finally(() => onChapterUpdatingChange(chapter.id, false));
+        ChapterEntry.redux.sync(dispatch, chapter['chapter-entry'], {
+          chapter: chapter,
+        });
       }
+    };
 
-      return chapter;
+    await Promise.all(volume.chapters?.map(async (chapter) => {
+      onChapterUpdatingChange(chapter.id, true);
+
+      await updateChapterEntry(chapter)
+        .catch((err) => console.error(err))
+        .finally(() => onChapterUpdatingChange(chapter.id, false));
     }) ?? []);
+  };
 
-    onVolumeChange(volume.copy({
-      chapters: chapters,
-      'volume-entry': volumeEntry,
-    }));
+  const updateReadDate = async (date: Date) => {
+    if (!volume['volume-entry']) return
+
+    volume['volume-entry'].readDate = date;
+    await volume['volume-entry'].save();
+
+    VolumeEntry.redux.sync(dispatch, volume['volume-entry'], {
+      volume: volume,
+    });
   };
 
   return (
@@ -223,18 +222,7 @@ export default function VolumeModal({
                   onValueChange={(value) => {
                     setIsSavingReadDate(true);
 
-                    const updateReadDate = async () => {
-                      const volumeEntry = volume['volume-entry']!.copy({
-                        readDate: value,
-                      });
-                      await volumeEntry.save();
-
-                      onVolumeChange(volume.copy({
-                        'volume-entry': volumeEntry,
-                      }));
-                    };
-
-                    updateReadDate()
+                    updateReadDate(value)
                       .catch((err) => console.error(err))
                       .finally(() => setIsSavingReadDate(false))
                   }}

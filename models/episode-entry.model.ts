@@ -1,4 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import Episode from './episode.model';
 import User from './user.model';
 
@@ -40,7 +42,24 @@ export const EpisodeEntrySchema = new Schema<IEpisodeEntry>({
 });
 
 
-class EpisodeEntry extends model<IEpisodeEntry>(EpisodeEntrySchema) { }
+class EpisodeEntry extends model<IEpisodeEntry>(EpisodeEntrySchema) {
+
+  static redux = {
+    ...createReduxHelpers<IEpisodeEntry, typeof EpisodeEntry>(EpisodeEntry).register('episode-entries'),
+    sync: (dispatch: AppDispatch, episodeEntry: EpisodeEntry, { episode }: {
+      episode: Episode;
+    }) => {
+      if (episodeEntry.isDeleted) {
+        dispatch(EpisodeEntry.redux.actions.removeOne(episodeEntry));
+        dispatch(Episode.redux.actions.relations['episode-entry'].remove(episode.id, episodeEntry));
+        return
+      }
+
+      dispatch(EpisodeEntry.redux.actions.saveOne(episodeEntry));
+      dispatch(Episode.redux.actions.relations['episode-entry'].set(episode.id, episodeEntry));
+    },
+  };
+}
 
 EpisodeEntry.register('episode-entries');
 

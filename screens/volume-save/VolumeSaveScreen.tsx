@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
@@ -10,6 +10,7 @@ import NumberInput from '../../components/atoms/NumberInput';
 import TextInput from '../../components/atoms/TextInput';
 import { Manga, Volume } from '../../models';
 import { IVolume } from '../../models/volume.model';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 type Props = StaticScreenProps<{
   mangaId: string;
@@ -18,36 +19,18 @@ type Props = StaticScreenProps<{
 }>
 
 export default function VolumeSaveScreen({ route }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [volume, setVolume] = useState<Volume>();
+  const { isLoading, volume } = useVolumeSave(route.params);
   const [form, setForm] = useState<Partial<Object<IVolume>>>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const prepare = async () => {
-      let volume = new Volume();
+    if (!volume || form) return
+    setForm(volume.toObject());
+  }, [volume]);
 
-      if ('mangaId' in route.params) {
-        volume = new Volume({
-          manga: new Manga({ id: route.params.mangaId }),
-        });
-      } else {
-        volume = await Volume.findById(route.params.volumeId);
-      }
-
-      setVolume(volume);
-      setForm(volume.toObject());
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!volume || !form) {
+  if (isLoading || !volume || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -58,6 +41,20 @@ export default function VolumeSaveScreen({ route }: Props) {
       </SafeAreaView>
     );
   }
+
+  const save = async () => {
+    volume.assign(form);
+
+    await volume.save();
+
+    Volume.redux.sync(dispatch, volume);
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -101,16 +98,7 @@ export default function VolumeSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            volume.assign(form);
-
-            volume.save()
-              .then(() => {
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}
@@ -215,3 +203,39 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
+
+
+const useVolumeSave = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const volume = (() => {
+    if ('mangaId' in params) {
+      return useMemo(() => new Volume({
+        manga: new Manga({ id: params.mangaId }),
+        chapters: [],
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
+      return Volume.redux.selectors.selectById(state, params.volumeId);
+    });
+  })();
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (!('volumeId' in params)) return
+
+      const volume = await Volume.findById(params.volumeId);
+
+      dispatch(Volume.redux.actions.setOne(volume));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, volume };
+};

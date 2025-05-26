@@ -1,4 +1,6 @@
 import { model, Schema } from '@stantanasi/jsonapi-client';
+import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
+import { AppDispatch } from '../redux/store';
 import User from './user.model';
 import Volume from './volume.model';
 
@@ -40,7 +42,24 @@ export const VolumeEntrySchema = new Schema<IVolumeEntry>({
 });
 
 
-class VolumeEntry extends model<IVolumeEntry>(VolumeEntrySchema) { }
+class VolumeEntry extends model<IVolumeEntry>(VolumeEntrySchema) {
+
+  static redux = {
+    ...createReduxHelpers<IVolumeEntry, typeof VolumeEntry>(VolumeEntry).register('volume-entries'),
+    sync: (dispatch: AppDispatch, volumeEntry: VolumeEntry, { volume }: {
+      volume: Volume;
+    }) => {
+      if (volumeEntry.isDeleted) {
+        dispatch(VolumeEntry.redux.actions.removeOne(volumeEntry));
+        dispatch(Volume.redux.actions.relations['volume-entry'].remove(volume.id, volumeEntry));
+        return
+      }
+
+      dispatch(VolumeEntry.redux.actions.saveOne(volumeEntry));
+      dispatch(Volume.redux.actions.relations['volume-entry'].set(volume.id, volumeEntry));
+    },
+  };
+}
 
 VolumeEntry.register('volume-entries');
 

@@ -8,10 +8,10 @@ import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   chapter: Chapter | undefined;
-  onChapterChange?: (chapter: Chapter) => void;
   onReadChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -21,13 +21,13 @@ type Props = {
 
 export default function ChapterModal({
   chapter,
-  onChapterChange = () => { },
   onReadChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
   onRequestClose,
   visible,
 }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [readDatePickerVisible, setReadDatePickerVisible] = useState(false);
@@ -53,31 +53,34 @@ export default function ChapterModal({
   const updateChapterEntry = async (add: boolean) => {
     if (!user) return
 
-    const chapterEntry = await (async () => {
-      if (add && !chapter['chapter-entry']) {
-        const chapterEntry = new ChapterEntry({
-          user: new User({ id: user.id }),
-          chapter: chapter,
-        });
-        await chapterEntry.save();
-
-        return chapterEntry;
-      } else if (!add && chapter['chapter-entry']) {
-        await chapter['chapter-entry'].delete();
-
-        return null;
-      }
-
-      return chapter['chapter-entry'];
-    })()
-      .catch((err) => {
-        console.error(err);
-        return chapter['chapter-entry'];
+    if (add && !chapter['chapter-entry']) {
+      const chapterEntry = new ChapterEntry({
+        user: new User({ id: user.id }),
+        chapter: chapter,
       });
+      await chapterEntry.save();
 
-    onChapterChange(chapter.copy({
-      'chapter-entry': chapterEntry,
-    }));
+      ChapterEntry.redux.sync(dispatch, chapterEntry, {
+        chapter: chapter,
+      });
+    } else if (!add && chapter['chapter-entry']) {
+      await chapter['chapter-entry'].delete();
+
+      ChapterEntry.redux.sync(dispatch, chapter['chapter-entry'], {
+        chapter: chapter,
+      });
+    }
+  };
+
+  const updateReadDate = async (date: Date) => {
+    if (!chapter['chapter-entry']) return
+
+    chapter['chapter-entry'].readDate = date;
+    await chapter['chapter-entry'].save();
+
+    ChapterEntry.redux.sync(dispatch, chapter['chapter-entry'], {
+      chapter: chapter,
+    });
   };
 
   return (
@@ -189,18 +192,7 @@ export default function ChapterModal({
                   onValueChange={(value) => {
                     setIsSavingReadDate(true);
 
-                    const updateReadDate = async () => {
-                      const chapterEntry = chapter['chapter-entry']!.copy({
-                        readDate: value,
-                      });
-                      await chapterEntry.save();
-
-                      onChapterChange(chapter.copy({
-                        'chapter-entry': chapterEntry,
-                      }));
-                    };
-
-                    updateReadDate()
+                    updateReadDate(value)
                       .catch((err) => console.error(err))
                       .finally(() => setIsSavingReadDate(false))
                   }}

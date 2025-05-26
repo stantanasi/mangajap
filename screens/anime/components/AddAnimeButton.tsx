@@ -3,13 +3,14 @@ import React, { useContext, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime, AnimeEntry, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   anime: Anime;
-  onAnimeChange: (anime: Anime) => void;
 }
 
-export default function AddAnimeButton({ anime, onAnimeChange }: Props) {
+export default function AddAnimeButton({ anime }: Props) {
+  const dispatch = useAppDispatch();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -17,14 +18,13 @@ export default function AddAnimeButton({ anime, onAnimeChange }: Props) {
 
   const addAnimeEntry = async () => {
     if (anime['anime-entry']) {
-      const animeEntry = anime['anime-entry'].copy({
-        isAdd: true,
-      });
-      await animeEntry.save();
+      anime['anime-entry'].isAdd = true;
+      await anime['anime-entry'].save();
 
-      onAnimeChange(anime.copy({
-        'anime-entry': animeEntry,
-      }));
+      AnimeEntry.redux.sync(dispatch, anime['anime-entry'], {
+        user: new User({ id: user.id }),
+        anime: anime,
+      });
     } else {
       const animeEntry = new AnimeEntry({
         isAdd: true,
@@ -34,9 +34,10 @@ export default function AddAnimeButton({ anime, onAnimeChange }: Props) {
       });
       await animeEntry.save();
 
-      onAnimeChange(anime.copy({
-        'anime-entry': animeEntry,
-      }));
+      AnimeEntry.redux.sync(dispatch, animeEntry, {
+        user: new User({ id: user.id }),
+        anime: anime,
+      });
     }
   };
 

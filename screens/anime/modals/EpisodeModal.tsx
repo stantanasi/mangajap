@@ -8,10 +8,10 @@ import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   episode: Episode | undefined;
-  onEpisodeChange?: (episode: Episode) => void;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -21,13 +21,13 @@ type Props = {
 
 export default function EpisodeModal({
   episode,
-  onEpisodeChange = () => { },
   onWatchedChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
   onRequestClose,
   visible,
 }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [watchedDatePickerVisible, setWatchedDatePickerVisible] = useState(false);
@@ -53,31 +53,34 @@ export default function EpisodeModal({
   const updateEpisodeEntry = async (add: boolean) => {
     if (!user) return
 
-    const episodeEntry = await (async () => {
-      if (add && !episode['episode-entry']) {
-        const episodeEntry = new EpisodeEntry({
-          user: new User({ id: user.id }),
-          episode: episode,
-        });
-        await episodeEntry.save();
-
-        return episodeEntry;
-      } else if (!add && episode['episode-entry']) {
-        await episode['episode-entry'].delete();
-
-        return null;
-      }
-
-      return episode['episode-entry'];
-    })()
-      .catch((err) => {
-        console.error(err);
-        return episode['episode-entry'];
+    if (add && !episode['episode-entry']) {
+      const episodeEntry = new EpisodeEntry({
+        user: new User({ id: user.id }),
+        episode: episode,
       });
+      await episodeEntry.save();
 
-    onEpisodeChange(episode.copy({
-      'episode-entry': episodeEntry,
-    }));
+      EpisodeEntry.redux.sync(dispatch, episodeEntry, {
+        episode: episode,
+      });
+    } else if (!add && episode['episode-entry']) {
+      await episode['episode-entry'].delete();
+
+      EpisodeEntry.redux.sync(dispatch, episode['episode-entry'], {
+        episode: episode,
+      });
+    }
+  };
+
+  const updateWatchedDate = async (date: Date) => {
+    if (!episode['episode-entry']) return
+
+    episode['episode-entry'].watchedDate = date;
+    await episode['episode-entry'].save();
+
+    EpisodeEntry.redux.sync(dispatch, episode['episode-entry'], {
+      episode: episode,
+    });
   };
 
   return (
@@ -189,18 +192,7 @@ export default function EpisodeModal({
                   onValueChange={(value) => {
                     setIsSavingWatchedDate(true);
 
-                    const updateWatchedDate = async () => {
-                      const episodeEntry = episode['episode-entry']!.copy({
-                        watchedDate: value,
-                      });
-                      await episodeEntry.save();
-
-                      onEpisodeChange(episode.copy({
-                        'episode-entry': episodeEntry,
-                      }));
-                    };
-
-                    updateWatchedDate()
+                    updateWatchedDate(value)
                       .catch((err) => console.error(err))
                       .finally(() => setIsSavingWatchedDate(false))
                   }}

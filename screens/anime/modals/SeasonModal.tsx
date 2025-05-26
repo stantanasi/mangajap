@@ -6,11 +6,11 @@ import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import Modal from '../../../components/atoms/Modal';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { EpisodeEntry, Season, User } from '../../../models';
+import { Episode, EpisodeEntry, Season, User } from '../../../models';
+import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   season: Season | undefined;
-  onSeasonChange?: (season: Season) => void;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -21,7 +21,6 @@ type Props = {
 
 export default function SeasonModal({
   season,
-  onSeasonChange = () => { },
   onWatchedChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
@@ -29,6 +28,7 @@ export default function SeasonModal({
   onRequestClose,
   visible,
 }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
@@ -55,40 +55,33 @@ export default function SeasonModal({
   const updateSeasonEpisodesEntries = async (add: boolean) => {
     if (!user) return
 
-    const episodes = await Promise.all(season.episodes?.map(async (episode) => {
+    const updateEpisodeEntry = async (episode: Episode) => {
       if (add && !episode['episode-entry']) {
-        onEpisodeUpdatingChange(episode.id, true);
-
         const episodeEntry = new EpisodeEntry({
           user: new User({ id: user.id }),
           episode: episode,
         });
+        await episodeEntry.save();
 
-        return episodeEntry.save()
-          .then((entry) => episode.copy({ 'episode-entry': entry }))
-          .catch((err) => {
-            console.error(err);
-            return episode;
-          })
-          .finally(() => onEpisodeUpdatingChange(episode.id, false));
+        EpisodeEntry.redux.sync(dispatch, episodeEntry, {
+          episode: episode,
+        });
       } else if (!add && episode['episode-entry']) {
-        onEpisodeUpdatingChange(episode.id, true);
+        await episode['episode-entry'].delete();
 
-        return episode['episode-entry'].delete()
-          .then(() => episode.copy({ 'episode-entry': null }))
-          .catch((err) => {
-            console.error(err);
-            return episode;
-          })
-          .finally(() => onEpisodeUpdatingChange(episode.id, false));
+        EpisodeEntry.redux.sync(dispatch, episode['episode-entry'], {
+          episode: episode,
+        });
       }
+    };
 
-      return episode;
+    await Promise.all(season.episodes?.map(async (episode) => {
+      onEpisodeUpdatingChange(episode.id, true);
+
+      await updateEpisodeEntry(episode)
+        .catch((err) => console.error(err))
+        .finally(() => onEpisodeUpdatingChange(episode.id, false));
     }) ?? []);
-
-    onSeasonChange(season.copy({
-      episodes: episodes,
-    }));
   };
 
   return (

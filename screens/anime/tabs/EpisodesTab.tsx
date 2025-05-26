@@ -12,11 +12,10 @@ import SeasonModal from '../modals/SeasonModal';
 
 type Props = {
   anime: Anime;
-  onAnimeChange: (anime: Anime) => void;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
+export default function EpisodesTab({ anime, style }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [expandedSeasons, setExpandedSeasons] = useState<{ [seasonId: string]: boolean }>({});
@@ -26,7 +25,10 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
   const [previousUnwatched, setPreviousUnwatched] = useState<(Season | Episode)[]>();
 
   const findPreviousSeasonsEpisodes = (item: Season | Episode) => {
-    const sections = anime.seasons!.map((season) => ({
+    const sections = [
+      ...anime.seasons!.filter((s) => s.number !== 0),
+      ...anime.seasons!.filter((s) => s.number === 0),
+    ].map((season) => ({
       season: season,
       data: season.episodes!,
     }));
@@ -54,7 +56,10 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
   return (
     <View style={[styles.container, style]}>
       <SectionList
-        sections={anime.seasons!.map((season) => ({
+        sections={[
+          ...anime.seasons!.filter((s) => s.number !== 0),
+          ...anime.seasons!.filter((s) => s.number === 0),
+        ].map((season) => ({
           season: season,
           data: expandedSeasons[season.id] ? season.episodes! : [],
         }))}
@@ -62,11 +67,6 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
         renderSectionHeader={({ section: { season } }) => (
           <SeasonCard
             season={season}
-            onSeasonChange={(season) => {
-              onAnimeChange(anime.copy({
-                seasons: anime.seasons?.map((s) => s.id === season.id ? season : s),
-              }));
-            }}
             onWatchedChange={(value) => {
               if (!value) return
 
@@ -103,15 +103,6 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
         renderItem={({ item, section: { season } }) => (
           <EpisodeCard
             episode={item}
-            onEpisodeChange={(episode) => {
-              onAnimeChange(anime.copy({
-                seasons: anime.seasons?.map((s) => s.id === season.id
-                  ? season.copy({
-                    episodes: season.episodes?.map((e) => e.id === episode.id ? episode : e),
-                  })
-                  : s),
-              }));
-            }}
             onWatchedChange={(value) => {
               if (!value) return
 
@@ -161,12 +152,6 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
 
       <SeasonModal
         season={selectedSeason}
-        onSeasonChange={(season) => {
-          onAnimeChange(anime.copy({
-            seasons: anime.seasons?.map((s) => s.id === season.id ? season : s),
-          }));
-          setSelectedSeason(season);
-        }}
         onWatchedChange={(value) => {
           if (!value) return
 
@@ -196,16 +181,6 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
 
       <EpisodeModal
         episode={selectedEpisode}
-        onEpisodeChange={(episode) => {
-          onAnimeChange(anime.copy({
-            seasons: anime.seasons?.map((s) => s.id === episode.season!.id
-              ? episode.season!.copy({
-                episodes: episode.season!.episodes?.map((e) => e.id === episode.id ? episode : e),
-              })
-              : s),
-          }));
-          setSelectedEpisode(episode);
-        }}
         onWatchedChange={(value) => {
           if (!value) return
 
@@ -226,8 +201,6 @@ export default function EpisodesTab({ anime, onAnimeChange, style }: Props) {
       />
 
       <MarkPreviousAsWatchedModal
-        anime={anime}
-        onAnimeChange={(anime) => onAnimeChange(anime)}
         previousUnwatched={previousUnwatched ?? []}
         onUpdatingChange={(updating) => setUpdating((prev) => ({ ...prev, ...updating }))}
         onRequestClose={() => setPreviousUnwatched(undefined)}

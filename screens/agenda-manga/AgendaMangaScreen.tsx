@@ -3,7 +3,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../contexts/AuthContext';
-import { Manga, User } from '../../models';
+import { MangaEntry, User } from '../../models';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 import MangaAgendaCard from './components/MangaAgendaCard';
 
 type Props = StaticScreenProps<undefined>;
@@ -11,40 +12,18 @@ type Props = StaticScreenProps<undefined>;
 export default function AgendaMangaScreen({ }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
-  const [mangas, setMangas] = useState<Manga[]>();
+  const { isLoading, mangaLibrary } = useAgendaManga();
 
-  useEffect(() => {
-    const prepare = async () => {
-      if (!user) return
-
-      const mangaLibrary = await User.findById(user.id).get('manga-library')
-        .include({
-          manga: true,
-        })
-        .sort({ updatedAt: 'desc' })
-        .limit(500);
-
-      const mangas = mangaLibrary
-        .filter((mangaEntry) => {
-          const progress = mangaEntry.manga!.chapterCount > 0
-            ? (mangaEntry.chaptersRead / mangaEntry.manga!.chapterCount) * 100
-            : (mangaEntry.volumesRead / mangaEntry.manga!.volumeCount) * 100;
-          return progress < 100;
-        })
-        .map((entry) => entry.manga!.copy({
-          'manga-entry': entry,
-        }));
-
-      setMangas(mangas);
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [user]);
+  const mangas = mangaLibrary
+    ?.filter((mangaEntry) => {
+      const progress = mangaEntry.manga!.chapterCount > 0
+        ? (mangaEntry.chaptersRead / mangaEntry.manga!.chapterCount) * 100
+        : (mangaEntry.volumesRead / mangaEntry.manga!.volumeCount) * 100;
+      return progress < 100;
+    })
+    .map((entry) => entry.manga!.copy({
+      'manga-entry': entry,
+    }));
 
   if (!user) {
     return (
@@ -80,7 +59,7 @@ export default function AgendaMangaScreen({ }: Props) {
     );
   }
 
-  if (!mangas) {
+  if (isLoading || !mangas) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -119,3 +98,48 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+
+const useAgendaManga = () => {
+  const dispatch = useAppDispatch();
+  const { user } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const mangaLibrary = useAppSelector((state) => {
+    if (!user) {
+      return undefined;
+    }
+
+    return User.redux.selectors.selectRelation(state, user.id, 'manga-library', {
+      include: {
+        manga: true,
+      },
+      sort: {
+        updatedAt: 'desc',
+      },
+    });
+  });
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (!user) return
+
+      const mangaLibrary = await User.findById(user.id).get('manga-library')
+        .include({
+          manga: true,
+        })
+        .sort({ updatedAt: 'desc' })
+        .limit(500);
+
+      dispatch(MangaEntry.redux.actions.setMany(mangaLibrary));
+      dispatch(User.redux.actions.relations['manga-library'].set(user.id, mangaLibrary));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [user]);
+
+  return { isLoading, mangaLibrary };
+};

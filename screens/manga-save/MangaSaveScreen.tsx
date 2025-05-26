@@ -2,7 +2,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
 import Checkbox from 'expo-checkbox';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
@@ -10,62 +10,25 @@ import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { Genre, Manga, Theme } from '../../models';
 import { IManga, MangaStatus, MangaType } from '../../models/manga.model';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
 
 type Props = StaticScreenProps<{
   id: string
 } | undefined>
 
 export default function MangaSaveScreen({ route }: Props) {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const [manga, setManga] = useState<Manga>();
+  const { isLoading, manga, genres, themes } = useMangaSave(route.params);
   const [form, setForm] = useState<Partial<Object<IManga>>>();
-  const [genres, setGenres] = useState<Genre[]>();
-  const [themes, setThemes] = useState<Theme[]>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const prepare = async () => {
-      let manga = new Manga({
-        genres: [],
-        themes: [],
-      });
+    if (!manga || form) return
+    setForm(manga.toObject());
+  }, [manga]);
 
-      if (route.params) {
-        manga = await Manga.findById(route.params.id)
-          .include({
-            genres: true,
-            themes: true,
-          });
-      }
-
-      const [genres, themes] = await Promise.all([
-        Genre.find()
-          .sort({
-            name: 'asc',
-          })
-          .limit(1000),
-        Theme.find()
-          .sort({
-            name: 'asc',
-          })
-          .limit(1000),
-      ]);
-
-      setManga(manga);
-      setForm(manga.toObject());
-      setGenres(genres);
-      setThemes(themes);
-    };
-
-    const unsubscribe = navigation.addListener('focus', () => {
-      prepare()
-        .catch((err) => console.error(err));
-    });
-
-    return unsubscribe;
-  }, [route.params]);
-
-  if (!manga || !form || !genres || !themes) {
+  if (isLoading || !manga || !form || !genres || !themes) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -76,6 +39,20 @@ export default function MangaSaveScreen({ route }: Props) {
       </SafeAreaView>
     );
   }
+
+  const save = async () => {
+    manga.assign(form);
+
+    await manga.save();
+
+    Manga.redux.sync(dispatch, manga);
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -119,16 +96,7 @@ export default function MangaSaveScreen({ route }: Props) {
           onPress={() => {
             setIsSaving(true);
 
-            manga.assign(form);
-
-            manga.save()
-              .then(() => {
-                if (navigation.canGoBack()) {
-                  navigation.goBack();
-                } else if (typeof window !== 'undefined') {
-                  window.history.back();
-                }
-              })
+            save()
               .catch((err) => console.error(err))
               .finally(() => setIsSaving(false));
           }}
@@ -366,3 +334,72 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
+
+const useMangaSave = (params: Props['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const manga = (() => {
+    if (!params) {
+      return useMemo(() => new Manga({
+        genres: [],
+        themes: [],
+      }), [params]);
+    }
+
+    return useAppSelector((state) => {
+      return Manga.redux.selectors.selectById(state, params.id, {
+        include: {
+          genres: true,
+          themes: true,
+        },
+      });
+    });
+  })();
+
+  const genres = useAppSelector((state) => {
+    return Genre.redux.selectors.select(state);
+  });
+
+  const themes = useAppSelector((state) => {
+    return Theme.redux.selectors.select(state);
+  });
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (params) {
+        const manga = await Manga.findById(params.id)
+          .include({
+            genres: true,
+            themes: true,
+          });
+
+        dispatch(Manga.redux.actions.setOne(manga));
+      }
+
+      const [genres, themes] = await Promise.all([
+        Genre.find()
+          .sort({
+            name: 'asc',
+          })
+          .limit(1000),
+        Theme.find()
+          .sort({
+            name: 'asc',
+          })
+          .limit(1000),
+      ]);
+
+      dispatch(Genre.redux.actions.setMany(genres));
+      dispatch(Theme.redux.actions.setMany(themes));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [params]);
+
+  return { isLoading, manga, genres, themes };
+};
