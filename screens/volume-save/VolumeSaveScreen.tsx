@@ -213,6 +213,7 @@ const useVolumeSave = (params: Props['route']['params']) => {
     if ('mangaId' in params) {
       return useMemo(() => new Volume({
         manga: new Manga({ id: params.mangaId }),
+        chapters: [],
       }), [params]);
     }
 
