@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/store';
 import AddMangaButton from './components/AddMangaButton';
 import Header from './components/Header';
 import AboutTab from './tabs/AboutTab';
-import VolumesTab from './tabs/VolumesTab';
+import ChaptersTab from './tabs/ChaptersTab';
 
 type Props = StaticScreenProps<{
   id: string;
@@ -17,7 +17,7 @@ type Props = StaticScreenProps<{
 export default function MangaScreen({ route }: Props) {
   const { user } = useContext(AuthContext);
   const { isLoading, manga } = useManga(route.params);
-  const [selectedTab, setSelectedTab] = useState<'about' | 'volumes'>('about');
+  const [selectedTab, setSelectedTab] = useState<'about' | 'chapters'>('about');
 
 
   if (isLoading || !manga) {
@@ -38,7 +38,7 @@ export default function MangaScreen({ route }: Props) {
         manga={manga}
         tabs={[
           { key: 'about', title: 'À propos' },
-          { key: 'volumes', title: 'Tomes' },
+          { key: 'chapters', title: 'Chapitres' },
         ]}
         selectedTab={selectedTab}
         onTabSelect={(tab) => setSelectedTab(tab)}
@@ -52,10 +52,10 @@ export default function MangaScreen({ route }: Props) {
         }}
       />
 
-      <VolumesTab
+      <ChaptersTab
         manga={manga}
         style={{
-          display: selectedTab === 'volumes' ? 'flex' : 'none',
+          display: selectedTab === 'chapters' ? 'flex' : 'none',
           flex: 1,
         }}
       />

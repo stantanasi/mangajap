@@ -15,7 +15,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
 }
 
-export default function VolumesTab({ manga, style }: Props) {
+export default function ChaptersTab({ manga, style }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean }>({});
