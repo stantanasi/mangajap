@@ -251,7 +251,8 @@ const useChapterSave = (params: Props['route']['params']) => {
   useEffect(() => {
     const prepare = async () => {
       if ('mangaId' in params) {
-        const volumes = await Manga.findById(params.mangaId).get('volumes');
+        const volumes = await Manga.findById(params.mangaId).get('volumes')
+          .limit(1000);
 
         dispatch(Volume.redux.actions.setMany(volumes));
         dispatch(Manga.redux.actions.relations.volumes.set(params.mangaId, volumes));
