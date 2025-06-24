@@ -19,7 +19,6 @@ export default function MangaScreen({ route }: Props) {
   const { isLoading, manga } = useManga(route.params);
   const [selectedTab, setSelectedTab] = useState<'about' | 'chapters'>('about');
 
-
   if (isLoading || !manga) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>

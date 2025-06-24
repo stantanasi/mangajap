@@ -20,8 +20,8 @@ export default function ChaptersTab({ manga, style }: Props) {
   const { user } = useContext(AuthContext);
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean }>({});
-  const [selectedVolume, setSelectedVolume] = useState<Volume>();
-  const [selectedChapter, setSelectedChapter] = useState<Chapter>();
+  const [selectedVolumeId, setSelectedVolumeId] = useState<string>();
+  const [selectedChapterId, setSelectedChapterId] = useState<string>();
   const [previousUnread, setPreviousUnread] = useState<(Volume | Chapter)[]>();
 
   const findPreviousVolumesChapters = (item: Volume | Chapter): (Volume | Chapter)[] => {
@@ -93,7 +93,7 @@ export default function ChaptersTab({ manga, style }: Props) {
             onChapterUpdatingChange={(id, value) => setUpdating((prev) => ({ ...prev, [id]: value }))}
             expanded={expandedVolumes[volume.id]}
             onExpandedChange={() => setExpandedVolumes((prev) => ({ ...prev, [volume.id]: !prev[volume.id] }))}
-            onPress={() => setSelectedVolume(volume)}
+            onPress={() => setSelectedVolumeId(volume.id)}
             style={{
               marginTop: 5,
               marginHorizontal: 16,
@@ -119,7 +119,7 @@ export default function ChaptersTab({ manga, style }: Props) {
             }}
             updating={updating[item.id]}
             onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [item.id]: value }))}
-            onPress={() => setSelectedChapter(item.copy({ volume: volume }))}
+            onPress={() => setSelectedChapterId(item.id)}
             style={{
               marginHorizontal: 16,
             }}
@@ -152,11 +152,14 @@ export default function ChaptersTab({ manga, style }: Props) {
       ) : null}
 
       <VolumeModal
-        volume={selectedVolume}
+        volume={manga.volumes?.find((volume) => volume.id === selectedVolumeId)}
         onReadChange={(value) => {
           if (!value) return
 
-          const previousUnread = findPreviousVolumesChapters(selectedVolume!)
+          const selectedVolume = manga.volumes?.find((volume) => volume.id === selectedVolumeId);
+          if (!selectedVolume) return
+
+          const previousUnread = findPreviousVolumesChapters(selectedVolume)
             .filter((value) => value instanceof Volume
               ? !value['volume-entry']
               : !value['chapter-entry']
@@ -166,19 +169,32 @@ export default function ChaptersTab({ manga, style }: Props) {
             setPreviousUnread(previousUnread);
           }
         }}
-        updating={selectedVolume ? updating[selectedVolume.id] : false}
-        onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [selectedVolume!.id]: value }))}
+        updating={selectedVolumeId ? updating[selectedVolumeId] : false}
+        onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [selectedVolumeId!]: value }))}
         onChapterUpdatingChange={(id, value) => setUpdating((prev) => ({ ...prev, [id]: value }))}
-        onRequestClose={() => setSelectedVolume(undefined)}
-        visible={!!selectedVolume}
+        onRequestClose={() => setSelectedVolumeId(undefined)}
+        visible={!!selectedVolumeId}
       />
 
       <ChapterModal
-        chapter={selectedChapter}
+        chapter={(() => {
+          for (const volume of manga.volumes ?? []) {
+            for (const chapter of volume.chapters ?? []) {
+              if (chapter.id === selectedChapterId) {
+                return chapter.copy({ volume: volume });
+              }
+            }
+          }
+
+          return manga.chapters?.find((chapter) => chapter.id === selectedChapterId);
+        })()}
         onReadChange={(value) => {
           if (!value) return
 
-          const previousUnread = findPreviousVolumesChapters(selectedChapter!)
+          const selectedChapter = manga.chapters?.find((chapter) => chapter.id === selectedChapterId);
+          if (!selectedChapter) return
+
+          const previousUnread = findPreviousVolumesChapters(selectedChapter)
             .filter((value) => value instanceof Volume
               ? !value['volume-entry']
               : !value['chapter-entry']
@@ -188,10 +204,10 @@ export default function ChaptersTab({ manga, style }: Props) {
             setPreviousUnread(previousUnread);
           }
         }}
-        updating={selectedChapter ? updating[selectedChapter.id] : false}
-        onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [selectedChapter!.id]: value }))}
-        onRequestClose={() => setSelectedChapter(undefined)}
-        visible={!!selectedChapter}
+        updating={selectedChapterId ? updating[selectedChapterId] : false}
+        onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [selectedChapterId!]: value }))}
+        onRequestClose={() => setSelectedChapterId(undefined)}
+        visible={!!selectedChapterId}
       />
 
       <MarkPreviousAsReadModal
