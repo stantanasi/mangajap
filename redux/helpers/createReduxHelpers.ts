@@ -2,8 +2,6 @@ import { createSelector } from "@reduxjs/toolkit";
 import { ExtractDocType, JsonApiIdentifier, Model, ModelConstructor, ModelInstance, models } from "@stantanasi/jsonapi-client";
 import { AppThunk, RootState, slices } from "../store";
 
-type Unpacked<T> = T extends (infer U)[] ? U : T;
-
 type Relationships<DocType> = Extract<{
   [K in keyof DocType]: ExtractDocType<DocType[K]> extends never ? never : K;
 }[keyof DocType], string>;
@@ -277,6 +275,8 @@ const selectRelation = <DocType, K extends Relationships<DocType>>(
   }
 };
 
+type ModelInstanceUnion<T> = T extends any ? ModelInstance<T> : never;
+
 
 export type ReduxHelpers<DocType, ModelType extends ModelConstructor<DocType>> = {
   redux: {
@@ -295,19 +295,19 @@ export type ReduxHelpers<DocType, ModelType extends ModelConstructor<DocType>> =
 
       relations: {
         [K in Relationships<DocType>]: {
-          add: (
+          add: <T extends ModelInstance<ExtractDocType<DocType[K]>>> (
             id: string,
-            related: NonNullable<Unpacked<DocType[K]>>,
+            related: T,
           ) => AppThunk;
 
-          remove: (
+          remove: <T extends ModelInstance<ExtractDocType<DocType[K]>>> (
             id: string,
-            related: NonNullable<Unpacked<DocType[K]>>,
+            related: T,
           ) => AppThunk;
 
-          set: (
+          set: <T extends (ModelInstanceUnion<ExtractDocType<DocType[K]>> | ModelInstanceUnion<ExtractDocType<DocType[K]>>[]) & NonNullable<DocType[K]>> (
             id: string,
-            related: NonNullable<DocType[K]>,
+            related: T,
           ) => AppThunk;
         };
       };
@@ -417,8 +417,6 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
             ...relationships.reduce((acc, relationship) => {
               acc[relationship] = {
                 add: (id, related) => (dispatch) => {
-                  if (!(related instanceof Model)) return
-
                   dispatch(
                     slice.actions.addRelation({
                       id: id,
@@ -429,8 +427,6 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
                 },
 
                 remove: (id, related) => (dispatch) => {
-                  if (!(related instanceof Model)) return
-
                   dispatch(
                     slice.actions.removeRelation({
                       id: id,
@@ -441,16 +437,6 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
                 },
 
                 set: (id, related) => (dispatch) => {
-                  const isModelOrModelArray = (value: unknown): value is Model<unknown> | Model<unknown>[] => {
-                    const isModelArray = (value: unknown): value is Model<unknown>[] => {
-                      return Array.isArray(value) && value.every(item => item instanceof Model);
-                    };
-
-                    return value instanceof Model || isModelArray(value);
-                  }
-
-                  if (!isModelOrModelArray(related)) return
-
                   dispatch(
                     slice.actions.setRelation({
                       id: id,
