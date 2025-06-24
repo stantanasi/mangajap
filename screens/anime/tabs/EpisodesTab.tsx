@@ -20,8 +20,8 @@ export default function EpisodesTab({ anime, style }: Props) {
   const { user } = useContext(AuthContext);
   const [expandedSeasons, setExpandedSeasons] = useState<{ [seasonId: string]: boolean }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean }>({});
-  const [selectedSeason, setSelectedSeason] = useState<Season>();
-  const [selectedEpisode, setSelectedEpisode] = useState<Episode>();
+  const [selectedSeasonId, setSelectedSeasonId] = useState<string>();
+  const [selectedEpisodeId, setSelectedEpisodeId] = useState<string>();
   const [previousUnwatched, setPreviousUnwatched] = useState<(Season | Episode)[]>();
 
   const findPreviousSeasonsEpisodes = (item: Season | Episode) => {
@@ -92,7 +92,7 @@ export default function EpisodesTab({ anime, style }: Props) {
             onEpisodeUpdatingChange={(id, value) => setUpdating((prev) => ({ ...prev, [id]: value }))}
             expanded={expandedSeasons[season.id]}
             onExpandedChange={(value) => setExpandedSeasons((prev) => ({ ...prev, [season.id]: value }))}
-            onPress={() => setSelectedSeason(season)}
+            onPress={() => setSelectedSeasonId(season.id)}
             style={{
               marginTop: 5,
               marginHorizontal: 16,
@@ -118,7 +118,7 @@ export default function EpisodesTab({ anime, style }: Props) {
             }}
             updating={updating[item.id]}
             onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [item.id]: value }))}
-            onPress={() => setSelectedEpisode(item.copy({ season: season }))}
+            onPress={() => setSelectedEpisodeId(item.id)}
             style={{
               marginHorizontal: 16,
             }}
@@ -151,11 +151,14 @@ export default function EpisodesTab({ anime, style }: Props) {
       ) : null}
 
       <SeasonModal
-        season={selectedSeason}
+        season={anime.seasons?.find((season) => season.id === selectedSeasonId)}
         onWatchedChange={(value) => {
           if (!value) return
 
-          const previousUnwatched = findPreviousSeasonsEpisodes(selectedSeason!)
+          const selectedSeason = anime.seasons?.find((season) => season.id === selectedSeasonId);
+          if (!selectedSeason) return
+
+          const previousUnwatched = findPreviousSeasonsEpisodes(selectedSeason)
             .filter((value) => value instanceof Season
               ? value.episodes!.some((e) => !e['episode-entry'])
               : !value['episode-entry']
@@ -165,39 +168,45 @@ export default function EpisodesTab({ anime, style }: Props) {
             setPreviousUnwatched(previousUnwatched);
           }
         }}
-        updating={selectedSeason ? updating[selectedSeason.id] : false}
-        onUpdatingChange={(value) => setUpdating((prev) => ({
-          ...prev,
-          [selectedSeason!.id]: value,
-          ...selectedSeason!.episodes?.reduce((acc, episode) => {
-            acc[episode.id] = value;
-            return acc;
-          }, {} as typeof updating),
-        }))}
+        updating={selectedSeasonId ? updating[selectedSeasonId] : false}
+        onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [selectedSeasonId!]: value }))}
         onEpisodeUpdatingChange={(id, value) => setUpdating((prev) => ({ ...prev, [id]: value }))}
-        onRequestClose={() => setSelectedSeason(undefined)}
-        visible={!!selectedSeason}
+        onRequestClose={() => setSelectedSeasonId(undefined)}
+        visible={!!selectedSeasonId}
       />
 
       <EpisodeModal
-        episode={selectedEpisode}
-        onWatchedChange={(value) => {
-          if (!value) return
-
-          const previousUnwatched = findPreviousSeasonsEpisodes(selectedEpisode!)
-            .filter((value) => value instanceof Season
-              ? value.episodes!.some((e) => !e['episode-entry'])
-              : !value['episode-entry']
-            );
-
-          if (previousUnwatched.length > 0) {
-            setPreviousUnwatched(previousUnwatched);
+        episode={(() => {
+          for (const season of anime.seasons ?? []) {
+            for (const episode of season.episodes ?? []) {
+              if (episode.id === selectedEpisodeId) {
+                return episode.copy({ season: season });
+              }
+            }
           }
-        }}
-        updating={selectedEpisode ? updating[selectedEpisode.id] : false}
-        onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [selectedEpisode!.id]: value }))}
-        onRequestClose={() => setSelectedEpisode(undefined)}
-        visible={!!selectedEpisode}
+        })()}
+      onWatchedChange={(value) => {
+        if (!value) return
+
+        const selectedEpisode = anime.seasons
+          ?.flatMap((season) => season.episodes ?? [])
+          .find((episode) => episode.id === selectedEpisodeId);
+        if (!selectedEpisode) return
+
+        const previousUnwatched = findPreviousSeasonsEpisodes(selectedEpisode)
+          .filter((value) => value instanceof Season
+            ? value.episodes!.some((e) => !e['episode-entry'])
+            : !value['episode-entry']
+          );
+
+        if (previousUnwatched.length > 0) {
+          setPreviousUnwatched(previousUnwatched);
+        }
+      }}
+      updating={selectedEpisodeId ? updating[selectedEpisodeId] : false}
+      onUpdatingChange={(value) => setUpdating((prev) => ({ ...prev, [selectedEpisodeId!]: value }))}
+      onRequestClose={() => setSelectedEpisodeId(undefined)}
+      visible={!!selectedEpisodeId}
       />
 
       <MarkPreviousAsWatchedModal
