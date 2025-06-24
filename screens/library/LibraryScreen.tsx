@@ -174,7 +174,7 @@ const useLibrary = (params: Props['route']['params']) => {
           .limit(500);
 
         dispatch(AnimeEntry.redux.actions.setMany(animeLibrary));
-        dispatch(User.redux.actions.relations['anime-library'].set(params.userId, animeLibrary));
+        dispatch(User.redux.actions.relations['anime-library'].addMany(params.userId, animeLibrary));
       } else if (params.type === 'anime-favorites') {
         const animeFavorites = await User.findById(params.userId).get('anime-favorites')
           .include({ anime: true })
@@ -182,7 +182,7 @@ const useLibrary = (params: Props['route']['params']) => {
           .limit(500);
 
         dispatch(AnimeEntry.redux.actions.setMany(animeFavorites));
-        dispatch(User.redux.actions.relations['anime-favorites'].set(params.userId, animeFavorites));
+        dispatch(User.redux.actions.relations['anime-favorites'].addMany(params.userId, animeFavorites));
       } else if (params.type === 'manga-library') {
         const mangaLibrary = await User.findById(params.userId).get('manga-library')
           .include({ manga: true })
@@ -190,7 +190,7 @@ const useLibrary = (params: Props['route']['params']) => {
           .limit(500);
 
         dispatch(MangaEntry.redux.actions.setMany(mangaLibrary));
-        dispatch(User.redux.actions.relations['manga-library'].set(params.userId, mangaLibrary));
+        dispatch(User.redux.actions.relations['manga-library'].addMany(params.userId, mangaLibrary));
       } else if (params.type === 'manga-favorites') {
         const mangaFavorites = await User.findById(params.userId).get('manga-favorites')
           .include({ manga: true })
@@ -198,7 +198,7 @@ const useLibrary = (params: Props['route']['params']) => {
           .limit(500);
 
         dispatch(MangaEntry.redux.actions.setMany(mangaFavorites));
-        dispatch(User.redux.actions.relations['manga-favorites'].set(params.userId, mangaFavorites));
+        dispatch(User.redux.actions.relations['manga-favorites'].addMany(params.userId, mangaFavorites));
       }
     };
 

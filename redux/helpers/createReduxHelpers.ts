@@ -300,6 +300,11 @@ export type ReduxHelpers<DocType, ModelType extends ModelConstructor<DocType>> =
             related: T,
           ) => AppThunk;
 
+          addMany: <T extends ModelInstance<ExtractDocType<DocType[K]>>[]> (
+            id: string,
+            related: T,
+          ) => AppThunk;
+
           remove: <T extends ModelInstance<ExtractDocType<DocType[K]>>> (
             id: string,
             related: T,
@@ -422,6 +427,16 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
                       id: id,
                       relationship: relationship,
                       data: related.identifier(),
+                    })
+                  );
+                },
+
+                addMany: (id, related) => (dispatch) => {
+                  dispatch(
+                    slice.actions.addManyRelation({
+                      id: id,
+                      relationship: relationship,
+                      data: related.map((m) => m.identifier()),
                     })
                   );
                 },

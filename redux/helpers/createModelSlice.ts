@@ -74,6 +74,26 @@ export const createModelSlice = <DocType extends Record<string, any>>(
         }
       },
 
+      addManyRelation: (state, action: PayloadAction<{
+        id: string;
+        relationship: string,
+        data: JsonApiIdentifier[],
+      }>) => {
+        const { id, relationship, data } = action.payload;
+
+        const existing = state.relations[relationship][id];
+
+        if (Array.isArray(existing)) {
+          const newItems = data.filter((identifier) =>
+            !existing.some((item) => item.type === identifier.type && item.id === identifier.id)
+          );
+
+          state.relations[relationship][id] = [...existing, ...newItems];
+        } else {
+          state.relations[relationship][id] = data;
+        }
+      },
+
       removeRelation: (state, action: PayloadAction<{
         id: string;
         relationship: string,

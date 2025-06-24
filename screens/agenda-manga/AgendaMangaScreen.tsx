@@ -132,7 +132,7 @@ const useAgendaManga = () => {
         .limit(500);
 
       dispatch(MangaEntry.redux.actions.setMany(mangaLibrary));
-      dispatch(User.redux.actions.relations['manga-library'].set(user.id, mangaLibrary));
+      dispatch(User.redux.actions.relations['manga-library'].addMany(user.id, mangaLibrary));
     };
 
     setIsLoading(true);

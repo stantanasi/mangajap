@@ -141,14 +141,14 @@ const useFollows = (params: Props['route']['params']) => {
           .sort({ createdAt: 'desc' });
 
         dispatch(Follow.redux.actions.setMany(followers));
-        dispatch(User.redux.actions.relations['followers'].set(params.userId, followers));
+        dispatch(User.redux.actions.relations['followers'].addMany(params.userId, followers));
       } else if (params.type === 'following') {
         const following = await User.findById(params.userId).get('following')
           .include({ followed: true })
           .sort({ createdAt: 'desc' });
 
         dispatch(Follow.redux.actions.setMany(following));
-        dispatch(User.redux.actions.relations['following'].set(params.userId, following));
+        dispatch(User.redux.actions.relations['following'].addMany(params.userId, following));
       }
     };
 

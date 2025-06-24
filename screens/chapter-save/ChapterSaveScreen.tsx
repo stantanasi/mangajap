@@ -255,7 +255,7 @@ const useChapterSave = (params: Props['route']['params']) => {
           .limit(1000);
 
         dispatch(Volume.redux.actions.setMany(volumes));
-        dispatch(Manga.redux.actions.relations.volumes.set(params.mangaId, volumes));
+        dispatch(Manga.redux.actions.relations.volumes.addMany(params.mangaId, volumes));
       } else {
         const chapter = await Chapter.findById(params.chapterId)
           .include({

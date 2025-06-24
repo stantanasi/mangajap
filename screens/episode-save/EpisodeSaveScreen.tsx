@@ -255,7 +255,7 @@ const useEpisodeSave = (params: Props['route']['params']) => {
           .limit(1000);
 
         dispatch(Season.redux.actions.setMany(seasons));
-        dispatch(Anime.redux.actions.relations.seasons.set(params.animeId, seasons));
+        dispatch(Anime.redux.actions.relations.seasons.addMany(params.animeId, seasons));
       } else {
         const episode = await Episode.findById(params.episodeId)
           .include({
