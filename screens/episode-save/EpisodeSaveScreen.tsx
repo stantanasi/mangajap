@@ -251,7 +251,8 @@ const useEpisodeSave = (params: Props['route']['params']) => {
   useEffect(() => {
     const prepare = async () => {
       if ('animeId' in params) {
-        const seasons = await Anime.findById(params.animeId).get('seasons');
+        const seasons = await Anime.findById(params.animeId).get('seasons')
+          .limit(1000);
 
         dispatch(Season.redux.actions.setMany(seasons));
         dispatch(Anime.redux.actions.relations.seasons.set(params.animeId, seasons));
