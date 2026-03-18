@@ -48,7 +48,7 @@ export default function Header<T extends string>({
           {anime.title}
         </Text>
 
-        {user && user.isAdmin ? (
+        {user ? (
           <MaterialIcons
             name="edit"
             color="#000"

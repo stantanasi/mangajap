@@ -134,7 +134,7 @@ const RootStack = createNativeStackNavigator({
     AnimeCreate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: AnimeSaveScreen,
       linking: {
@@ -144,7 +144,7 @@ const RootStack = createNativeStackNavigator({
     AnimeUpdate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: AnimeSaveScreen,
       linking: {
@@ -154,7 +154,7 @@ const RootStack = createNativeStackNavigator({
     SeasonCreate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: SeasonSaveScreen,
       linking: {
@@ -164,7 +164,7 @@ const RootStack = createNativeStackNavigator({
     SeasonUpdate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: SeasonSaveScreen,
       linking: {
@@ -174,7 +174,7 @@ const RootStack = createNativeStackNavigator({
     EpisodeCreate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: EpisodeSaveScreen,
       linking: {
@@ -184,7 +184,7 @@ const RootStack = createNativeStackNavigator({
     EpisodeUpdate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: EpisodeSaveScreen,
       linking: {
@@ -194,7 +194,7 @@ const RootStack = createNativeStackNavigator({
     AnimeStaffCreate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: StaffSaveScreen,
       linking: {
@@ -204,7 +204,7 @@ const RootStack = createNativeStackNavigator({
     AnimeFranchiseCreate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: FranchiseSaveScreen,
       linking: {
@@ -220,7 +220,7 @@ const RootStack = createNativeStackNavigator({
     MangaCreate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: MangaSaveScreen,
       linking: {
@@ -230,7 +230,7 @@ const RootStack = createNativeStackNavigator({
     MangaUpdate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: MangaSaveScreen,
       linking: {
@@ -240,7 +240,7 @@ const RootStack = createNativeStackNavigator({
     VolumeCreate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: VolumeSaveScreen,
       linking: {
@@ -250,7 +250,7 @@ const RootStack = createNativeStackNavigator({
     VolumeUpdate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: VolumeSaveScreen,
       linking: {
@@ -260,7 +260,7 @@ const RootStack = createNativeStackNavigator({
     ChapterCreate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: ChapterSaveScreen,
       linking: {
@@ -270,7 +270,7 @@ const RootStack = createNativeStackNavigator({
     ChapterUpdate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: ChapterSaveScreen,
       linking: {
@@ -280,7 +280,7 @@ const RootStack = createNativeStackNavigator({
     MangaStaffCreate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: StaffSaveScreen,
       linking: {
@@ -290,7 +290,7 @@ const RootStack = createNativeStackNavigator({
     StaffUpdate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: StaffSaveScreen,
       linking: {
@@ -300,7 +300,7 @@ const RootStack = createNativeStackNavigator({
     MangaFranchiseCreate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: FranchiseSaveScreen,
       linking: {
@@ -310,7 +310,7 @@ const RootStack = createNativeStackNavigator({
     FranchiseUpdate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: FranchiseSaveScreen,
       linking: {
@@ -360,7 +360,7 @@ const RootStack = createNativeStackNavigator({
     PeopleCreate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: PeopleSaveScreen,
       linking: {
@@ -370,7 +370,7 @@ const RootStack = createNativeStackNavigator({
     PeopleUpdate: {
       if: () => {
         const { user } = useContext(AuthContext);
-        return user != null && user.isAdmin;
+        return user != null;
       },
       screen: PeopleSaveScreen,
       linking: {

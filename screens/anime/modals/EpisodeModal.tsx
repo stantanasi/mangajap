@@ -108,7 +108,7 @@ export default function EpisodeModal({
 
         <View style={{ flex: 1 }} />
 
-        {user && user.isAdmin ? (
+        {user ? (
           <MaterialIcons
             name="edit"
             color="#000"

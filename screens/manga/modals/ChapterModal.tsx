@@ -108,7 +108,7 @@ export default function ChapterModal({
 
         <View style={{ flex: 1 }} />
 
-        {user && user.isAdmin ? (
+        {user ? (
           <MaterialIcons
             name="edit"
             color="#000"

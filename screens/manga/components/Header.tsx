@@ -50,7 +50,7 @@ export default function Header<T extends string>({
           {manga.title}
         </Text>
 
-        {user && user.isAdmin ? (
+        {user ? (
           <MaterialIcons
             name="edit"
             color="#000"

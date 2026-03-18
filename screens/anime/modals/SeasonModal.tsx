@@ -109,7 +109,7 @@ export default function SeasonModal({
 
         <View style={{ flex: 1 }} />
 
-        {user && user.isAdmin ? (
+        {user ? (
           <MaterialIcons
             name="edit"
             color="#000"

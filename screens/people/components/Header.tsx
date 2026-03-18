@@ -48,7 +48,7 @@ export default function Header({ people }: Props) {
           {people.name}
         </Text>
 
-        {user && user.isAdmin ? (
+        {user ? (
           <MaterialIcons
             name="edit"
             color="#000"

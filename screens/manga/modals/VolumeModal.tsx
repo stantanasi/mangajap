@@ -138,7 +138,7 @@ export default function VolumeModal({
 
         <View style={{ flex: 1 }} />
 
-        {user && user.isAdmin ? (
+        {user ? (
           <MaterialIcons
             name="edit"
             color="#000"

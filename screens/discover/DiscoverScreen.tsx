@@ -133,7 +133,7 @@ export default function DiscoverScreen({ route }: Props) {
         </ScrollView>
       )}
 
-      {user && user.isAdmin ? (
+      {user ? (
         <ExpandableFloatingActionButton
           icon="add"
           menuItems={[

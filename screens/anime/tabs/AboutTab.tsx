@@ -123,7 +123,7 @@ export default function AboutTab({ anime, style }: Props) {
           Staff
         </Text>
 
-        {user && user.isAdmin ? (
+        {user ? (
           <MaterialIcons
             name={!staffEditable ? 'edit' : 'edit-off'}
             color="#000"
@@ -153,7 +153,7 @@ export default function AboutTab({ anime, style }: Props) {
         )}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => user && user.isAdmin ? (
+        ListFooterComponent={() => user ? (
           <Pressable
             onPress={() => navigation.navigate('AnimeStaffCreate', { animeId: anime.id })}
             style={{
@@ -196,7 +196,7 @@ export default function AboutTab({ anime, style }: Props) {
           De la même franchise
         </Text>
 
-        {user && user.isAdmin ? (
+        {user ? (
           <MaterialIcons
             name={!franchisesEditable ? 'edit' : 'edit-off'}
             color="#000"
@@ -241,7 +241,7 @@ export default function AboutTab({ anime, style }: Props) {
         ) : null}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => user && user.isAdmin ? (
+        ListFooterComponent={() => user ? (
           <Pressable
             onPress={() => navigation.navigate('AnimeFranchiseCreate', { animeId: anime.id })}
             style={{

@@ -133,7 +133,7 @@ export default function ChaptersTab({ manga, style }: Props) {
         }}
       />
 
-      {user && user.isAdmin ? (
+      {user ? (
         <ExpandableFloatingActionButton
           icon="add"
           menuItems={[

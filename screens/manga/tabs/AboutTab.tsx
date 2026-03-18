@@ -123,7 +123,7 @@ export default function AboutTab({ manga, style }: Props) {
           Staff
         </Text>
 
-        {user && user.isAdmin ? (
+        {user ? (
           <MaterialIcons
             name={!staffEditable ? 'edit' : 'edit-off'}
             color="#000"
@@ -153,7 +153,7 @@ export default function AboutTab({ manga, style }: Props) {
         )}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => user && user.isAdmin ? (
+        ListFooterComponent={() => user ? (
           <Pressable
             onPress={() => navigation.navigate('MangaStaffCreate', { mangaId: manga.id })}
             style={{
@@ -196,7 +196,7 @@ export default function AboutTab({ manga, style }: Props) {
           De la même franchise
         </Text>
 
-        {user && user.isAdmin ? (
+        {user ? (
           <MaterialIcons
             name={!franchisesEditable ? 'edit' : 'edit-off'}
             color="#000"
@@ -241,7 +241,7 @@ export default function AboutTab({ manga, style }: Props) {
         ) : null}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => user && user.isAdmin ? (
+        ListFooterComponent={() => user ? (
           <Pressable
             onPress={() => navigation.navigate('MangaFranchiseCreate', { mangaId: manga.id })}
             style={{

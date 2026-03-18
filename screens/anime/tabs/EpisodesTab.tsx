@@ -132,7 +132,7 @@ export default function EpisodesTab({ anime, style }: Props) {
         }}
       />
 
-      {user && user.isAdmin ? (
+      {user ? (
         <ExpandableFloatingActionButton
           icon="add"
           menuItems={[
