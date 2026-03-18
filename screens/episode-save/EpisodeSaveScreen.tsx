@@ -17,21 +17,21 @@ type Props = StaticScreenProps<{
   animeId: string;
 } | {
   episodeId: string;
-}>
+}>;
 
 export default function EpisodeSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isLoading, episode, seasons } = useEpisodeSave(route.params);
+  const { isLoading, isLoadingSeasons, episode, seasons } = useEpisodeSave(route.params);
   const [form, setForm] = useState<Partial<Object<IEpisode>>>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!episode || form) return
+    if (!episode || form) return;
     setForm(episode.toObject());
   }, [episode]);
 
-  if (isLoading || !episode || !form || !seasons) {
+  if (isLoading || !episode || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -126,10 +126,11 @@ export default function EpisodeSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Saison *"
-          items={seasons.map((season) => ({
+          isLoading={isLoadingSeasons}
+          items={seasons?.map((season) => ({
             value: season.id,
             label: `Saison ${season.number}`,
-          }))}
+          })) ?? []}
           selectedValue={form.season?.id}
           onValueChange={(value) => setForm((prev) => ({
             ...prev,
@@ -225,6 +226,7 @@ const styles = StyleSheet.create({
 const useEpisodeSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingSeasons, setIsLoadingSeasons] = useState(true);
 
   const episode = (() => {
     if ('animeId' in params) {
@@ -249,14 +251,18 @@ const useEpisodeSave = (params: Props['route']['params']) => {
   });
 
   useEffect(() => {
-    const prepare = async () => {
+    const loadSeasons = async () => {
       if ('animeId' in params) {
         const seasons = await Anime.findById(params.animeId).get('seasons')
           .limit(1000);
 
         dispatch(Season.redux.actions.setMany(seasons));
         dispatch(Anime.redux.actions.relations.seasons.addMany(params.animeId, seasons));
-      } else {
+      }
+    };
+
+    const prepare = async () => {
+      if ('episodeId' in params) {
         const episode = await Episode.findById(params.episodeId)
           .include({
             anime: {
@@ -273,7 +279,12 @@ const useEpisodeSave = (params: Props['route']['params']) => {
     prepare()
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
+
+    setIsLoadingSeasons(true);
+    loadSeasons()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoadingSeasons(false));
   }, [params]);
 
-  return { isLoading, episode, seasons };
+  return { isLoading, isLoadingSeasons, episode, seasons };
 };
