@@ -17,21 +17,21 @@ type Props = StaticScreenProps<{
   mangaId: string;
 } | {
   chapterId: string;
-}>
+}>;
 
 export default function ChapterSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isLoading, chapter, volumes } = useChapterSave(route.params);
+  const { isLoading, isLoadingVolumes, chapter, volumes } = useChapterSave(route.params);
   const [form, setForm] = useState<Partial<Object<IChapter>>>();
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!chapter || form) return
+    if (!chapter || form) return;
     setForm(chapter.toObject());
   }, [chapter]);
 
-  if (isLoading || !chapter || !form || !volumes) {
+  if (isLoading || !chapter || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -167,10 +167,11 @@ export default function ChapterSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Tome"
-          items={volumes.map((volume) => ({
+          isLoading={isLoadingVolumes}
+          items={volumes?.map((volume) => ({
             value: volume.id,
             label: `Tome ${volume.number}`,
-          }))}
+          })) ?? []}
           selectedValue={form.volume?.id}
           onValueChange={(value) => setForm((prev) => ({
             ...prev,
@@ -225,6 +226,7 @@ const styles = StyleSheet.create({
 const useChapterSave = (params: Props['route']['params']) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingVolumes, setIsLoadingVolumes] = useState(true);
 
   const chapter = (() => {
     if ('mangaId' in params) {
@@ -245,18 +247,22 @@ const useChapterSave = (params: Props['route']['params']) => {
 
   const volumes = useAppSelector((state) => {
     if (!chapter || !chapter.manga) return undefined;
-    return Manga.redux.selectors.selectRelation(state, chapter.manga.id, 'volumes')
+    return Manga.redux.selectors.selectRelation(state, chapter.manga.id, 'volumes');
   });
 
   useEffect(() => {
-    const prepare = async () => {
+    const loadVolumes = async () => {
       if ('mangaId' in params) {
         const volumes = await Manga.findById(params.mangaId).get('volumes')
           .limit(1000);
 
         dispatch(Volume.redux.actions.setMany(volumes));
         dispatch(Manga.redux.actions.relations.volumes.addMany(params.mangaId, volumes));
-      } else {
+      }
+    };
+
+    const prepare = async () => {
+      if ('chapterId' in params) {
         const chapter = await Chapter.findById(params.chapterId)
           .include({
             manga: {
@@ -267,14 +273,18 @@ const useChapterSave = (params: Props['route']['params']) => {
 
         dispatch(Chapter.redux.actions.setOne(chapter));
       }
-
     };
 
     setIsLoading(true);
     prepare()
       .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
+
+    setIsLoadingVolumes(true);
+    loadVolumes()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoadingVolumes(false));
   }, [params]);
 
-  return { isLoading, chapter, volumes };
+  return { isLoading, isLoadingVolumes, chapter, volumes };
 };
