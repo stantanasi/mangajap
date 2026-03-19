@@ -2,7 +2,7 @@
   "expo": {
     "name": "MangaJap",
     "slug": "mangajap",
-    "version": "1.0.0",
+    "version": "3.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "mangajap",
@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.tanasi.mangajap"
+      "package": "com.tanasi.mangajap",
+      "versionCode": 87
     },
     "web": {
       "favicon": "./assets/favicon.png"
