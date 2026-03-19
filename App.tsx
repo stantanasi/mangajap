@@ -39,8 +39,8 @@ const MainTabs = createBottomTabNavigator({
   screenOptions: {
     header: () => null,
     tabBarShowLabel: true,
-    tabBarStyle: {
-      height: 'auto',
+    tabBarLabelStyle: {
+      overflow: 'visible',
     },
     title: 'MangaJap',
   },
