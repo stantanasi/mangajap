@@ -520,13 +520,13 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
             (state: RootState, id: string, relationship: K) => state[name].relations[relationship]?.[id],
             (_state: RootState, _id: string, relationship: K) => relationship,
             (_state: RootState, _id: string, _relationship: K, params?: SelectorParams<ExtractDocType<DocType[K]>>) => params,
-          ], (state, linkage, relationship, params): DocType[typeof relationship] | undefined => {
+          ], (state, linkage, relationship, params): DocType[K] | undefined => {
             return selectRelation(
               state,
               relationship,
               linkage,
               params,
-            ) as DocType[typeof relationship];
+            ) as DocType[K];
           }))(),
         },
       };

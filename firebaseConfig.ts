@@ -1,8 +1,7 @@
-//@ts-ignore
-import { getReactNativePersistence } from '@firebase/auth/dist/rn/index.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeApp } from 'firebase/app';
 import { initializeAuth } from 'firebase/auth';
+import { getReactNativePersistence } from './firebase-auth';
 
 const app = initializeApp({
   apiKey: 'AIzaSyBERviz4ObXOcBPCHiY8weoU_zdA8UNcIk',

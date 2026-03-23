@@ -1,4 +1,4 @@
-import { createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ExtractDocType, Json, JsonApiIdentifier } from "@stantanasi/jsonapi-client";
 import { State } from "../store";
 
@@ -36,7 +36,7 @@ export const createModelSlice = <DocType extends Record<string, any>>(
           delete doc[relationship];
         }
 
-        state.entities[doc.id] = doc as Draft<typeof action.payload>;
+        state.entities[doc.id] = doc as typeof state.entities[string];
       },
 
       removeOne: (state, action: PayloadAction<string>) => {
