@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { ExtractDocType, JsonApiIdentifier, Model, ModelConstructor, ModelInstance, models } from "@stantanasi/jsonapi-client";
-import { AppThunk, RootState, slices } from "../store";
+import { ExtractDocType, Model, ModelConstructor, ModelInstance, models } from "@stantanasi/jsonapi-client";
+import { AppThunk, RootState, RootStateKeys, slices } from "../store";
 
 type Relationships<DocType> = Extract<{
   [K in keyof DocType]: ExtractDocType<DocType[K]> extends never ? never : K;
@@ -22,7 +22,7 @@ type SelectorParams<DocType> = {
   };
   limit?: number;
   offset?: number;
-}
+};
 
 
 const fromEntity = <DocType, M extends ModelConstructor<DocType>>(
@@ -30,7 +30,7 @@ const fromEntity = <DocType, M extends ModelConstructor<DocType>>(
   model: M,
   state: RootState,
   id: string,
-  entity: typeof state[keyof typeof state]['entities'][keyof typeof state[keyof typeof state]['entities']],
+  entity: RootState[RootStateKeys]['entities'][string],
   params?: SelectorParams<DocType>,
 ): InstanceType<M> | undefined => {
   if (!entity) return entity;
@@ -60,7 +60,7 @@ const fromEntity = <DocType, M extends ModelConstructor<DocType>>(
 
   const relations: Record<string, ModelInstance<unknown> | ModelInstance<unknown>[] | undefined> = {};
   for (const relationship of Object.keys(params?.include ?? {})) {
-    if (!params?.include?.[relationship]) continue
+    if (!params?.include?.[relationship]) continue;
 
     const relatedParams = typeof params.include[relationship] === 'object'
       ? params.include[relationship]
@@ -163,118 +163,6 @@ const buildDocs = <DocType, M extends ModelConstructor<DocType>>(
   return docs;
 };
 
-const selectDocById = <DocType, M extends ModelConstructor<DocType>>(
-  name: keyof typeof slices,
-  model: M,
-  state: RootState,
-  id: string,
-  entity: typeof state[keyof typeof state]['entities'][keyof typeof state[keyof typeof state]['entities']],
-  params?: SelectorParams<DocType>,
-): InstanceType<M> | undefined => {
-  return fromEntity(
-    name,
-    model,
-    state,
-    id,
-    entity,
-    params,
-  );
-};
-
-const selectDocByIds = <DocType, M extends ModelConstructor<DocType>>(
-  name: keyof typeof slices,
-  model: M,
-  state: RootState,
-  ids: string[],
-  entities: typeof state[keyof typeof state]['entities'],
-  params?: SelectorParams<DocType>,
-): InstanceType<M>[] => {
-  let docs = ids
-    .map((id) => {
-      const entity = entities[id];
-      if (!entity) return entity;
-
-      return fromEntity(
-        name,
-        model,
-        state,
-        id,
-        entity,
-        params,
-      );
-    })
-    .filter((doc) => !!doc);
-
-  return buildDocs(docs, params);
-};
-
-const selectDocs = <DocType, M extends ModelConstructor<DocType>>(
-  name: keyof typeof slices,
-  model: M,
-  state: RootState,
-  entities: typeof state[keyof typeof state]['entities'],
-  params?: SelectorParams<DocType>,
-): InstanceType<M>[] => {
-  let docs = Object.values<typeof entities[keyof typeof entities]>(entities)
-    .map((entity) => {
-      const id = entity!.id;
-
-      return fromEntity(
-        name,
-        model,
-        state,
-        id,
-        entity,
-        params,
-      );
-    })
-    .filter((doc) => !!doc);
-
-  return buildDocs(docs, params);
-};
-
-const selectRelation = <DocType, K extends Relationships<DocType>>(
-  state: RootState,
-  relationship: K,
-  linkage: JsonApiIdentifier | JsonApiIdentifier[] | null | undefined,
-  params?: SelectorParams<ExtractDocType<DocType[K]>>,
-): DocType[K] | undefined => {
-  if (Array.isArray(linkage)) {
-    let docs = linkage
-      .map((identifier) => {
-        const relatedModel = models[identifier.type] as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
-
-        return fromEntity(
-          relatedModel.redux.name,
-          relatedModel as ModelConstructor<any>,
-          state,
-          identifier.id,
-          state[relatedModel.redux.name].entities[identifier.id],
-          params,
-        );
-      })
-      .filter((doc) => !!doc);
-
-    return buildDocs(docs, params) as DocType[typeof relationship];
-  } else if (linkage) {
-    const identifier = linkage;
-    const relatedModel = models[identifier.type] as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
-
-    const doc = fromEntity(
-      relatedModel.redux.name,
-      relatedModel as ModelConstructor<any>,
-      state,
-      identifier.id,
-      state[relatedModel.redux.name].entities[identifier.id],
-      params,
-    );
-
-    return doc as DocType[typeof relationship];
-  } else {
-    return undefined;
-  }
-};
-
 type ModelInstanceUnion<T> = T extends any ? ModelInstance<T> : never;
 
 
@@ -344,7 +232,7 @@ export type ReduxHelpers<DocType, ModelType extends ModelConstructor<DocType>> =
       ) => DocType[K] | undefined;
     };
   };
-}
+};
 
 export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<DocType>>(
   model: ModelType,
@@ -354,53 +242,54 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
       const slice = slices[name];
       const relationships = Object.keys(model.schema.relationships) as Relationships<DocType>[];
 
+      type DispatchBuffer = {
+        [name: string]: any[];
+      };
+
+      const processRecursive = (doc: Model<any>, buffer: DispatchBuffer) => {
+        if (!buffer[doc.type]) {
+          buffer[doc.type] = [];
+        }
+
+        buffer[doc.type].push(doc.toJSON());
+
+        const relationships = Object.keys(doc.model().schema.relationships) as Relationships<unknown>[];
+        for (const relationship of relationships) {
+          const value = doc[relationship] as Model<unknown> | Model<unknown>[] | null | undefined;
+          if (!value) continue;
+
+          const values = Array.isArray(value) ? value : [value];
+          for (const val of values) {
+            processRecursive(val, buffer);
+          }
+        }
+      };
+
       return {
         name: name,
 
         actions: {
           setOne: (doc) => (dispatch) => {
-            for (const relationship of relationships) {
-              const value = doc[relationship] as ModelInstance<unknown> | ModelInstance<unknown>[] | undefined;
+            const buffer: DispatchBuffer = {};
 
-              if (Array.isArray(value)) {
-                for (const val of value) {
-                  const relatedModel = val.model() as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
-                  if (!relatedModel.redux) continue
+            processRecursive(doc, buffer);
 
-                  dispatch(relatedModel.redux.actions.setOne(val));
-                }
-              } else if (value) {
-                const relatedModel = value.model() as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
-                if (!relatedModel.redux) continue
-
-                dispatch(relatedModel.redux.actions.setOne(value));
-              }
+            for (const [type, docs] of Object.entries(buffer)) {
+              const slice = slices[type as keyof typeof slices];
+              dispatch(slice.actions.setMany(docs));
             }
-
-            dispatch(slice.actions.setOne(doc.toJSON() as any));
           },
 
           setMany: (docs) => (dispatch) => {
+            const buffer: DispatchBuffer = {};
+
             for (const doc of docs) {
-              for (const relationship of relationships) {
-                const value = doc[relationship] as ModelInstance<unknown> | ModelInstance<unknown>[] | undefined;
+              processRecursive(doc, buffer);
+            }
 
-                if (Array.isArray(value)) {
-                  for (const val of value) {
-                    const relatedModel = val.model() as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
-                    if (!relatedModel.redux) continue
-
-                    dispatch(relatedModel.redux.actions.setOne(val));
-                  }
-                } else if (value) {
-                  const relatedModel = value.model() as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
-                  if (!relatedModel.redux) continue
-
-                  dispatch(relatedModel.redux.actions.setOne(value));
-                }
-              }
-
-              dispatch(slice.actions.setOne(doc.toJSON() as any));
+            for (const [type, docs] of Object.entries(buffer)) {
+              const slice = slices[type as keyof typeof slices];
+              dispatch(slice.actions.setMany(docs));
             }
           },
 
@@ -469,13 +358,36 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
         },
 
         selectors: {
+          select: createSelector([
+            (state: RootState) => state,
+            (state: RootState) => state[name].entities,
+            (_state: RootState, params?: SelectorParams<DocType>) => params,
+          ], (state, entities, params) => {
+            const docs = Object.values<typeof entities[keyof typeof entities]>(entities)
+              .map((entity) => {
+                const id = entity!.id;
+
+                return fromEntity(
+                  name,
+                  model,
+                  state,
+                  id,
+                  entity,
+                  params,
+                );
+              })
+              .filter((doc) => !!doc);
+
+            return buildDocs(docs, params);
+          }),
+
           selectById: createSelector([
             (state: RootState) => state,
             (state: RootState, id: string) => state[name].entities[id],
             (_state: RootState, id: string) => id,
             (_state: RootState, _id: string, params?: SelectorParams<DocType>) => params,
           ], (state, entity, id, params) => {
-            return selectDocById(
+            return fromEntity(
               name,
               model,
               state,
@@ -491,28 +403,23 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
             (_state: RootState, ids: string[]) => ids,
             (_state: RootState, _ids: string[], params?: SelectorParams<DocType>) => params,
           ], (state, entities, ids, params) => {
-            return selectDocByIds(
-              name,
-              model,
-              state,
-              ids,
-              entities,
-              params,
-            );
-          }),
+            const docs = ids
+              .map((id) => {
+                const entity = entities[id];
+                if (!entity) return entity;
 
-          select: createSelector([
-            (state: RootState) => state,
-            (state: RootState) => state[name].entities,
-            (_state: RootState, params?: SelectorParams<DocType>) => params,
-          ], (state, entities, params) => {
-            return selectDocs(
-              name,
-              model,
-              state,
-              entities,
-              params,
-            );
+                return fromEntity(
+                  name,
+                  model,
+                  state,
+                  id,
+                  entity,
+                  params,
+                );
+              })
+              .filter((doc) => !!doc);
+
+            return buildDocs(docs, params);
           }),
 
           selectRelation: (<K extends Relationships<DocType>>() => createSelector([
@@ -521,12 +428,40 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
             (_state: RootState, _id: string, relationship: K) => relationship,
             (_state: RootState, _id: string, _relationship: K, params?: SelectorParams<ExtractDocType<DocType[K]>>) => params,
           ], (state, linkage, relationship, params): DocType[K] | undefined => {
-            return selectRelation(
-              state,
-              relationship,
-              linkage,
-              params,
-            ) as DocType[K];
+            if (Array.isArray(linkage)) {
+              const docs = linkage
+                .map((identifier) => {
+                  const relatedModel = models[identifier.type] as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
+
+                  return fromEntity(
+                    relatedModel.redux.name,
+                    relatedModel as ModelConstructor<any>,
+                    state,
+                    identifier.id,
+                    state[relatedModel.redux.name].entities[identifier.id],
+                    params,
+                  );
+                })
+                .filter((doc) => !!doc);
+
+              return buildDocs(docs, params) as DocType[typeof relationship];
+            } else if (linkage) {
+              const identifier = linkage;
+              const relatedModel = models[identifier.type] as ModelConstructor<unknown> & ReduxHelpers<unknown, ModelConstructor<unknown>>;
+
+              const doc = fromEntity(
+                relatedModel.redux.name,
+                relatedModel as ModelConstructor<any>,
+                state,
+                identifier.id,
+                state[relatedModel.redux.name].entities[identifier.id],
+                params,
+              );
+
+              return doc as DocType[typeof relationship];
+            } else {
+              return undefined;
+            }
           }))(),
         },
       };
