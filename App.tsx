@@ -9,8 +9,9 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { Image, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
-import store from './redux/store';
+import store, { persistor } from './redux/store';
 import AgendaAnimeScreen from './screens/agenda-anime/AgendaAnimeScreen';
 import AgendaMangaScreen from './screens/agenda-manga/AgendaMangaScreen';
 import AnimeSaveScreen from './screens/anime-save/AnimeSaveScreen';
@@ -409,7 +410,7 @@ const Navigation = createStaticNavigation(RootStack);
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
-  const { isReady: isAuthReady } = useContext(AuthContext)
+  const { isReady: isAuthReady } = useContext(AuthContext);
   const [isAppReady, setIsAppReady] = useState(false);
 
   useEffect(() => {
@@ -455,9 +456,11 @@ function AppContent() {
 export default function App() {
   return (
     <Provider store={store}>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </PersistGate>
     </Provider>
   );
 }
