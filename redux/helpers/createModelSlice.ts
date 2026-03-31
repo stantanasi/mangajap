@@ -24,19 +24,38 @@ export const createModelSlice = <DocType extends Record<string, any>>(
 
         for (const relationship of relationships) {
           const value = doc[relationship] as Json<unknown> | Json<unknown>[] | null | undefined;
+          if (value === undefined) continue;
 
-          if (value !== undefined) {
-            state.relations[relationship][doc.id] = Array.isArray(value)
-              ? value.map((val) => ({ type: val.type, id: val.id }))
-              : value
-                ? { type: value.type, id: value.id }
-                : value;
-          }
+          state.relations[relationship][doc.id] = Array.isArray(value)
+            ? value.map((val) => ({ type: val.type, id: val.id }))
+            : value
+              ? { type: value.type, id: value.id }
+              : value;
 
           delete doc[relationship];
         }
 
         state.entities[doc.id] = doc as typeof state.entities[string];
+      },
+      setMany: (state, action: PayloadAction<Json<DocType>[]>) => {
+        const docs = action.payload;
+
+        for (const doc of docs) {
+          for (const relationship of relationships) {
+            const value = doc[relationship] as Json<unknown> | Json<unknown>[] | null | undefined;
+            if (value === undefined) continue;
+
+            state.relations[relationship][doc.id] = Array.isArray(value)
+              ? value.map((val) => ({ type: val.type, id: val.id }))
+              : value
+                ? { type: value.type, id: value.id }
+                : value;
+
+            delete doc[relationship];
+          }
+
+          state.entities[doc.id] = doc as typeof state.entities[string];
+        }
       },
 
       removeOne: (state, action: PayloadAction<string>) => {
