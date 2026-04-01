@@ -6,7 +6,7 @@ import * as Linking from "expo-linking";
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useContext } from 'react';
-import { Image, Platform } from 'react-native';
+import { Image, Platform, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -445,6 +445,24 @@ function AppContent() {
           prefixes: [Linking.createURL("/")],
         }}
       />
+
+      {isAppOffline && (
+        <View
+          style={{
+            backgroundColor: '#d40e0e',
+          }}
+        >
+          <Text
+            style={{
+              color: '#ffffff',
+              padding: 3,
+              textAlign: 'center',
+            }}
+          >
+            Vous êtes en mode hors connexion
+          </Text>
+        </View>
+      )}
       <StatusBar style="auto" />
     </SafeAreaProvider>
   );
