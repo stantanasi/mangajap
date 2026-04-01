@@ -5,11 +5,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from "expo-linking";
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext } from 'react';
 import { Image, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import AppProvider, { useApp } from './contexts/AppContext';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import store, { persistor } from './redux/store';
 import AgendaAnimeScreen from './screens/agenda-anime/AgendaAnimeScreen';
@@ -410,12 +411,8 @@ const Navigation = createStaticNavigation(RootStack);
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
+  const { isReady: isAppReady, isOffline: isAppOffline } = useApp();
   const { isReady: isAuthReady } = useContext(AuthContext);
-  const [isAppReady, setIsAppReady] = useState(false);
-
-  useEffect(() => {
-    setIsAppReady(true);
-  }, []);
 
   const onLayoutRootView = useCallback(() => {
     if (isAuthReady && isAppReady) {
@@ -457,9 +454,11 @@ export default function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
+        <AppProvider>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </AppProvider>
       </PersistGate>
     </Provider>
   );
