@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ProgressBar from '../../../components/atoms/ProgressBar';
 import TabBar from '../../../components/atoms/TabBar';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Manga } from '../../../models';
 
@@ -23,6 +24,7 @@ export default function Header<T extends string>({
   onTabSelect,
 }: Props<T>) {
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
 
   const progress = manga['manga-entry']
@@ -52,7 +54,7 @@ export default function Header<T extends string>({
           {manga.title}
         </Text>
 
-        {!isLoading && user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"

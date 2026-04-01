@@ -5,6 +5,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import Modal from '../../../components/atoms/Modal';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, Season, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
@@ -32,6 +33,7 @@ export default function SeasonModal({
 }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
 
   if (!season) {
@@ -111,7 +113,7 @@ export default function SeasonModal({
 
         <View style={{ flex: 1 }} />
 
-        {!isLoading && user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"
@@ -165,7 +167,7 @@ export default function SeasonModal({
           </Text>
         </View>
 
-        {!isLoading && user ? (
+        {!isOffline && !isLoading && user ? (
           <>
             <View style={{ flex: 1 }} />
 

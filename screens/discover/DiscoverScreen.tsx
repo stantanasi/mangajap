@@ -8,6 +8,7 @@ import AnimeCard from '../../components/molecules/AnimeCard';
 import ExpandableFloatingActionButton from '../../components/molecules/ExpandableFloatingActionButton';
 import MangaCard from '../../components/molecules/MangaCard';
 import PeopleCard from '../../components/molecules/PeopleCard';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, Manga, People } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -16,6 +17,7 @@ type Props = StaticScreenProps<undefined>;
 
 export default function DiscoverScreen({ route }: Props) {
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const { isLoading, peoples, animes, mangas } = useDiscover();
 
@@ -136,7 +138,7 @@ export default function DiscoverScreen({ route }: Props) {
         </ScrollView>
       )}
 
-      {!isLoading && user ? (
+      {!isOffline && !isLoading && user ? (
         <ExpandableFloatingActionButton
           icon="add"
           menuItems={[

@@ -6,6 +6,7 @@ import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
@@ -33,6 +34,7 @@ export default function VolumeModal({
 }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const [readDatePickerVisible, setReadDatePickerVisible] = useState(false);
   const [isSavingReadDate, setIsSavingReadDate] = useState(false);
@@ -140,7 +142,7 @@ export default function VolumeModal({
 
         <View style={{ flex: 1 }} />
 
-        {!isLoading && user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"
@@ -192,7 +194,7 @@ export default function VolumeModal({
           </Text>
         </View>
 
-        {!isLoading && user ? (
+        {!isOffline && !isLoading && user ? (
           <>
             <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
               {!isSavingReadDate ? (

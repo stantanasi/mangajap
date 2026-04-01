@@ -6,6 +6,7 @@ import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
 import TextInput from '../../components/atoms/TextInput';
+import { useApp } from '../../contexts/AppContext';
 import { People } from '../../models';
 import { IPeople } from '../../models/people.model';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -17,6 +18,7 @@ type Props = StaticScreenProps<{
 export default function PeopleSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { isLoading, people } = usePeopleSave(route.params);
   const [form, setForm] = useState<Partial<Object<IPeople>>>();
   const [isSaving, setIsSaving] = useState(false);
@@ -79,7 +81,6 @@ export default function PeopleSaveScreen({ route }: Props) {
             flex: 1,
             fontSize: 16,
             fontWeight: 'bold',
-            textAlign: 'center',
           }}
         >
           {people.isNew
@@ -87,19 +88,21 @@ export default function PeopleSaveScreen({ route }: Props) {
             : 'Modifier la personnalité'}
         </Text>
 
-        <MaterialIcons
-          name="save"
-          color="#000"
-          size={24}
-          onPress={() => {
-            setIsSaving(true);
+        {!isOffline ? (
+          <MaterialIcons
+            name="save"
+            color="#000"
+            size={24}
+            onPress={() => {
+              setIsSaving(true);
 
-            save()
-              .catch((err) => console.error(err))
-              .finally(() => setIsSaving(false));
-          }}
-          style={{ padding: 16 }}
-        />
+              save()
+                .catch((err) => console.error(err))
+                .finally(() => setIsSaving(false));
+            }}
+            style={{ padding: 16 }}
+          />
+        ) : null}
       </View>
 
       <ScrollView>

@@ -8,6 +8,7 @@ import DateInput from '../../components/atoms/DateInput';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
 import TextInput from '../../components/atoms/TextInput';
+import { useApp } from '../../contexts/AppContext';
 import { Manga, Volume } from '../../models';
 import { IVolume } from '../../models/volume.model';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -21,6 +22,7 @@ type Props = StaticScreenProps<{
 export default function VolumeSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { isLoading, volume } = useVolumeSave(route.params);
   const [form, setForm] = useState<Partial<Object<IVolume>>>();
   const [isSaving, setIsSaving] = useState(false);
@@ -83,7 +85,6 @@ export default function VolumeSaveScreen({ route }: Props) {
             flex: 1,
             fontSize: 16,
             fontWeight: 'bold',
-            textAlign: 'center',
           }}
         >
           {volume.isNew
@@ -91,19 +92,21 @@ export default function VolumeSaveScreen({ route }: Props) {
             : 'Modifier le tome'}
         </Text>
 
-        <MaterialIcons
-          name="save"
-          color="#000"
-          size={24}
-          onPress={() => {
-            setIsSaving(true);
+        {!isOffline ? (
+          <MaterialIcons
+            name="save"
+            color="#000"
+            size={24}
+            onPress={() => {
+              setIsSaving(true);
 
-            save()
-              .catch((err) => console.error(err))
-              .finally(() => setIsSaving(false));
-          }}
-          style={{ padding: 16 }}
-        />
+              save()
+                .catch((err) => console.error(err))
+                .finally(() => setIsSaving(false));
+            }}
+            style={{ padding: 16 }}
+          />
+        ) : null}
       </View>
 
       <ScrollView>

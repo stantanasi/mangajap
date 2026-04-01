@@ -2,6 +2,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { People } from '../../../models';
 
@@ -12,6 +13,7 @@ type Props = {
 
 export default function Header({ isLoading, people }: Props) {
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
 
   return (
@@ -49,7 +51,7 @@ export default function Header({ isLoading, people }: Props) {
           {people.name}
         </Text>
 
-        {!isLoading && user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"

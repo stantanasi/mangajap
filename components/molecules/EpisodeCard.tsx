@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../models';
 import { useAppDispatch } from '../../redux/store';
@@ -24,6 +25,7 @@ export default function EpisodeCard({
   ...props
 }: Props) {
   const dispatch = useAppDispatch();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
 
   const updateEpisodeEntry = async (add: boolean) => {
@@ -68,7 +70,7 @@ export default function EpisodeCard({
         </Text>
       </View>
 
-      {!isLoading && user ? (
+      {!isOffline && !isLoading && user ? (
         <Checkbox
           value={!!episode['episode-entry']}
           onValueChange={(value) => {

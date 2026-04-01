@@ -9,6 +9,7 @@ import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
+import { useApp } from '../../contexts/AppContext';
 import { Chapter, Manga, Volume } from '../../models';
 import { IChapter } from '../../models/chapter.model';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -22,6 +23,7 @@ type Props = StaticScreenProps<{
 export default function ChapterSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { isLoading, isLoadingVolumes, chapter, volumes } = useChapterSave(route.params);
   const [form, setForm] = useState<Partial<Object<IChapter>>>();
   const [isSaving, setIsSaving] = useState(false);
@@ -86,7 +88,6 @@ export default function ChapterSaveScreen({ route }: Props) {
             flex: 1,
             fontSize: 16,
             fontWeight: 'bold',
-            textAlign: 'center',
           }}
         >
           {chapter.isNew
@@ -94,19 +95,21 @@ export default function ChapterSaveScreen({ route }: Props) {
             : 'Modifier le chapitre'}
         </Text>
 
-        <MaterialIcons
-          name="save"
-          color="#000"
-          size={24}
-          onPress={() => {
-            setIsSaving(true);
+        {!isOffline ? (
+          <MaterialIcons
+            name="save"
+            color="#000"
+            size={24}
+            onPress={() => {
+              setIsSaving(true);
 
-            save()
-              .catch((err) => console.error(err))
-              .finally(() => setIsSaving(false));
-          }}
-          style={{ padding: 16 }}
-        />
+              save()
+                .catch((err) => console.error(err))
+                .finally(() => setIsSaving(false));
+            }}
+            style={{ padding: 16 }}
+          />
+        ) : null}
       </View>
 
       <ScrollView>

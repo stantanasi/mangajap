@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../models';
 import { useAppDispatch } from '../../redux/store';
@@ -24,6 +25,7 @@ export default function ChapterCard({
   ...props
 }: Props) {
   const dispatch = useAppDispatch();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
 
   const updateChapterEntry = async (add: boolean) => {
@@ -68,7 +70,7 @@ export default function ChapterCard({
         </Text>
       </View>
 
-      {!isLoading && user ? (
+      {!isOffline && !isLoading && user ? (
         <Checkbox
           value={!!chapter['chapter-entry']}
           onValueChange={(value) => {

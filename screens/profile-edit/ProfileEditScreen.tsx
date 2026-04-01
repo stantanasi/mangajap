@@ -5,6 +5,7 @@ import { launchImageLibraryAsync } from 'expo-image-picker';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useApp } from '../../contexts/AppContext';
 import { User } from '../../models';
 import { IUser } from '../../models/user.model';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -16,6 +17,7 @@ type Props = StaticScreenProps<{
 export default function ProfileEditScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { isLoading, user } = useProfileEdit(route.params);
   const [form, setForm] = useState<Partial<Object<IUser>>>();
   const [isUpdating, setIsUpdating] = useState(false);
@@ -89,25 +91,26 @@ export default function ProfileEditScreen({ route }: Props) {
             flex: 1,
             fontSize: 16,
             fontWeight: 'bold',
-            textAlign: 'center',
           }}
         >
           Modifier le profil
         </Text>
 
-        <MaterialIcons
-          name="save"
-          color="#000"
-          size={24}
-          onPress={() => {
-            setIsUpdating(true);
+        {!isOffline ? (
+          <MaterialIcons
+            name="save"
+            color="#000"
+            size={24}
+            onPress={() => {
+              setIsUpdating(true);
 
-            save()
-              .catch((err) => console.error(err))
-              .finally(() => setIsUpdating(false));
-          }}
-          style={{ padding: 16 }}
-        />
+              save()
+                .catch((err) => console.error(err))
+                .finally(() => setIsUpdating(false));
+            }}
+            style={{ padding: 16 }}
+          />
+        ) : null}
       </View>
 
       <ScrollView

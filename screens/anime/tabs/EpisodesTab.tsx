@@ -4,6 +4,7 @@ import { SectionList, StyleProp, StyleSheet, View, ViewStyle } from 'react-nativ
 import EpisodeCard from '../../../components/molecules/EpisodeCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import SeasonCard from '../../../components/molecules/SeasonCard';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime, Episode, Season } from '../../../models';
 import EpisodeModal from '../modals/EpisodeModal';
@@ -18,6 +19,7 @@ type Props = {
 
 export default function EpisodesTab({ isLoading, anime, style }: Props) {
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const [expandedSeasons, setExpandedSeasons] = useState<{ [seasonId: string]: boolean; }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean; }>({});
@@ -132,7 +134,7 @@ export default function EpisodesTab({ isLoading, anime, style }: Props) {
         }}
       />
 
-      {!isLoading && user ? (
+      {!isOffline && !isLoading && user ? (
         <ExpandableFloatingActionButton
           icon="add"
           menuItems={[

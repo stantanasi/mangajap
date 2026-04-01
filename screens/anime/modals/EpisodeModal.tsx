@@ -6,6 +6,7 @@ import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
@@ -31,6 +32,7 @@ export default function EpisodeModal({
 }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const [watchedDatePickerVisible, setWatchedDatePickerVisible] = useState(false);
   const [isSavingWatchedDate, setIsSavingWatchedDate] = useState(false);
@@ -110,7 +112,7 @@ export default function EpisodeModal({
 
         <View style={{ flex: 1 }} />
 
-        {!isLoading && user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"
@@ -162,7 +164,7 @@ export default function EpisodeModal({
           </Text>
         </View>
 
-        {!isLoading && user ? (
+        {!isOffline && !isLoading && user ? (
           <>
             <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
               {!isSavingWatchedDate ? (

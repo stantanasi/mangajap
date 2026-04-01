@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -16,6 +17,7 @@ type Props = StaticScreenProps<{
 }>;
 
 export default function AnimeScreen({ route }: Props) {
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const { isLoading, anime } = useAnime(route.params);
   const [selectedTab, setSelectedTab] = useState<'about' | 'episodes'>('about');
@@ -63,7 +65,7 @@ export default function AnimeScreen({ route }: Props) {
         }}
       />
 
-      {!isLoading && user && !anime['anime-entry']?.isAdd ? (
+      {!isOffline && !isLoading && user && !anime['anime-entry']?.isAdd ? (
         <AddAnimeButton
           anime={anime}
         />

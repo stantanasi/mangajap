@@ -6,6 +6,7 @@ import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import AnimeCard from '../../../components/molecules/AnimeCard';
 import MangaCard from '../../../components/molecules/MangaCard';
 import PeopleCard from '../../../components/molecules/PeopleCard';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime, Manga } from '../../../models';
 import { MangaType } from '../../../models/manga.model';
@@ -18,6 +19,7 @@ type Props = {
 
 export default function AboutTab({ isLoading, manga, style }: Props) {
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const [staffEditable, setStaffEditable] = useState(false);
   const [franchisesEditable, setFranchisesEditable] = useState(false);
@@ -124,7 +126,7 @@ export default function AboutTab({ isLoading, manga, style }: Props) {
           Staff
         </Text>
 
-        {!isLoading && user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name={!staffEditable ? 'edit' : 'edit-off'}
             color="#000"
@@ -155,7 +157,7 @@ export default function AboutTab({ isLoading, manga, style }: Props) {
         )}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => !isLoading && user ? (
+        ListFooterComponent={() => !isOffline && !isLoading && user ? (
           <Pressable
             onPress={() => navigation.navigate('MangaStaffCreate', { mangaId: manga.id })}
             style={{
@@ -198,7 +200,7 @@ export default function AboutTab({ isLoading, manga, style }: Props) {
           De la même franchise
         </Text>
 
-        {!isLoading && user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name={!franchisesEditable ? 'edit' : 'edit-off'}
             color="#000"
@@ -247,7 +249,7 @@ export default function AboutTab({ isLoading, manga, style }: Props) {
         ) : null}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => !isLoading && user ? (
+        ListFooterComponent={() => !isOffline && !isLoading && user ? (
           <Pressable
             onPress={() => navigation.navigate('MangaFranchiseCreate', { mangaId: manga.id })}
             style={{

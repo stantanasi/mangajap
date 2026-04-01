@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../models';
 import { useAppDispatch } from '../../redux/store';
@@ -32,6 +33,7 @@ export default function VolumeCard({
   ...props
 }: Props) {
   const dispatch = useAppDispatch();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
 
   const chaptersReadCount = volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0;
@@ -140,7 +142,7 @@ export default function VolumeCard({
           {chaptersReadCount} / {chaptersCount}
         </Text>
 
-        {!isLoading && user ? (
+        {!isOffline && !isLoading && user ? (
           <Checkbox
             value={!!volume['volume-entry']}
             onValueChange={(value) => {

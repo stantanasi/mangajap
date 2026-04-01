@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext, useState } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Franchise, Manga, MangaEntry, User } from '../../models';
 import { FranchiseRole } from '../../models/franchise.model';
@@ -30,6 +31,7 @@ export default function MangaCard({
   ...props
 }: Props) {
   const dispatch = useAppDispatch();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -131,7 +133,7 @@ export default function MangaCard({
         ) : null}
       </View>
 
-      {!isLoading && user && showCheckbox ? (
+      {!isOffline && !isLoading && user && showCheckbox ? (
         <Checkbox
           value={manga['manga-entry']?.isAdd ?? false}
           onValueChange={(value) => {

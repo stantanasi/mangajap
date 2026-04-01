@@ -4,6 +4,7 @@ import { SectionList, StyleProp, StyleSheet, View, ViewStyle } from 'react-nativ
 import ChapterCard from '../../../components/molecules/ChapterCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import VolumeCard from '../../../components/molecules/VolumeCard';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Chapter, Manga, Volume } from '../../../models';
 import ChapterModal from '../modals/ChapterModal';
@@ -18,6 +19,7 @@ type Props = {
 
 export default function ChaptersTab({ isLoading, manga, style }: Props) {
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean; }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean; }>({});
@@ -135,7 +137,7 @@ export default function ChaptersTab({ isLoading, manga, style }: Props) {
         }}
       />
 
-      {!isLoading && user ? (
+      {!isOffline && !isLoading && user ? (
         <ExpandableFloatingActionButton
           icon="add"
           menuItems={[

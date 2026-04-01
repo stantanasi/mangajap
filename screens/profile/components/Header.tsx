@@ -2,6 +2,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
@@ -25,6 +26,7 @@ export default function Header({
 }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user: authenticatedUser } = useContext(AuthContext);
   const [isFollowUpdating, setIsFollowUpdating] = useState(false);
 
@@ -137,7 +139,7 @@ export default function Header({
           marginTop: 24,
         }}
       >
-        {!isLoading && authenticatedUser ? (
+        {!isOffline && !isLoading && authenticatedUser ? (
           user.id === authenticatedUser.id ? (
             <Text
               onPress={() => navigation.navigate('ProfileEdit', { id: user.id })}
