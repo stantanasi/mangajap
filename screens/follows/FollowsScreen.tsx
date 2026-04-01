@@ -1,12 +1,11 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import UserCard from '../../components/molecules/UserCard';
-import { Follow, User } from '../../models';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { useFollows } from './hooks/useFollows';
 
 type Props = StaticScreenProps<{
   type: 'followers' | 'following';
@@ -107,60 +106,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-
-const useFollows = (params: Props['route']['params']) => {
-  const dispatch = useAppDispatch();
-  const [isLoading, setIsLoading] = useState(true);
-
-  const follows = useAppSelector((state) => {
-    if (params.type === 'followers') {
-      return User.redux.selectors.selectRelation(state, params.userId, 'followers', {
-        include: {
-          follower: true,
-        },
-        sort: {
-          createdAt: 'desc',
-        },
-      });
-    } else if (params.type === 'following') {
-      return User.redux.selectors.selectRelation(state, params.userId, 'following', {
-        include: {
-          followed: true,
-        },
-        sort: {
-          createdAt: 'desc',
-        },
-      });
-    }
-
-    return undefined;
-  });
-
-  useEffect(() => {
-    const prepare = async () => {
-      if (params.type === 'followers') {
-        const followers = await User.findById(params.userId).get('followers')
-          .include({ follower: true })
-          .sort({ createdAt: 'desc' });
-
-        dispatch(Follow.redux.actions.setMany(followers));
-        dispatch(User.redux.actions.relations['followers'].addMany(params.userId, followers));
-      } else if (params.type === 'following') {
-        const following = await User.findById(params.userId).get('following')
-          .include({ followed: true })
-          .sort({ createdAt: 'desc' });
-
-        dispatch(Follow.redux.actions.setMany(following));
-        dispatch(User.redux.actions.relations['following'].addMany(params.userId, following));
-      }
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, [params]);
-
-  return { isLoading, follows };
-};

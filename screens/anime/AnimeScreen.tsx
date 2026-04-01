@@ -1,14 +1,13 @@
 import { StaticScreenProps } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
-import { Anime } from '../../models';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
 import AddAnimeButton from './components/AddAnimeButton';
 import Header from './components/Header';
+import { useAnime } from './hooks/useAnime';
 import AboutTab from './tabs/AboutTab';
 import EpisodesTab from './tabs/EpisodesTab';
 
@@ -81,76 +80,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-
-const useAnime = (params: Props['route']['params']) => {
-  const dispatch = useAppDispatch();
-  const { isAuthenticated } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const anime = useAppSelector((state) => {
-    return Anime.redux.selectors.selectById(state, params.id, {
-      include: {
-        genres: true,
-        themes: true,
-        seasons: {
-          include: {
-            episodes: {
-              include: {
-                'episode-entry': isAuthenticated,
-              },
-              sort: {
-                number: 'asc',
-              },
-            },
-          },
-          sort: {
-            number: 'asc',
-          },
-        },
-        staff: {
-          include: {
-            people: true,
-          },
-        },
-        franchises: {
-          include: {
-            destination: true,
-          },
-        },
-        'anime-entry': isAuthenticated,
-      },
-    });
-  });
-
-  useEffect(() => {
-    const prepare = async () => {
-      const anime = await Anime.findById(params.id)
-        .include({
-          genres: true,
-          themes: true,
-          seasons: {
-            episodes: {
-              'episode-entry': isAuthenticated,
-            },
-          },
-          staff: {
-            people: true,
-          },
-          franchises: {
-            destination: true,
-          },
-          'anime-entry': isAuthenticated,
-        });
-
-      dispatch(Anime.redux.actions.setOne(anime));
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, [params]);
-
-  return { isLoading, anime };
-};

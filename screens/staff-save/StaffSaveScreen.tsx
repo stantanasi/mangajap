@@ -1,15 +1,16 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputLabel from '../../components/atoms/InputLabel';
 import SelectInput from '../../components/atoms/SelectInput';
 import { useApp } from '../../contexts/AppContext';
-import { Anime, Manga, Staff } from '../../models';
+import { Staff } from '../../models';
 import { IStaff, StaffRole } from '../../models/staff.model';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { useAppDispatch } from '../../redux/store';
+import { useStaffSave } from './hooks/useStaffSave';
 import SelectPeopleModal from './modals/SelectPeopleModal';
 
 type Props = StaticScreenProps<{
@@ -18,7 +19,7 @@ type Props = StaticScreenProps<{
   mangaId: string;
 } | {
   staffId: string;
-}>
+}>;
 
 export default function StaffSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
@@ -30,7 +31,7 @@ export default function StaffSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!staff || form) return
+    if (!staff || form) return;
     setForm(staff.toObject());
   }, [staff]);
 
@@ -219,47 +220,3 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
-
-
-const useStaffSave = (params: Props['route']['params']) => {
-  const dispatch = useAppDispatch();
-  const [isLoading, setIsLoading] = useState(true);
-
-  const staff = (() => {
-    if ('animeId' in params) {
-      return useMemo(() => new Staff({
-        anime: new Anime({ id: params.animeId }),
-      }), [params]);
-    } else if ('mangaId' in params) {
-      return useMemo(() => new Staff({
-        manga: new Manga({ id: params.mangaId }),
-      }), [params]);
-    }
-
-    return useAppSelector((state) => {
-      return Staff.redux.selectors.selectById(state, params.staffId, {
-        include: {
-          people: true,
-        },
-      });
-    });
-  })();
-
-  useEffect(() => {
-    const prepare = async () => {
-      if (!('staffId' in params)) return
-
-      const staff = await Staff.findById(params.staffId)
-        .include({ people: true });
-
-      dispatch(Staff.redux.actions.setOne(staff));
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, [params]);
-
-  return { isLoading, staff };
-};

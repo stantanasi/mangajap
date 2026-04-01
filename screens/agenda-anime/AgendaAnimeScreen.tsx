@@ -1,19 +1,18 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import { AuthContext } from '../../contexts/AuthContext';
-import { AnimeEntry, User } from '../../models';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
 import AnimeAgendaCard from './components/AnimeAgendaCard';
+import { useAgendaAnime } from './hooks/useAgendaAnime';
 
 type Props = StaticScreenProps<undefined>;
 
-export default function AgendaAnimeScreen({ }: Props) {
+export default function AgendaAnimeScreen({ route }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
-  const { isLoading, animeLibrary } = useAgendaAnime();
+  const { isLoading, animeLibrary } = useAgendaAnime(route.params);
 
   const animes = animeLibrary
     ?.filter((entry) => {
@@ -100,48 +99,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-
-const useAgendaAnime = () => {
-  const dispatch = useAppDispatch();
-  const { user } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const animeLibrary = useAppSelector((state) => {
-    if (!user) {
-      return undefined;
-    }
-
-    return User.redux.selectors.selectRelation(state, user.id, 'anime-library', {
-      include: {
-        anime: true,
-      },
-      sort: {
-        updatedAt: 'desc',
-      },
-    });
-  });
-
-  useEffect(() => {
-    const prepare = async () => {
-      if (!user) return;
-
-      const animeLibrary = await User.findById(user.id).get('anime-library')
-        .include({
-          anime: true,
-        })
-        .sort({ updatedAt: 'desc' })
-        .limit(500);
-
-      dispatch(AnimeEntry.redux.actions.setMany(animeLibrary));
-      dispatch(User.redux.actions.relations['anime-library'].addMany(user.id, animeLibrary));
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, [user]);
-
-  return { isLoading, animeLibrary };
-};

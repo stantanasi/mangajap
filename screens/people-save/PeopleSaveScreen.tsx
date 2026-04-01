@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
@@ -9,11 +9,12 @@ import TextInput from '../../components/atoms/TextInput';
 import { useApp } from '../../contexts/AppContext';
 import { People } from '../../models';
 import { IPeople } from '../../models/people.model';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { useAppDispatch } from '../../redux/store';
+import { usePeopleSave } from './hooks/usePeopleSave';
 
 type Props = StaticScreenProps<{
   peopleId: string;
-} | undefined>
+} | undefined>;
 
 export default function PeopleSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
@@ -24,7 +25,7 @@ export default function PeopleSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!people || form) return
+    if (!people || form) return;
     setForm(people.toObject());
   }, [people]);
 
@@ -171,36 +172,3 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
-
-
-const usePeopleSave = (params: Props['route']['params']) => {
-  const dispatch = useAppDispatch();
-  const [isLoading, setIsLoading] = useState(true);
-
-  const people = (() => {
-    if (!params) {
-      return useMemo(() => new People(), [params]);
-    }
-
-    return useAppSelector((state) => {
-      return People.redux.selectors.selectById(state, params.peopleId);
-    });
-  })();
-
-  useEffect(() => {
-    const prepare = async () => {
-      if (!params) return
-
-      const people = await People.findById(params.peopleId);
-
-      dispatch(People.redux.actions.setOne(people));
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, [params]);
-
-  return { isLoading, people };
-};

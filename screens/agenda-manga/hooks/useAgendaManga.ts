@@ -1,0 +1,49 @@
+import { ComponentProps, useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../../contexts/AuthContext';
+import { MangaEntry, User } from '../../../models';
+import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import AgendaMangaScreen from '../AgendaMangaScreen';
+
+export const useAgendaManga = (params: ComponentProps<typeof AgendaMangaScreen>['route']['params']) => {
+  const dispatch = useAppDispatch();
+  const { user } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const mangaLibrary = useAppSelector((state) => {
+    if (!user) {
+      return undefined;
+    }
+
+    return User.redux.selectors.selectRelation(state, user.id, 'manga-library', {
+      include: {
+        manga: true,
+      },
+      sort: {
+        updatedAt: 'desc',
+      },
+    });
+  });
+
+  useEffect(() => {
+    const prepare = async () => {
+      if (!user) return;
+
+      const mangaLibrary = await User.findById(user.id).get('manga-library')
+        .include({
+          manga: true,
+        })
+        .sort({ updatedAt: 'desc' })
+        .limit(500);
+
+      dispatch(MangaEntry.redux.actions.setMany(mangaLibrary));
+      dispatch(User.redux.actions.relations['manga-library'].addMany(user.id, mangaLibrary));
+    };
+
+    setIsLoading(true);
+    prepare()
+      .catch((err) => console.error(err))
+      .finally(() => setIsLoading(false));
+  }, [user]);
+
+  return { isLoading, mangaLibrary };
+};

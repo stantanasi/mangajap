@@ -2,13 +2,14 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
 import { launchImageLibraryAsync } from 'expo-image-picker';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useApp } from '../../contexts/AppContext';
 import { User } from '../../models';
 import { IUser } from '../../models/user.model';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { useAppDispatch } from '../../redux/store';
+import { useProfileEdit } from './hooks/useProfileEdit';
 
 type Props = StaticScreenProps<{
   id: string;
@@ -23,7 +24,7 @@ export default function ProfileEditScreen({ route }: Props) {
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    if (!user || form) return
+    if (!user || form) return;
     setForm(user.toObject());
   }, [user]);
 
@@ -49,7 +50,7 @@ export default function ProfileEditScreen({ route }: Props) {
         window.history.back();
       }
       setIsUpdating(false);
-      return
+      return;
     }
 
 
@@ -128,10 +129,10 @@ export default function ProfileEditScreen({ route }: Props) {
               quality: 1,
             })
               .then((result) => {
-                if (result.canceled) return
+                if (result.canceled) return;
 
                 const base64 = result.assets[0].base64;
-                if (!base64) return
+                if (!base64) return;
 
                 setForm((prev) => ({
                   ...prev,
@@ -238,7 +239,7 @@ export default function ProfileEditScreen({ route }: Props) {
         </Pressable>
       </Modal>
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -268,28 +269,3 @@ const styles = StyleSheet.create({
     padding: 0,
   },
 });
-
-
-const useProfileEdit = (params: Props['route']['params']) => {
-  const dispatch = useAppDispatch();
-  const [isLoading, setIsLoading] = useState(true);
-
-  const user = useAppSelector((state) => {
-    return User.redux.selectors.selectById(state, params.id);
-  });
-
-  useEffect(() => {
-    const prepare = async () => {
-      const user = await User.findById(params.id);
-
-      dispatch(User.redux.actions.setOne(user));
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, [params]);
-
-  return { isLoading, user };
-};

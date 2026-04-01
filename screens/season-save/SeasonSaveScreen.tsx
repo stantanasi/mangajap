@@ -1,22 +1,23 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
 import TextInput from '../../components/atoms/TextInput';
 import { useApp } from '../../contexts/AppContext';
-import { Anime, Season } from '../../models';
+import { Season } from '../../models';
 import { ISeason } from '../../models/season.model';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { useAppDispatch } from '../../redux/store';
+import { useSeasonSave } from './hooks/useSeasonSave';
 
 type Props = StaticScreenProps<{
   animeId: string;
 } | {
   seasonId: string;
-}>
+}>;
 
 export default function SeasonSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
@@ -27,7 +28,7 @@ export default function SeasonSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!season || form) return
+    if (!season || form) return;
     setForm(season.toObject());
   }, [season]);
 
@@ -195,39 +196,3 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
-
-
-const useSeasonSave = (params: Props['route']['params']) => {
-  const dispatch = useAppDispatch();
-  const [isLoading, setIsLoading] = useState(true);
-
-  const season = (() => {
-    if ('animeId' in params) {
-      return useMemo(() => new Season({
-        anime: new Anime({ id: params.animeId }),
-        episodes: [],
-      }), [params]);
-    }
-
-    return useAppSelector((state) => {
-      return Season.redux.selectors.selectById(state, params.seasonId);
-    });
-  })();
-
-  useEffect(() => {
-    const prepare = async () => {
-      if (!('seasonId' in params)) return
-
-      const season = await Season.findById(params.seasonId);
-
-      dispatch(Season.redux.actions.setOne(season));
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, [params]);
-
-  return { isLoading, season };
-};

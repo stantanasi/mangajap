@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
@@ -10,8 +10,7 @@ import MangaCard from '../../components/molecules/MangaCard';
 import PeopleCard from '../../components/molecules/PeopleCard';
 import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
-import { Anime, Manga, People } from '../../models';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { useDiscover } from './hooks/useDiscover';
 
 type Props = StaticScreenProps<undefined>;
 
@@ -19,7 +18,7 @@ export default function DiscoverScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
-  const { isLoading, peoples, animes, mangas } = useDiscover();
+  const { isLoading, peoples, animes, mangas } = useDiscover(route.params);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -182,75 +181,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 });
-
-
-const useDiscover = () => {
-  const dispatch = useAppDispatch();
-  const { isAuthenticated } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(true);
-  const [peoplesIds, setPeoplesIds] = useState<string[]>([]);
-
-  const peoples = useAppSelector((state) => {
-    return People.redux.selectors.selectByIds(state, peoplesIds);
-  });
-
-  const animes = useAppSelector((state) => {
-    return Anime.redux.selectors.select(state, {
-      include: {
-        'anime-entry': isAuthenticated,
-      },
-      sort: {
-        createdAt: 'desc',
-      },
-      limit: 10,
-    });
-  });
-
-  const mangas = useAppSelector((state) => {
-    return Manga.redux.selectors.select(state, {
-      include: {
-        'manga-entry': isAuthenticated,
-      },
-      sort: {
-        createdAt: 'desc',
-      },
-      limit: 10,
-    });
-  });
-
-  useEffect(() => {
-    const prepare = async () => {
-      const [peoples, animes, mangas] = await Promise.all([
-        People.find()
-          .sort({ random: 'asc' }),
-        Anime.find()
-          .include({
-            'anime-entry': isAuthenticated,
-          })
-          .sort({
-            createdAt: 'desc',
-          }),
-        Manga.find()
-          .include({
-            'manga-entry': isAuthenticated,
-          })
-          .sort({
-            createdAt: 'desc',
-          }),
-      ]);
-
-      dispatch(People.redux.actions.setMany(peoples));
-      dispatch(Anime.redux.actions.setMany(animes));
-      dispatch(Manga.redux.actions.setMany(mangas));
-
-      setPeoplesIds(peoples.map((people) => people.id));
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  return { isLoading, peoples, animes, mangas };
-};

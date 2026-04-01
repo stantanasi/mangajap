@@ -1,19 +1,18 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import { AuthContext } from '../../contexts/AuthContext';
-import { MangaEntry, User } from '../../models';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
 import MangaAgendaCard from './components/MangaAgendaCard';
+import { useAgendaManga } from './hooks/useAgendaManga';
 
 type Props = StaticScreenProps<undefined>;
 
-export default function AgendaMangaScreen({ }: Props) {
+export default function AgendaMangaScreen({ route }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
-  const { isLoading, mangaLibrary } = useAgendaManga();
+  const { isLoading, mangaLibrary } = useAgendaManga(route.params);
 
   const mangas = mangaLibrary
     ?.filter((mangaEntry) => {
@@ -102,48 +101,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-
-const useAgendaManga = () => {
-  const dispatch = useAppDispatch();
-  const { user } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const mangaLibrary = useAppSelector((state) => {
-    if (!user) {
-      return undefined;
-    }
-
-    return User.redux.selectors.selectRelation(state, user.id, 'manga-library', {
-      include: {
-        manga: true,
-      },
-      sort: {
-        updatedAt: 'desc',
-      },
-    });
-  });
-
-  useEffect(() => {
-    const prepare = async () => {
-      if (!user) return;
-
-      const mangaLibrary = await User.findById(user.id).get('manga-library')
-        .include({
-          manga: true,
-        })
-        .sort({ updatedAt: 'desc' })
-        .limit(500);
-
-      dispatch(MangaEntry.redux.actions.setMany(mangaLibrary));
-      dispatch(User.redux.actions.relations['manga-library'].addMany(user.id, mangaLibrary));
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, [user]);
-
-  return { isLoading, mangaLibrary };
-};

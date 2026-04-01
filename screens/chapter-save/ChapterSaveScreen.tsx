@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
@@ -10,9 +10,10 @@ import NumberInput from '../../components/atoms/NumberInput';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { useApp } from '../../contexts/AppContext';
-import { Chapter, Manga, Volume } from '../../models';
+import { Chapter, Volume } from '../../models';
 import { IChapter } from '../../models/chapter.model';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { useAppDispatch } from '../../redux/store';
+import { useChapterSave } from './hooks/useChapterSave';
 
 type Props = StaticScreenProps<{
   mangaId: string;
@@ -224,70 +225,3 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
-
-
-const useChapterSave = (params: Props['route']['params']) => {
-  const dispatch = useAppDispatch();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingVolumes, setIsLoadingVolumes] = useState(true);
-
-  const chapter = (() => {
-    if ('mangaId' in params) {
-      return useMemo(() => new Chapter({
-        manga: new Manga({ id: params.mangaId }),
-      }), [params]);
-    }
-
-    return useAppSelector((state) => {
-      return Chapter.redux.selectors.selectById(state, params.chapterId, {
-        include: {
-          manga: true,
-          volume: true,
-        },
-      });
-    });
-  })();
-
-  const volumes = useAppSelector((state) => {
-    if (!chapter || !chapter.manga) return undefined;
-    return Manga.redux.selectors.selectRelation(state, chapter.manga.id, 'volumes');
-  });
-
-  useEffect(() => {
-    const loadVolumes = async () => {
-      if ('mangaId' in params) {
-        const volumes = await Manga.findById(params.mangaId).get('volumes')
-          .limit(1000);
-
-        dispatch(Volume.redux.actions.setMany(volumes));
-        dispatch(Manga.redux.actions.relations.volumes.addMany(params.mangaId, volumes));
-      }
-    };
-
-    const prepare = async () => {
-      if ('chapterId' in params) {
-        const chapter = await Chapter.findById(params.chapterId)
-          .include({
-            manga: {
-              volumes: true,
-            },
-            volume: true,
-          });
-
-        dispatch(Chapter.redux.actions.setOne(chapter));
-      }
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-
-    setIsLoadingVolumes(true);
-    loadVolumes()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoadingVolumes(false));
-  }, [params]);
-
-  return { isLoading, isLoadingVolumes, chapter, volumes };
-};

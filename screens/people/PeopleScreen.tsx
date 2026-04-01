@@ -1,13 +1,13 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
-import { Anime, People } from '../../models';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { Anime } from '../../models';
 import Header from './components/Header';
+import { usePeople } from './hooks/usePeople';
 
 type Props = StaticScreenProps<{
   id: string;
@@ -85,43 +85,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-
-
-const usePeople = (params: Props['route']['params']) => {
-  const dispatch = useAppDispatch();
-  const [isLoading, setIsLoading] = useState(true);
-
-  const people = useAppSelector((state) => {
-    return People.redux.selectors.selectById(state, params.id, {
-      include: {
-        staff: {
-          include: {
-            anime: true,
-            manga: true,
-          },
-        },
-      },
-    });
-  });
-
-  useEffect(() => {
-    const prepare = async () => {
-      const people = await People.findById(params.id)
-        .include({
-          staff: {
-            anime: true,
-            manga: true,
-          },
-        });
-
-      dispatch(People.redux.actions.setOne(people));
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, [params]);
-
-  return { isLoading, people };
-};

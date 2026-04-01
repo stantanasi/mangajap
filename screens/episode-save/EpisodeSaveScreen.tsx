@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
@@ -10,9 +10,10 @@ import NumberInput from '../../components/atoms/NumberInput';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { useApp } from '../../contexts/AppContext';
-import { Anime, Episode, Season } from '../../models';
+import { Episode, Season } from '../../models';
 import { IEpisode } from '../../models/episode.model';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { useAppDispatch } from '../../redux/store';
+import { useEpisodeSave } from './hooks/useEpisodeSave';
 
 type Props = StaticScreenProps<{
   animeId: string;
@@ -224,70 +225,3 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
 });
-
-
-const useEpisodeSave = (params: Props['route']['params']) => {
-  const dispatch = useAppDispatch();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingSeasons, setIsLoadingSeasons] = useState(true);
-
-  const episode = (() => {
-    if ('animeId' in params) {
-      return useMemo(() => new Episode({
-        anime: new Anime({ id: params.animeId }),
-      }), [params]);
-    }
-
-    return useAppSelector((state) => {
-      return Episode.redux.selectors.selectById(state, params.episodeId, {
-        include: {
-          anime: true,
-          season: true,
-        },
-      });
-    });
-  })();
-
-  const seasons = useAppSelector((state) => {
-    if (!episode || !episode.anime) return undefined;
-    return Anime.redux.selectors.selectRelation(state, episode.anime.id, 'seasons');
-  });
-
-  useEffect(() => {
-    const loadSeasons = async () => {
-      if ('animeId' in params) {
-        const seasons = await Anime.findById(params.animeId).get('seasons')
-          .limit(1000);
-
-        dispatch(Season.redux.actions.setMany(seasons));
-        dispatch(Anime.redux.actions.relations.seasons.addMany(params.animeId, seasons));
-      }
-    };
-
-    const prepare = async () => {
-      if ('episodeId' in params) {
-        const episode = await Episode.findById(params.episodeId)
-          .include({
-            anime: {
-              seasons: true,
-            },
-            season: true,
-          });
-
-        dispatch(Episode.redux.actions.setOne(episode));
-      }
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-
-    setIsLoadingSeasons(true);
-    loadSeasons()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoadingSeasons(false));
-  }, [params]);
-
-  return { isLoading, isLoadingSeasons, episode, seasons };
-};

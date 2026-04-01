@@ -2,20 +2,21 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
 import Checkbox from 'expo-checkbox';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { useApp } from '../../contexts/AppContext';
-import { Genre, Manga, Theme } from '../../models';
+import { Manga } from '../../models';
 import { IManga, MangaStatus, MangaType } from '../../models/manga.model';
-import { useAppDispatch, useAppSelector } from '../../redux/store';
+import { useAppDispatch } from '../../redux/store';
+import { useMangaSave } from './hooks/useMangaSave';
 
 type Props = StaticScreenProps<{
-  id: string
-} | undefined>
+  id: string;
+} | undefined>;
 
 export default function MangaSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
@@ -26,7 +27,7 @@ export default function MangaSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!manga || form) return
+    if (!manga || form) return;
     setForm(manga.toObject());
   }, [manga]);
 
@@ -337,72 +338,3 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-
-
-const useMangaSave = (params: Props['route']['params']) => {
-  const dispatch = useAppDispatch();
-  const [isLoading, setIsLoading] = useState(true);
-
-  const manga = (() => {
-    if (!params) {
-      return useMemo(() => new Manga({
-        genres: [],
-        themes: [],
-      }), [params]);
-    }
-
-    return useAppSelector((state) => {
-      return Manga.redux.selectors.selectById(state, params.id, {
-        include: {
-          genres: true,
-          themes: true,
-        },
-      });
-    });
-  })();
-
-  const genres = useAppSelector((state) => {
-    return Genre.redux.selectors.select(state);
-  });
-
-  const themes = useAppSelector((state) => {
-    return Theme.redux.selectors.select(state);
-  });
-
-  useEffect(() => {
-    const prepare = async () => {
-      if (params) {
-        const manga = await Manga.findById(params.id)
-          .include({
-            genres: true,
-            themes: true,
-          });
-
-        dispatch(Manga.redux.actions.setOne(manga));
-      }
-
-      const [genres, themes] = await Promise.all([
-        Genre.find()
-          .sort({
-            name: 'asc',
-          })
-          .limit(1000),
-        Theme.find()
-          .sort({
-            name: 'asc',
-          })
-          .limit(1000),
-      ]);
-
-      dispatch(Genre.redux.actions.setMany(genres));
-      dispatch(Theme.redux.actions.setMany(themes));
-    };
-
-    setIsLoading(true);
-    prepare()
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
-  }, [params]);
-
-  return { isLoading, manga, genres, themes };
-};
