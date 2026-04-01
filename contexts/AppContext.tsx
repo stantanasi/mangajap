@@ -1,3 +1,4 @@
+import NetInfo from '@react-native-community/netinfo';
 import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 interface IAppContext {
@@ -16,6 +17,14 @@ export default function AppProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     setIsReady(true);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setIsOffline(!state.isConnected);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (
