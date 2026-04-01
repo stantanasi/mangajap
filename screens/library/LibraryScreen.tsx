@@ -1,8 +1,9 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import GridList from '../../components/atoms/GridList';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
@@ -70,7 +71,7 @@ export default function LibraryScreen({ route }: Props) {
         </Text>
       </View>
 
-      <FlatList
+      <GridList
         data={library.map((entry) => {
           if (entry instanceof AnimeEntry) {
             return entry.anime?.copy({
@@ -82,6 +83,7 @@ export default function LibraryScreen({ route }: Props) {
             });
           }
         }).filter((media) => !!media)}
+        numColumns={3}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           item instanceof Anime ? (
@@ -90,9 +92,7 @@ export default function LibraryScreen({ route }: Props) {
               anime={item}
               onPress={() => navigation.navigate('Anime', { id: item.id })}
               showCheckbox={false}
-              style={{
-                flex: 1 / 3,
-              }}
+              style={{ width: null }}
             />
           ) : (
             <MangaCard
@@ -100,16 +100,12 @@ export default function LibraryScreen({ route }: Props) {
               manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
               showCheckbox={false}
-              style={{
-                flex: 1 / 3,
-              }}
+              style={{ width: null }}
             />
           )
         )}
-        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        ListFooterComponent={() => <View style={{ height: 16 }} />}
-        numColumns={3}
-        columnWrapperStyle={{ gap: 10, paddingHorizontal: 16 }}
+        gap={10}
+        contentPadding={16}
       />
 
       <RefreshControl refreshing={isLoading} />
