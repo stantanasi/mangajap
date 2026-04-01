@@ -2,6 +2,7 @@ import { StaticScreenProps } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Manga } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -9,7 +10,6 @@ import AddMangaButton from './components/AddMangaButton';
 import Header from './components/Header';
 import AboutTab from './tabs/AboutTab';
 import ChaptersTab from './tabs/ChaptersTab';
-import RefreshControl from '../../components/atoms/RefreshControl';
 
 type Props = StaticScreenProps<{
   id: string;
@@ -35,6 +35,7 @@ export default function MangaScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Header
+        isLoading={isLoading}
         manga={manga}
         tabs={[
           { key: 'about', title: 'À propos' },
@@ -45,6 +46,7 @@ export default function MangaScreen({ route }: Props) {
       />
 
       <AboutTab
+        isLoading={isLoading}
         manga={manga}
         style={{
           display: selectedTab === 'about' ? 'flex' : 'none',
@@ -53,6 +55,7 @@ export default function MangaScreen({ route }: Props) {
       />
 
       <ChaptersTab
+        isLoading={isLoading}
         manga={manga}
         style={{
           display: selectedTab === 'chapters' ? 'flex' : 'none',
@@ -60,7 +63,7 @@ export default function MangaScreen({ route }: Props) {
         }}
       />
 
-      {user && !manga['manga-entry']?.isAdd ? (
+      {!isLoading && user && !manga['manga-entry']?.isAdd ? (
         <AddMangaButton
           manga={manga}
         />

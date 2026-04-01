@@ -10,6 +10,7 @@ import { Episode, EpisodeEntry, Season, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
+  isLoading: boolean;
   season: Season | undefined;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
@@ -17,9 +18,10 @@ type Props = {
   onEpisodeUpdatingChange?: (id: string, value: boolean) => void;
   onRequestClose: () => void;
   visible: boolean;
-}
+};
 
 export default function SeasonModal({
+  isLoading,
   season,
   onWatchedChange = () => { },
   updating = false,
@@ -53,7 +55,7 @@ export default function SeasonModal({
   const episodesCount = season.episodes?.length ?? 0;
 
   const updateSeasonEpisodesEntries = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     const updateEpisodeEntry = async (episode: Episode) => {
       if (add && !episode['episode-entry']) {
@@ -109,7 +111,7 @@ export default function SeasonModal({
 
         <View style={{ flex: 1 }} />
 
-        {user ? (
+        {!isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"
@@ -163,7 +165,7 @@ export default function SeasonModal({
           </Text>
         </View>
 
-        {user ? (
+        {!isLoading && user ? (
           <>
             <View style={{ flex: 1 }} />
 

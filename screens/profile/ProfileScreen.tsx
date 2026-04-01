@@ -63,6 +63,7 @@ export default function ProfileScreen({ route }: Props) {
         }}
       >
         <Header
+          isLoading={isLoading}
           route={route}
           user={user}
           followingUser={followingUser}
@@ -167,6 +168,7 @@ export default function ProfileScreen({ route }: Props) {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <AnimeCard
+              isLoading={isLoading}
               anime={item}
               onPress={() => navigation.navigate('Anime', { id: item.id })}
               showCheckbox={false}
@@ -214,6 +216,7 @@ export default function ProfileScreen({ route }: Props) {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <AnimeCard
+                  isLoading={isLoading}
                   anime={item}
                   onPress={() => navigation.navigate('Anime', { id: item.id })}
                   showCheckbox={false}
@@ -261,6 +264,7 @@ export default function ProfileScreen({ route }: Props) {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <MangaCard
+              isLoading={isLoading}
               manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
               showCheckbox={false}
@@ -308,6 +312,7 @@ export default function ProfileScreen({ route }: Props) {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <MangaCard
+                  isLoading={isLoading}
                   manga={item}
                   onPress={() => navigation.navigate('Manga', { id: item.id })}
                   showCheckbox={false}

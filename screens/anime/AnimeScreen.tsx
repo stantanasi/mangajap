@@ -35,6 +35,7 @@ export default function AnimeScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Header
+        isLoading={isLoading}
         anime={anime}
         tabs={[
           { key: 'about', title: 'À propos' },
@@ -45,6 +46,7 @@ export default function AnimeScreen({ route }: Props) {
       />
 
       <AboutTab
+        isLoading={isLoading}
         anime={anime}
         style={{
           display: selectedTab === 'about' ? 'flex' : 'none',
@@ -53,6 +55,7 @@ export default function AnimeScreen({ route }: Props) {
       />
 
       <EpisodesTab
+        isLoading={isLoading}
         anime={anime}
         style={{
           display: selectedTab === 'episodes' ? 'flex' : 'none',
@@ -60,7 +63,7 @@ export default function AnimeScreen({ route }: Props) {
         }}
       />
 
-      {user && !anime['anime-entry']?.isAdd ? (
+      {!isLoading && user && !anime['anime-entry']?.isAdd ? (
         <AddAnimeButton
           anime={anime}
         />

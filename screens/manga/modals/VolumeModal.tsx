@@ -11,6 +11,7 @@ import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../../model
 import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
+  isLoading: boolean;
   volume: Volume | undefined;
   onReadChange?: (value: boolean) => void;
   updating?: boolean;
@@ -18,9 +19,10 @@ type Props = {
   onChapterUpdatingChange?: (id: string, value: boolean) => void;
   onRequestClose: () => void;
   visible: boolean;
-}
+};
 
 export default function VolumeModal({
+  isLoading,
   volume,
   onReadChange = () => { },
   updating = false,
@@ -53,7 +55,7 @@ export default function VolumeModal({
   }
 
   const updateVolumeEntry = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     if (add && !volume['volume-entry']) {
       const volumeEntry = new VolumeEntry({
@@ -103,7 +105,7 @@ export default function VolumeModal({
   };
 
   const updateReadDate = async (date: Date) => {
-    if (!volume['volume-entry']) return
+    if (!volume['volume-entry']) return;
 
     volume['volume-entry'].readDate = date;
     await volume['volume-entry'].save();
@@ -138,7 +140,7 @@ export default function VolumeModal({
 
         <View style={{ flex: 1 }} />
 
-        {user ? (
+        {!isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"
@@ -190,7 +192,7 @@ export default function VolumeModal({
           </Text>
         </View>
 
-        {user ? (
+        {!isLoading && user ? (
           <>
             <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
               {!isSavingReadDate ? (
@@ -208,7 +210,7 @@ export default function VolumeModal({
               )}
               <Text
                 onPress={() => {
-                  if (!volume['volume-entry']) return
+                  if (!volume['volume-entry']) return;
                   setReadDatePickerVisible(true);
                 }}
                 style={styles.date}
@@ -224,7 +226,7 @@ export default function VolumeModal({
 
                     updateReadDate(value)
                       .catch((err) => console.error(err))
-                      .finally(() => setIsSavingReadDate(false))
+                      .finally(() => setIsSavingReadDate(false));
                   }}
                   onRequestClose={() => setReadDatePickerVisible(false)}
                   visible={readDatePickerVisible}

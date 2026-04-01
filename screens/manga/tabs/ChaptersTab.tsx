@@ -11,11 +11,12 @@ import MarkPreviousAsReadModal from '../modals/MarkPreviousAsReadModal';
 import VolumeModal from '../modals/VolumeModal';
 
 type Props = {
+  isLoading: boolean;
   manga: Manga;
   style?: StyleProp<ViewStyle>;
 };
 
-export default function ChaptersTab({ manga, style }: Props) {
+export default function ChaptersTab({ isLoading, manga, style }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean; }>({});
@@ -73,6 +74,7 @@ export default function ChaptersTab({ manga, style }: Props) {
         keyExtractor={(item) => item.id}
         renderSectionHeader={({ section: { volume } }) => !volume ? null : (
           <VolumeCard
+            isLoading={isLoading}
             volume={volume}
             onReadChange={(value) => {
               if (!value) return;
@@ -102,6 +104,7 @@ export default function ChaptersTab({ manga, style }: Props) {
         renderSectionFooter={() => <View style={{ height: 5 }} />}
         renderItem={({ item, section: { volume } }) => (
           <ChapterCard
+            isLoading={isLoading}
             chapter={item}
             onReadChange={(value) => {
               if (!value) return;
@@ -132,7 +135,7 @@ export default function ChaptersTab({ manga, style }: Props) {
         }}
       />
 
-      {user ? (
+      {!isLoading && user ? (
         <ExpandableFloatingActionButton
           icon="add"
           menuItems={[
@@ -151,6 +154,7 @@ export default function ChaptersTab({ manga, style }: Props) {
       ) : null}
 
       <VolumeModal
+        isLoading={isLoading}
         volume={manga.volumes?.find((volume) => volume.id === selectedVolumeId)}
         onReadChange={(value) => {
           if (!value) return;
@@ -176,6 +180,7 @@ export default function ChaptersTab({ manga, style }: Props) {
       />
 
       <ChapterModal
+        isLoading={isLoading}
         chapter={(() => {
           for (const volume of manga.volumes ?? []) {
             for (const chapter of volume.chapters ?? []) {

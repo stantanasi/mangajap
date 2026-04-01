@@ -10,6 +10,7 @@ import Checkbox from '../atoms/Checkbox';
 type Variants = 'default' | 'horizontal';
 
 type Props = PressableProps & {
+  isLoading: boolean;
   anime: Anime;
   franchise?: Franchise;
   showCheckbox?: boolean;
@@ -19,6 +20,7 @@ type Props = PressableProps & {
 };
 
 export default function AnimeCard({
+  isLoading,
   anime,
   franchise,
   showCheckbox = true,
@@ -32,7 +34,7 @@ export default function AnimeCard({
   const [isUpdating, setIsUpdating] = useState(false);
 
   const updateAnimeEntry = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     if (anime['anime-entry']) {
       anime['anime-entry'].isAdd = add;
@@ -129,7 +131,7 @@ export default function AnimeCard({
         ) : null}
       </View>
 
-      {user && showCheckbox ? (
+      {!isLoading && user && showCheckbox ? (
         <Checkbox
           value={anime['anime-entry']?.isAdd ?? false}
           onValueChange={(value) => {

@@ -8,6 +8,7 @@ import Checkbox from '../atoms/Checkbox';
 import ProgressBar from '../atoms/ProgressBar';
 
 type Props = PressableProps & {
+  isLoading: boolean;
   season: Season;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
@@ -16,9 +17,10 @@ type Props = PressableProps & {
   expanded?: boolean;
   onExpandedChange?: (value: boolean) => void;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function SeasonCard({
+  isLoading,
   season,
   onWatchedChange = () => { },
   updating = false,
@@ -40,7 +42,7 @@ export default function SeasonCard({
     : 0;
 
   const updateSeasonEpisodesEntries = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     const updateEpisodeEntry = async (episode: Episode) => {
       if (add && !episode['episode-entry']) {
@@ -114,7 +116,7 @@ export default function SeasonCard({
           {episodesWatchedCount} / {episodesCount}
         </Text>
 
-        {user ? (
+        {!isLoading && user ? (
           <Checkbox
             value={episodesCount > 0 && episodesWatchedCount >= episodesCount}
             onValueChange={(value) => {

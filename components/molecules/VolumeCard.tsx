@@ -8,6 +8,7 @@ import Checkbox from '../atoms/Checkbox';
 import ProgressBar from '../atoms/ProgressBar';
 
 type Props = PressableProps & {
+  isLoading: boolean;
   volume: Volume;
   onReadChange?: (value: boolean) => void;
   updating?: boolean;
@@ -16,9 +17,10 @@ type Props = PressableProps & {
   expanded?: boolean;
   onExpandedChange?: (value: boolean) => void;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function VolumeCard({
+  isLoading,
   volume,
   onReadChange = () => { },
   updating = false,
@@ -40,7 +42,7 @@ export default function VolumeCard({
     : volume['volume-entry'] ? 100 : 0;
 
   const updateVolumeEntry = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     if (add && !volume['volume-entry']) {
       const volumeEntry = new VolumeEntry({
@@ -138,7 +140,7 @@ export default function VolumeCard({
           {chaptersReadCount} / {chaptersCount}
         </Text>
 
-        {user ? (
+        {!isLoading && user ? (
           <Checkbox
             value={!!volume['volume-entry']}
             onValueChange={(value) => {

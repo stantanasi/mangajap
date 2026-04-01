@@ -86,6 +86,7 @@ export default function LibraryScreen({ route }: Props) {
         renderItem={({ item }) => (
           item instanceof Anime ? (
             <AnimeCard
+              isLoading={isLoading}
               anime={item}
               onPress={() => navigation.navigate('Anime', { id: item.id })}
               showCheckbox={false}
@@ -95,6 +96,7 @@ export default function LibraryScreen({ route }: Props) {
             />
           ) : (
             <MangaCard
+              isLoading={isLoading}
               manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
               showCheckbox={false}

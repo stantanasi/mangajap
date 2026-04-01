@@ -96,6 +96,7 @@ export default function DiscoverScreen({ route }: Props) {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <AnimeCard
+                isLoading={isLoading}
                 anime={item}
                 onPress={() => navigation.navigate('Anime', { id: item.id })}
               />
@@ -123,6 +124,7 @@ export default function DiscoverScreen({ route }: Props) {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <MangaCard
+                isLoading={isLoading}
                 manga={item}
                 onPress={() => navigation.navigate('Manga', { id: item.id })}
               />
@@ -134,7 +136,7 @@ export default function DiscoverScreen({ route }: Props) {
         </ScrollView>
       )}
 
-      {user ? (
+      {!isLoading && user ? (
         <ExpandableFloatingActionButton
           icon="add"
           menuItems={[

@@ -44,6 +44,7 @@ export default function PeopleScreen({ route }: Props) {
         renderItem={({ item }) => (
           item instanceof Anime ? (
             <AnimeCard
+              isLoading={isLoading}
               anime={item}
               onPress={() => navigation.navigate('Anime', { id: item.id })}
               variant="horizontal"
@@ -54,6 +55,7 @@ export default function PeopleScreen({ route }: Props) {
             />
           ) : (
             <MangaCard
+              isLoading={isLoading}
               manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
               variant="horizontal"
@@ -66,6 +68,7 @@ export default function PeopleScreen({ route }: Props) {
         )}
         ListHeaderComponent={() => (
           <Header
+            isLoading={isLoading}
             people={people}
           />
         )}

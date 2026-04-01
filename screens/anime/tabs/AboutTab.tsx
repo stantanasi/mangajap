@@ -11,11 +11,12 @@ import { Anime, Manga } from '../../../models';
 import { AnimeType } from '../../../models/anime.model';
 
 type Props = {
+  isLoading: boolean;
   anime: Anime;
   style?: StyleProp<ViewStyle>;
 };
 
-export default function AboutTab({ anime, style }: Props) {
+export default function AboutTab({ isLoading, anime, style }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [staffEditable, setStaffEditable] = useState(false);
@@ -123,7 +124,7 @@ export default function AboutTab({ anime, style }: Props) {
           Staff
         </Text>
 
-        {user ? (
+        {!isLoading && user ? (
           <MaterialIcons
             name={!staffEditable ? 'edit' : 'edit-off'}
             color="#000"
@@ -154,7 +155,7 @@ export default function AboutTab({ anime, style }: Props) {
         )}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => user ? (
+        ListFooterComponent={() => !isLoading && user ? (
           <Pressable
             onPress={() => navigation.navigate('AnimeStaffCreate', { animeId: anime.id })}
             style={{
@@ -197,7 +198,7 @@ export default function AboutTab({ anime, style }: Props) {
           De la même franchise
         </Text>
 
-        {user ? (
+        {!isLoading && user ? (
           <MaterialIcons
             name={!franchisesEditable ? 'edit' : 'edit-off'}
             color="#000"
@@ -213,6 +214,7 @@ export default function AboutTab({ anime, style }: Props) {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => item.destination instanceof Anime ? (
           <AnimeCard
+            isLoading={isLoading}
             anime={item.destination}
             franchise={item}
             editable={franchisesEditable}
@@ -228,6 +230,7 @@ export default function AboutTab({ anime, style }: Props) {
           />
         ) : item.destination instanceof Manga ? (
           <MangaCard
+            isLoading={isLoading}
             manga={item.destination}
             franchise={item}
             editable={franchisesEditable}
@@ -244,7 +247,7 @@ export default function AboutTab({ anime, style }: Props) {
         ) : null}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => user ? (
+        ListFooterComponent={() => !isLoading && user ? (
           <Pressable
             onPress={() => navigation.navigate('AnimeFranchiseCreate', { animeId: anime.id })}
             style={{

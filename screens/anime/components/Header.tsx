@@ -8,13 +8,15 @@ import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime } from '../../../models';
 
 type Props<T extends string> = {
+  isLoading: boolean;
   anime: Anime;
   tabs: React.ComponentProps<typeof TabBar<T>>['tabs'];
   selectedTab: T;
   onTabSelect: (tab: T) => void;
-}
+};
 
 export default function Header<T extends string>({
+  isLoading,
   anime,
   tabs,
   selectedTab,
@@ -48,7 +50,7 @@ export default function Header<T extends string>({
           {anime.title}
         </Text>
 
-        {user ? (
+        {!isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"

@@ -11,11 +11,12 @@ import MarkPreviousAsWatchedModal from '../modals/MarkPreviousAsWatchedModal';
 import SeasonModal from '../modals/SeasonModal';
 
 type Props = {
+  isLoading: boolean;
   anime: Anime;
   style?: StyleProp<ViewStyle>;
 };
 
-export default function EpisodesTab({ anime, style }: Props) {
+export default function EpisodesTab({ isLoading, anime, style }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
   const [expandedSeasons, setExpandedSeasons] = useState<{ [seasonId: string]: boolean; }>({});
@@ -63,6 +64,7 @@ export default function EpisodesTab({ anime, style }: Props) {
         keyExtractor={(item) => item.id}
         renderSectionHeader={({ section: { season } }) => (
           <SeasonCard
+            isLoading={isLoading}
             season={season}
             onWatchedChange={(value) => {
               if (!value) return;
@@ -99,6 +101,7 @@ export default function EpisodesTab({ anime, style }: Props) {
         renderSectionFooter={() => <View style={{ height: 5 }} />}
         renderItem={({ item, section: { season } }) => (
           <EpisodeCard
+            isLoading={isLoading}
             episode={item}
             onWatchedChange={(value) => {
               if (!value) return;
@@ -129,7 +132,7 @@ export default function EpisodesTab({ anime, style }: Props) {
         }}
       />
 
-      {user ? (
+      {!isLoading && user ? (
         <ExpandableFloatingActionButton
           icon="add"
           menuItems={[
@@ -148,6 +151,7 @@ export default function EpisodesTab({ anime, style }: Props) {
       ) : null}
 
       <SeasonModal
+        isLoading={isLoading}
         season={anime.seasons?.find((season) => season.id === selectedSeasonId)}
         onWatchedChange={(value) => {
           if (!value) return;
@@ -173,6 +177,7 @@ export default function EpisodesTab({ anime, style }: Props) {
       />
 
       <EpisodeModal
+        isLoading={isLoading}
         episode={(() => {
           for (const season of anime.seasons ?? []) {
             for (const episode of season.episodes ?? []) {

@@ -10,7 +10,7 @@ type Props = {
   onLoadMore: () => void;
   hasMore: boolean;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function AnimeTab({ isLoading, list, onLoadMore, hasMore, style }: Props) {
   const navigation = useNavigation();
@@ -34,6 +34,7 @@ export default function AnimeTab({ isLoading, list, onLoadMore, hasMore, style }
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <AnimeCard
+            isLoading={isLoading}
             anime={item}
             onPress={() => navigation.navigate('Anime', { id: item.id })}
             variant="horizontal"

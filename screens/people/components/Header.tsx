@@ -6,10 +6,11 @@ import { AuthContext } from '../../../contexts/AuthContext';
 import { People } from '../../../models';
 
 type Props = {
+  isLoading: boolean;
   people: People;
-}
+};
 
-export default function Header({ people }: Props) {
+export default function Header({ isLoading, people }: Props) {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
@@ -48,7 +49,7 @@ export default function Header({ people }: Props) {
           {people.name}
         </Text>
 
-        {user ? (
+        {!isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"

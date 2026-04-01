@@ -8,13 +8,15 @@ import { useAppDispatch } from '../../../redux/store';
 import ProfileScreen from '../ProfileScreen';
 
 type Props = React.ComponentProps<typeof ProfileScreen> & {
+  isLoading: boolean;
   user: User;
   followingUser: Follow | null;
   followedByUser: Follow | null;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function Header({
+  isLoading,
   route,
   user,
   followingUser,
@@ -27,7 +29,7 @@ export default function Header({
   const [isFollowUpdating, setIsFollowUpdating] = useState(false);
 
   const updateFollow = async () => {
-    if (!authenticatedUser) return
+    if (!authenticatedUser) return;
 
     if (!followingUser) {
       const followingUser = new Follow({
@@ -135,7 +137,7 @@ export default function Header({
           marginTop: 24,
         }}
       >
-        {authenticatedUser ? (
+        {!isLoading && authenticatedUser ? (
           user.id === authenticatedUser.id ? (
             <Text
               onPress={() => navigation.navigate('ProfileEdit', { id: user.id })}
