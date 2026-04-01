@@ -1,12 +1,12 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import Modal from '../../../components/atoms/Modal';
 import { useApp } from '../../../contexts/AppContext';
-import { AuthContext } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, Season, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 
@@ -34,7 +34,7 @@ export default function SeasonModal({
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { isOffline } = useApp();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   if (!season) {
     return (

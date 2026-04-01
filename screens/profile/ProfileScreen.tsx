@@ -1,12 +1,12 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import Header from './components/Header';
 import { useProfile } from './hooks/useProfile';
 import LoginScreen from './screens/LoginScreen';
@@ -18,7 +18,7 @@ type Props = StaticScreenProps<{
 
 export default function ProfileScreen({ route }: Props) {
   const navigation = useNavigation();
-  const { user: authenticatedUser } = useContext(AuthContext);
+  const { user: authenticatedUser } = useAuth();
   const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
   const { isLoading, user, followingUser, followedByUser } = useProfile(route.params);
 

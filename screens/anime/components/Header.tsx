@@ -1,11 +1,11 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ProgressBar from '../../../components/atoms/ProgressBar';
 import TabBar from '../../../components/atoms/TabBar';
 import { useApp } from '../../../contexts/AppContext';
-import { AuthContext } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Anime } from '../../../models';
 
 type Props<T extends string> = {
@@ -25,7 +25,7 @@ export default function Header<T extends string>({
 }: Props<T>) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   const progress = anime['anime-entry']
     ? (anime['anime-entry'].episodesWatch / anime.episodeCount) * 100

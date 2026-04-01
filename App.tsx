@@ -5,13 +5,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from "expo-linking";
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useContext } from 'react';
+import { useCallback } from 'react';
 import { Image, Platform, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import AppProvider, { useApp } from './contexts/AppContext';
-import AuthProvider, { AuthContext } from './contexts/AuthContext';
+import AuthProvider, { useAuth } from './contexts/AuthContext';
 import store, { persistor } from './redux/store';
 import AgendaAnimeScreen from './screens/agenda-anime/AgendaAnimeScreen';
 import AgendaMangaScreen from './screens/agenda-manga/AgendaMangaScreen';
@@ -135,7 +135,7 @@ const RootStack = createNativeStackNavigator({
     },
     AnimeCreate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: AnimeSaveScreen,
@@ -145,7 +145,7 @@ const RootStack = createNativeStackNavigator({
     },
     AnimeUpdate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: AnimeSaveScreen,
@@ -155,7 +155,7 @@ const RootStack = createNativeStackNavigator({
     },
     SeasonCreate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: SeasonSaveScreen,
@@ -165,7 +165,7 @@ const RootStack = createNativeStackNavigator({
     },
     SeasonUpdate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: SeasonSaveScreen,
@@ -175,7 +175,7 @@ const RootStack = createNativeStackNavigator({
     },
     EpisodeCreate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: EpisodeSaveScreen,
@@ -185,7 +185,7 @@ const RootStack = createNativeStackNavigator({
     },
     EpisodeUpdate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: EpisodeSaveScreen,
@@ -195,7 +195,7 @@ const RootStack = createNativeStackNavigator({
     },
     AnimeStaffCreate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: StaffSaveScreen,
@@ -205,7 +205,7 @@ const RootStack = createNativeStackNavigator({
     },
     AnimeFranchiseCreate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: FranchiseSaveScreen,
@@ -221,7 +221,7 @@ const RootStack = createNativeStackNavigator({
     },
     MangaCreate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: MangaSaveScreen,
@@ -231,7 +231,7 @@ const RootStack = createNativeStackNavigator({
     },
     MangaUpdate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: MangaSaveScreen,
@@ -241,7 +241,7 @@ const RootStack = createNativeStackNavigator({
     },
     VolumeCreate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: VolumeSaveScreen,
@@ -251,7 +251,7 @@ const RootStack = createNativeStackNavigator({
     },
     VolumeUpdate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: VolumeSaveScreen,
@@ -261,7 +261,7 @@ const RootStack = createNativeStackNavigator({
     },
     ChapterCreate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: ChapterSaveScreen,
@@ -271,7 +271,7 @@ const RootStack = createNativeStackNavigator({
     },
     ChapterUpdate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: ChapterSaveScreen,
@@ -281,7 +281,7 @@ const RootStack = createNativeStackNavigator({
     },
     MangaStaffCreate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: StaffSaveScreen,
@@ -291,7 +291,7 @@ const RootStack = createNativeStackNavigator({
     },
     StaffUpdate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: StaffSaveScreen,
@@ -301,7 +301,7 @@ const RootStack = createNativeStackNavigator({
     },
     MangaFranchiseCreate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: FranchiseSaveScreen,
@@ -311,7 +311,7 @@ const RootStack = createNativeStackNavigator({
     },
     FranchiseUpdate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: FranchiseSaveScreen,
@@ -333,7 +333,7 @@ const RootStack = createNativeStackNavigator({
     },
     ProfileEdit: {
       if: () => {
-        const { isAuthenticated } = useContext(AuthContext);
+        const { isAuthenticated } = useAuth();
         return isAuthenticated;
       },
       screen: ProfileEditScreen,
@@ -361,7 +361,7 @@ const RootStack = createNativeStackNavigator({
     },
     PeopleCreate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: PeopleSaveScreen,
@@ -371,7 +371,7 @@ const RootStack = createNativeStackNavigator({
     },
     PeopleUpdate: {
       if: () => {
-        const { user } = useContext(AuthContext);
+        const { user } = useAuth();
         return user != null;
       },
       screen: PeopleSaveScreen,
@@ -381,7 +381,7 @@ const RootStack = createNativeStackNavigator({
     },
     Settings: {
       if: () => {
-        const { isAuthenticated } = useContext(AuthContext);
+        const { isAuthenticated } = useAuth();
         return isAuthenticated;
       },
       screen: SettingsScreen,
@@ -412,7 +412,7 @@ SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
   const { isReady: isAppReady, isOffline: isAppOffline } = useApp();
-  const { isReady: isAuthReady } = useContext(AuthContext);
+  const { isReady: isAuthReady } = useAuth();
 
   const onLayoutRootView = useCallback(() => {
     if (isAuthReady && isAppReady) {

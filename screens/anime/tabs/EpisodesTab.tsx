@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { SectionList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import EpisodeCard from '../../../components/molecules/EpisodeCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import SeasonCard from '../../../components/molecules/SeasonCard';
 import { useApp } from '../../../contexts/AppContext';
-import { AuthContext } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Anime, Episode, Season } from '../../../models';
 import EpisodeModal from '../modals/EpisodeModal';
 import MarkPreviousAsWatchedModal from '../modals/MarkPreviousAsWatchedModal';
@@ -20,7 +20,7 @@ type Props = {
 export default function EpisodesTab({ isLoading, anime, style }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [expandedSeasons, setExpandedSeasons] = useState<{ [seasonId: string]: boolean; }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean; }>({});
   const [selectedSeasonId, setSelectedSeasonId] = useState<string>();

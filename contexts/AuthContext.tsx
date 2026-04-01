@@ -1,6 +1,6 @@
 import { connect } from '@stantanasi/jsonapi-client';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import React, { createContext, PropsWithChildren, useEffect, useState } from 'react';
+import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import { auth } from '../firebaseConfig';
 import { User } from '../models';
 import { useAppDispatch } from '../redux/store';
@@ -89,3 +89,6 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     </AuthContext.Provider>
   );
 };
+
+
+export const useAuth = () => useContext(AuthContext);

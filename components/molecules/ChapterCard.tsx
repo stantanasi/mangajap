@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useApp } from '../../contexts/AppContext';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../models';
 import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
@@ -26,7 +26,7 @@ export default function ChapterCard({
 }: Props) {
   const dispatch = useAppDispatch();
   const { isOffline } = useApp();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   const updateChapterEntry = async (add: boolean) => {
     if (!user) return;

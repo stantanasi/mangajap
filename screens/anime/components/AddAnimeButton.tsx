@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
-import { AuthContext } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Anime, AnimeEntry, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 
@@ -11,7 +11,7 @@ type Props = {
 
 export default function AddAnimeButton({ anime }: Props) {
   const dispatch = useAppDispatch();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
 
   if (!user) return null;

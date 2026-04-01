@@ -1,10 +1,10 @@
 import { StaticScreenProps } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import { useApp } from '../../contexts/AppContext';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import AddMangaButton from './components/AddMangaButton';
 import Header from './components/Header';
 import { useManga } from './hooks/useManga';
@@ -17,7 +17,7 @@ type Props = StaticScreenProps<{
 
 export default function MangaScreen({ route }: Props) {
   const { isOffline } = useApp();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const { isLoading, manga } = useManga(route.params);
   const [selectedTab, setSelectedTab] = useState<'about' | 'chapters'>('about');
 

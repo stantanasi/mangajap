@@ -1,12 +1,12 @@
-import { ComponentProps, useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../../contexts/AuthContext';
+import { ComponentProps, useEffect, useState } from 'react';
 import { Manga } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import MangaScreen from '../MangaScreen';
+import { useAuth } from '../../../contexts/AuthContext';
 
 export const useManga = (params: ComponentProps<typeof MangaScreen>['route']['params']) => {
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
 
   const manga = useAppSelector((state) => {

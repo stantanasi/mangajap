@@ -1,9 +1,9 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import React from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import AnimeAgendaCard from './components/AnimeAgendaCard';
 import { useAgendaAnime } from './hooks/useAgendaAnime';
 
@@ -11,7 +11,7 @@ type Props = StaticScreenProps<undefined>;
 
 export default function AgendaAnimeScreen({ route }: Props) {
   const navigation = useNavigation();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const { isLoading, animeLibrary } = useAgendaAnime(route.params);
 
   const animes = animeLibrary

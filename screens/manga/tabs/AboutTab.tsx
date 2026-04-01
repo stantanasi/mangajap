@@ -1,13 +1,13 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StackActions, useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { FlatList, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import AnimeCard from '../../../components/molecules/AnimeCard';
 import MangaCard from '../../../components/molecules/MangaCard';
 import PeopleCard from '../../../components/molecules/PeopleCard';
 import { useApp } from '../../../contexts/AppContext';
-import { AuthContext } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Anime, Manga } from '../../../models';
 import { MangaType } from '../../../models/manga.model';
 
@@ -20,7 +20,7 @@ type Props = {
 export default function AboutTab({ isLoading, manga, style }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [staffEditable, setStaffEditable] = useState(false);
   const [franchisesEditable, setFranchisesEditable] = useState(false);
 

@@ -1,8 +1,8 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useApp } from '../../contexts/AppContext';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { Franchise, Manga, MangaEntry, User } from '../../models';
 import { FranchiseRole } from '../../models/franchise.model';
 import { useAppDispatch } from '../../redux/store';
@@ -32,7 +32,7 @@ export default function MangaCard({
 }: Props) {
   const dispatch = useAppDispatch();
   const { isOffline } = useApp();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
 
   const updateMangaEntry = async (add: boolean) => {

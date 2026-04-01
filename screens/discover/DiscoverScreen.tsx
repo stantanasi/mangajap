@@ -1,6 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import { useContext } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
@@ -9,7 +8,7 @@ import ExpandableFloatingActionButton from '../../components/molecules/Expandabl
 import MangaCard from '../../components/molecules/MangaCard';
 import PeopleCard from '../../components/molecules/PeopleCard';
 import { useApp } from '../../contexts/AppContext';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { useDiscover } from './hooks/useDiscover';
 
 type Props = StaticScreenProps<undefined>;
@@ -17,7 +16,7 @@ type Props = StaticScreenProps<undefined>;
 export default function DiscoverScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const { isLoading, peoples, animes, mangas } = useDiscover(route.params);
 
   return (

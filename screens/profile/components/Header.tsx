@@ -1,9 +1,9 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useApp } from '../../../contexts/AppContext';
-import { AuthContext } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 import ProfileScreen from '../ProfileScreen';
@@ -27,7 +27,7 @@ export default function Header({
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { isOffline } = useApp();
-  const { user: authenticatedUser } = useContext(AuthContext);
+  const { user: authenticatedUser } = useAuth();
   const [isFollowUpdating, setIsFollowUpdating] = useState(false);
 
   const updateFollow = async () => {

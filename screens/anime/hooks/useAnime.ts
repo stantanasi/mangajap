@@ -1,12 +1,12 @@
-import { ComponentProps, useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../../contexts/AuthContext';
+import { ComponentProps, useEffect, useState } from 'react';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Anime } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import AnimeScreen from '../AnimeScreen';
 
 export const useAnime = (params: ComponentProps<typeof AnimeScreen>['route']['params']) => {
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
 
   const anime = useAppSelector((state) => {

@@ -1,15 +1,15 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 type Props = StaticScreenProps<undefined>;
 
 export default function SettingsScreen({ }: Props) {
   const navigation = useNavigation();
-  const { logout } = useContext(AuthContext);
+  const { logout } = useAuth();
 
   return (
     <SafeAreaView style={styles.container}>

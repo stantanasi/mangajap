@@ -1,8 +1,8 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useContext } from 'react';
+import React from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useApp } from '../../contexts/AppContext';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, Season, User } from '../../models';
 import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
@@ -34,7 +34,7 @@ export default function SeasonCard({
 }: Props) {
   const dispatch = useAppDispatch();
   const { isOffline } = useApp();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   const episodesWatchedCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
   const episodesCount = season.episodes?.length ?? 0;

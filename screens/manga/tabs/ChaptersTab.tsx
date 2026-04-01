@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { SectionList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import ChapterCard from '../../../components/molecules/ChapterCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import VolumeCard from '../../../components/molecules/VolumeCard';
 import { useApp } from '../../../contexts/AppContext';
-import { AuthContext } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Chapter, Manga, Volume } from '../../../models';
 import ChapterModal from '../modals/ChapterModal';
 import MarkPreviousAsReadModal from '../modals/MarkPreviousAsReadModal';
@@ -20,7 +20,7 @@ type Props = {
 export default function ChaptersTab({ isLoading, manga, style }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean; }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean; }>({});
   const [selectedVolumeId, setSelectedVolumeId] = useState<string>();

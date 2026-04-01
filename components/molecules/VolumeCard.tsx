@@ -1,8 +1,8 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useContext } from 'react';
+import React from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useApp } from '../../contexts/AppContext';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../models';
 import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
@@ -34,7 +34,7 @@ export default function VolumeCard({
 }: Props) {
   const dispatch = useAppDispatch();
   const { isOffline } = useApp();
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   const chaptersReadCount = volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0;
   const chaptersCount = volume.chapters?.length ?? 0;
