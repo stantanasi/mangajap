@@ -22,7 +22,7 @@ export default function Checkbox({
         animating
         color={!value ? '#7e7e7e' : '#fff'}
         size={20}
-        style={[styles.container, { backgroundColor: !value ? '#e5e5e5' : '#4281f5' }, style]}
+        style={[styles.container, { backgroundColor: !value ? '#e5e5e5' : '#d40e0e' }, style]}
       />
     );
   }
@@ -33,7 +33,7 @@ export default function Checkbox({
       size={20}
       color={!value ? '#7e7e7e' : '#fff'}
       onPress={() => onValueChange(!value)}
-      style={[styles.container, { backgroundColor: !value ? '#e5e5e5' : '#4281f5' }, style]}
+      style={[styles.container, { backgroundColor: !value ? '#e5e5e5' : '#d40e0e' }, style]}
     />
   );
 }

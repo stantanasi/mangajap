@@ -40,6 +40,7 @@ const MainTabs = createBottomTabNavigator({
   initialRouteName: 'Discover',
   screenOptions: {
     header: () => null,
+    tabBarActiveTintColor: '#d40e0e',
     tabBarShowLabel: true,
     tabBarLabelStyle: {
       overflow: 'visible',

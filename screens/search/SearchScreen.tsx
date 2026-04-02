@@ -84,7 +84,7 @@ export default function SearchScreen({ route }: Props) {
                 key={category.value}
                 onPress={() => setSelectedCategory(category.value)}
                 style={{
-                  backgroundColor: !isSelected ? '#e5e5e5' : '#4281f5',
+                  backgroundColor: !isSelected ? '#e5e5e5' : '#d40e0e',
                   borderRadius: 360,
                   color: !isSelected ? '#000' : '#fff',
                   paddingHorizontal: 14,

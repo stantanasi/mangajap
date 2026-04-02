@@ -7,7 +7,7 @@ import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
   manga: Manga;
-}
+};
 
 export default function AddMangaButton({ manga }: Props) {
   const dispatch = useAppDispatch();
@@ -77,7 +77,7 @@ export default function AddMangaButton({ manga }: Props) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: '#4281f5',
+    backgroundColor: '#d40e0e',
     flexDirection: 'row',
     gap: 10,
     justifyContent: 'center',

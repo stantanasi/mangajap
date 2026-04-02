@@ -27,7 +27,7 @@ export default function TabBar<T extends string>({ selected, tabs, onTabChange, 
 
           <View
             style={[styles.indicator, selected === tab.key ? {
-              backgroundColor: '#4281f5',
+              backgroundColor: '#d40e0e',
             } : {}]}
           />
         </Pressable>

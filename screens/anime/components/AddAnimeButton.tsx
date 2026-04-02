@@ -76,7 +76,7 @@ export default function AddAnimeButton({ anime }: Props) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: '#4281f5',
+    backgroundColor: '#d40e0e',
     flexDirection: 'row',
     gap: 10,
     justifyContent: 'center',

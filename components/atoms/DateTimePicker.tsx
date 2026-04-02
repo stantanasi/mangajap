@@ -208,7 +208,7 @@ export default function DateTimePicker({
                       setDisplay('calendar');
                     }}
                     style={[styles.year, isActive ? {
-                      backgroundColor: '#4281f5',
+                      backgroundColor: '#d40e0e',
                       borderRadius: 360,
                     } : {}]}
                   >
@@ -268,15 +268,15 @@ export default function DateTimePicker({
                         key={j}
                         onPress={() => setSelectedDate(day)}
                         style={[styles.day, isToday ? {
-                          borderColor: '#4281f5',
+                          borderColor: '#d40e0e',
                           borderRadius: 360,
                           borderWidth: 1,
                         } : {}, isSelected ? {
-                          backgroundColor: '#4281f5',
+                          backgroundColor: '#d40e0e',
                           borderRadius: 360,
                         } : {}]}
                       >
-                        <Text style={[isToday ? { color: '#4281f5' } : {}, isSelected ? { color: '#fff' } : {}]}>
+                        <Text style={[isToday ? { color: '#d40e0e' } : {}, isSelected ? { color: '#fff' } : {}]}>
                           {day.getDate()}
                         </Text>
                       </Pressable>
@@ -300,7 +300,7 @@ export default function DateTimePicker({
         <Text
           onPress={() => onRequestClose()}
           style={{
-            color: '#4281f5'
+            color: '#d40e0e'
           }}
         >
           Annuler
@@ -324,7 +324,7 @@ export default function DateTimePicker({
             onRequestClose();
           }}
           style={{
-            color: '#4281f5'
+            color: '#d40e0e'
           }}
         >
           OK
