@@ -190,6 +190,19 @@ export default function SeasonModal({
       <Text style={styles.overview}>
         {season.overview || 'Synopsis non disponible'}
       </Text>
+
+      {season.episodes && season.episodes.length > 0 ? (() => {
+        const first = season.episodes[0].number;
+        const last = season.episodes[season.episodes.length - 1].number;
+
+        return (
+          <Text style={{ margin: 12 }}>
+            {first === last
+              ? `Épisode ${first}`
+              : `Épisodes ${first} - ${last}`}
+          </Text>
+        );
+      })() : null}
     </Modal>
   );
 }

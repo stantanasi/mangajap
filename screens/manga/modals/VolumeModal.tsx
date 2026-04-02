@@ -258,9 +258,18 @@ export default function VolumeModal({
         {volume.overview || 'Synopsis non disponible'}
       </Text>
 
-      <Text>
-        Chapitres {volume.chapters?.[0]?.number} - {volume.chapters?.[(volume.chapters?.length ?? 0) - 1]?.number}
-      </Text>
+      {volume.chapters && volume.chapters.length > 0 ? (() => {
+        const first = volume.chapters[0].number;
+        const last = volume.chapters[volume.chapters.length - 1].number;
+
+        return (
+          <Text style={{ margin: 12 }}>
+            {first === last
+              ? `Chapitre ${first}`
+              : `Chapitres ${first} - ${last}`}
+          </Text>
+        );
+      })() : null}
     </Modal>
   );
 }
