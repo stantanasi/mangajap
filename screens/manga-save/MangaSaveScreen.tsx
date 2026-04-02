@@ -280,7 +280,7 @@ export default function MangaSaveScreen({ route }: Props) {
           onChangeText={(text) => setForm((prev) => ({
             ...prev,
             links: {
-              ...prev!.links,
+              ...prev?.links,
               mangadex: text,
             },
           }))}

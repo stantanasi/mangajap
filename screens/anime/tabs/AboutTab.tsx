@@ -13,7 +13,7 @@ import { AnimeType } from '../../../models/anime.model';
 type Props = {
   anime: Anime;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function AboutTab({ anime, style }: Props) {
   const navigation = useNavigation();
@@ -144,9 +144,10 @@ export default function AboutTab({ anime, style }: Props) {
             editable={staffEditable}
             onPress={() => {
               if (!staffEditable) {
-                navigation.navigate('People', { id: item.people!.id })
+                if (!item.people) return;
+                navigation.navigate('People', { id: item.people.id });
               } else {
-                navigation.navigate('StaffUpdate', { staffId: item.id })
+                navigation.navigate('StaffUpdate', { staffId: item.id });
               }
             }}
           />
@@ -163,7 +164,7 @@ export default function AboutTab({ anime, style }: Props) {
               backgroundColor: '#ccc',
               borderRadius: 360,
               justifyContent: 'center',
-              marginLeft: anime.staff!.length > 0 ? 10 : 0,
+              marginLeft: (anime.staff?.length ?? 0) > 0 ? 10 : 0,
               marginRight: 16,
             }}
           >
@@ -217,7 +218,8 @@ export default function AboutTab({ anime, style }: Props) {
             editable={franchisesEditable}
             onPress={() => {
               if (!franchisesEditable) {
-                navigation.dispatch(StackActions.push('Anime', { id: item.destination!.id }));
+                if (!item.destination) return;
+                navigation.dispatch(StackActions.push('Anime', { id: item.destination.id }));
               } else {
                 navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
               }
@@ -231,7 +233,8 @@ export default function AboutTab({ anime, style }: Props) {
             editable={franchisesEditable}
             onPress={() => {
               if (!franchisesEditable) {
-                navigation.navigate('Manga', { id: item.destination!.id });
+                if (!item.destination) return;
+                navigation.navigate('Manga', { id: item.destination.id });
               } else {
                 navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
               }
@@ -250,7 +253,7 @@ export default function AboutTab({ anime, style }: Props) {
               backgroundColor: '#ccc',
               alignItems: 'center',
               justifyContent: 'center',
-              marginLeft: anime.franchises!.length > 0 ? 10 : 0,
+              marginLeft: (anime.franchises?.length ?? 0) > 0 ? 10 : 0,
               marginRight: 16,
             }}
           >

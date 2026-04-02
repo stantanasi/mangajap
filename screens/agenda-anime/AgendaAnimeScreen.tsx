@@ -1,5 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
@@ -17,12 +17,13 @@ export default function AgendaAnimeScreen({ }: Props) {
 
   const animes = animeLibrary
     ?.filter((entry) => {
-      const progress = (entry.episodesWatch / entry.anime!.episodeCount) * 100;
+      const progress = (entry.episodesWatch / (entry.anime?.episodeCount ?? 1)) * 100;
       return progress < 100;
     })
-    .map((entry) => entry.anime!.copy({
+    .map((entry) => entry.anime?.copy({
       'anime-entry': entry,
-    }));
+    }))
+    .filter((anime) => !!anime);
 
   if (!user) {
     return (
@@ -123,7 +124,7 @@ const useAgendaAnime = () => {
 
   useEffect(() => {
     const prepare = async () => {
-      if (!user) return
+      if (!user) return;
 
       const animeLibrary = await User.findById(user.id).get('anime-library')
         .include({

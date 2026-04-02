@@ -32,7 +32,7 @@ export default function PeopleScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={people.staff!.map((staff) => {
+        data={people.staff?.map((staff) => {
           if (staff.anime) {
             return staff.anime;
           } else if (staff.manga) {

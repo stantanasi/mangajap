@@ -161,9 +161,9 @@ export default function ProfileScreen({ route }: Props) {
 
         <FlatList
           horizontal
-          data={user['anime-library']!.map((entry) => entry.anime!.copy({
+          data={user['anime-library']?.map((entry) => entry.anime?.copy({
             'anime-entry': entry,
-          }))}
+          })).filter((anime) => !!anime)}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <AnimeCard
@@ -177,7 +177,7 @@ export default function ProfileScreen({ route }: Props) {
           ListFooterComponent={() => <View style={{ width: 16 }} />}
         />
 
-        {user['anime-favorites']!.length > 0 ? (
+        {(user['anime-favorites']?.length ?? 0) > 0 ? (
           <>
             <Pressable
               onPress={() => navigation.navigate('ProfileLibrary', { type: 'anime-favorites', userId: user.id })}
@@ -208,9 +208,9 @@ export default function ProfileScreen({ route }: Props) {
 
             <FlatList
               horizontal
-              data={user['anime-favorites']!.map((entry) => entry.anime!.copy({
+              data={user['anime-favorites']?.map((entry) => entry.anime?.copy({
                 'anime-entry': entry,
-              }))}
+              })).filter((anime) => !!anime)}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <AnimeCard
@@ -255,9 +255,9 @@ export default function ProfileScreen({ route }: Props) {
 
         <FlatList
           horizontal
-          data={user['manga-library']!.map((entry) => entry.manga!.copy({
+          data={user['manga-library']?.map((entry) => entry.manga?.copy({
             'manga-entry': entry,
-          }))}
+          })).filter((manga) => !!manga)}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <MangaCard
@@ -271,7 +271,7 @@ export default function ProfileScreen({ route }: Props) {
           ListFooterComponent={() => <View style={{ width: 16 }} />}
         />
 
-        {user['manga-favorites']!.length > 0 ? (
+        {(user['manga-favorites']?.length ?? 0) > 0 ? (
           <>
             <Pressable
               onPress={() => navigation.navigate('ProfileLibrary', { type: 'manga-favorites', userId: user.id })}
@@ -302,9 +302,9 @@ export default function ProfileScreen({ route }: Props) {
 
             <FlatList
               horizontal
-              data={user['manga-favorites']!.map((entry) => entry.manga!.copy({
+              data={user['manga-favorites']?.map((entry) => entry.manga?.copy({
                 'manga-entry': entry,
-              }))}
+              })).filter((manga) => !!manga)}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <MangaCard
@@ -322,7 +322,7 @@ export default function ProfileScreen({ route }: Props) {
       </ScrollView>
 
       <RefreshControl refreshing={isLoading} />
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }
 
@@ -459,7 +459,7 @@ const useProfile = (params: Props['route']['params']) => {
   });
 
   useEffect(() => {
-    if (!userId) return
+    if (!userId) return;
 
     const prepare = async () => {
       const [user, followingUser, followedByUser] = await Promise.all([
@@ -496,7 +496,7 @@ const useProfile = (params: Props['route']['params']) => {
         dispatch(Follow.redux.actions.relations.follower.set(followedByUser.id, new User({ id: userId })));
         dispatch(Follow.redux.actions.relations.followed.set(followedByUser.id, new User({ id: authenticatedUser.id })));
       }
-    }
+    };
 
     setIsLoading(true);
     prepare()

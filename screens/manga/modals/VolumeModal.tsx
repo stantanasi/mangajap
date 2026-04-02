@@ -255,7 +255,7 @@ export default function VolumeModal({
       </Text>
 
       <Text>
-        Chapitres {volume.chapters?.[0]?.number} - {volume.chapters?.[volume.chapters!.length - 1]?.number}
+        Chapitres {volume.chapters?.[0]?.number} - {volume.chapters?.[(volume.chapters?.length ?? 0) - 1]?.number}
       </Text>
     </Modal>
   );

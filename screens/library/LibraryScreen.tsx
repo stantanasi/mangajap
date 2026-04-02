@@ -73,15 +73,15 @@ export default function LibraryScreen({ route }: Props) {
       <FlatList
         data={library.map((entry) => {
           if (entry instanceof AnimeEntry) {
-            return entry.anime!.copy({
+            return entry.anime?.copy({
               'anime-entry': entry,
             });
           } else {
-            return entry.manga!.copy({
+            return entry.manga?.copy({
               'manga-entry': entry,
             });
           }
-        })}
+        }).filter((media) => !!media)}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           item instanceof Anime ? (

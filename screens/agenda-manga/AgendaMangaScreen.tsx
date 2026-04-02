@@ -17,14 +17,15 @@ export default function AgendaMangaScreen({ }: Props) {
 
   const mangas = mangaLibrary
     ?.filter((mangaEntry) => {
-      const progress = mangaEntry.manga!.chapterCount > 0
-        ? (mangaEntry.chaptersRead / mangaEntry.manga!.chapterCount) * 100
-        : (mangaEntry.volumesRead / mangaEntry.manga!.volumeCount) * 100;
+      const progress = (mangaEntry.manga?.chapterCount ?? 0) > 0
+        ? (mangaEntry.chaptersRead / (mangaEntry.manga?.chapterCount ?? 1)) * 100
+        : (mangaEntry.volumesRead / (mangaEntry.manga?.volumeCount ?? 1)) * 100;
       return progress < 100;
     })
-    .map((entry) => entry.manga!.copy({
+    .map((entry) => entry.manga?.copy({
       'manga-entry': entry,
-    }));
+    }))
+    .filter((manga) => !!manga);
 
   if (!user) {
     return (
@@ -125,7 +126,7 @@ const useAgendaManga = () => {
 
   useEffect(() => {
     const prepare = async () => {
-      if (!user) return
+      if (!user) return;
 
       const mangaLibrary = await User.findById(user.id).get('manga-library')
         .include({

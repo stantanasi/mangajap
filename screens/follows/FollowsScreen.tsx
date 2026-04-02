@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
@@ -72,8 +72,9 @@ export default function FollowsScreen({ route }: Props) {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
           const user = route.params.type === 'followers'
-            ? item.follower!
-            : item.followed!;
+            ? item.follower
+            : item.followed;
+          if (!user) return null;
           return (
             <UserCard
               user={user}

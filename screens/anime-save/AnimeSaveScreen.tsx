@@ -281,7 +281,7 @@ export default function AnimeSaveScreen({ route }: Props) {
           onChangeText={(text) => setForm((prev) => ({
             ...prev,
             links: {
-              ...prev!.links,
+              ...prev?.links,
               themoviedb: text,
             },
           }))}
