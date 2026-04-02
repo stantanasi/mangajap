@@ -10,6 +10,7 @@ import { Image, Platform, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import { Toaster } from 'sonner';
 import AppProvider, { useApp } from './contexts/AppContext';
 import AuthProvider, { useAuth } from './contexts/AuthContext';
 import store, { persistor } from './redux/store';
@@ -572,6 +573,7 @@ function AppContent() {
           </Text>
         </View>
       )}
+      <Toaster />
       <StatusBar style="auto" />
     </SafeAreaProvider>
   );
