@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { useApp } from '../../contexts/AppContext';
@@ -31,7 +32,7 @@ export default function MangaSaveScreen({ route }: Props) {
     setForm(manga.toObject());
   }, [manga]);
 
-  if (isLoading || !manga || !form || !genres || !themes) {
+  if (!manga || !form || !genres || !themes) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -91,7 +92,7 @@ export default function MangaSaveScreen({ route }: Props) {
             : 'Modifier le manga'}
         </Text>
 
-        {!isOffline ? (
+        {!isOffline && !isLoading ? (
           <MaterialIcons
             name="save"
             color="#000"
@@ -319,6 +320,8 @@ export default function MangaSaveScreen({ route }: Props) {
           />
         </Pressable>
       </Modal>
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

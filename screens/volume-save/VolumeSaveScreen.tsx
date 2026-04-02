@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import TextInput from '../../components/atoms/TextInput';
 import { useApp } from '../../contexts/AppContext';
 import { Volume } from '../../models';
@@ -33,7 +34,7 @@ export default function VolumeSaveScreen({ route }: Props) {
     setForm(volume.toObject());
   }, [volume]);
 
-  if (isLoading || !volume || !form) {
+  if (!volume || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -93,7 +94,7 @@ export default function VolumeSaveScreen({ route }: Props) {
             : 'Modifier le tome'}
         </Text>
 
-        {!isOffline ? (
+        {!isOffline && !isLoading ? (
           <MaterialIcons
             name="save"
             color="#000"
@@ -194,6 +195,8 @@ export default function VolumeSaveScreen({ route }: Props) {
           />
         </Pressable>
       </Modal>
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

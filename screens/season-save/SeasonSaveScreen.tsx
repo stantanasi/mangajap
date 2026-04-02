@@ -6,6 +6,7 @@ import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import TextInput from '../../components/atoms/TextInput';
 import { useApp } from '../../contexts/AppContext';
 import { Season } from '../../models';
@@ -32,7 +33,7 @@ export default function SeasonSaveScreen({ route }: Props) {
     setForm(season.toObject());
   }, [season]);
 
-  if (isLoading || !season || !form) {
+  if (!season || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -92,7 +93,7 @@ export default function SeasonSaveScreen({ route }: Props) {
             : 'Modifier la saison'}
         </Text>
 
-        {!isOffline ? (
+        {!isOffline && !isLoading ? (
           <MaterialIcons
             name="save"
             color="#000"
@@ -183,6 +184,8 @@ export default function SeasonSaveScreen({ route }: Props) {
           />
         </Pressable>
       </Modal>
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

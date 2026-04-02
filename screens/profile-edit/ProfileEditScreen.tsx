@@ -5,6 +5,7 @@ import { launchImageLibraryAsync } from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import { useApp } from '../../contexts/AppContext';
 import { User } from '../../models';
 import { IUser } from '../../models/user.model';
@@ -28,7 +29,7 @@ export default function ProfileEditScreen({ route }: Props) {
     setForm(user.toObject());
   }, [user]);
 
-  if (isLoading || !user || !form) {
+  if (!user || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -97,7 +98,7 @@ export default function ProfileEditScreen({ route }: Props) {
           Modifier le profil
         </Text>
 
-        {!isOffline ? (
+        {!isOffline && !isLoading ? (
           <MaterialIcons
             name="save"
             color="#000"
@@ -238,6 +239,8 @@ export default function ProfileEditScreen({ route }: Props) {
           />
         </Pressable>
       </Modal>
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

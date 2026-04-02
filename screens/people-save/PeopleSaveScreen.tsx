@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import TextInput from '../../components/atoms/TextInput';
 import { useApp } from '../../contexts/AppContext';
 import { People } from '../../models';
@@ -29,7 +30,7 @@ export default function PeopleSaveScreen({ route }: Props) {
     setForm(people.toObject());
   }, [people]);
 
-  if (isLoading || !people || !form) {
+  if (!people || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -89,7 +90,7 @@ export default function PeopleSaveScreen({ route }: Props) {
             : 'Modifier la personnalité'}
         </Text>
 
-        {!isOffline ? (
+        {!isOffline && !isLoading ? (
           <MaterialIcons
             name="save"
             color="#000"
@@ -159,6 +160,8 @@ export default function PeopleSaveScreen({ route }: Props) {
           />
         </Pressable>
       </Modal>
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

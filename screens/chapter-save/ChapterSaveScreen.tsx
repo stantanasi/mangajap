@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { useApp } from '../../contexts/AppContext';
@@ -25,7 +26,7 @@ export default function ChapterSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { isOffline } = useApp();
-  const { isLoading, isLoadingVolumes, chapter, volumes } = useChapterSave(route.params);
+  const { isLoading, chapter, volumes } = useChapterSave(route.params);
   const [form, setForm] = useState<Partial<Object<IChapter>>>();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -34,7 +35,7 @@ export default function ChapterSaveScreen({ route }: Props) {
     setForm(chapter.toObject());
   }, [chapter]);
 
-  if (isLoading || !chapter || !form) {
+  if (!chapter || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -96,7 +97,7 @@ export default function ChapterSaveScreen({ route }: Props) {
             : 'Modifier le chapitre'}
         </Text>
 
-        {!isOffline ? (
+        {!isOffline && !isLoading ? (
           <MaterialIcons
             name="save"
             color="#000"
@@ -171,7 +172,6 @@ export default function ChapterSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Tome"
-          isLoading={isLoadingVolumes}
           items={volumes?.map((volume) => ({
             value: volume.id,
             label: `Tome ${volume.number}`,
@@ -212,6 +212,8 @@ export default function ChapterSaveScreen({ route }: Props) {
           />
         </Pressable>
       </Modal>
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

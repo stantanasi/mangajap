@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputLabel from '../../components/atoms/InputLabel';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
 import { useApp } from '../../contexts/AppContext';
 import { Staff } from '../../models';
@@ -35,7 +36,7 @@ export default function StaffSaveScreen({ route }: Props) {
     setForm(staff.toObject());
   }, [staff]);
 
-  if (isLoading || !staff || !form) {
+  if (!staff || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -97,7 +98,7 @@ export default function StaffSaveScreen({ route }: Props) {
             : 'Modifier le staff'}
         </Text>
 
-        {!isOffline ? (
+        {!isOffline && !isLoading ? (
           <MaterialIcons
             name="save"
             color="#000"
@@ -207,6 +208,8 @@ export default function StaffSaveScreen({ route }: Props) {
           />
         </Pressable>
       </Modal>
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

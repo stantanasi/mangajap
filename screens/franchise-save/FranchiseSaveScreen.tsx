@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputLabel from '../../components/atoms/InputLabel';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
 import { useApp } from '../../contexts/AppContext';
 import { Franchise } from '../../models';
@@ -35,7 +36,7 @@ export default function FranchiseSaveScreen({ route }: Props) {
     setForm(franchise.toObject());
   }, [franchise]);
 
-  if (isLoading || !franchise || !form) {
+  if (!franchise || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -95,7 +96,7 @@ export default function FranchiseSaveScreen({ route }: Props) {
             : 'Modifier la franchise'}
         </Text>
 
-        {!isOffline ? (
+        {!isOffline && !isLoading ? (
           <MaterialIcons
             name="save"
             color="#000"
@@ -205,6 +206,8 @@ export default function FranchiseSaveScreen({ route }: Props) {
           />
         </Pressable>
       </Modal>
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

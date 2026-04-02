@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import { useApp } from '../../contexts/AppContext';
@@ -25,7 +26,7 @@ export default function EpisodeSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { isOffline } = useApp();
-  const { isLoading, isLoadingSeasons, episode, seasons } = useEpisodeSave(route.params);
+  const { isLoading, episode, seasons } = useEpisodeSave(route.params);
   const [form, setForm] = useState<Partial<Object<IEpisode>>>();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -34,7 +35,7 @@ export default function EpisodeSaveScreen({ route }: Props) {
     setForm(episode.toObject());
   }, [episode]);
 
-  if (isLoading || !episode || !form) {
+  if (!episode || !form) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -96,7 +97,7 @@ export default function EpisodeSaveScreen({ route }: Props) {
             : 'Modifier l\'épisode'}
         </Text>
 
-        {!isOffline ? (
+        {!isOffline && !isLoading ? (
           <MaterialIcons
             name="save"
             color="#000"
@@ -130,7 +131,6 @@ export default function EpisodeSaveScreen({ route }: Props) {
 
         <SelectInput
           label="Saison *"
-          isLoading={isLoadingSeasons}
           items={seasons?.map((season) => ({
             value: season.id,
             label: `Saison ${season.number}`,
@@ -212,6 +212,8 @@ export default function EpisodeSaveScreen({ route }: Props) {
           />
         </Pressable>
       </Modal>
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }
