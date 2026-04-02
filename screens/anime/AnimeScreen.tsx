@@ -1,5 +1,5 @@
-import { StaticScreenProps } from '@react-navigation/native';
-import React, { useState } from 'react';
+import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
@@ -16,10 +16,19 @@ type Props = StaticScreenProps<{
 }>;
 
 export default function AnimeScreen({ route }: Props) {
+  const navigation = useNavigation();
   const { isOffline } = useApp();
   const { user } = useAuth();
   const { isLoading, anime } = useAnime(route.params);
   const [selectedTab, setSelectedTab] = useState<'about' | 'episodes'>('about');
+
+  useEffect(() => {
+    if (!anime) return;
+
+    navigation.setOptions({
+      title: `${anime.title} - Anime | MangaJap`,
+    });
+  }, [anime]);
 
   if (!anime) {
     return (

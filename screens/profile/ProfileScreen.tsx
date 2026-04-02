@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
@@ -23,6 +23,14 @@ export default function ProfileScreen({ route }: Props) {
   const { isLoading, user, followingUser, followedByUser } = useProfile(route.params);
 
   const userId = route.params?.id ?? authenticatedUser?.id;
+
+  useEffect(() => {
+    if (!user) return;
+
+    navigation.setOptions({
+      title: `${user.name} (@${user.pseudo}) - Profil | MangaJap`,
+    });
+  }, [user]);
 
   if (!userId) {
     if (authScreen === 'login') {

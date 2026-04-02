@@ -26,6 +26,14 @@ export default function PeopleSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
+    if (!people || people.isNew) return;
+
+    navigation.setOptions({
+      title: `Modifier - ${people.name} - Personnalité | MangaJap`,
+    });
+  }, [people]);
+
+  useEffect(() => {
     if (people?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(people?.toObject());
   }, [people]);

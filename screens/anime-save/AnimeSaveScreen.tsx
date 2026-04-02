@@ -28,6 +28,14 @@ export default function AnimeSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
+    if (!anime || anime.isNew) return;
+
+    navigation.setOptions({
+      title: `Modifier - ${anime.title} - Anime | MangaJap`,
+    });
+  }, [anime]);
+
+  useEffect(() => {
     if (anime?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(anime?.toObject());
   }, [anime]);

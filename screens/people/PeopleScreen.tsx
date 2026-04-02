@@ -1,5 +1,5 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
@@ -16,6 +16,14 @@ type Props = StaticScreenProps<{
 export default function PeopleScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isLoading, people } = usePeople(route.params);
+
+  useEffect(() => {
+    if (!people) return;
+
+    navigation.setOptions({
+      title: `${people.name} - Personnalité | MangaJap`,
+    });
+  }, [people]);
 
   if (!people) {
     return (

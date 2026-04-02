@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from "expo-linking";
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback } from 'react';
+import { ComponentProps, useCallback } from 'react';
 import { Image, Platform, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
@@ -61,6 +61,7 @@ const MainTabs = createBottomTabNavigator({
             color={color}
           />
         ),
+        title: 'Agenda des animes | MangaJap',
       },
     },
     AgendaManga: {
@@ -77,6 +78,7 @@ const MainTabs = createBottomTabNavigator({
             color={color}
           />
         ),
+        title: 'Agenda des mangas | MangaJap',
       },
     },
     Discover: {
@@ -93,6 +95,7 @@ const MainTabs = createBottomTabNavigator({
             color={color}
           />
         ),
+        title: 'Découvrir | MangaJap',
       },
     },
     Profile: {
@@ -109,6 +112,7 @@ const MainTabs = createBottomTabNavigator({
             color={color}
           />
         ),
+        title: 'Profil | MangaJap',
       },
     },
   },
@@ -132,6 +136,9 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/anime/:id',
       },
+      options: {
+        title: 'Anime | MangaJap',
+      },
     },
     AnimeCreate: {
       if: () => {
@@ -141,6 +148,9 @@ const RootStack = createNativeStackNavigator({
       screen: AnimeSaveScreen,
       linking: {
         path: 'mangajap/anime/add',
+      },
+      options: {
+        title: 'Ajouter un anime | MangaJap',
       },
     },
     AnimeUpdate: {
@@ -152,6 +162,9 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/anime/:id/edit',
       },
+      options: {
+        title: 'Modifier - Anime | MangaJap',
+      },
     },
     SeasonCreate: {
       if: () => {
@@ -161,6 +174,9 @@ const RootStack = createNativeStackNavigator({
       screen: SeasonSaveScreen,
       linking: {
         path: 'mangajap/anime/:animeId/season/add',
+      },
+      options: {
+        title: 'Ajouter une saison | MangaJap',
       },
     },
     SeasonUpdate: {
@@ -172,6 +188,9 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/season/:seasonId/edit',
       },
+      options: {
+        title: 'Modifier la saison | MangaJap',
+      },
     },
     EpisodeCreate: {
       if: () => {
@@ -181,6 +200,9 @@ const RootStack = createNativeStackNavigator({
       screen: EpisodeSaveScreen,
       linking: {
         path: 'mangajap/anime/:animeId/episode/add',
+      },
+      options: {
+        title: 'Ajouter un épisode | MangaJap',
       },
     },
     EpisodeUpdate: {
@@ -192,6 +214,9 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/episode/:episodeId/edit',
       },
+      options: {
+        title: 'Modifier l\'épisode | MangaJap',
+      },
     },
     AnimeStaffCreate: {
       if: () => {
@@ -201,6 +226,9 @@ const RootStack = createNativeStackNavigator({
       screen: StaffSaveScreen,
       linking: {
         path: 'mangajap/anime/:animeId/staff/create',
+      },
+      options: {
+        title: 'Ajouter un staff - Anime | MangaJap',
       },
     },
     AnimeFranchiseCreate: {
@@ -212,11 +240,17 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/anime/:animeId/franchise/create',
       },
+      options: {
+        title: 'Ajouter une franchise - Anime | MangaJap',
+      },
     },
     Manga: {
       screen: MangaScreen,
       linking: {
         path: 'mangajap/manga/:id',
+      },
+      options: {
+        title: 'Manga | MangaJap',
       },
     },
     MangaCreate: {
@@ -228,6 +262,9 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/manga/add',
       },
+      options: {
+        title: 'Ajouter un manga | MangaJap',
+      },
     },
     MangaUpdate: {
       if: () => {
@@ -237,6 +274,9 @@ const RootStack = createNativeStackNavigator({
       screen: MangaSaveScreen,
       linking: {
         path: 'mangajap/manga/:id/edit',
+      },
+      options: {
+        title: 'Modifier - Manga | MangaJap',
       },
     },
     VolumeCreate: {
@@ -248,6 +288,9 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/manga/:mangaId/volume/add',
       },
+      options: {
+        title: 'Ajouter un tome | MangaJap',
+      },
     },
     VolumeUpdate: {
       if: () => {
@@ -257,6 +300,9 @@ const RootStack = createNativeStackNavigator({
       screen: VolumeSaveScreen,
       linking: {
         path: 'mangajap/volume/:volumeId/edit',
+      },
+      options: {
+        title: 'Modifier le tome | MangaJap',
       },
     },
     ChapterCreate: {
@@ -268,6 +314,9 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/manga/:mangaId/chapter/add',
       },
+      options: {
+        title: 'Ajouter un chapitre | MangaJap',
+      },
     },
     ChapterUpdate: {
       if: () => {
@@ -277,6 +326,9 @@ const RootStack = createNativeStackNavigator({
       screen: ChapterSaveScreen,
       linking: {
         path: 'mangajap/chapter/:chapterId/edit',
+      },
+      options: {
+        title: 'Modifier le chapitre | MangaJap',
       },
     },
     MangaStaffCreate: {
@@ -288,6 +340,9 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/manga/:mangaId/staff/create',
       },
+      options: {
+        title: 'Ajouter un staff - Manga | MangaJap',
+      },
     },
     StaffUpdate: {
       if: () => {
@@ -297,6 +352,9 @@ const RootStack = createNativeStackNavigator({
       screen: StaffSaveScreen,
       linking: {
         path: 'mangajap/staff/:staffId/edit',
+      },
+      options: {
+        title: 'Modifier le staff | MangaJap',
       },
     },
     MangaFranchiseCreate: {
@@ -308,6 +366,9 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/manga/:mangaId/franchise/create',
       },
+      options: {
+        title: 'Ajouter une franchise - Manga | MangaJap',
+      },
     },
     FranchiseUpdate: {
       if: () => {
@@ -318,17 +379,26 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/franchise/:franchiseId/edit',
       },
+      options: {
+        title: 'Modifier la franchise | MangaJap',
+      },
     },
     Search: {
       screen: SearchScreen,
       linking: {
         path: 'mangajap/search',
       },
+      options: {
+        title: 'Rechercher | MangaJap',
+      },
     },
     Profile: {
       screen: ProfileScreen,
       linking: {
         path: 'mangajap/profile/:id',
+      },
+      options: {
+        title: 'Profil | MangaJap',
       },
     },
     ProfileEdit: {
@@ -340,11 +410,23 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/profile/:id/edit',
       },
+      options: {
+        title: 'Modifier le profil | MangaJap',
+      },
     },
     ProfileFollows: {
       screen: FollowsScreen,
       linking: {
         path: 'mangajap/profile/:userId/:type(followers|following)',
+      },
+      options: (props) => {
+        const params = props.route.params as ComponentProps<typeof FollowsScreen>['route']['params'];
+
+        return {
+          title: params.type === 'followers' ? 'Abonnés | MangaJap'
+            : params.type === 'following' ? 'Abonnement | MangaJap'
+              : '',
+        };
       },
     },
     ProfileLibrary: {
@@ -352,11 +434,25 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/profile/:userId/:type(anime-library|anime-favorites|manga-library|manga-favorites)',
       },
+      options: (props) => {
+        const params = props.route.params as ComponentProps<typeof LibraryScreen>['route']['params'];
+
+        return {
+          title: params.type === 'anime-library' ? 'Bibliothèque animes | MangaJap'
+            : params.type === 'anime-favorites' ? 'Animes favoris | MangaJap'
+              : params.type === 'manga-library' ? 'Bibliothèque mangas | MangaJap'
+                : params.type === 'manga-favorites' ? 'Mangas favoris | MangaJap'
+                  : '',
+        };
+      },
     },
     People: {
       screen: PeopleScreen,
       linking: {
         path: 'mangajap/people/:id',
+      },
+      options: {
+        title: 'Personnalité | MangaJap',
       },
     },
     PeopleCreate: {
@@ -368,6 +464,9 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/people/add',
       },
+      options: {
+        title: 'Ajouter une personnalité | MangaJap',
+      },
     },
     PeopleUpdate: {
       if: () => {
@@ -377,6 +476,9 @@ const RootStack = createNativeStackNavigator({
       screen: PeopleSaveScreen,
       linking: {
         path: 'mangajap/people/:peopleId/edit',
+      },
+      options: {
+        title: 'Modifier - Personnalité | MangaJap',
       },
     },
     Settings: {
@@ -388,11 +490,17 @@ const RootStack = createNativeStackNavigator({
       linking: {
         path: 'mangajap/settings',
       },
+      options: {
+        title: 'Paramètres | MangaJap',
+      },
     },
     NotFound: {
       screen: NotFoundScreen,
       linking: {
         path: 'mangajap/*',
+      },
+      options: {
+        title: 'Page non trouvée | MangaJap',
       },
     },
   },

@@ -28,6 +28,14 @@ export default function MangaSaveScreen({ route }: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
+    if (!manga || manga.isNew) return;
+
+    navigation.setOptions({
+      title: `Modifier - ${manga.title} - Manga | MangaJap`,
+    });
+  }, [manga]);
+
+  useEffect(() => {
     if (manga?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(manga?.toObject());
   }, [manga]);
