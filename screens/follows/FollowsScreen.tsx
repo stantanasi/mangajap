@@ -3,6 +3,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import UserCard from '../../components/molecules/UserCard';
 import { Follow, User } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -16,7 +17,7 @@ export default function FollowsScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isLoading, follows } = useFollows(route.params);
 
-  if (isLoading || !follows) {
+  if (!follows) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -94,6 +95,8 @@ export default function FollowsScreen({ route }: Props) {
           />
         )}
       />
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

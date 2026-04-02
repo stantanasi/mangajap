@@ -3,6 +3,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import ExpandableFloatingActionButton from '../../components/molecules/ExpandableFloatingActionButton';
 import MangaCard from '../../components/molecules/MangaCard';
@@ -41,7 +42,7 @@ export default function DiscoverScreen({ route }: Props) {
         </Text>
       </Pressable>
 
-      {isLoading || !peoples || !animes || !mangas ? (
+      {!peoples || !animes || !mangas ? (
         <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
           <ActivityIndicator
             animating
@@ -155,6 +156,8 @@ export default function DiscoverScreen({ route }: Props) {
           ]}
         />
       ) : null}
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

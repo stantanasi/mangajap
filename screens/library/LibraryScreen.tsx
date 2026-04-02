@@ -3,6 +3,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { Anime, AnimeEntry, MangaEntry, User } from '../../models';
@@ -17,7 +18,7 @@ export default function LibraryScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isLoading, library } = useLibrary(route.params);
 
-  if (isLoading || !library) {
+  if (!library) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -108,6 +109,8 @@ export default function LibraryScreen({ route }: Props) {
         numColumns={3}
         columnWrapperStyle={{ gap: 10, paddingHorizontal: 16 }}
       />
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

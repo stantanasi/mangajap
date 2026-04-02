@@ -2,6 +2,7 @@ import { StaticScreenProps } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -19,7 +20,7 @@ export default function AnimeScreen({ route }: Props) {
   const { isLoading, anime } = useAnime(route.params);
   const [selectedTab, setSelectedTab] = useState<'about' | 'episodes'>('about');
 
-  if (isLoading || !anime) {
+  if (!anime) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -64,6 +65,8 @@ export default function AnimeScreen({ route }: Props) {
           anime={anime}
         />
       ) : null}
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

@@ -3,6 +3,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -42,7 +43,7 @@ export default function ProfileScreen({ route }: Props) {
     }
   }
 
-  if (isLoading || !user || followingUser === undefined || followedByUser === undefined) {
+  if (!user || followingUser === undefined || followedByUser === undefined) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -319,6 +320,8 @@ export default function ProfileScreen({ route }: Props) {
           </>
         ) : null}
       </ScrollView>
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView >
   );
 }

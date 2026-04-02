@@ -2,6 +2,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { Anime, People } from '../../models';
@@ -16,7 +17,7 @@ export default function PeopleScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isLoading, people } = usePeople(route.params);
 
-  if (isLoading || !people) {
+  if (!people) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -70,6 +71,8 @@ export default function PeopleScreen({ route }: Props) {
         )}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
       />
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

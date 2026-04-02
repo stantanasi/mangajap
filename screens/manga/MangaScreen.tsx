@@ -9,6 +9,7 @@ import AddMangaButton from './components/AddMangaButton';
 import Header from './components/Header';
 import AboutTab from './tabs/AboutTab';
 import ChaptersTab from './tabs/ChaptersTab';
+import RefreshControl from '../../components/atoms/RefreshControl';
 
 type Props = StaticScreenProps<{
   id: string;
@@ -19,7 +20,7 @@ export default function MangaScreen({ route }: Props) {
   const { isLoading, manga } = useManga(route.params);
   const [selectedTab, setSelectedTab] = useState<'about' | 'chapters'>('about');
 
-  if (isLoading || !manga) {
+  if (!manga) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -64,6 +65,8 @@ export default function MangaScreen({ route }: Props) {
           manga={manga}
         />
       ) : null}
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

@@ -2,6 +2,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import { AuthContext } from '../../contexts/AuthContext';
 import { MangaEntry, User } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -59,7 +60,7 @@ export default function AgendaMangaScreen({ }: Props) {
     );
   }
 
-  if (isLoading || !mangas) {
+  if (!mangas) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -89,6 +90,8 @@ export default function AgendaMangaScreen({ }: Props) {
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListFooterComponent={() => <View style={{ height: 16 }} />}
       />
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }
