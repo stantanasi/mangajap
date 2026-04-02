@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { ActivityIndicator, FlatList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import AnimeCard from '../../../components/molecules/AnimeCard';
+import LoadingScreen from '../../../components/organisms/LoadingScreen';
 import { Anime } from '../../../models';
 
 type Props = {
@@ -17,13 +18,7 @@ export default function AnimeTab({ isLoading, list, onLoadMore, hasMore, style }
 
   if (isLoading) {
     return (
-      <View style={[styles.container, style, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </View>
+      <LoadingScreen style={[styles.container, style]} />
     );
   }
 

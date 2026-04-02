@@ -1,8 +1,9 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
+import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useAuth } from '../../contexts/AuthContext';
 import MangaAgendaCard from './components/MangaAgendaCard';
 import { useAgendaManga } from './hooks/useAgendaManga';
@@ -62,13 +63,7 @@ export default function AgendaMangaScreen({ route }: Props) {
 
   if (!mangas) {
     return (
-      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </SafeAreaView>
+      <LoadingScreen style={styles.container} />
     );
   }
 

@@ -10,6 +10,7 @@ import NumberInput from '../../components/atoms/NumberInput';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
+import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useApp } from '../../contexts/AppContext';
 import { Chapter, Volume } from '../../models';
 import { IChapter } from '../../models/chapter.model';
@@ -37,13 +38,7 @@ export default function ChapterSaveScreen({ route }: Props) {
 
   if (!chapter || !form) {
     return (
-      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </SafeAreaView>
+      <LoadingScreen style={styles.container} />
     );
   }
 

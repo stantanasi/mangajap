@@ -1,12 +1,13 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GridList from '../../components/atoms/GridList';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
+import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { Anime, AnimeEntry } from '../../models';
 import { useLibrary } from './hooks/useLibrary';
 
@@ -21,13 +22,7 @@ export default function LibraryScreen({ route }: Props) {
 
   if (!library) {
     return (
-      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </SafeAreaView>
+      <LoadingScreen style={styles.container} />
     );
   }
 

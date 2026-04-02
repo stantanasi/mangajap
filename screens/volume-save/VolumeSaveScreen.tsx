@@ -9,6 +9,7 @@ import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import TextInput from '../../components/atoms/TextInput';
+import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useApp } from '../../contexts/AppContext';
 import { Volume } from '../../models';
 import { IVolume } from '../../models/volume.model';
@@ -36,13 +37,7 @@ export default function VolumeSaveScreen({ route }: Props) {
 
   if (!volume || !form) {
     return (
-      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </SafeAreaView>
+      <LoadingScreen style={styles.container} />
     );
   }
 
