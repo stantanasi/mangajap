@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import TextInput from '../../components/atoms/TextInput';
+import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useApp } from '../../contexts/AppContext';
 import { People } from '../../models';
 import { IPeople } from '../../models/people.model';
@@ -40,13 +41,7 @@ export default function PeopleSaveScreen({ route }: Props) {
 
   if (!people || !form) {
     return (
-      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </SafeAreaView>
+      <LoadingScreen style={styles.container} />
     );
   }
 

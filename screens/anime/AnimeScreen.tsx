@@ -1,8 +1,9 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
+import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import AddAnimeButton from './components/AddAnimeButton';
@@ -32,13 +33,7 @@ export default function AnimeScreen({ route }: Props) {
 
   if (!anime) {
     return (
-      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </SafeAreaView>
+      <LoadingScreen style={styles.container} />
     );
   }
 

@@ -1,12 +1,13 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import ExpandableFloatingActionButton from '../../components/molecules/ExpandableFloatingActionButton';
 import MangaCard from '../../components/molecules/MangaCard';
 import PeopleCard from '../../components/molecules/PeopleCard';
+import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDiscover } from './hooks/useDiscover';
@@ -43,13 +44,7 @@ export default function DiscoverScreen({ route }: Props) {
       </Pressable>
 
       {!peoples || !animes || !mangas ? (
-        <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
-          <ActivityIndicator
-            animating
-            color="#000"
-            size="large"
-          />
-        </View>
+        <LoadingScreen style={{ flex: 1 }} />
       ) : (
         <ScrollView>
           <Text

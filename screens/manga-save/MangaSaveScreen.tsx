@@ -9,6 +9,7 @@ import ImageInput from '../../components/atoms/ImageInput';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
+import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useApp } from '../../contexts/AppContext';
 import { Manga } from '../../models';
 import { IManga, MangaStatus, MangaType } from '../../models/manga.model';
@@ -42,13 +43,7 @@ export default function MangaSaveScreen({ route }: Props) {
 
   if (!manga || !form || !genres || !themes) {
     return (
-      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </SafeAreaView>
+      <LoadingScreen style={styles.container} />
     );
   }
 

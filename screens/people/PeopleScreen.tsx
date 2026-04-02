@@ -1,10 +1,11 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
+import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { Anime } from '../../models';
 import Header from './components/Header';
 import { usePeople } from './hooks/usePeople';
@@ -27,13 +28,7 @@ export default function PeopleScreen({ route }: Props) {
 
   if (!people) {
     return (
-      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </SafeAreaView>
+      <LoadingScreen style={styles.container} />
     );
   }
 

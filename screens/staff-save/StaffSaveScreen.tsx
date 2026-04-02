@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import InputLabel from '../../components/atoms/InputLabel';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
+import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useApp } from '../../contexts/AppContext';
 import { Staff } from '../../models';
 import { IStaff, StaffRole } from '../../models/staff.model';
@@ -38,13 +39,7 @@ export default function StaffSaveScreen({ route }: Props) {
 
   if (!staff || !form) {
     return (
-      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </SafeAreaView>
+      <LoadingScreen style={styles.container} />
     );
   }
 

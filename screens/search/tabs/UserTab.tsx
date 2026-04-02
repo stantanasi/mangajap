@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { ActivityIndicator, FlatList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import UserCard from '../../../components/molecules/UserCard';
+import LoadingScreen from '../../../components/organisms/LoadingScreen';
 import { User } from '../../../models';
 
 type Props = {
@@ -10,20 +11,14 @@ type Props = {
   onLoadMore: () => void;
   hasMore: boolean;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function UserTab({ isLoading, list, onLoadMore, hasMore, style }: Props) {
   const navigation = useNavigation();
 
   if (isLoading) {
     return (
-      <View style={[styles.container, style, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </View>
+      <LoadingScreen style={[styles.container, style]} />
     );
   }
 

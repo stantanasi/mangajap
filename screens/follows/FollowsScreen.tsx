@@ -1,10 +1,11 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import UserCard from '../../components/molecules/UserCard';
+import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useFollows } from './hooks/useFollows';
 
 type Props = StaticScreenProps<{
@@ -18,13 +19,7 @@ export default function FollowsScreen({ route }: Props) {
 
   if (!follows) {
     return (
-      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
-        <ActivityIndicator
-          animating
-          color="#000"
-          size="large"
-        />
-      </SafeAreaView>
+      <LoadingScreen style={styles.container} />
     );
   }
 
