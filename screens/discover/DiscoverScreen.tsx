@@ -55,7 +55,7 @@ export default function DiscoverScreen({ route }: Props) {
               marginHorizontal: 16,
             }}
           >
-            Personnalités
+            Dernières personnalités ajoutées
           </Text>
 
           <FlatList

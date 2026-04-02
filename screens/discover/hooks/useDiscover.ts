@@ -8,10 +8,14 @@ export const useDiscover = (params: ComponentProps<typeof DiscoverScreen>['route
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [peoplesIds, setPeoplesIds] = useState<string[]>([]);
 
   const peoples = useAppSelector((state) => {
-    return People.redux.selectors.selectByIds(state, peoplesIds);
+    return People.redux.selectors.select(state, {
+      sort: {
+        createdAt: 'desc',
+      },
+      limit: 10,
+    });
   });
 
   const animes = useAppSelector((state) => {
@@ -42,7 +46,9 @@ export const useDiscover = (params: ComponentProps<typeof DiscoverScreen>['route
     const prepare = async () => {
       const [peoples, animes, mangas] = await Promise.all([
         People.find()
-          .sort({ random: 'asc' }),
+          .sort({
+            createdAt: 'desc',
+          }),
         Anime.find()
           .include({
             'anime-entry': isAuthenticated,
@@ -62,8 +68,6 @@ export const useDiscover = (params: ComponentProps<typeof DiscoverScreen>['route
       dispatch(People.redux.actions.setMany(peoples));
       dispatch(Anime.redux.actions.setMany(animes));
       dispatch(Manga.redux.actions.setMany(mangas));
-
-      setPeoplesIds(peoples.map((people) => people.id));
     };
 
     setIsLoading(true);
