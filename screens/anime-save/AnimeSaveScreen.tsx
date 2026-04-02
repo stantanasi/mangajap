@@ -24,12 +24,12 @@ export default function AnimeSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { isLoading, anime, genres, themes } = useAnimeSave(route.params);
-  const [form, setForm] = useState<Partial<Object<IAnime>>>();
+  const [form, setForm] = useState<Partial<Object<IAnime>> | undefined>(anime?.toObject());
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!anime || form) return;
-    setForm(anime.toObject());
+    if (anime?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
+    setForm(anime?.toObject());
   }, [anime]);
 
   if (!anime || !form || !genres || !themes) {

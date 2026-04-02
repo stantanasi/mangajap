@@ -27,12 +27,12 @@ export default function ChapterSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { isLoading, chapter, volumes } = useChapterSave(route.params);
-  const [form, setForm] = useState<Partial<Object<IChapter>>>();
+  const [form, setForm] = useState<Partial<Object<IChapter>> | undefined>(chapter?.toObject());
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!chapter || form) return;
-    setForm(chapter.toObject());
+    if (chapter?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
+    setForm(chapter?.toObject());
   }, [chapter]);
 
   if (!chapter || !form) {

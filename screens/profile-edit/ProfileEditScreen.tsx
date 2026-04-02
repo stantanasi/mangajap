@@ -21,12 +21,12 @@ export default function ProfileEditScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { isLoading, user } = useProfileEdit(route.params);
-  const [form, setForm] = useState<Partial<Object<IUser>>>();
+  const [form, setForm] = useState<Partial<Object<IUser>> | undefined>(user?.toObject());
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    if (!user || form) return;
-    setForm(user.toObject());
+    if (user?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
+    setForm(user?.toObject());
   }, [user]);
 
   if (!user || !form) {

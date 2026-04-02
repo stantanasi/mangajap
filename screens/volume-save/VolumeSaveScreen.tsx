@@ -26,12 +26,12 @@ export default function VolumeSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { isLoading, volume } = useVolumeSave(route.params);
-  const [form, setForm] = useState<Partial<Object<IVolume>>>();
+  const [form, setForm] = useState<Partial<Object<IVolume>> | undefined>(volume?.toObject());
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!volume || form) return;
-    setForm(volume.toObject());
+    if (volume?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
+    setForm(volume?.toObject());
   }, [volume]);
 
   if (!volume || !form) {

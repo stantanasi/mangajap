@@ -25,12 +25,12 @@ export default function SeasonSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { isLoading, season } = useSeasonSave(route.params);
-  const [form, setForm] = useState<Partial<Object<ISeason>>>();
+  const [form, setForm] = useState<Partial<Object<ISeason>> | undefined>(season?.toObject());
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!season || form) return;
-    setForm(season.toObject());
+    if (season?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
+    setForm(season?.toObject());
   }, [season]);
 
   if (!season || !form) {

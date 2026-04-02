@@ -27,13 +27,13 @@ export default function StaffSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { isLoading, staff } = useStaffSave(route.params);
-  const [form, setForm] = useState<Partial<Object<IStaff>>>();
+  const [form, setForm] = useState<Partial<Object<IStaff>> | undefined>(staff?.toObject());
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!staff || form) return;
-    setForm(staff.toObject());
+    if (staff?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
+    setForm(staff?.toObject());
   }, [staff]);
 
   if (!staff || !form) {

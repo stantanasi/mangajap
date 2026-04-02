@@ -27,12 +27,12 @@ export default function EpisodeSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { isLoading, episode, seasons } = useEpisodeSave(route.params);
-  const [form, setForm] = useState<Partial<Object<IEpisode>>>();
+  const [form, setForm] = useState<Partial<Object<IEpisode>> | undefined>(episode?.toObject());
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!episode || form) return;
-    setForm(episode.toObject());
+    if (episode?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
+    setForm(episode?.toObject());
   }, [episode]);
 
   if (!episode || !form) {

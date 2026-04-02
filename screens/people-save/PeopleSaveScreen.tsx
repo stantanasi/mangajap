@@ -22,12 +22,12 @@ export default function PeopleSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { isLoading, people } = usePeopleSave(route.params);
-  const [form, setForm] = useState<Partial<Object<IPeople>>>();
+  const [form, setForm] = useState<Partial<Object<IPeople>> | undefined>(people?.toObject());
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!people || form) return;
-    setForm(people.toObject());
+    if (people?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
+    setForm(people?.toObject());
   }, [people]);
 
   if (!people || !form) {

@@ -27,13 +27,13 @@ export default function FranchiseSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { isLoading, franchise } = useFranchiseSave(route.params);
-  const [form, setForm] = useState<Partial<Object<IFranchise>>>();
+  const [form, setForm] = useState<Partial<Object<IFranchise>> | undefined>(franchise?.toObject());
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!franchise || form) return;
-    setForm(franchise.toObject());
+    if (franchise?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
+    setForm(franchise?.toObject());
   }, [franchise]);
 
   if (!franchise || !form) {

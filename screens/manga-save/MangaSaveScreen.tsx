@@ -24,12 +24,12 @@ export default function MangaSaveScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { isLoading, manga, genres, themes } = useMangaSave(route.params);
-  const [form, setForm] = useState<Partial<Object<IManga>>>();
+  const [form, setForm] = useState<Partial<Object<IManga>> | undefined>(manga?.toObject());
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!manga || form) return;
-    setForm(manga.toObject());
+    if (manga?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
+    setForm(manga?.toObject());
   }, [manga]);
 
   if (!manga || !form || !genres || !themes) {
