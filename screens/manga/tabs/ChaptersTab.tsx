@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { SectionList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import ChapterCard from '../../../components/molecules/ChapterCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
@@ -27,16 +27,18 @@ export default function ChaptersTab({ isLoading, manga, style }: Props) {
   const [selectedChapterId, setSelectedChapterId] = useState<string>();
   const [previousUnread, setPreviousUnread] = useState<(Volume | Chapter)[]>();
 
-  const sections = [
-    ...manga.volumes?.map((volume) => ({
-      volume: volume,
-      data: volume.chapters ?? [],
-    })) ?? [],
-    {
-      volume: null,
-      data: manga.chapters?.filter((chapter) => !manga.volumes?.some((v) => v.chapters?.some((c) => c.id === chapter.id))) ?? [],
-    },
-  ];
+  const sections = useMemo(() => {
+    return [
+      ...manga.volumes?.map((volume) => ({
+        volume: volume,
+        data: volume.chapters ?? [],
+      })) ?? [],
+      {
+        volume: null,
+        data: manga.chapters?.filter((chapter) => !manga.volumes?.some((v) => v.chapters?.some((c) => c.id === chapter.id))) ?? [],
+      },
+    ];
+  }, [manga.volumes, manga.chapters]);
 
   const findPreviousVolumesChapters = (item: Volume | Chapter): (Volume | Chapter)[] => {
     const previous: (Volume | Chapter)[] = [];

@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { SectionList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import EpisodeCard from '../../../components/molecules/EpisodeCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
@@ -27,13 +27,15 @@ export default function EpisodesTab({ isLoading, anime, style }: Props) {
   const [selectedEpisodeId, setSelectedEpisodeId] = useState<string>();
   const [previousUnwatched, setPreviousUnwatched] = useState<(Season | Episode)[]>();
 
-  const sections = [
-    ...(anime.seasons?.filter((s) => s.number !== 0) ?? []),
-    ...(anime.seasons?.filter((s) => s.number === 0) ?? []),
-  ].map((season) => ({
-    season: season,
-    data: season.episodes ?? [],
-  }));
+  const sections = useMemo(() => {
+    return [
+      ...(anime.seasons?.filter((s) => s.number !== 0) ?? []),
+      ...(anime.seasons?.filter((s) => s.number === 0) ?? []),
+    ].map((season) => ({
+      season: season,
+      data: season.episodes ?? [],
+    }));
+  }, [anime.seasons]);
 
   const findPreviousSeasonsEpisodes = (item: Season | Episode) => {
     const previous: (Season | Episode)[] = [];
