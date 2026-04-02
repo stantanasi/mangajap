@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, Season, User } from '../../models';
 import { useAppDispatch } from '../../redux/store';
@@ -8,6 +9,7 @@ import Checkbox from '../atoms/Checkbox';
 import ProgressBar from '../atoms/ProgressBar';
 
 type Props = PressableProps & {
+  isLoading: boolean;
   season: Season;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
@@ -16,9 +18,10 @@ type Props = PressableProps & {
   expanded?: boolean;
   onExpandedChange?: (value: boolean) => void;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function SeasonCard({
+  isLoading,
   season,
   onWatchedChange = () => { },
   updating = false,
@@ -30,6 +33,7 @@ export default function SeasonCard({
   ...props
 }: Props) {
   const dispatch = useAppDispatch();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
 
   const episodesWatchedCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
@@ -40,7 +44,7 @@ export default function SeasonCard({
     : 0;
 
   const updateSeasonEpisodesEntries = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     const updateEpisodeEntry = async (episode: Episode) => {
       if (add && !episode['episode-entry']) {
@@ -114,7 +118,7 @@ export default function SeasonCard({
           {episodesWatchedCount} / {episodesCount}
         </Text>
 
-        {user ? (
+        {!isOffline && !isLoading && user ? (
           <Checkbox
             value={episodesCount > 0 && episodesWatchedCount >= episodesCount}
             onValueChange={(value) => {

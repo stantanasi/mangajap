@@ -6,6 +6,7 @@ import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Tex
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputLabel from '../../components/atoms/InputLabel';
 import SelectInput from '../../components/atoms/SelectInput';
+import { useApp } from '../../contexts/AppContext';
 import { Anime, Manga, Staff } from '../../models';
 import { IStaff, StaffRole } from '../../models/staff.model';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -22,6 +23,7 @@ type Props = StaticScreenProps<{
 export default function StaffSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { isLoading, staff } = useStaffSave(route.params);
   const [form, setForm] = useState<Partial<Object<IStaff>>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -87,7 +89,6 @@ export default function StaffSaveScreen({ route }: Props) {
             flex: 1,
             fontSize: 16,
             fontWeight: 'bold',
-            textAlign: 'center',
           }}
         >
           {staff.isNew
@@ -95,19 +96,21 @@ export default function StaffSaveScreen({ route }: Props) {
             : 'Modifier le staff'}
         </Text>
 
-        <MaterialIcons
-          name="save"
-          color="#000"
-          size={24}
-          onPress={() => {
-            setIsSaving(true);
+        {!isOffline ? (
+          <MaterialIcons
+            name="save"
+            color="#000"
+            size={24}
+            onPress={() => {
+              setIsSaving(true);
 
-            save()
-              .catch((err) => console.error(err))
-              .finally(() => setIsSaving(false));
-          }}
-          style={{ padding: 16 }}
-        />
+              save()
+                .catch((err) => console.error(err))
+                .finally(() => setIsSaving(false));
+            }}
+            style={{ padding: 16 }}
+          />
+        ) : null}
       </View>
 
       <ScrollView>

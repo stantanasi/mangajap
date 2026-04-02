@@ -1,7 +1,8 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import { AuthContext } from '../../contexts/AuthContext';
 import { AnimeEntry, User } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -16,12 +17,13 @@ export default function AgendaAnimeScreen({ }: Props) {
 
   const animes = animeLibrary
     ?.filter((entry) => {
-      const progress = (entry.episodesWatch / entry.anime!.episodeCount) * 100;
+      const progress = (entry.episodesWatch / (entry.anime?.episodeCount ?? 1)) * 100;
       return progress < 100;
     })
-    .map((entry) => entry.anime!.copy({
+    .map((entry) => entry.anime?.copy({
       'anime-entry': entry,
-    }));
+    }))
+    .filter((anime) => !!anime);
 
   if (!user) {
     return (
@@ -57,7 +59,7 @@ export default function AgendaAnimeScreen({ }: Props) {
     );
   }
 
-  if (isLoading || !animes) {
+  if (!animes) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -87,6 +89,8 @@ export default function AgendaAnimeScreen({ }: Props) {
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListFooterComponent={() => <View style={{ height: 16 }} />}
       />
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }
@@ -120,7 +124,7 @@ const useAgendaAnime = () => {
 
   useEffect(() => {
     const prepare = async () => {
-      if (!user) return
+      if (!user) return;
 
       const animeLibrary = await User.findById(user.id).get('anime-library')
         .include({

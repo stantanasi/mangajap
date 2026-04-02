@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext, useState } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Franchise, Manga, MangaEntry, User } from '../../models';
 import { FranchiseRole } from '../../models/franchise.model';
@@ -10,6 +11,7 @@ import Checkbox from '../atoms/Checkbox';
 type Variants = 'default' | 'horizontal';
 
 type Props = PressableProps & {
+  isLoading: boolean;
   manga: Manga;
   franchise?: Franchise;
   showCheckbox?: boolean;
@@ -19,6 +21,7 @@ type Props = PressableProps & {
 };
 
 export default function MangaCard({
+  isLoading,
   manga,
   franchise,
   showCheckbox = true,
@@ -28,11 +31,12 @@ export default function MangaCard({
   ...props
 }: Props) {
   const dispatch = useAppDispatch();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
 
   const updateMangaEntry = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     if (manga['manga-entry']) {
       manga['manga-entry'].isAdd = add;
@@ -129,7 +133,7 @@ export default function MangaCard({
         ) : null}
       </View>
 
-      {user && showCheckbox ? (
+      {!isOffline && !isLoading && user && showCheckbox ? (
         <Checkbox
           value={manga['manga-entry']?.isAdd ?? false}
           onValueChange={(value) => {

@@ -2,6 +2,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import { AuthContext } from '../../contexts/AuthContext';
 import { MangaEntry, User } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -16,14 +17,15 @@ export default function AgendaMangaScreen({ }: Props) {
 
   const mangas = mangaLibrary
     ?.filter((mangaEntry) => {
-      const progress = mangaEntry.manga!.chapterCount > 0
-        ? (mangaEntry.chaptersRead / mangaEntry.manga!.chapterCount) * 100
-        : (mangaEntry.volumesRead / mangaEntry.manga!.volumeCount) * 100;
+      const progress = (mangaEntry.manga?.chapterCount ?? 0) > 0
+        ? (mangaEntry.chaptersRead / (mangaEntry.manga?.chapterCount ?? 1)) * 100
+        : (mangaEntry.volumesRead / (mangaEntry.manga?.volumeCount ?? 1)) * 100;
       return progress < 100;
     })
-    .map((entry) => entry.manga!.copy({
+    .map((entry) => entry.manga?.copy({
       'manga-entry': entry,
-    }));
+    }))
+    .filter((manga) => !!manga);
 
   if (!user) {
     return (
@@ -59,7 +61,7 @@ export default function AgendaMangaScreen({ }: Props) {
     );
   }
 
-  if (isLoading || !mangas) {
+  if (!mangas) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -89,6 +91,8 @@ export default function AgendaMangaScreen({ }: Props) {
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListFooterComponent={() => <View style={{ height: 16 }} />}
       />
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }
@@ -122,7 +126,7 @@ const useAgendaManga = () => {
 
   useEffect(() => {
     const prepare = async () => {
-      if (!user) return
+      if (!user) return;
 
       const mangaLibrary = await User.findById(user.id).get('manga-library')
         .include({

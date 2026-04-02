@@ -6,20 +6,23 @@ import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
+  isLoading: boolean;
   chapter: Chapter | undefined;
   onReadChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
   onRequestClose: () => void;
   visible: boolean;
-}
+};
 
 export default function ChapterModal({
+  isLoading,
   chapter,
   onReadChange = () => { },
   updating = false,
@@ -29,6 +32,7 @@ export default function ChapterModal({
 }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const [readDatePickerVisible, setReadDatePickerVisible] = useState(false);
   const [isSavingReadDate, setIsSavingReadDate] = useState(false);
@@ -51,7 +55,7 @@ export default function ChapterModal({
   }
 
   const updateChapterEntry = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     if (add && !chapter['chapter-entry']) {
       const chapterEntry = new ChapterEntry({
@@ -73,7 +77,7 @@ export default function ChapterModal({
   };
 
   const updateReadDate = async (date: Date) => {
-    if (!chapter['chapter-entry']) return
+    if (!chapter['chapter-entry']) return;
 
     chapter['chapter-entry'].readDate = date;
     await chapter['chapter-entry'].save();
@@ -108,7 +112,7 @@ export default function ChapterModal({
 
         <View style={{ flex: 1 }} />
 
-        {user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"
@@ -160,7 +164,7 @@ export default function ChapterModal({
           </Text>
         </View>
 
-        {user ? (
+        {!isOffline && !isLoading && user ? (
           <>
             <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
               {!isSavingReadDate ? (
@@ -178,7 +182,7 @@ export default function ChapterModal({
               )}
               <Text
                 onPress={() => {
-                  if (!chapter['chapter-entry']) return
+                  if (!chapter['chapter-entry']) return;
                   setReadDatePickerVisible(true);
                 }}
                 style={styles.date}
@@ -194,7 +198,7 @@ export default function ChapterModal({
 
                     updateReadDate(value)
                       .catch((err) => console.error(err))
-                      .finally(() => setIsSavingReadDate(false))
+                      .finally(() => setIsSavingReadDate(false));
                   }}
                   onRequestClose={() => setReadDatePickerVisible(false)}
                   visible={readDatePickerVisible}

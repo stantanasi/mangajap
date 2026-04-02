@@ -3,10 +3,12 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import ExpandableFloatingActionButton from '../../components/molecules/ExpandableFloatingActionButton';
 import MangaCard from '../../components/molecules/MangaCard';
 import PeopleCard from '../../components/molecules/PeopleCard';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, Manga, People } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -15,6 +17,7 @@ type Props = StaticScreenProps<undefined>;
 
 export default function DiscoverScreen({ route }: Props) {
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const { isLoading, peoples, animes, mangas } = useDiscover();
 
@@ -41,7 +44,7 @@ export default function DiscoverScreen({ route }: Props) {
         </Text>
       </Pressable>
 
-      {isLoading || !peoples || !animes || !mangas ? (
+      {!peoples || !animes || !mangas ? (
         <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
           <ActivityIndicator
             animating
@@ -95,6 +98,7 @@ export default function DiscoverScreen({ route }: Props) {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <AnimeCard
+                isLoading={isLoading}
                 anime={item}
                 onPress={() => navigation.navigate('Anime', { id: item.id })}
               />
@@ -122,6 +126,7 @@ export default function DiscoverScreen({ route }: Props) {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <MangaCard
+                isLoading={isLoading}
                 manga={item}
                 onPress={() => navigation.navigate('Manga', { id: item.id })}
               />
@@ -133,7 +138,7 @@ export default function DiscoverScreen({ route }: Props) {
         </ScrollView>
       )}
 
-      {user ? (
+      {!isOffline && !isLoading && user ? (
         <ExpandableFloatingActionButton
           icon="add"
           menuItems={[
@@ -155,6 +160,8 @@ export default function DiscoverScreen({ route }: Props) {
           ]}
         />
       ) : null}
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

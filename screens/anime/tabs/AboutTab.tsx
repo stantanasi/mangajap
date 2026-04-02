@@ -6,17 +6,20 @@ import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import AnimeCard from '../../../components/molecules/AnimeCard';
 import MangaCard from '../../../components/molecules/MangaCard';
 import PeopleCard from '../../../components/molecules/PeopleCard';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime, Manga } from '../../../models';
 import { AnimeType } from '../../../models/anime.model';
 
 type Props = {
+  isLoading: boolean;
   anime: Anime;
   style?: StyleProp<ViewStyle>;
-}
+};
 
-export default function AboutTab({ anime, style }: Props) {
+export default function AboutTab({ isLoading, anime, style }: Props) {
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const [staffEditable, setStaffEditable] = useState(false);
   const [franchisesEditable, setFranchisesEditable] = useState(false);
@@ -123,7 +126,7 @@ export default function AboutTab({ anime, style }: Props) {
           Staff
         </Text>
 
-        {user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name={!staffEditable ? 'edit' : 'edit-off'}
             color="#000"
@@ -144,16 +147,17 @@ export default function AboutTab({ anime, style }: Props) {
             editable={staffEditable}
             onPress={() => {
               if (!staffEditable) {
-                navigation.navigate('People', { id: item.people!.id })
+                if (!item.people) return;
+                navigation.navigate('People', { id: item.people.id });
               } else {
-                navigation.navigate('StaffUpdate', { staffId: item.id })
+                navigation.navigate('StaffUpdate', { staffId: item.id });
               }
             }}
           />
         )}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => user ? (
+        ListFooterComponent={() => !isOffline && !isLoading && user ? (
           <Pressable
             onPress={() => navigation.navigate('AnimeStaffCreate', { animeId: anime.id })}
             style={{
@@ -163,7 +167,7 @@ export default function AboutTab({ anime, style }: Props) {
               backgroundColor: '#ccc',
               borderRadius: 360,
               justifyContent: 'center',
-              marginLeft: anime.staff!.length > 0 ? 10 : 0,
+              marginLeft: (anime.staff?.length ?? 0) > 0 ? 10 : 0,
               marginRight: 16,
             }}
           >
@@ -196,7 +200,7 @@ export default function AboutTab({ anime, style }: Props) {
           De la même franchise
         </Text>
 
-        {user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name={!franchisesEditable ? 'edit' : 'edit-off'}
             color="#000"
@@ -212,12 +216,14 @@ export default function AboutTab({ anime, style }: Props) {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => item.destination instanceof Anime ? (
           <AnimeCard
+            isLoading={isLoading}
             anime={item.destination}
             franchise={item}
             editable={franchisesEditable}
             onPress={() => {
               if (!franchisesEditable) {
-                navigation.dispatch(StackActions.push('Anime', { id: item.destination!.id }));
+                if (!item.destination) return;
+                navigation.dispatch(StackActions.push('Anime', { id: item.destination.id }));
               } else {
                 navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
               }
@@ -226,12 +232,14 @@ export default function AboutTab({ anime, style }: Props) {
           />
         ) : item.destination instanceof Manga ? (
           <MangaCard
+            isLoading={isLoading}
             manga={item.destination}
             franchise={item}
             editable={franchisesEditable}
             onPress={() => {
               if (!franchisesEditable) {
-                navigation.navigate('Manga', { id: item.destination!.id });
+                if (!item.destination) return;
+                navigation.navigate('Manga', { id: item.destination.id });
               } else {
                 navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
               }
@@ -241,7 +249,7 @@ export default function AboutTab({ anime, style }: Props) {
         ) : null}
         ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
-        ListFooterComponent={() => user ? (
+        ListFooterComponent={() => !isOffline && !isLoading && user ? (
           <Pressable
             onPress={() => navigation.navigate('AnimeFranchiseCreate', { animeId: anime.id })}
             style={{
@@ -250,7 +258,7 @@ export default function AboutTab({ anime, style }: Props) {
               backgroundColor: '#ccc',
               alignItems: 'center',
               justifyContent: 'center',
-              marginLeft: anime.franchises!.length > 0 ? 10 : 0,
+              marginLeft: (anime.franchises?.length ?? 0) > 0 ? 10 : 0,
               marginRight: 16,
             }}
           >

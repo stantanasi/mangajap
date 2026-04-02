@@ -2,6 +2,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { Anime, People } from '../../models';
@@ -16,7 +17,7 @@ export default function PeopleScreen({ route }: Props) {
   const navigation = useNavigation();
   const { isLoading, people } = usePeople(route.params);
 
-  if (isLoading || !people) {
+  if (!people) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -31,7 +32,7 @@ export default function PeopleScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={people.staff!.map((staff) => {
+        data={people.staff?.map((staff) => {
           if (staff.anime) {
             return staff.anime;
           } else if (staff.manga) {
@@ -43,6 +44,7 @@ export default function PeopleScreen({ route }: Props) {
         renderItem={({ item }) => (
           item instanceof Anime ? (
             <AnimeCard
+              isLoading={isLoading}
               anime={item}
               onPress={() => navigation.navigate('Anime', { id: item.id })}
               variant="horizontal"
@@ -53,6 +55,7 @@ export default function PeopleScreen({ route }: Props) {
             />
           ) : (
             <MangaCard
+              isLoading={isLoading}
               manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
               variant="horizontal"
@@ -65,11 +68,14 @@ export default function PeopleScreen({ route }: Props) {
         )}
         ListHeaderComponent={() => (
           <Header
+            isLoading={isLoading}
             people={people}
           />
         )}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
       />
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

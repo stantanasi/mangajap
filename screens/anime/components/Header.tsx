@@ -4,23 +4,27 @@ import React, { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ProgressBar from '../../../components/atoms/ProgressBar';
 import TabBar from '../../../components/atoms/TabBar';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Anime } from '../../../models';
 
 type Props<T extends string> = {
+  isLoading: boolean;
   anime: Anime;
   tabs: React.ComponentProps<typeof TabBar<T>>['tabs'];
   selectedTab: T;
   onTabSelect: (tab: T) => void;
-}
+};
 
 export default function Header<T extends string>({
+  isLoading,
   anime,
   tabs,
   selectedTab,
   onTabSelect,
 }: Props<T>) {
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
 
   const progress = anime['anime-entry']
@@ -48,7 +52,7 @@ export default function Header<T extends string>({
           {anime.title}
         </Text>
 
-        {user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"

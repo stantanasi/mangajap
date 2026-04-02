@@ -2,19 +2,22 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 import ProfileScreen from '../ProfileScreen';
 
 type Props = React.ComponentProps<typeof ProfileScreen> & {
+  isLoading: boolean;
   user: User;
   followingUser: Follow | null;
   followedByUser: Follow | null;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function Header({
+  isLoading,
   route,
   user,
   followingUser,
@@ -23,11 +26,12 @@ export default function Header({
 }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user: authenticatedUser } = useContext(AuthContext);
   const [isFollowUpdating, setIsFollowUpdating] = useState(false);
 
   const updateFollow = async () => {
-    if (!authenticatedUser) return
+    if (!authenticatedUser) return;
 
     if (!followingUser) {
       const followingUser = new Follow({
@@ -135,7 +139,7 @@ export default function Header({
           marginTop: 24,
         }}
       >
-        {authenticatedUser ? (
+        {!isOffline && !isLoading && authenticatedUser ? (
           user.id === authenticatedUser.id ? (
             <Text
               onPress={() => navigation.navigate('ProfileEdit', { id: user.id })}

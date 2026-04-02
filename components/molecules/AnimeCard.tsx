@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext, useState } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Anime, AnimeEntry, Franchise, User } from '../../models';
 import { FranchiseRole } from '../../models/franchise.model';
@@ -10,6 +11,7 @@ import Checkbox from '../atoms/Checkbox';
 type Variants = 'default' | 'horizontal';
 
 type Props = PressableProps & {
+  isLoading: boolean;
   anime: Anime;
   franchise?: Franchise;
   showCheckbox?: boolean;
@@ -19,6 +21,7 @@ type Props = PressableProps & {
 };
 
 export default function AnimeCard({
+  isLoading,
   anime,
   franchise,
   showCheckbox = true,
@@ -28,11 +31,12 @@ export default function AnimeCard({
   ...props
 }: Props) {
   const dispatch = useAppDispatch();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const [isUpdating, setIsUpdating] = useState(false);
 
   const updateAnimeEntry = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     if (anime['anime-entry']) {
       anime['anime-entry'].isAdd = add;
@@ -129,7 +133,7 @@ export default function AnimeCard({
         ) : null}
       </View>
 
-      {user && showCheckbox ? (
+      {!isOffline && !isLoading && user && showCheckbox ? (
         <Checkbox
           value={anime['anime-entry']?.isAdd ?? false}
           onValueChange={(value) => {

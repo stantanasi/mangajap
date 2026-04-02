@@ -5,11 +5,13 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import Modal from '../../../components/atoms/Modal';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, Season, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
+  isLoading: boolean;
   season: Season | undefined;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
@@ -17,9 +19,10 @@ type Props = {
   onEpisodeUpdatingChange?: (id: string, value: boolean) => void;
   onRequestClose: () => void;
   visible: boolean;
-}
+};
 
 export default function SeasonModal({
+  isLoading,
   season,
   onWatchedChange = () => { },
   updating = false,
@@ -30,6 +33,7 @@ export default function SeasonModal({
 }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
 
   if (!season) {
@@ -53,7 +57,7 @@ export default function SeasonModal({
   const episodesCount = season.episodes?.length ?? 0;
 
   const updateSeasonEpisodesEntries = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     const updateEpisodeEntry = async (episode: Episode) => {
       if (add && !episode['episode-entry']) {
@@ -109,7 +113,7 @@ export default function SeasonModal({
 
         <View style={{ flex: 1 }} />
 
-        {user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"
@@ -163,7 +167,7 @@ export default function SeasonModal({
           </Text>
         </View>
 
-        {user ? (
+        {!isOffline && !isLoading && user ? (
           <>
             <View style={{ flex: 1 }} />
 

@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../models';
 import { useAppDispatch } from '../../redux/store';
@@ -8,6 +9,7 @@ import Checkbox from '../atoms/Checkbox';
 import ProgressBar from '../atoms/ProgressBar';
 
 type Props = PressableProps & {
+  isLoading: boolean;
   volume: Volume;
   onReadChange?: (value: boolean) => void;
   updating?: boolean;
@@ -16,9 +18,10 @@ type Props = PressableProps & {
   expanded?: boolean;
   onExpandedChange?: (value: boolean) => void;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function VolumeCard({
+  isLoading,
   volume,
   onReadChange = () => { },
   updating = false,
@@ -30,6 +33,7 @@ export default function VolumeCard({
   ...props
 }: Props) {
   const dispatch = useAppDispatch();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
 
   const chaptersReadCount = volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0;
@@ -40,7 +44,7 @@ export default function VolumeCard({
     : volume['volume-entry'] ? 100 : 0;
 
   const updateVolumeEntry = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     if (add && !volume['volume-entry']) {
       const volumeEntry = new VolumeEntry({
@@ -138,7 +142,7 @@ export default function VolumeCard({
           {chaptersReadCount} / {chaptersCount}
         </Text>
 
-        {user ? (
+        {!isOffline && !isLoading && user ? (
           <Checkbox
             value={!!volume['volume-entry']}
             onValueChange={(value) => {

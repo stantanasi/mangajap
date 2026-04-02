@@ -5,12 +5,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from "expo-linking";
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { Image, Platform } from 'react-native';
+import { useCallback, useContext } from 'react';
+import { Image, Platform, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import AppProvider, { useApp } from './contexts/AppContext';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
-import store from './redux/store';
+import store, { persistor } from './redux/store';
 import AgendaAnimeScreen from './screens/agenda-anime/AgendaAnimeScreen';
 import AgendaMangaScreen from './screens/agenda-manga/AgendaMangaScreen';
 import AnimeSaveScreen from './screens/anime-save/AnimeSaveScreen';
@@ -409,12 +411,8 @@ const Navigation = createStaticNavigation(RootStack);
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
-  const { isReady: isAuthReady } = useContext(AuthContext)
-  const [isAppReady, setIsAppReady] = useState(false);
-
-  useEffect(() => {
-    setIsAppReady(true);
-  }, []);
+  const { isReady: isAppReady, isOffline: isAppOffline } = useApp();
+  const { isReady: isAuthReady } = useContext(AuthContext);
 
   const onLayoutRootView = useCallback(() => {
     if (isAuthReady && isAppReady) {
@@ -447,6 +445,24 @@ function AppContent() {
           prefixes: [Linking.createURL("/")],
         }}
       />
+
+      {isAppOffline && (
+        <View
+          style={{
+            backgroundColor: '#d40e0e',
+          }}
+        >
+          <Text
+            style={{
+              color: '#ffffff',
+              padding: 3,
+              textAlign: 'center',
+            }}
+          >
+            Vous êtes en mode hors connexion
+          </Text>
+        </View>
+      )}
       <StatusBar style="auto" />
     </SafeAreaProvider>
   );
@@ -455,9 +471,13 @@ function AppContent() {
 export default function App() {
   return (
     <Provider store={store}>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <AppProvider>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </AppProvider>
+      </PersistGate>
     </Provider>
   );
 }

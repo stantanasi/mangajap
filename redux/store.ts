@@ -1,6 +1,9 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { Json, JsonApiIdentifier } from '@stantanasi/jsonapi-client';
 import { useDispatch, useSelector } from 'react-redux';
+import { persistReducer, persistStore } from 'redux-persist';
+import { PersistPartial } from 'redux-persist/es/persistReducer';
 import { IAnimeEntry } from '../models/anime-entry.model';
 import { IAnime } from '../models/anime.model';
 import { IChange } from '../models/change.model';
@@ -157,16 +160,28 @@ export const reducers = Object.fromEntries(
   Object.entries(slices).map(([key, slice]) => [key, slice.reducer])
 ) as { [K in keyof typeof slices]: typeof slices[K]['reducer'] };
 
-export const rootReducer = combineReducers(reducers);
+const rootReducer = combineReducers(reducers);
 
-const store = configureStore({
-  reducer: rootReducer,
+const persistConfig = {
+  key: 'mangajap:root',
+  storage: AsyncStorage,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+  }),
 });
+
+export const persistor = persistStore(store);
 
 
 export type RootState = ReturnType<typeof store.getState>;
 
-export type RootStateKeys = keyof RootState;
+export type RootStateKeys = Exclude<keyof RootState, keyof PersistPartial>;
 
 export type AppDispatch = typeof store.dispatch;
 

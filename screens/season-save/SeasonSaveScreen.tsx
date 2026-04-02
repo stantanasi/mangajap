@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
 import TextInput from '../../components/atoms/TextInput';
+import { useApp } from '../../contexts/AppContext';
 import { Anime, Season } from '../../models';
 import { ISeason } from '../../models/season.model';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -20,6 +21,7 @@ type Props = StaticScreenProps<{
 export default function SeasonSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { isLoading, season } = useSeasonSave(route.params);
   const [form, setForm] = useState<Partial<Object<ISeason>>>();
   const [isSaving, setIsSaving] = useState(false);
@@ -82,7 +84,6 @@ export default function SeasonSaveScreen({ route }: Props) {
             flex: 1,
             fontSize: 16,
             fontWeight: 'bold',
-            textAlign: 'center',
           }}
         >
           {season.isNew
@@ -90,19 +91,21 @@ export default function SeasonSaveScreen({ route }: Props) {
             : 'Modifier la saison'}
         </Text>
 
-        <MaterialIcons
-          name="save"
-          color="#000"
-          size={24}
-          onPress={() => {
-            setIsSaving(true);
+        {!isOffline ? (
+          <MaterialIcons
+            name="save"
+            color="#000"
+            size={24}
+            onPress={() => {
+              setIsSaving(true);
 
-            save()
-              .catch((err) => console.error(err))
-              .finally(() => setIsSaving(false));
-          }}
-          style={{ padding: 16 }}
-        />
+              save()
+                .catch((err) => console.error(err))
+                .finally(() => setIsSaving(false));
+            }}
+            style={{ padding: 16 }}
+          />
+        ) : null}
       </View>
 
       <ScrollView>

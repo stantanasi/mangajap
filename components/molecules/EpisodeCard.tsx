@@ -1,19 +1,22 @@
 import React, { useContext } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../models';
 import { useAppDispatch } from '../../redux/store';
 import Checkbox from '../atoms/Checkbox';
 
 type Props = PressableProps & {
+  isLoading: boolean;
   episode: Episode;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function EpisodeCard({
+  isLoading,
   episode,
   onWatchedChange = () => { },
   updating = false,
@@ -22,10 +25,11 @@ export default function EpisodeCard({
   ...props
 }: Props) {
   const dispatch = useAppDispatch();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
 
   const updateEpisodeEntry = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     if (add && !episode['episode-entry']) {
       const episodeEntry = new EpisodeEntry({
@@ -66,7 +70,7 @@ export default function EpisodeCard({
         </Text>
       </View>
 
-      {user ? (
+      {!isOffline && !isLoading && user ? (
         <Checkbox
           value={!!episode['episode-entry']}
           onValueChange={(value) => {

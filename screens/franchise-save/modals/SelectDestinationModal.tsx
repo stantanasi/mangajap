@@ -11,7 +11,7 @@ type Props = {
   onSelect: (destination: Anime | Manga) => void;
   onRequestClose: () => void;
   visible: boolean;
-}
+};
 
 export default function SelectDestinationModal({ onSelect, onRequestClose, visible }: Props) {
   const dispatch = useAppDispatch();
@@ -118,6 +118,7 @@ export default function SelectDestinationModal({ onSelect, onRequestClose, visib
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                   <AnimeCard
+                    isLoading={!animes}
                     anime={item}
                     onPress={() => onSelect(item)}
                     variant="horizontal"
@@ -151,6 +152,7 @@ export default function SelectDestinationModal({ onSelect, onRequestClose, visib
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                   <MangaCard
+                    isLoading={!mangas}
                     manga={item}
                     onPress={() => onSelect(item)}
                     variant="horizontal"

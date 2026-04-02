@@ -2,6 +2,8 @@ import { StaticScreenProps } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
+import { useApp } from '../../contexts/AppContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Manga } from '../../models';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -15,11 +17,12 @@ type Props = StaticScreenProps<{
 }>;
 
 export default function MangaScreen({ route }: Props) {
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const { isLoading, manga } = useManga(route.params);
   const [selectedTab, setSelectedTab] = useState<'about' | 'chapters'>('about');
 
-  if (isLoading || !manga) {
+  if (!manga) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -34,6 +37,7 @@ export default function MangaScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Header
+        isLoading={isLoading}
         manga={manga}
         tabs={[
           { key: 'about', title: 'À propos' },
@@ -44,6 +48,7 @@ export default function MangaScreen({ route }: Props) {
       />
 
       <AboutTab
+        isLoading={isLoading}
         manga={manga}
         style={{
           display: selectedTab === 'about' ? 'flex' : 'none',
@@ -52,6 +57,7 @@ export default function MangaScreen({ route }: Props) {
       />
 
       <ChaptersTab
+        isLoading={isLoading}
         manga={manga}
         style={{
           display: selectedTab === 'chapters' ? 'flex' : 'none',
@@ -59,11 +65,13 @@ export default function MangaScreen({ route }: Props) {
         }}
       />
 
-      {user && !manga['manga-entry']?.isAdd ? (
+      {!isOffline && !isLoading && user && !manga['manga-entry']?.isAdd ? (
         <AddMangaButton
           manga={manga}
         />
       ) : null}
+
+      <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
   );
 }

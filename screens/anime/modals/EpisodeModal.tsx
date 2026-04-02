@@ -6,20 +6,23 @@ import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
+import { useApp } from '../../../contexts/AppContext';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 
 type Props = {
+  isLoading: boolean;
   episode: Episode | undefined;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
   onRequestClose: () => void;
   visible: boolean;
-}
+};
 
 export default function EpisodeModal({
+  isLoading,
   episode,
   onWatchedChange = () => { },
   updating = false,
@@ -29,6 +32,7 @@ export default function EpisodeModal({
 }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { user } = useContext(AuthContext);
   const [watchedDatePickerVisible, setWatchedDatePickerVisible] = useState(false);
   const [isSavingWatchedDate, setIsSavingWatchedDate] = useState(false);
@@ -51,7 +55,7 @@ export default function EpisodeModal({
   }
 
   const updateEpisodeEntry = async (add: boolean) => {
-    if (!user) return
+    if (!user) return;
 
     if (add && !episode['episode-entry']) {
       const episodeEntry = new EpisodeEntry({
@@ -73,7 +77,7 @@ export default function EpisodeModal({
   };
 
   const updateWatchedDate = async (date: Date) => {
-    if (!episode['episode-entry']) return
+    if (!episode['episode-entry']) return;
 
     episode['episode-entry'].watchedDate = date;
     await episode['episode-entry'].save();
@@ -108,7 +112,7 @@ export default function EpisodeModal({
 
         <View style={{ flex: 1 }} />
 
-        {user ? (
+        {!isOffline && !isLoading && user ? (
           <MaterialIcons
             name="edit"
             color="#000"
@@ -160,7 +164,7 @@ export default function EpisodeModal({
           </Text>
         </View>
 
-        {user ? (
+        {!isOffline && !isLoading && user ? (
           <>
             <View style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}>
               {!isSavingWatchedDate ? (
@@ -178,7 +182,7 @@ export default function EpisodeModal({
               )}
               <Text
                 onPress={() => {
-                  if (!episode['episode-entry']) return
+                  if (!episode['episode-entry']) return;
                   setWatchedDatePickerVisible(true);
                 }}
                 style={styles.date}
@@ -194,7 +198,7 @@ export default function EpisodeModal({
 
                     updateWatchedDate(value)
                       .catch((err) => console.error(err))
-                      .finally(() => setIsSavingWatchedDate(false))
+                      .finally(() => setIsSavingWatchedDate(false));
                   }}
                   onRequestClose={() => setWatchedDatePickerVisible(false)}
                   visible={watchedDatePickerVisible}

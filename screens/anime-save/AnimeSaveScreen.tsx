@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageInput from '../../components/atoms/ImageInput';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
+import { useApp } from '../../contexts/AppContext';
 import { Anime, Genre, Theme } from '../../models';
 import { AnimeStatus, AnimeType, IAnime } from '../../models/anime.model';
 import { useAppDispatch, useAppSelector } from '../../redux/store';
@@ -19,6 +20,7 @@ type Props = StaticScreenProps<{
 export default function AnimeSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const { isOffline } = useApp();
   const { isLoading, anime, genres, themes } = useAnimeSave(route.params);
   const [form, setForm] = useState<Partial<Object<IAnime>>>();
   const [isSaving, setIsSaving] = useState(false);
@@ -81,7 +83,6 @@ export default function AnimeSaveScreen({ route }: Props) {
             flex: 1,
             fontSize: 16,
             fontWeight: 'bold',
-            textAlign: 'center',
           }}
         >
           {anime.isNew
@@ -89,19 +90,21 @@ export default function AnimeSaveScreen({ route }: Props) {
             : 'Modifier l\'animé'}
         </Text>
 
-        <MaterialIcons
-          name="save"
-          color="#000"
-          size={24}
-          onPress={() => {
-            setIsSaving(true);
+        {!isOffline ? (
+          <MaterialIcons
+            name="save"
+            color="#000"
+            size={24}
+            onPress={() => {
+              setIsSaving(true);
 
-            save()
-              .catch((err) => console.error(err))
-              .finally(() => setIsSaving(false));
-          }}
-          style={{ padding: 16 }}
-        />
+              save()
+                .catch((err) => console.error(err))
+                .finally(() => setIsSaving(false));
+            }}
+            style={{ padding: 16 }}
+          />
+        ) : null}
       </View>
 
       <ScrollView>
@@ -281,7 +284,7 @@ export default function AnimeSaveScreen({ route }: Props) {
           onChangeText={(text) => setForm((prev) => ({
             ...prev,
             links: {
-              ...prev!.links,
+              ...prev?.links,
               themoviedb: text,
             },
           }))}

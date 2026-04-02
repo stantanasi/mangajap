@@ -3,6 +3,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -42,7 +43,7 @@ export default function ProfileScreen({ route }: Props) {
     }
   }
 
-  if (isLoading || !user || followingUser === undefined || followedByUser === undefined) {
+  if (!user || followingUser === undefined || followedByUser === undefined) {
     return (
       <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <ActivityIndicator
@@ -62,6 +63,7 @@ export default function ProfileScreen({ route }: Props) {
         }}
       >
         <Header
+          isLoading={isLoading}
           route={route}
           user={user}
           followingUser={followingUser}
@@ -160,12 +162,13 @@ export default function ProfileScreen({ route }: Props) {
 
         <FlatList
           horizontal
-          data={user['anime-library']!.map((entry) => entry.anime!.copy({
+          data={user['anime-library']?.map((entry) => entry.anime?.copy({
             'anime-entry': entry,
-          }))}
+          })).filter((anime) => !!anime)}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <AnimeCard
+              isLoading={isLoading}
               anime={item}
               onPress={() => navigation.navigate('Anime', { id: item.id })}
               showCheckbox={false}
@@ -176,7 +179,7 @@ export default function ProfileScreen({ route }: Props) {
           ListFooterComponent={() => <View style={{ width: 16 }} />}
         />
 
-        {user['anime-favorites']!.length > 0 ? (
+        {(user['anime-favorites']?.length ?? 0) > 0 ? (
           <>
             <Pressable
               onPress={() => navigation.navigate('ProfileLibrary', { type: 'anime-favorites', userId: user.id })}
@@ -207,12 +210,13 @@ export default function ProfileScreen({ route }: Props) {
 
             <FlatList
               horizontal
-              data={user['anime-favorites']!.map((entry) => entry.anime!.copy({
+              data={user['anime-favorites']?.map((entry) => entry.anime?.copy({
                 'anime-entry': entry,
-              }))}
+              })).filter((anime) => !!anime)}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <AnimeCard
+                  isLoading={isLoading}
                   anime={item}
                   onPress={() => navigation.navigate('Anime', { id: item.id })}
                   showCheckbox={false}
@@ -254,12 +258,13 @@ export default function ProfileScreen({ route }: Props) {
 
         <FlatList
           horizontal
-          data={user['manga-library']!.map((entry) => entry.manga!.copy({
+          data={user['manga-library']?.map((entry) => entry.manga?.copy({
             'manga-entry': entry,
-          }))}
+          })).filter((manga) => !!manga)}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <MangaCard
+              isLoading={isLoading}
               manga={item}
               onPress={() => navigation.navigate('Manga', { id: item.id })}
               showCheckbox={false}
@@ -270,7 +275,7 @@ export default function ProfileScreen({ route }: Props) {
           ListFooterComponent={() => <View style={{ width: 16 }} />}
         />
 
-        {user['manga-favorites']!.length > 0 ? (
+        {(user['manga-favorites']?.length ?? 0) > 0 ? (
           <>
             <Pressable
               onPress={() => navigation.navigate('ProfileLibrary', { type: 'manga-favorites', userId: user.id })}
@@ -301,12 +306,13 @@ export default function ProfileScreen({ route }: Props) {
 
             <FlatList
               horizontal
-              data={user['manga-favorites']!.map((entry) => entry.manga!.copy({
+              data={user['manga-favorites']?.map((entry) => entry.manga?.copy({
                 'manga-entry': entry,
-              }))}
+              })).filter((manga) => !!manga)}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <MangaCard
+                  isLoading={isLoading}
                   manga={item}
                   onPress={() => navigation.navigate('Manga', { id: item.id })}
                   showCheckbox={false}
@@ -319,7 +325,9 @@ export default function ProfileScreen({ route }: Props) {
           </>
         ) : null}
       </ScrollView>
-    </SafeAreaView >
+
+      <RefreshControl refreshing={isLoading} />
+    </SafeAreaView>
   );
 }
 
@@ -456,7 +464,7 @@ const useProfile = (params: Props['route']['params']) => {
   });
 
   useEffect(() => {
-    if (!userId) return
+    if (!userId) return;
 
     const prepare = async () => {
       const [user, followingUser, followedByUser] = await Promise.all([
@@ -493,7 +501,7 @@ const useProfile = (params: Props['route']['params']) => {
         dispatch(Follow.redux.actions.relations.follower.set(followedByUser.id, new User({ id: userId })));
         dispatch(Follow.redux.actions.relations.followed.set(followedByUser.id, new User({ id: authenticatedUser.id })));
       }
-    }
+    };
 
     setIsLoading(true);
     prepare()
