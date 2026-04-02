@@ -4,7 +4,6 @@ import { FlatList, Modal, Pressable, StyleProp, StyleSheet, Text, View, ViewStyl
 import InputLabel from './InputLabel';
 
 type Props<T> = {
-  isLoading?: boolean;
   label?: string;
   items: {
     value: T;
@@ -16,7 +15,6 @@ type Props<T> = {
 };
 
 export default function SelectInput<T extends string>({
-  isLoading,
   label,
   items,
   selectedValue,
@@ -30,12 +28,6 @@ export default function SelectInput<T extends string>({
     ...items,
   ];
 
-  if (isLoading) {
-    items = [
-      { value: '' as T, label: '⟳' },
-    ];
-  }
-
   return (
     <View style={[styles.container, style]}>
       {label ? (
@@ -45,7 +37,6 @@ export default function SelectInput<T extends string>({
       ) : null}
 
       <Pressable
-        disabled={isLoading}
         onPress={() => setOptionsVisible(true)}
         style={[styles.input, {
           alignItems: 'center',
