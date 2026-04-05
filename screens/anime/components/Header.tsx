@@ -1,9 +1,9 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import ProgressBar from '../../../components/atoms/ProgressBar';
 import TabBar from '../../../components/atoms/TabBar';
+import BaseHeader from '../../../components/molecules/Header';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Anime } from '../../../models';
@@ -32,37 +32,16 @@ export default function Header<T extends string>({
     : 0;
 
   return (
-    <View style={styles.container}>
-      <View style={styles.topBar}>
-        <MaterialIcons
-          name="arrow-back"
-          color="#000"
-          size={24}
-          onPress={() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else if (typeof window !== 'undefined') {
-              window.history.back();
-            }
-          }}
-          style={styles.icon}
-        />
-
-        <Text style={styles.title}>
-          {anime.title}
-        </Text>
-
-        {!isOffline && !isLoading && user ? (
-          <MaterialIcons
-            name="edit"
-            color="#000"
-            size={24}
-            onPress={() => navigation.navigate('AnimeUpdate', { id: anime.id })}
-            style={styles.icon}
-          />
-        ) : null}
-      </View>
-
+    <BaseHeader
+      title={anime.title}
+      menuItems={!isOffline && !isLoading && user ? [
+        {
+          icon: 'edit',
+          onPress: () => navigation.navigate('AnimeUpdate', { id: anime.id }),
+        },
+      ] : []}
+      style={styles.container}
+    >
       <ProgressBar
         progress={progress}
       />
@@ -72,25 +51,10 @@ export default function Header<T extends string>({
         tabs={tabs}
         onTabChange={(key) => onTabSelect(key)}
       />
-    </View>
+    </BaseHeader>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-  },
-  topBar: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-  },
-  icon: {
-    padding: 12,
-  },
-  title: {
-    flex: 1,
-    fontSize: 18,
-    fontWeight: 'bold',
-    padding: 12,
-  },
+  container: {},
 });

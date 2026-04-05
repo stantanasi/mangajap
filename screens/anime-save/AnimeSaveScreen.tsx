@@ -1,4 +1,3 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
 import Checkbox from 'expo-checkbox';
@@ -9,6 +8,7 @@ import ImageInput from '../../components/atoms/ImageInput';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
+import Header from '../../components/molecules/Header';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useApp } from '../../contexts/AppContext';
 import { Anime } from '../../models';
@@ -63,54 +63,23 @@ export default function AnimeSaveScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          alignItems: 'center',
-          flexDirection: 'row',
-        }}
-      >
-        <MaterialIcons
-          name="arrow-back"
-          size={24}
-          color="#000"
-          onPress={() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else if (typeof window !== 'undefined') {
-              window.history.back();
-            }
-          }}
-          style={{ padding: 16 }}
-        />
-
-        <Text
-          style={{
-            flex: 1,
-            fontSize: 16,
-            fontWeight: 'bold',
-          }}
-        >
-          {anime.isNew
-            ? 'Ajouter un animé'
-            : 'Modifier l\'animé'}
-        </Text>
-
-        {!isOffline && !isLoading ? (
-          <MaterialIcons
-            name="save"
-            color="#000"
-            size={24}
-            onPress={() => {
+      <Header
+        title={anime.isNew
+          ? 'Ajouter un animé'
+          : 'Modifier l\'animé'}
+        menuItems={!isOffline && !isLoading ? [
+          {
+            icon: 'save',
+            onPress: () => {
               setIsSaving(true);
 
               save()
                 .catch((err) => console.error(err))
                 .finally(() => setIsSaving(false));
-            }}
-            style={{ padding: 16 }}
-          />
-        ) : null}
-      </View>
+            }
+          },
+        ] : []}
+      />
 
       <ScrollView>
         <ImageInput

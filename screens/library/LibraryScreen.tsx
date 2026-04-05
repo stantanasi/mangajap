@@ -1,11 +1,11 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GridList from '../../components/atoms/GridList';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
+import Header from '../../components/molecules/Header';
 import MangaCard from '../../components/molecules/MangaCard';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { Anime, AnimeEntry } from '../../models';
@@ -28,43 +28,13 @@ export default function LibraryScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          alignItems: 'flex-start',
-          flexDirection: 'row',
-        }}
-      >
-        <MaterialIcons
-          name="arrow-back"
-          color="#000"
-          size={24}
-          onPress={() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else if (typeof window !== 'undefined') {
-              window.history.back();
-            }
-          }}
-          style={{
-            padding: 12,
-          }}
-        />
-
-        <Text
-          style={{
-            flex: 1,
-            fontSize: 18,
-            fontWeight: 'bold',
-            padding: 12,
-          }}
-        >
-          {route.params.type === 'anime-library' ? 'Anime'
-            : route.params.type === 'anime-favorites' ? 'Anime préférés'
-              : route.params.type === 'manga-library' ? 'Manga'
-                : route.params.type === 'manga-favorites' ? 'Manga préférés'
-                  : ''}
-        </Text>
-      </View>
+      <Header
+        title={route.params.type === 'anime-library' ? 'Anime'
+          : route.params.type === 'anime-favorites' ? 'Anime préférés'
+            : route.params.type === 'manga-library' ? 'Manga'
+              : route.params.type === 'manga-favorites' ? 'Manga préférés'
+                : ''}
+      />
 
       <GridList
         data={library.map((entry) => {

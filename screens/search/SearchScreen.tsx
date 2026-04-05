@@ -1,9 +1,9 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { StaticScreenProps } from '@react-navigation/native';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBar from '../../components/atoms/SearchBar';
+import Header from '../../components/molecules/Header';
 import { useSearch } from './hooks/useSearch';
 import AnimeTab from './tabs/AnimeTab';
 import MangaTab from './tabs/MangaTab';
@@ -13,7 +13,6 @@ import UserTab from './tabs/UserTab';
 type Props = StaticScreenProps<undefined>;
 
 export default function SearchScreen({ route }: Props) {
-  const navigation = useNavigation();
   const { animeTab, mangaTab, peopleTab, userTab } = useSearch(route.params);
 
   const categories = [
@@ -26,24 +25,8 @@ export default function SearchScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-          <MaterialIcons
-            name="arrow-back"
-            color="#000"
-            size={24}
-            onPress={() => {
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else if (typeof window !== 'undefined') {
-                window.history.back();
-              }
-            }}
-            style={{
-              padding: 12,
-            }}
-          />
-
+      <Header
+        title={(
           <SearchBar
             autoFocus
             onChangeText={() => {
@@ -62,13 +45,9 @@ export default function SearchScreen({ route }: Props) {
                 .catch((err) => console.error(err));
             }}
             delay={500}
-            style={{
-              flex: 1,
-              marginRight: 16,
-            }}
           />
-        </View>
-
+        )}
+      >
         <ScrollView
           horizontal
           keyboardShouldPersistTaps="always"
@@ -76,6 +55,7 @@ export default function SearchScreen({ route }: Props) {
             gap: 10,
             paddingHorizontal: 16,
           }}
+          style={{ marginBottom: 12 }}
         >
           {categories.map((category) => {
             const isSelected = category.value === selectedCategory;
@@ -96,7 +76,7 @@ export default function SearchScreen({ route }: Props) {
             );
           })}
         </ScrollView>
-      </View>
+      </Header>
 
       <AnimeTab
         isLoading={animeTab.isLoading}
@@ -160,9 +140,5 @@ export default function SearchScreen({ route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    gap: 10,
-    paddingBottom: 10,
   },
 });
