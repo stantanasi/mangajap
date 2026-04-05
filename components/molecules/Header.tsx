@@ -74,6 +74,11 @@ export default function Header({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
   },
   topBar: {
     alignItems: 'center',
