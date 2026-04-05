@@ -6,7 +6,7 @@ type Props = Omit<TextInputProps, 'style'> & {
   onSearch?: (query: string) => void;
   delay?: number;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function SearchBar({
   value = '',
@@ -55,7 +55,7 @@ export default function SearchBar({
         <MaterialIcons
           name="close"
           color="#666"
-          size={24}
+          size={18}
           onPress={() => {
             setQuery('');
             props.onChangeText?.('');
@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     flexDirection: 'row',
     gap: 10,
-    paddingHorizontal: 10,
   },
   input: {
     flex: 1,

@@ -1,8 +1,8 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Header from '../../components/molecules/Header';
 import { useAuth } from '../../contexts/AuthContext';
 
 type Props = StaticScreenProps<undefined>;
@@ -18,39 +18,9 @@ export default function SettingsScreen({ }: Props) {
           paddingBottom: 16,
         }}
       >
-        <View
-          style={{
-            alignItems: 'flex-start',
-            flexDirection: 'row',
-          }}
-        >
-          <MaterialIcons
-            name="arrow-back"
-            color="#000"
-            size={24}
-            onPress={() => {
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else if (typeof window !== 'undefined') {
-                window.history.back();
-              }
-            }}
-            style={{
-              padding: 12,
-            }}
-          />
-
-          <Text
-            style={{
-              flex: 1,
-              fontSize: 18,
-              fontWeight: 'bold',
-              padding: 12,
-            }}
-          >
-            Paramètres
-          </Text>
-        </View>
+        <Header
+          title="Paramètres"
+        />
 
         <Text
           onPress={() => {

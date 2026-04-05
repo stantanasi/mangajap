@@ -1,7 +1,7 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text } from 'react-native';
+import BaseHeader from '../../../components/molecules/Header';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { People } from '../../../models';
@@ -17,53 +17,16 @@ export default function Header({ isLoading, people }: Props) {
   const { user } = useAuth();
 
   return (
-    <View style={styles.container}>
-      <View
-        style={{
-          alignItems: 'flex-start',
-          flexDirection: 'row',
-        }}
-      >
-        <MaterialIcons
-          name="arrow-back"
-          color="#000"
-          size={24}
-          onPress={() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else if (typeof window !== 'undefined') {
-              window.history.back();
-            }
-          }}
-          style={{
-            padding: 12,
-          }}
-        />
-
-        <Text
-          style={{
-            flex: 1,
-            fontSize: 18,
-            fontWeight: 'bold',
-            padding: 12,
-          }}
-        >
-          {people.name}
-        </Text>
-
-        {!isOffline && !isLoading && user ? (
-          <MaterialIcons
-            name="edit"
-            color="#000"
-            size={24}
-            onPress={() => navigation.navigate('PeopleUpdate', { peopleId: people.id })}
-            style={{
-              padding: 12,
-            }}
-          />
-        ) : null}
-      </View>
-
+    <BaseHeader
+      title={people.name}
+      menuItems={!isOffline && !isLoading && user ? [
+        {
+          icon: 'edit',
+          onPress: () => navigation.navigate('PeopleUpdate', { peopleId: people.id }),
+        },
+      ] : []}
+      style={styles.container}
+    >
       <Image
         source={{ uri: people.portrait ?? undefined }}
         style={styles.image}
@@ -72,14 +35,12 @@ export default function Header({ isLoading, people }: Props) {
       <Text style={styles.name}>
         {people.name}
       </Text>
-    </View>
+    </BaseHeader>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 20,
-  },
+  container: {},
   image: {
     width: 180,
     alignSelf: 'center',

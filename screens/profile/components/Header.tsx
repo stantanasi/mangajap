@@ -1,7 +1,7 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import BaseHeader from '../../../components/molecules/Header';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
@@ -55,37 +55,20 @@ export default function Header({
   };
 
   return (
-    <View style={[styles.container, style]}>
-      <View style={styles.topBar}>
-        {route.params ? (
-          <MaterialIcons
-            name="arrow-back"
-            color="#000"
-            size={24}
-            onPress={() => {
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else if (typeof window !== 'undefined') {
-                window.history.back();
-              }
-            }}
-            style={styles.icon}
-          />
-        ) : null}
-
-        <View style={{ flex: 1 }} />
-
-        {user.id === authenticatedUser?.id ? (
-          <MaterialIcons
-            name="settings"
-            color="#000"
-            size={24}
-            onPress={() => navigation.navigate('Settings')}
-            style={styles.icon}
-          />
-        ) : null}
-      </View>
-
+    <BaseHeader
+      canGoBack={!!route.params}
+      menuItems={user.id === authenticatedUser?.id ? [
+        {
+          icon: 'edit',
+          onPress: () => navigation.navigate('ProfileEdit', { id: user.id }),
+        },
+        {
+          icon: 'settings',
+          onPress: () => navigation.navigate('Settings'),
+        },
+      ] : []}
+      style={[styles.container, style]}
+    >
       <Image
         source={{ uri: user.avatar ?? undefined }}
         style={styles.avatar}
@@ -135,103 +118,71 @@ export default function Header({
         style={{
           flexDirection: 'row',
           gap: 16,
+          marginBottom: 16,
           marginHorizontal: 16,
           marginTop: 24,
         }}
       >
-        {!isOffline && !isLoading && authenticatedUser ? (
-          user.id === authenticatedUser.id ? (
-            <Text
-              onPress={() => navigation.navigate('ProfileEdit', { id: user.id })}
+        {!isOffline && !isLoading && authenticatedUser && user.id !== authenticatedUser.id ? (
+          <View style={{ flex: 1 }}>
+            <Pressable
+              disabled={isFollowUpdating}
+              onPress={() => {
+                setIsFollowUpdating(true);
+
+                updateFollow()
+                  .catch((err) => console.error(err))
+                  .finally(() => setIsFollowUpdating(false));
+              }}
               style={{
+                alignItems: 'center',
                 backgroundColor: '#ccc',
                 borderRadius: 4,
-                flex: 1,
-                fontSize: 16,
-                fontWeight: 'bold',
+                flexDirection: 'row',
+                gap: 10,
+                justifyContent: 'center',
                 paddingHorizontal: 12,
                 paddingVertical: 10,
-                textAlign: 'center',
-                textTransform: 'uppercase',
               }}
             >
-              Modifier
-            </Text>
-          ) : (
-            <View
-              style={{
-                flex: 1,
-              }}
-            >
-              <Pressable
-                disabled={isFollowUpdating}
-                onPress={() => {
-                  setIsFollowUpdating(true);
-
-                  updateFollow()
-                    .catch((err) => console.error(err))
-                    .finally(() => setIsFollowUpdating(false));
-                }}
+              {isFollowUpdating && (
+                <ActivityIndicator
+                  animating
+                  color="#000"
+                />
+              )}
+              <Text
                 style={{
-                  alignItems: 'center',
-                  backgroundColor: '#ccc',
-                  borderRadius: 4,
-                  flexDirection: 'row',
-                  gap: 10,
-                  justifyContent: 'center',
-                  paddingHorizontal: 12,
-                  paddingVertical: 10,
+                  color: '#000',
+                  fontWeight: 'bold',
+                  textTransform: 'uppercase',
                 }}
               >
-                {isFollowUpdating && (
-                  <ActivityIndicator
-                    animating
-                    color="#000"
-                  />
-                )}
-                <Text
-                  style={{
-                    color: '#000',
-                    fontWeight: 'bold',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {!followingUser ? "S'abonner" : 'Abonné'}
-                </Text>
-              </Pressable>
+                {!followingUser ? "S'abonner" : 'Abonné'}
+              </Text>
+            </Pressable>
 
-              {followedByUser ? (
-                <Text
-                  style={{
-                    alignSelf: 'center',
-                    color: '#888',
-                    fontSize: 12,
-                    marginTop: 2,
-                  }}
-                >
-                  Vous suit
-                </Text>
-              ) : null}
-            </View>
-          )
+            {followedByUser ? (
+              <Text
+                style={{
+                  alignSelf: 'center',
+                  color: '#888',
+                  fontSize: 12,
+                  marginTop: 2,
+                }}
+              >
+                Vous suit
+              </Text>
+            ) : null}
+          </View>
         ) : null}
       </View>
-    </View>
+    </BaseHeader>
   );
 }
 
 const styles = StyleSheet.create({
   container: {},
-  topBar: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    flexDirection: 'row',
-  },
-  icon: {
-    padding: 12,
-  },
   avatar: {
     width: 100,
     height: 100,
@@ -239,7 +190,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     borderRadius: 360,
     marginHorizontal: 16,
-    marginTop: 16,
   },
   username: {
     fontSize: 20,

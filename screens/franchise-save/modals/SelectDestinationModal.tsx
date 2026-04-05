@@ -88,6 +88,7 @@ export default function SelectDestinationModal({ onSelect, onRequestClose, visib
               borderWidth: 1,
               marginHorizontal: 16,
               marginTop: 16,
+              paddingHorizontal: 10,
             }}
           />
 

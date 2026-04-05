@@ -71,6 +71,7 @@ export default function SelectPeopleModal({ onSelect, onRequestClose, visible }:
               borderWidth: 1,
               marginHorizontal: 16,
               marginTop: 16,
+              paddingHorizontal: 10,
             }}
           />
 

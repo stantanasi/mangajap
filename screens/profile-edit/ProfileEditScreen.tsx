@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
+import Header from '../../components/molecules/Header';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useApp } from '../../contexts/AppContext';
 import { User } from '../../models';
@@ -63,52 +64,21 @@ export default function ProfileEditScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          alignItems: 'center',
-          flexDirection: 'row',
-        }}
-      >
-        <MaterialIcons
-          name="arrow-back"
-          size={24}
-          color="#000"
-          onPress={() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else if (typeof window !== 'undefined') {
-              window.history.back();
-            }
-          }}
-          style={{ padding: 16 }}
-        />
-
-        <Text
-          style={{
-            flex: 1,
-            fontSize: 16,
-            fontWeight: 'bold',
-          }}
-        >
-          Modifier le profil
-        </Text>
-
-        {!isOffline && !isLoading ? (
-          <MaterialIcons
-            name="save"
-            color="#000"
-            size={24}
-            onPress={() => {
+      <Header
+        title="Modifier le profil"
+        menuItems={!isOffline && !isLoading ? [
+          {
+            icon: 'save',
+            onPress: () => {
               setIsUpdating(true);
 
               save()
                 .catch((err) => console.error(err))
                 .finally(() => setIsUpdating(false));
-            }}
-            style={{ padding: 16 }}
-          />
-        ) : null}
-      </View>
+            }
+          },
+        ] : []}
+      />
 
       <ScrollView
         contentContainerStyle={{

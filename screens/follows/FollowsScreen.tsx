@@ -1,9 +1,9 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
+import Header from '../../components/molecules/Header';
 import UserCard from '../../components/molecules/UserCard';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useFollows } from './hooks/useFollows';
@@ -25,41 +25,11 @@ export default function FollowsScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          alignItems: 'flex-start',
-          flexDirection: 'row',
-        }}
-      >
-        <MaterialIcons
-          name="arrow-back"
-          color="#000"
-          size={24}
-          onPress={() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else if (typeof window !== 'undefined') {
-              window.history.back();
-            }
-          }}
-          style={{
-            padding: 12,
-          }}
-        />
-
-        <Text
-          style={{
-            flex: 1,
-            fontSize: 18,
-            fontWeight: 'bold',
-            padding: 12,
-          }}
-        >
-          {route.params.type === 'followers' ? 'Abonnés'
-            : route.params.type === 'following' ? 'Abonnements'
-              : ''}
-        </Text>
-      </View>
+      <Header
+        title={route.params.type === 'followers' ? 'Abonnés'
+          : route.params.type === 'following' ? 'Abonnements'
+            : ''}
+      />
 
       <FlatList
         data={follows}
