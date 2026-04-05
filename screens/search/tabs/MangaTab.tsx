@@ -38,6 +38,7 @@ export default function MangaTab({ isLoading, list, onLoadMore, hasMore, style }
             }}
           />
         )}
+        ListHeaderComponent={() => <View style={{ height: 16 }} />}
         ItemSeparatorComponent={() => (
           <View
             style={{
@@ -56,7 +57,9 @@ export default function MangaTab({ isLoading, list, onLoadMore, hasMore, style }
                 color="#000"
               />
             </View>
-          ) : null
+          ) : (
+            <View style={{ height: 16 }} />
+          )
         )}
         keyboardShouldPersistTaps="always"
         onEndReached={() => onLoadMore()}

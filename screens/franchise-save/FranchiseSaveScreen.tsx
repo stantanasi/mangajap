@@ -77,8 +77,12 @@ export default function FranchiseSaveScreen({ route }: Props) {
         ] : []}
       />
 
-      <ScrollView>
-        <View style={styles.input}>
+      <ScrollView
+        contentContainerStyle={{
+          paddingVertical: 16,
+        }}
+      >
+        <View style={[styles.input, { marginTop: 0 }]}>
           <InputLabel>
             Destination *
           </InputLabel>

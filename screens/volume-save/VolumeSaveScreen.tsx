@@ -75,7 +75,11 @@ export default function VolumeSaveScreen({ route }: Props) {
         ] : []}
       />
 
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={{
+          paddingVertical: 16,
+        }}
+      >
         <ImageInput
           label="Couverture"
           value={form.cover}
@@ -83,7 +87,7 @@ export default function VolumeSaveScreen({ route }: Props) {
             ...prev,
             cover: value,
           }))}
-          style={styles.input}
+          style={[styles.input, { marginTop: 0 }]}
           inputStyle={{
             width: 150,
             minHeight: 150 * 3 / 2,

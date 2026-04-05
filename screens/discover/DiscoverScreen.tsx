@@ -46,7 +46,11 @@ export default function DiscoverScreen({ route }: Props) {
       {!peoples || !animes || !mangas ? (
         <LoadingScreen style={{ flex: 1 }} />
       ) : (
-        <ScrollView>
+        <ScrollView
+          contentContainerStyle={{
+            paddingVertical: 16,
+          }}
+        >
           <Text
             style={{
               fontSize: 20,
@@ -169,7 +173,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     flexDirection: 'row',
     gap: 10,
-    marginBottom: 16,
     marginHorizontal: 16,
     marginTop: 16,
     paddingHorizontal: 10,

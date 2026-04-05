@@ -76,6 +76,7 @@ export default function PeopleScreen({ route }: Props) {
           />
         )}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        ListFooterComponent={() => <View style={{ height: 16 }} />}
       />
 
       <RefreshControl refreshing={isLoading} />

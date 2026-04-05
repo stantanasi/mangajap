@@ -13,15 +13,15 @@ export default function SettingsScreen({ }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Header
+        title="Paramètres"
+      />
+
       <ScrollView
         contentContainerStyle={{
-          paddingBottom: 16,
+          paddingVertical: 16,
         }}
       >
-        <Header
-          title="Paramètres"
-        />
-
         <Text
           onPress={() => {
             logout()

@@ -78,7 +78,11 @@ export default function EpisodeSaveScreen({ route }: Props) {
         ] : []}
       />
 
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={{
+          paddingVertical: 16,
+        }}
+      >
         <ImageInput
           label="Poster"
           value={form.poster}
@@ -86,7 +90,7 @@ export default function EpisodeSaveScreen({ route }: Props) {
             ...prev,
             poster: value,
           }))}
-          style={styles.input}
+          style={[styles.input, { marginTop: 0 }]}
           inputStyle={{
             width: 150,
             minHeight: 150 * 3 / 2,

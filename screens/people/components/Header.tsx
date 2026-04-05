@@ -40,7 +40,10 @@ export default function Header({ isLoading, people }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    marginBottom: 16,
+    paddingBottom: 16,
+  },
   image: {
     width: 180,
     alignSelf: 'center',

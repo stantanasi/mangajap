@@ -49,6 +49,7 @@ export default function FollowsScreen({ route }: Props) {
             />
           );
         }}
+        ListHeaderComponent={() => <View style={{ height: 16 }} />}
         ItemSeparatorComponent={() => (
           <View
             style={{
@@ -59,6 +60,7 @@ export default function FollowsScreen({ route }: Props) {
             }}
           />
         )}
+        ListFooterComponent={() => <View style={{ height: 16 }} />}
       />
 
       <RefreshControl refreshing={isLoading} />

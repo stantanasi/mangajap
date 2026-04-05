@@ -79,7 +79,11 @@ export default function PeopleSaveScreen({ route }: Props) {
         ] : []}
       />
 
-      <ScrollView>
+      <ScrollView
+        contentContainerStyle={{
+          paddingVertical: 16,
+        }}
+      >
         <ImageInput
           label="Portrait"
           value={form.portrait}
@@ -87,7 +91,7 @@ export default function PeopleSaveScreen({ route }: Props) {
             ...prev,
             portrait: value,
           }))}
-          style={styles.input}
+          style={[styles.input, { marginTop: 0 }]}
           inputStyle={{
             width: 150,
             minHeight: 150 * 1 / 1,

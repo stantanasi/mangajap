@@ -1,6 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GridList from '../../components/atoms/GridList';
 import RefreshControl from '../../components/atoms/RefreshControl';
@@ -69,6 +69,8 @@ export default function LibraryScreen({ route }: Props) {
             />
           )
         )}
+        ListHeaderComponent={() => <View style={{ height: 16 }} />}
+        ListFooterComponent={() => <View style={{ height: 16 }} />}
         gap={10}
         contentPadding={16}
       />

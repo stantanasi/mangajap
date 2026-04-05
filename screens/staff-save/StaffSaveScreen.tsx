@@ -79,8 +79,12 @@ export default function StaffSaveScreen({ route }: Props) {
         ] : []}
       />
 
-      <ScrollView>
-        <View style={styles.input}>
+      <ScrollView
+        contentContainerStyle={{
+          paddingVertical: 16,
+        }}
+      >
+        <View style={[styles.input, { marginTop: 0 }]}>
           <InputLabel>
             Personnalité *
           </InputLabel>
