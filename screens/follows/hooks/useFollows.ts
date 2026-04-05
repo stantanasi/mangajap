@@ -36,14 +36,16 @@ export const useFollows = (params: ComponentProps<typeof FollowsScreen>['route']
       if (params.type === 'followers') {
         const followers = await User.findById(params.userId).get('followers')
           .include({ follower: true })
-          .sort({ createdAt: 'desc' });
+          .sort({ createdAt: 'desc' })
+          .limit(1000);
 
         dispatch(Follow.redux.actions.setMany(followers));
         dispatch(User.redux.actions.relations['followers'].addMany(params.userId, followers));
       } else if (params.type === 'following') {
         const following = await User.findById(params.userId).get('following')
           .include({ followed: true })
-          .sort({ createdAt: 'desc' });
+          .sort({ createdAt: 'desc' })
+          .limit(1000);
 
         dispatch(Follow.redux.actions.setMany(following));
         dispatch(User.redux.actions.relations['following'].addMany(params.userId, following));
