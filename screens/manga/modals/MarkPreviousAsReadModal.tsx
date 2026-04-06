@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { toast } from 'sonner';
 import Modal from '../../../components/atoms/Modal';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
@@ -57,7 +58,12 @@ export default function MarkPreviousAsReadModal({
         onUpdatingChange({ [volume.id]: true });
 
         updateVolumeEntry(volume)
-          .catch((err) => console.error(err))
+          .catch((err) => {
+            console.error(err);
+            toast.error("Échec de la modification de votre suivi de tome", {
+              description: err.message || "Une erreur inattendue s'est produite",
+            });
+          })
           .finally(() => onUpdatingChange({ [volume.id]: false }));
       } else {
         const chapter = value;
@@ -65,7 +71,12 @@ export default function MarkPreviousAsReadModal({
         onUpdatingChange({ [chapter.id]: true });
 
         updateChapterEntry(chapter)
-          .catch((err) => console.error(err))
+          .catch((err) => {
+            console.error(err);
+            toast.error("Échec de la modification de votre suivi de chapitre", {
+              description: err.message || "Une erreur inattendue s'est produite",
+            });
+          })
           .finally(() => onUpdatingChange({ [chapter.id]: false }));
       }
     }));

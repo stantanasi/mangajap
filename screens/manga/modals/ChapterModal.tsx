@@ -2,14 +2,15 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { toast } from 'sonner';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { useApp } from '../../../contexts/AppContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
-import { useAuth } from '../../../contexts/AuthContext';
 
 type Props = {
   isLoading: boolean;
@@ -197,7 +198,12 @@ export default function ChapterModal({
                     setIsSavingReadDate(true);
 
                     updateReadDate(value)
-                      .catch((err) => console.error(err))
+                      .catch((err) => {
+                        console.error(err);
+                        toast.error("Échec de la modification de la date", {
+                          description: err.message || "Une erreur inattendue s'est produite",
+                        });
+                      })
                       .finally(() => setIsSavingReadDate(false));
                   }}
                   onRequestClose={() => setReadDatePickerVisible(false)}
@@ -215,7 +221,12 @@ export default function ChapterModal({
                 onUpdatingChange(true);
 
                 updateChapterEntry(value)
-                  .catch((err) => console.error(err))
+                  .catch((err) => {
+                    console.error(err);
+                    toast.error("Échec de la modification de votre suivi de chapitre", {
+                      description: err.message || "Une erreur inattendue s'est produite",
+                    });
+                  })
                   .finally(() => onUpdatingChange(false));
               }}
               loading={updating}

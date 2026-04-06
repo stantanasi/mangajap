@@ -1,4 +1,5 @@
 import { ComponentProps, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { Follow, User } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import FollowsScreen from '../FollowsScreen';
@@ -54,7 +55,12 @@ export const useFollows = (params: ComponentProps<typeof FollowsScreen>['route']
 
     setIsLoading(true);
     prepare()
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.error(err);
+        toast.error("Échec de la récupération des données", {
+          description: err.message || "Une erreur inattendue s'est produite",
+        });
+      })
       .finally(() => setIsLoading(false));
   }, [params]);
 

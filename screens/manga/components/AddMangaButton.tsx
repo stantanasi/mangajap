@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { toast } from 'sonner';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Manga, MangaEntry, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
@@ -48,7 +49,12 @@ export default function AddMangaButton({ manga }: Props) {
         setIsUpdating(true);
 
         addMangaEntry()
-          .catch((err) => console.error(err))
+          .catch((err) => {
+            console.error(err);
+            toast.error("Échec de la modification de votre suivi de manga", {
+              description: err.message || "Une erreur inattendue s'est produite",
+            });
+          })
           .finally(() => setIsUpdating(false));
       }}
       style={styles.container}

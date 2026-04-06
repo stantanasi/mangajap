@@ -3,6 +3,7 @@ import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { toast } from 'sonner';
 import ImageInput from '../../components/atoms/ImageInput';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import TextInput from '../../components/atoms/TextInput';
@@ -72,7 +73,12 @@ export default function PeopleSaveScreen({ route }: Props) {
               setIsSaving(true);
 
               save()
-                .catch((err) => console.error(err))
+                .catch((err) => {
+                  console.error(err);
+                  toast.error("Échec de l'enregistrement de la personalité", {
+                    description: err.message || "Une erreur inattendue s'est produite",
+                  });
+                })
                 .finally(() => setIsSaving(false));
             }
           },

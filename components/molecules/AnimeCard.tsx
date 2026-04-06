@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useState } from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { toast } from 'sonner';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { Anime, AnimeEntry, Franchise, User } from '../../models';
@@ -140,7 +141,12 @@ export default function AnimeCard({
             setIsUpdating(true);
 
             updateAnimeEntry(value)
-              .catch((err) => console.error(err))
+              .catch((err) => {
+                console.error(err);
+                toast.error("Échec de la modification de votre suivi d'animé", {
+                  description: err.message || "Une erreur inattendue s'est produite",
+                });
+              })
               .finally(() => setIsUpdating(false));
           }}
           loading={isUpdating}

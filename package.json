@@ -36,7 +36,8 @@
     "react-native-screens": "~4.23.0",
     "react-native-web": "^0.21.2",
     "react-redux": "^9.2.0",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",

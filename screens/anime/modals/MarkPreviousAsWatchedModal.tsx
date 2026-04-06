@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { toast } from 'sonner';
 import Modal from '../../../components/atoms/Modal';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, Season, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
-import { useAuth } from '../../../contexts/AuthContext';
 
 type Props = {
   previousUnwatched: (Season | Episode)[];
@@ -44,7 +45,12 @@ export default function MarkPreviousAsWatchedModal({
         onUpdatingChange({ [episode.id]: true });
 
         updateEpisodeEntry(episode)
-          .catch((err) => console.error(err))
+          .catch((err) => {
+            console.error(err);
+            toast.error("Échec de la modification de votre suivi d'épisode", {
+              description: err.message || "Une erreur inattendue s'est produite",
+            });
+          })
           .finally(() => onUpdatingChange({ [episode.id]: false }));
       }
     }));

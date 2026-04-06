@@ -2,6 +2,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { toast } from 'sonner';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import Modal from '../../../components/atoms/Modal';
@@ -83,7 +84,12 @@ export default function SeasonModal({
       onEpisodeUpdatingChange(episode.id, true);
 
       await updateEpisodeEntry(episode)
-        .catch((err) => console.error(err))
+        .catch((err) => {
+          console.error(err);
+          toast.error("Échec de la modification de votre suivi d'épisode", {
+            description: err.message || "Une erreur inattendue s'est produite",
+          });
+        })
         .finally(() => onEpisodeUpdatingChange(episode.id, false));
     }) ?? []);
   };
@@ -178,7 +184,12 @@ export default function SeasonModal({
                 onUpdatingChange(true);
 
                 updateSeasonEpisodesEntries(value)
-                  .catch((err) => console.error(err))
+                  .catch((err) => {
+                    console.error(err);
+                    toast.error("Échec de la modification de votre suivi d'épisodes", {
+                      description: err.message || "Une erreur inattendue s'est produite",
+                    });
+                  })
                   .finally(() => onUpdatingChange(false));
               }}
               loading={updating}

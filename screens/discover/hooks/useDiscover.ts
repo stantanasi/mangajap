@@ -1,4 +1,5 @@
 import { ComponentProps, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Anime, Manga, People } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
@@ -72,7 +73,12 @@ export const useDiscover = (params: ComponentProps<typeof DiscoverScreen>['route
 
     setIsLoading(true);
     prepare()
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.error(err);
+        toast.error("Échec de la récupération des données", {
+          description: err.message || "Une erreur inattendue s'est produite",
+        });
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
