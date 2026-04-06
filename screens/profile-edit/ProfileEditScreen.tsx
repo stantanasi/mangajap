@@ -95,14 +95,15 @@ export default function ProfileEditScreen({ route }: Props) {
               quality: 1,
             })
               .then((result) => {
-                if (result.canceled) return;
+                const asset = result.assets?.[0];
+                if (result.canceled || !asset?.base64) return;
 
-                const base64 = result.assets[0].base64;
-                if (!base64) return;
+                const mimeType = asset.mimeType ?? 'image/jpeg';
+                const base64 = `data:${mimeType};base64,${asset.base64}`;
 
                 setForm((prev) => ({
                   ...prev,
-                  avatar: `data:image/jpg;base64,${base64}`,
+                  avatar: base64,
                 }));
               })
               .catch((err) => console.error(err));

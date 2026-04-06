@@ -1,8 +1,8 @@
-import React from 'react'
-import { Image, ImageStyle, Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
-import InputLabel from './InputLabel';
 import { launchImageLibraryAsync } from 'expo-image-picker';
+import React from 'react';
+import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import AutoHeightImage from './AutoHeightImage';
+import InputLabel from './InputLabel';
 
 type Props = {
   label?: string;
@@ -10,7 +10,7 @@ type Props = {
   onValueChange: (value: string | null) => void;
   style?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<ViewStyle>;
-}
+};
 
 export default function ImageInput({ label, value, onValueChange, style, inputStyle }: Props) {
   return (
@@ -30,12 +30,13 @@ export default function ImageInput({ label, value, onValueChange, style, inputSt
             quality: 1,
           })
             .then((result) => {
-              if (result.canceled) return
+              const asset = result.assets?.[0];
+              if (result.canceled || !asset?.base64) return;
 
-              const base64 = result.assets[0].base64;
-              if (!base64) return
+              const mimeType = asset.mimeType ?? 'image/jpeg';
+              const base64 = `data:${mimeType};base64,${asset.base64}`;
 
-              onValueChange(`data:image/jpg;base64,${base64}`);
+              onValueChange(base64);
             })
             .catch((err) => console.error(err));
         }}
