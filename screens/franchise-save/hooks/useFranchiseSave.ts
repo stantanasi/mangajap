@@ -1,4 +1,5 @@
 import { ComponentProps, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { Anime, Franchise, Manga } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import FranchiseSaveScreen from '../FranchiseSaveScreen';
@@ -39,7 +40,12 @@ export const useFranchiseSave = (params: ComponentProps<typeof FranchiseSaveScre
 
     setIsLoading(true);
     prepare()
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.error(err);
+        toast.error("Échec de la récupération des données", {
+          description: err.message || "Une erreur inattendue s'est produite",
+        });
+      })
       .finally(() => setIsLoading(false));
   }, [params]);
 

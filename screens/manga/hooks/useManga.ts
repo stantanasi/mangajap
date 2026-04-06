@@ -1,8 +1,9 @@
 import { ComponentProps, useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Manga } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import MangaScreen from '../MangaScreen';
-import { useAuth } from '../../../contexts/AuthContext';
 
 export const useManga = (params: ComponentProps<typeof MangaScreen>['route']['params']) => {
   const dispatch = useAppDispatch();
@@ -79,7 +80,12 @@ export const useManga = (params: ComponentProps<typeof MangaScreen>['route']['pa
 
     setIsLoading(true);
     prepare()
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.error(err);
+        toast.error("Échec de la récupération des données", {
+          description: err.message || "Une erreur inattendue s'est produite",
+        });
+      })
       .finally(() => setIsLoading(false));
   }, [params]);
 

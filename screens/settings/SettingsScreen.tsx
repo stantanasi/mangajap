@@ -2,6 +2,7 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { toast } from 'sonner';
 import Header from '../../components/molecules/Header';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -29,7 +30,12 @@ export default function SettingsScreen({ }: Props) {
                 index: 0,
                 routes: [{ name: 'Main' }],
               }))
-              .catch((err) => console.error(err));
+              .catch((err) => {
+                console.error(err);
+                toast.error("Échec de la déconnexion", {
+                  description: err.message || "Une erreur inattendue s'est produite",
+                });
+              });
           }}
           style={{
             alignSelf: 'center',

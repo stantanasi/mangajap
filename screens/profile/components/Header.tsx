@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { toast } from 'sonner';
 import BaseHeader from '../../../components/molecules/Header';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -127,7 +128,12 @@ export default function Header({
               setIsFollowUpdating(true);
 
               updateFollow()
-                .catch((err) => console.error(err))
+                .catch((err) => {
+                  console.error(err);
+                  toast.error("Échec de la modification de vos abonnements", {
+                    description: err.message || "Une erreur inattendue s'est produite",
+                  });
+                })
                 .finally(() => setIsFollowUpdating(false));
             }}
             style={{

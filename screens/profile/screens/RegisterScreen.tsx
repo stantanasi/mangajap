@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { toast } from 'sonner';
 import { useAuth } from '../../../contexts/AuthContext';
 
 type Props = {
@@ -75,15 +76,20 @@ export default function RegisterScreen({ onNavigateToLogin, style }: Props) {
       <Pressable
         disabled={isRegistering}
         onPress={() => {
-          setIsRegistering(true)
+          setIsRegistering(true);
 
           register(pseudo, email, password)
             .then(() => navigation.reset({
               index: 0,
               routes: [{ name: 'Main' }],
             }))
-            .catch((err) => console.error(err))
-            .finally(() => setIsRegistering(false))
+            .catch((err) => {
+              console.error(err);
+              toast.error("Échec de la création du compte", {
+                description: err.message || "Une erreur inattendue s'est produite",
+              });
+            })
+            .finally(() => setIsRegistering(false));
         }}
         style={styles.button}
       >

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Modal, Pressable, View } from 'react-native';
+import { toast } from 'sonner';
 import SearchBar from '../../../components/atoms/SearchBar';
 import PeopleCard from '../../../components/molecules/PeopleCard';
 import { People } from '../../../models';
@@ -61,7 +62,12 @@ export default function SelectPeopleModal({ onSelect, onRequestClose, visible }:
                   dispatch(People.redux.actions.setMany(peoples));
                   setPeopleIds(peoples.map((people) => people.id));
                 })
-                .catch((err) => console.error(err));
+                .catch((err) => {
+                  console.error(err);
+                  toast.error("Échec du chargement des résultats", {
+                    description: err.message || "Une erreur inattendue s'est produite",
+                  });
+                });
             }}
             delay={500}
             style={{

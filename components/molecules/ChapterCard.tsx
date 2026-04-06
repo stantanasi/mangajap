@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { toast } from 'sonner';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../models';
@@ -78,7 +79,12 @@ export default function ChapterCard({
             onUpdatingChange(true);
 
             updateChapterEntry(value)
-              .catch((err) => console.error(err))
+              .catch((err) => {
+                console.error(err);
+                toast.error("Échec de la modification de votre suivi de chapitre", {
+                  description: err.message || "Une erreur inattendue s'est produite",
+                });
+              })
               .finally(() => onUpdatingChange(false));
           }}
           loading={updating}

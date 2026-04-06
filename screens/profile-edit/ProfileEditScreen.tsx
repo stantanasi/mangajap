@@ -5,6 +5,7 @@ import { launchImageLibraryAsync } from 'expo-image-picker';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { toast } from 'sonner';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import Header from '../../components/molecules/Header';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
@@ -73,7 +74,12 @@ export default function ProfileEditScreen({ route }: Props) {
               setIsUpdating(true);
 
               save()
-                .catch((err) => console.error(err))
+                .catch((err) => {
+                  console.error(err);
+                  toast.error("Échec de la modification du profil", {
+                    description: err.message || "Une erreur inattendue s'est produite",
+                  });
+                })
                 .finally(() => setIsUpdating(false));
             }
           },
@@ -106,7 +112,12 @@ export default function ProfileEditScreen({ route }: Props) {
                   avatar: base64,
                 }));
               })
-              .catch((err) => console.error(err));
+              .catch((err) => {
+                console.error(err);
+                toast.error("Échec de l'importation de l'image", {
+                  description: err.message || "Une erreur inattendue s'est produite",
+                });
+              });
           }}
           style={{
             alignSelf: 'center',

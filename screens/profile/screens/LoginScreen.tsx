@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { toast } from 'sonner';
 import { useAuth } from '../../../contexts/AuthContext';
 
 type Props = {
@@ -66,15 +67,20 @@ export default function LoginScreen({ onNavigateToRegister, style }: Props) {
       <Pressable
         disabled={isLogging}
         onPress={() => {
-          setIsLogging(true)
+          setIsLogging(true);
 
           login(email, password)
             .then(() => navigation.reset({
               index: 0,
               routes: [{ name: 'Main' }],
             }))
-            .catch((err) => console.error(err))
-            .finally(() => setIsLogging(false))
+            .catch((err) => {
+              console.error(err);
+              toast.error("Échec de l'authentification", {
+                description: err.message || "Une erreur inattendue s'est produite",
+              });
+            })
+            .finally(() => setIsLogging(false));
         }}
         style={styles.button}
       >

@@ -3,6 +3,7 @@ import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { toast } from 'sonner';
 import DateInput from '../../components/atoms/DateInput';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
@@ -71,7 +72,12 @@ export default function ChapterSaveScreen({ route }: Props) {
               setIsSaving(true);
 
               save()
-                .catch((err) => console.error(err))
+                .catch((err) => {
+                  console.error(err);
+                  toast.error("Échec de l'enregistrement du chapitre", {
+                    description: err.message || "Une erreur inattendue s'est produite",
+                  });
+                })
                 .finally(() => setIsSaving(false));
             }
           },

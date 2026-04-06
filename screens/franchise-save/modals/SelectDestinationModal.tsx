@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Modal, Pressable, View } from 'react-native';
+import { toast } from 'sonner';
 import SearchBar from '../../../components/atoms/SearchBar';
 import TabBar from '../../../components/atoms/TabBar';
 import AnimeCard from '../../../components/molecules/AnimeCard';
@@ -78,7 +79,12 @@ export default function SelectDestinationModal({ onSelect, onRequestClose, visib
                   setAnimeIds(animes.map((anime) => anime.id));
                   setMangaIds(mangas.map((manga) => manga.id));
                 })
-                .catch((err) => console.error(err));
+                .catch((err) => {
+                  console.error(err);
+                  toast.error("Échec du chargement des résultats", {
+                    description: err.message || "Une erreur inattendue s'est produite",
+                  });
+                });
             }}
             delay={500}
             style={{

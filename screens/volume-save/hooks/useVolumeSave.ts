@@ -1,4 +1,5 @@
 import { ComponentProps, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { Manga, Volume } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import VolumeSaveScreen from '../VolumeSaveScreen';
@@ -31,7 +32,12 @@ export const useVolumeSave = (params: ComponentProps<typeof VolumeSaveScreen>['r
 
     setIsLoading(true);
     prepare()
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.error(err);
+        toast.error("Échec de la récupération des données", {
+          description: err.message || "Une erreur inattendue s'est produite",
+        });
+      })
       .finally(() => setIsLoading(false));
   }, [params]);
 

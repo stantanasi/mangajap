@@ -1,4 +1,5 @@
 import { ComponentProps, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { Genre, Manga, Theme } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import MangaSaveScreen from '../MangaSaveScreen';
@@ -64,7 +65,12 @@ export const useMangaSave = (params: ComponentProps<typeof MangaSaveScreen>['rou
 
     setIsLoading(true);
     prepare()
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.error(err);
+        toast.error("Échec de la récupération des données", {
+          description: err.message || "Une erreur inattendue s'est produite",
+        });
+      })
       .finally(() => setIsLoading(false));
   }, [params]);
 
