@@ -27,10 +27,6 @@ export default function Header<T extends string>({
   const { isOffline } = useApp();
   const { user } = useAuth();
 
-  const progress = anime['anime-entry']
-    ? (anime['anime-entry'].episodesWatch / anime.episodeCount) * 100
-    : 0;
-
   return (
     <BaseHeader
       title={anime.title}
@@ -43,7 +39,7 @@ export default function Header<T extends string>({
       style={styles.container}
     >
       <ProgressBar
-        progress={progress}
+        progress={anime.progress}
       />
 
       <TabBar

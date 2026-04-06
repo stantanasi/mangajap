@@ -36,13 +36,6 @@ export default function SeasonCard({
   const { isOffline } = useApp();
   const { user } = useAuth();
 
-  const episodesWatchedCount = season.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
-  const episodesCount = season.episodes?.length ?? 0;
-
-  const progress = episodesCount > 0
-    ? (episodesWatchedCount / episodesCount) * 100
-    : 0;
-
   const updateSeasonEpisodesEntries = async (add: boolean) => {
     if (!user) return;
 
@@ -115,12 +108,12 @@ export default function SeasonCard({
             marginRight: 12,
           }}
         >
-          {episodesWatchedCount} / {episodesCount}
+          {season.episodeWatchedCount} / {season.episodeCount}
         </Text>
 
         {!isOffline && !isLoading && user ? (
           <Checkbox
-            value={episodesCount > 0 && episodesWatchedCount >= episodesCount}
+            value={season.episodeCount > 0 && season.episodeWatchedCount >= season.episodeCount}
             onValueChange={(value) => {
               onWatchedChange(value);
               onUpdatingChange(true);
@@ -138,7 +131,7 @@ export default function SeasonCard({
       </View>
 
       <ProgressBar
-        progress={progress}
+        progress={season.progress}
       />
     </Pressable>
   );

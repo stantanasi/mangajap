@@ -80,6 +80,20 @@ class Volume extends model<IVolume>(VolumeSchema) {
       }
     },
   };
+
+  get chapterReadCount(): number {
+    return this.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0;
+  };
+
+  get progress(): number {
+    if (this.chapterCount > 0) {
+      return (this.chapterReadCount / this.chapterCount) * 100;
+    } else if (this['volume-entry']) {
+      return 100;
+    } else {
+      return 0;
+    }
+  };
 }
 
 Volume.register('volumes');

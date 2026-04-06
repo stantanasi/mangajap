@@ -130,6 +130,18 @@ class Manga extends model<IManga>(MangaSchema) {
       dispatch(Manga.redux.actions.saveOne(manga));
     },
   };
+
+  get progress(): number {
+    if (!this['manga-entry']) return 0;
+
+    if (this.chapterCount > 0) {
+      return (this['manga-entry'].chaptersRead / this.chapterCount) * 100;
+    } else if (this.volumeCount > 0) {
+      return (this['manga-entry'].volumesRead / this.volumeCount) * 100;
+    } else {
+      return 0;
+    }
+  };
 }
 
 Manga.register('manga');

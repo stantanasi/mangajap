@@ -6,16 +6,9 @@ import { Manga } from '../../../models';
 type Props = PressableProps & {
   manga: Manga;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function MangaAgendaCard({ manga, style, ...props }: Props) {
-  const volumeReadCount = manga['manga-entry']?.volumesRead ?? 0;
-  const chapterReadCount = manga['manga-entry']?.chaptersRead ?? 0;
-
-  const progress = manga.chapterCount > 0
-    ? (chapterReadCount / manga.chapterCount) * 100
-    : (volumeReadCount / manga.volumeCount) * 100;
-
   return (
     <Pressable
       {...props}
@@ -49,7 +42,7 @@ export default function MangaAgendaCard({ manga, style, ...props }: Props) {
                   Volumes
                 </Text>
                 <Text>
-                  {volumeReadCount} / {manga.volumeCount}
+                  {manga['manga-entry']?.volumesRead ?? 0} / {manga.volumeCount}
                 </Text>
               </View>
             )}
@@ -60,7 +53,7 @@ export default function MangaAgendaCard({ manga, style, ...props }: Props) {
                   Chapitres
                 </Text>
                 <Text>
-                  {chapterReadCount} / {manga.chapterCount}
+                  {manga['manga-entry']?.chaptersRead ?? 0} / {manga.chapterCount}
                 </Text>
               </View>
             )}
@@ -69,7 +62,7 @@ export default function MangaAgendaCard({ manga, style, ...props }: Props) {
       </View>
 
       <ProgressBar
-        progress={progress}
+        progress={manga.progress}
       />
     </Pressable>
   );

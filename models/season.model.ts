@@ -78,6 +78,18 @@ class Season extends model<ISeason>(SeasonSchema) {
       }
     },
   };
+
+  get episodeWatchedCount(): number {
+    return this.episodes?.filter((episode) => !!episode['episode-entry']).length ?? 0;
+  };
+
+  get progress(): number {
+    if (this.episodeCount > 0) {
+      return (this.episodeWatchedCount / this.episodeCount) * 100;
+    } else {
+      return 0;
+    }
+  };
 }
 
 Season.register('seasons');

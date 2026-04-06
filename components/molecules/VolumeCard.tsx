@@ -36,13 +36,6 @@ export default function VolumeCard({
   const { isOffline } = useApp();
   const { user } = useAuth();
 
-  const chaptersReadCount = volume.chapters?.filter((chapter) => !!chapter['chapter-entry']).length ?? 0;
-  const chaptersCount = volume.chapters?.length ?? 0;
-
-  const progress = chaptersCount > 0
-    ? (chaptersReadCount / chaptersCount) * 100
-    : volume['volume-entry'] ? 100 : 0;
-
   const updateVolumeEntry = async (add: boolean) => {
     if (!user) return;
 
@@ -139,7 +132,7 @@ export default function VolumeCard({
             marginRight: 12,
           }}
         >
-          {chaptersReadCount} / {chaptersCount}
+          {volume.chapterReadCount} / {volume.chapterCount}
         </Text>
 
         {!isOffline && !isLoading && user ? (
@@ -162,7 +155,7 @@ export default function VolumeCard({
       </View>
 
       <ProgressBar
-        progress={progress}
+        progress={volume.progress}
       />
     </Pressable>
   );

@@ -136,6 +136,16 @@ class Anime extends model<IAnime>(AnimeSchema) {
       dispatch(Anime.redux.actions.saveOne(anime));
     },
   };
+
+  get progress(): number {
+    if (!this['anime-entry']) return 0;
+
+    if (this.episodeCount > 0) {
+      return (this['anime-entry'].episodesWatch / this.episodeCount) * 100;
+    } else {
+      return 0;
+    }
+  };
 }
 
 Anime.register('anime');

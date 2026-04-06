@@ -6,13 +6,9 @@ import { Anime } from '../../../models';
 type Props = PressableProps & {
   anime: Anime;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function AnimeAgendaCard({ anime, style, ...props }: Props) {
-  const episodeWatchedCount = anime['anime-entry']?.episodesWatch ?? 0;
-
-  const progress = (episodeWatchedCount / anime.episodeCount) * 100;
-
   return (
     <Pressable
       {...props}
@@ -44,14 +40,14 @@ export default function AnimeAgendaCard({ anime, style, ...props }: Props) {
               Épisodes
             </Text>
             <Text>
-              {episodeWatchedCount} / {anime.episodeCount}
+              {anime['anime-entry']?.episodesWatch ?? 0} / {anime.episodeCount}
             </Text>
           </View>
         </View>
       </View>
 
       <ProgressBar
-        progress={progress}
+        progress={anime.progress}
       />
     </Pressable>
   );

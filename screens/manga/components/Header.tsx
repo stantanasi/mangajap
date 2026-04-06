@@ -27,12 +27,6 @@ export default function Header<T extends string>({
   const { isOffline } = useApp();
   const { user } = useAuth();
 
-  const progress = manga['manga-entry']
-    ? manga.chapterCount > 0
-      ? (manga['manga-entry'].chaptersRead / manga.chapterCount) * 100
-      : (manga['manga-entry'].volumesRead / manga.volumeCount) * 100
-    : 0;
-
   return (
     <BaseHeader
       title={manga.title}
@@ -45,7 +39,7 @@ export default function Header<T extends string>({
       style={styles.container}
     >
       <ProgressBar
-        progress={progress}
+        progress={manga.progress}
       />
 
       <TabBar

@@ -16,14 +16,11 @@ export default function AgendaAnimeScreen({ route }: Props) {
   const { isLoading, animeLibrary } = useAgendaAnime(route.params);
 
   const animes = animeLibrary
-    ?.filter((entry) => {
-      const progress = (entry.episodesWatch / (entry.anime?.episodeCount ?? 1)) * 100;
-      return progress < 100;
-    })
-    .map((entry) => entry.anime?.copy({
+    ?.map((entry) => entry.anime?.copy({
       'anime-entry': entry,
     }))
-    .filter((anime) => !!anime);
+    .filter((anime) => !!anime)
+    .filter((anime) => anime.progress < 100);
 
   if (!user) {
     return (

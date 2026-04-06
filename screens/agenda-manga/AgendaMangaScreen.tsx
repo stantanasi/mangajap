@@ -16,16 +16,11 @@ export default function AgendaMangaScreen({ route }: Props) {
   const { isLoading, mangaLibrary } = useAgendaManga(route.params);
 
   const mangas = mangaLibrary
-    ?.filter((mangaEntry) => {
-      const progress = (mangaEntry.manga?.chapterCount ?? 0) > 0
-        ? (mangaEntry.chaptersRead / (mangaEntry.manga?.chapterCount ?? 1)) * 100
-        : (mangaEntry.volumesRead / (mangaEntry.manga?.volumeCount ?? 1)) * 100;
-      return progress < 100;
-    })
-    .map((entry) => entry.manga?.copy({
+    ?.map((entry) => entry.manga?.copy({
       'manga-entry': entry,
     }))
-    .filter((manga) => !!manga);
+    .filter((manga) => !!manga)
+    .filter((manga) => manga.progress < 100);
 
   if (!user) {
     return (
