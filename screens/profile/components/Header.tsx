@@ -114,75 +114,73 @@ export default function Header({
         </Pressable>
       </View>
 
-      <View
-        style={{
-          flexDirection: 'row',
-          gap: 16,
-          marginBottom: 16,
-          marginHorizontal: 16,
-          marginTop: 24,
-        }}
-      >
-        {!isOffline && !isLoading && authenticatedUser && user.id !== authenticatedUser.id ? (
-          <View style={{ flex: 1 }}>
-            <Pressable
-              disabled={isFollowUpdating}
-              onPress={() => {
-                setIsFollowUpdating(true);
+      {!isOffline && !isLoading && authenticatedUser && user.id !== authenticatedUser.id ? (
+        <View
+          style={{
+            marginHorizontal: 16,
+            marginTop: 24,
+          }}
+        >
+          <Pressable
+            disabled={isFollowUpdating}
+            onPress={() => {
+              setIsFollowUpdating(true);
 
-                updateFollow()
-                  .catch((err) => console.error(err))
-                  .finally(() => setIsFollowUpdating(false));
-              }}
+              updateFollow()
+                .catch((err) => console.error(err))
+                .finally(() => setIsFollowUpdating(false));
+            }}
+            style={{
+              alignItems: 'center',
+              backgroundColor: '#ccc',
+              borderRadius: 4,
+              flexDirection: 'row',
+              gap: 10,
+              justifyContent: 'center',
+              paddingHorizontal: 12,
+              paddingVertical: 10,
+            }}
+          >
+            {isFollowUpdating && (
+              <ActivityIndicator
+                animating
+                size={14}
+                color="#000"
+              />
+            )}
+            <Text
               style={{
-                alignItems: 'center',
-                backgroundColor: '#ccc',
-                borderRadius: 4,
-                flexDirection: 'row',
-                gap: 10,
-                justifyContent: 'center',
-                paddingHorizontal: 12,
-                paddingVertical: 10,
+                color: '#000',
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
               }}
             >
-              {isFollowUpdating && (
-                <ActivityIndicator
-                  animating
-                  color="#000"
-                />
-              )}
-              <Text
-                style={{
-                  color: '#000',
-                  fontWeight: 'bold',
-                  textTransform: 'uppercase',
-                }}
-              >
-                {!followingUser ? "S'abonner" : 'Abonné'}
-              </Text>
-            </Pressable>
+              {!followingUser ? "S'abonner" : 'Abonné'}
+            </Text>
+          </Pressable>
 
-            {followedByUser ? (
-              <Text
-                style={{
-                  alignSelf: 'center',
-                  color: '#888',
-                  fontSize: 12,
-                  marginTop: 2,
-                }}
-              >
-                Vous suit
-              </Text>
-            ) : null}
-          </View>
-        ) : null}
-      </View>
+          {followedByUser ? (
+            <Text
+              style={{
+                alignSelf: 'center',
+                color: '#888',
+                fontSize: 12,
+                marginTop: 2,
+              }}
+            >
+              Vous suit
+            </Text>
+          ) : null}
+        </View>
+      ) : null}
     </BaseHeader>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    paddingBottom: 16,
+  },
   avatar: {
     width: 100,
     height: 100,
