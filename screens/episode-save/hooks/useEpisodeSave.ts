@@ -1,7 +1,7 @@
 import { ComponentProps, useEffect, useMemo, useState } from 'react';
-import { toast } from 'sonner';
 import { Anime, Episode, Season } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import notify from '../../../utils/notify';
 import EpisodeSaveScreen from '../EpisodeSaveScreen';
 
 export const useEpisodeSave = (params: ComponentProps<typeof EpisodeSaveScreen>['route']['params']) => {
@@ -53,12 +53,7 @@ export const useEpisodeSave = (params: ComponentProps<typeof EpisodeSaveScreen>[
 
     setIsLoading(true);
     prepare()
-      .catch((err) => {
-        console.error(err);
-        toast.error("Échec de la récupération des données", {
-          description: err.message || "Une erreur inattendue s'est produite",
-        });
-      })
+      .catch((err) => notify.error('episode_load', err))
       .finally(() => setIsLoading(false));
   }, [params]);
 

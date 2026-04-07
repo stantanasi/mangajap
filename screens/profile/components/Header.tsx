@@ -1,12 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { toast } from 'sonner';
 import BaseHeader from '../../../components/molecules/Header';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
+import notify from '../../../utils/notify';
 import ProfileScreen from '../ProfileScreen';
 
 type Props = React.ComponentProps<typeof ProfileScreen> & {
@@ -128,12 +128,7 @@ export default function Header({
               setIsFollowUpdating(true);
 
               updateFollow()
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec de la modification de vos abonnements", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                })
+                .catch((err) => notify.error('follow_update', err))
                 .finally(() => setIsFollowUpdating(false));
             }}
             style={{

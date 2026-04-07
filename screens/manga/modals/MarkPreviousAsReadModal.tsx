@@ -1,17 +1,17 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { toast } from 'sonner';
 import Modal from '../../../components/atoms/Modal';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
+import notify from '../../../utils/notify';
 
 type Props = {
   previousUnread: (Volume | Chapter)[];
-  onUpdatingChange: (updating: { [id: string]: boolean }) => void;
+  onUpdatingChange: (updating: { [id: string]: boolean; }) => void;
   onRequestClose: () => void;
   visible: boolean;
-}
+};
 
 export default function MarkPreviousAsReadModal({
   previousUnread,
@@ -23,7 +23,7 @@ export default function MarkPreviousAsReadModal({
   const { user } = useAuth();
 
   const markPreviousAsRead = async () => {
-    if (!user) return
+    if (!user) return;
 
     const updateVolumeEntry = async (volume: Volume) => {
       const volumeEntry = new VolumeEntry({
@@ -58,12 +58,7 @@ export default function MarkPreviousAsReadModal({
         onUpdatingChange({ [volume.id]: true });
 
         updateVolumeEntry(volume)
-          .catch((err) => {
-            console.error(err);
-            toast.error("Échec de la modification de votre suivi de tome", {
-              description: err.message || "Une erreur inattendue s'est produite",
-            });
-          })
+          .catch((err) => notify.error('volume_entry_update', err))
           .finally(() => onUpdatingChange({ [volume.id]: false }));
       } else {
         const chapter = value;
@@ -71,12 +66,7 @@ export default function MarkPreviousAsReadModal({
         onUpdatingChange({ [chapter.id]: true });
 
         updateChapterEntry(chapter)
-          .catch((err) => {
-            console.error(err);
-            toast.error("Échec de la modification de votre suivi de chapitre", {
-              description: err.message || "Une erreur inattendue s'est produite",
-            });
-          })
+          .catch((err) => notify.error('chapter_entry_update', err))
           .finally(() => onUpdatingChange({ [chapter.id]: false }));
       }
     }));

@@ -4,7 +4,6 @@ import Checkbox from 'expo-checkbox';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { toast } from 'sonner';
 import ImageInput from '../../components/atoms/ImageInput';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
@@ -15,6 +14,7 @@ import { useApp } from '../../contexts/AppContext';
 import { Anime } from '../../models';
 import { AnimeStatus, AnimeType, IAnime } from '../../models/anime.model';
 import { useAppDispatch } from '../../redux/store';
+import notify from '../../utils/notify';
 import { useAnimeSave } from './hooks/useAnimeSave';
 
 type Props = StaticScreenProps<{
@@ -75,12 +75,7 @@ export default function AnimeSaveScreen({ route }: Props) {
               setIsSaving(true);
 
               save()
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec de l'enregistrement de l'anime", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                })
+                .catch((err) => notify.error('anime_save', err))
                 .finally(() => setIsSaving(false));
             }
           },

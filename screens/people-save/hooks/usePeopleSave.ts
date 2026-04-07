@@ -1,7 +1,7 @@
 import { ComponentProps, useEffect, useMemo, useState } from 'react';
-import { toast } from 'sonner';
 import { People } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import notify from '../../../utils/notify';
 import PeopleSaveScreen from '../PeopleSaveScreen';
 
 export const usePeopleSave = (params: ComponentProps<typeof PeopleSaveScreen>['route']['params']) => {
@@ -29,12 +29,7 @@ export const usePeopleSave = (params: ComponentProps<typeof PeopleSaveScreen>['r
 
     setIsLoading(true);
     prepare()
-      .catch((err) => {
-        console.error(err);
-        toast.error("Échec de la récupération des données", {
-          description: err.message || "Une erreur inattendue s'est produite",
-        });
-      })
+      .catch((err) => notify.error('people_load', err))
       .finally(() => setIsLoading(false));
   }, [params]);
 

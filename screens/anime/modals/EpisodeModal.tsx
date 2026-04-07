@@ -2,7 +2,6 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { toast } from 'sonner';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import DateTimePicker from '../../../components/atoms/DateTimePicker';
@@ -11,6 +10,7 @@ import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
+import notify from '../../../utils/notify';
 
 type Props = {
   isLoading: boolean;
@@ -198,12 +198,7 @@ export default function EpisodeModal({
                     setIsSavingWatchedDate(true);
 
                     updateWatchedDate(value)
-                      .catch((err) => {
-                        console.error(err);
-                        toast.error("Échec de la modification de la date", {
-                          description: err.message || "Une erreur inattendue s'est produite",
-                        });
-                      })
+                      .catch((err) => notify.error('episode_entry_update', err))
                       .finally(() => setIsSavingWatchedDate(false));
                   }}
                   onRequestClose={() => setWatchedDatePickerVisible(false)}
@@ -221,12 +216,7 @@ export default function EpisodeModal({
                 onUpdatingChange(true);
 
                 updateEpisodeEntry(value)
-                  .catch((err) => {
-                    console.error(err);
-                    toast.error("Échec de la modification de votre suivi d'épisode", {
-                      description: err.message || "Une erreur inattendue s'est produite",
-                    });
-                  })
+                  .catch((err) => notify.error('episode_entry_update', err))
                   .finally(() => onUpdatingChange(false));
               }}
               loading={updating}

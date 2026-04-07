@@ -2,9 +2,9 @@ import { StaticScreenProps } from '@react-navigation/native';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { toast } from 'sonner';
 import SearchBar from '../../components/atoms/SearchBar';
 import Header from '../../components/molecules/Header';
+import notify from '../../utils/notify';
 import { useSearch } from './hooks/useSearch';
 import AnimeTab from './tabs/AnimeTab';
 import MangaTab from './tabs/MangaTab';
@@ -43,12 +43,7 @@ export default function SearchScreen({ route }: Props) {
                 peopleTab.search(query),
                 userTab.search(query),
               ])
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec de la récupération des données", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                });
+                .catch((err) => notify.error('search_load', err));
             }}
             delay={500}
           />
@@ -89,12 +84,7 @@ export default function SearchScreen({ route }: Props) {
         list={animeTab.list}
         onLoadMore={() => {
           animeTab.loadMore()
-            .catch((err) => {
-              console.error(err);
-              toast.error("Échec de la récupération des données", {
-                description: err.message || "Une erreur inattendue s'est produite",
-              });
-            });
+            .catch((err) => notify.error('search_anime_load', err));
         }}
         hasMore={animeTab.hasMore}
         style={{
@@ -108,12 +98,7 @@ export default function SearchScreen({ route }: Props) {
         list={mangaTab.list}
         onLoadMore={() => {
           mangaTab.loadMore()
-            .catch((err) => {
-              console.error(err);
-              toast.error("Échec de la récupération des données", {
-                description: err.message || "Une erreur inattendue s'est produite",
-              });
-            });
+            .catch((err) => notify.error('search_manga_load', err));
         }}
         hasMore={mangaTab.hasMore}
         style={{
@@ -127,12 +112,7 @@ export default function SearchScreen({ route }: Props) {
         list={peopleTab.list}
         onLoadMore={() => {
           peopleTab.loadMore()
-            .catch((err) => {
-              console.error(err);
-              toast.error("Échec de la récupération des données", {
-                description: err.message || "Une erreur inattendue s'est produite",
-              });
-            });
+            .catch((err) => notify.error('search_people_load', err));
         }}
         hasMore={peopleTab.hasMore}
         style={{
@@ -146,12 +126,7 @@ export default function SearchScreen({ route }: Props) {
         list={userTab.list}
         onLoadMore={() => {
           userTab.loadMore()
-            .catch((err) => {
-              console.error(err);
-              toast.error("Échec de la récupération des données", {
-                description: err.message || "Une erreur inattendue s'est produite",
-              });
-            });
+            .catch((err) => notify.error('search_user_load', err));
         }}
         hasMore={userTab.hasMore}
         style={{

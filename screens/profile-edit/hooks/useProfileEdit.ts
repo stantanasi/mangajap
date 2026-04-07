@@ -1,7 +1,7 @@
 import { ComponentProps, useEffect, useState } from 'react';
-import { toast } from 'sonner';
 import { User } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import notify from '../../../utils/notify';
 import ProfileEditScreen from '../ProfileEditScreen';
 
 export const useProfileEdit = (params: ComponentProps<typeof ProfileEditScreen>['route']['params']) => {
@@ -21,12 +21,7 @@ export const useProfileEdit = (params: ComponentProps<typeof ProfileEditScreen>[
 
     setIsLoading(true);
     prepare()
-      .catch((err) => {
-        console.error(err);
-        toast.error("Échec de la récupération des données", {
-          description: err.message || "Une erreur inattendue s'est produite",
-        });
-      })
+      .catch((err) => notify.error('profile_load', err))
       .finally(() => setIsLoading(false));
   }, [params]);
 

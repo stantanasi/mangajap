@@ -1,17 +1,17 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { toast } from 'sonner';
 import Modal from '../../../components/atoms/Modal';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, Season, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
+import notify from '../../../utils/notify';
 
 type Props = {
   previousUnwatched: (Season | Episode)[];
-  onUpdatingChange: (updating: { [id: string]: boolean }) => void;
+  onUpdatingChange: (updating: { [id: string]: boolean; }) => void;
   onRequestClose: () => void;
   visible: boolean;
-}
+};
 
 export default function MarkPreviousAsWatchedModal({
   previousUnwatched,
@@ -23,7 +23,7 @@ export default function MarkPreviousAsWatchedModal({
   const { user } = useAuth();
 
   const markPreviousAsWatched = async () => {
-    if (!user) return
+    if (!user) return;
 
     const updateEpisodeEntry = async (episode: Episode) => {
       const episodeEntry = new EpisodeEntry({
@@ -45,16 +45,11 @@ export default function MarkPreviousAsWatchedModal({
         onUpdatingChange({ [episode.id]: true });
 
         updateEpisodeEntry(episode)
-          .catch((err) => {
-            console.error(err);
-            toast.error("Échec de la modification de votre suivi d'épisode", {
-              description: err.message || "Une erreur inattendue s'est produite",
-            });
-          })
+          .catch((err) => notify.error('episode_entry_update', err))
           .finally(() => onUpdatingChange({ [episode.id]: false }));
       }
     }));
-  }
+  };
 
   return (
     <Modal

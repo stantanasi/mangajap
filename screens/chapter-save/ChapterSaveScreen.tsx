@@ -3,7 +3,6 @@ import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { toast } from 'sonner';
 import DateInput from '../../components/atoms/DateInput';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
@@ -16,6 +15,7 @@ import { useApp } from '../../contexts/AppContext';
 import { Chapter, Volume } from '../../models';
 import { IChapter } from '../../models/chapter.model';
 import { useAppDispatch } from '../../redux/store';
+import notify from '../../utils/notify';
 import { useChapterSave } from './hooks/useChapterSave';
 
 type Props = StaticScreenProps<{
@@ -72,12 +72,7 @@ export default function ChapterSaveScreen({ route }: Props) {
               setIsSaving(true);
 
               save()
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec de l'enregistrement du chapitre", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                })
+                .catch((err) => notify.error('chapter_save', err))
                 .finally(() => setIsSaving(false));
             }
           },

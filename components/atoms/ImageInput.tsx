@@ -1,7 +1,7 @@
 import { launchImageLibraryAsync } from 'expo-image-picker';
 import React from 'react';
 import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { toast } from 'sonner';
+import notify from '../../utils/notify';
 import AutoHeightImage from './AutoHeightImage';
 import InputLabel from './InputLabel';
 
@@ -38,12 +38,7 @@ export default function ImageInput({ label, value, onValueChange, style, inputSt
 
               onValueChange(base64);
             })
-            .catch((err) => {
-              console.error(err);
-              toast.error("Échec de l'importation de l'image", {
-                description: err.message || "Une erreur inattendue s'est produite",
-              });
-            });
+            .catch((err) => notify.error('image_upload', err));
         }}
         style={[styles.input, inputStyle]}
       >

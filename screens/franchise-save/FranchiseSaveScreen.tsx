@@ -3,7 +3,6 @@ import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { toast } from 'sonner';
 import InputLabel from '../../components/atoms/InputLabel';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
@@ -13,6 +12,7 @@ import { useApp } from '../../contexts/AppContext';
 import { Franchise } from '../../models';
 import { FranchiseRole, IFranchise } from '../../models/franchise.model';
 import { useAppDispatch } from '../../redux/store';
+import notify from '../../utils/notify';
 import { useFranchiseSave } from './hooks/useFranchiseSave';
 import SelectDestinationModal from './modals/SelectDestinationModal';
 
@@ -71,12 +71,7 @@ export default function FranchiseSaveScreen({ route }: Props) {
               setIsSaving(true);
 
               save()
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec de l'enregistrement de la franchise", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                })
+                .catch((err) => notify.error('franchise_save', err))
                 .finally(() => setIsSaving(false));
             }
           },

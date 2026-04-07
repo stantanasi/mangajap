@@ -1,10 +1,10 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
-import { toast } from 'sonner';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Anime, AnimeEntry, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
+import notify from '../../../utils/notify';
 
 type Props = {
   anime: Anime;
@@ -48,12 +48,7 @@ export default function AddAnimeButton({ anime }: Props) {
         setIsUpdating(true);
 
         addAnimeEntry()
-          .catch((err) => {
-            console.error(err);
-            toast.error("Échec de la modification de votre suivi d'animé", {
-              description: err.message || "Une erreur inattendue s'est produite",
-            });
-          })
+          .catch((err) => notify.error('anime_entry_update', err))
           .finally(() => setIsUpdating(false));
       }}
       style={styles.container}

@@ -3,7 +3,6 @@ import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { toast } from 'sonner';
 import ImageInput from '../../components/atoms/ImageInput';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import TextInput from '../../components/atoms/TextInput';
@@ -13,6 +12,7 @@ import { useApp } from '../../contexts/AppContext';
 import { People } from '../../models';
 import { IPeople } from '../../models/people.model';
 import { useAppDispatch } from '../../redux/store';
+import notify from '../../utils/notify';
 import { usePeopleSave } from './hooks/usePeopleSave';
 
 type Props = StaticScreenProps<{
@@ -73,12 +73,7 @@ export default function PeopleSaveScreen({ route }: Props) {
               setIsSaving(true);
 
               save()
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec de l'enregistrement de la personalité", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                })
+                .catch((err) => notify.error('people_save', err))
                 .finally(() => setIsSaving(false));
             }
           },

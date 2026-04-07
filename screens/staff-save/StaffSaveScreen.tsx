@@ -3,7 +3,6 @@ import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { toast } from 'sonner';
 import InputLabel from '../../components/atoms/InputLabel';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
@@ -13,6 +12,7 @@ import { useApp } from '../../contexts/AppContext';
 import { Staff } from '../../models';
 import { IStaff, StaffRole } from '../../models/staff.model';
 import { useAppDispatch } from '../../redux/store';
+import notify from '../../utils/notify';
 import { useStaffSave } from './hooks/useStaffSave';
 import SelectPeopleModal from './modals/SelectPeopleModal';
 
@@ -73,12 +73,7 @@ export default function StaffSaveScreen({ route }: Props) {
               setIsSaving(true);
 
               save()
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec de l'enregistrement du staff", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                })
+                .catch((err) => notify.error('staff_save', err))
                 .finally(() => setIsSaving(false));
             }
           },

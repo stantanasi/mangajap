@@ -1,10 +1,10 @@
 import React from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { toast } from 'sonner';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, User } from '../../models';
 import { useAppDispatch } from '../../redux/store';
+import notify from '../../utils/notify';
 import Checkbox from '../atoms/Checkbox';
 
 type Props = PressableProps & {
@@ -79,12 +79,7 @@ export default function EpisodeCard({
             onUpdatingChange(true);
 
             updateEpisodeEntry(value)
-              .catch((err) => {
-                console.error(err);
-                toast.error("Échec de la modification de votre suivi d'épisode", {
-                  description: err.message || "Une erreur inattendue s'est produite",
-                });
-              })
+              .catch((err) => notify.error('episode_entry_update', err))
               .finally(() => onUpdatingChange(false));
           }}
           loading={updating}

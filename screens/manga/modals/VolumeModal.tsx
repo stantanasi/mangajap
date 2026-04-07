@@ -2,7 +2,6 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { toast } from 'sonner';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import DateTimePicker from '../../../components/atoms/DateTimePicker';
@@ -11,6 +10,7 @@ import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
+import notify from '../../../utils/notify';
 
 type Props = {
   isLoading: boolean;
@@ -102,12 +102,7 @@ export default function VolumeModal({
       onChapterUpdatingChange(chapter.id, true);
 
       await updateChapterEntry(chapter)
-        .catch((err) => {
-          console.error(err);
-          toast.error("Échec de la modification de votre suivi de chapitre", {
-            description: err.message || "Une erreur inattendue s'est produite",
-          });
-        })
+        .catch((err) => notify.error('chapter_entry_update', err))
         .finally(() => onChapterUpdatingChange(chapter.id, false));
     }) ?? []);
   };
@@ -233,12 +228,7 @@ export default function VolumeModal({
                     setIsSavingReadDate(true);
 
                     updateReadDate(value)
-                      .catch((err) => {
-                        console.error(err);
-                        toast.error("Échec de la modification de la date", {
-                          description: err.message || "Une erreur inattendue s'est produite",
-                        });
-                      })
+                      .catch((err) => notify.error('volume_entry_update', err))
                       .finally(() => setIsSavingReadDate(false));
                   }}
                   onRequestClose={() => setReadDatePickerVisible(false)}
@@ -256,12 +246,7 @@ export default function VolumeModal({
                 onUpdatingChange(true);
 
                 updateVolumeEntry(value)
-                  .catch((err) => {
-                    console.error(err);
-                    toast.error("Échec de la modification de votre suivi de tome", {
-                      description: err.message || "Une erreur inattendue s'est produite",
-                    });
-                  })
+                  .catch((err) => notify.error('volume_entry_update', err))
                   .finally(() => onUpdatingChange(false));
               }}
               loading={updating}

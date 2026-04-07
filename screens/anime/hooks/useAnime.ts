@@ -1,8 +1,8 @@
 import { ComponentProps, useEffect, useState } from 'react';
-import { toast } from 'sonner';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Anime } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import notify from '../../../utils/notify';
 import AnimeScreen from '../AnimeScreen';
 
 export const useAnime = (params: ComponentProps<typeof AnimeScreen>['route']['params']) => {
@@ -70,12 +70,7 @@ export const useAnime = (params: ComponentProps<typeof AnimeScreen>['route']['pa
 
     setIsLoading(true);
     prepare()
-      .catch((err) => {
-        console.error(err);
-        toast.error("Échec de la récupération des données", {
-          description: err.message || "Une erreur inattendue s'est produite",
-        });
-      })
+      .catch((err) => notify.error('anime_load', err))
       .finally(() => setIsLoading(false));
   }, [params]);
 

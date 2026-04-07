@@ -1,11 +1,11 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { toast } from 'sonner';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../models';
 import { useAppDispatch } from '../../redux/store';
+import notify from '../../utils/notify';
 import Checkbox from '../atoms/Checkbox';
 import ProgressBar from '../atoms/ProgressBar';
 
@@ -82,12 +82,7 @@ export default function VolumeCard({
       onChapterUpdatingChange(chapter.id, true);
 
       await updateChapterEntry(chapter)
-        .catch((err) => {
-          console.error(err);
-          toast.error("Échec de la modification de votre suivi de chapitre", {
-            description: err.message || "Une erreur inattendue s'est produite",
-          });
-        })
+        .catch((err) => notify.error('chapter_entry_update', err))
         .finally(() => onChapterUpdatingChange(chapter.id, false));
     }) ?? []);
   };
@@ -149,12 +144,7 @@ export default function VolumeCard({
               onUpdatingChange(true);
 
               updateVolumeEntry(value)
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec de la modification de votre suivi de tome", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                })
+                .catch((err) => notify.error('volume_entry_update', err))
                 .finally(() => onUpdatingChange(false));
             }}
             loading={updating}

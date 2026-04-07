@@ -3,7 +3,6 @@ import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { toast } from 'sonner';
 import DateInput from '../../components/atoms/DateInput';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
@@ -15,6 +14,7 @@ import { useApp } from '../../contexts/AppContext';
 import { Volume } from '../../models';
 import { IVolume } from '../../models/volume.model';
 import { useAppDispatch } from '../../redux/store';
+import notify from '../../utils/notify';
 import { useVolumeSave } from './hooks/useVolumeSave';
 
 type Props = StaticScreenProps<{
@@ -69,12 +69,7 @@ export default function VolumeSaveScreen({ route }: Props) {
               setIsSaving(true);
 
               save()
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec de l'enregistrement du tome", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                })
+                .catch((err) => notify.error('volume_save', err))
                 .finally(() => setIsSaving(false));
             }
           },

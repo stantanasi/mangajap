@@ -1,7 +1,7 @@
 import { ComponentProps, useEffect, useMemo, useState } from 'react';
-import { toast } from 'sonner';
 import { Chapter, Manga, Volume } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import notify from '../../../utils/notify';
 import ChapterSaveScreen from '../ChapterSaveScreen';
 
 export const useChapterSave = (params: ComponentProps<typeof ChapterSaveScreen>['route']['params']) => {
@@ -54,12 +54,7 @@ export const useChapterSave = (params: ComponentProps<typeof ChapterSaveScreen>[
 
     setIsLoading(true);
     prepare()
-      .catch((err) => {
-        console.error(err);
-        toast.error("Échec de la récupération des données", {
-          description: err.message || "Une erreur inattendue s'est produite",
-        });
-      })
+      .catch((err) => notify.error('chapter_load', err))
       .finally(() => setIsLoading(false));
   }, [params]);
 

@@ -3,7 +3,6 @@ import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { toast } from 'sonner';
 import ImageInput from '../../components/atoms/ImageInput';
 import NumberInput from '../../components/atoms/NumberInput';
 import RefreshControl from '../../components/atoms/RefreshControl';
@@ -14,6 +13,7 @@ import { useApp } from '../../contexts/AppContext';
 import { Season } from '../../models';
 import { ISeason } from '../../models/season.model';
 import { useAppDispatch } from '../../redux/store';
+import notify from '../../utils/notify';
 import { useSeasonSave } from './hooks/useSeasonSave';
 
 type Props = StaticScreenProps<{
@@ -68,12 +68,7 @@ export default function SeasonSaveScreen({ route }: Props) {
               setIsSaving(true);
 
               save()
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec de l'enregistrement de la saison", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                })
+                .catch((err) => notify.error('season_save', err))
                 .finally(() => setIsSaving(false));
             }
           },

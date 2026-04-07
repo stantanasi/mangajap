@@ -1,11 +1,11 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { toast } from 'sonner';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, Season, User } from '../../models';
 import { useAppDispatch } from '../../redux/store';
+import notify from '../../utils/notify';
 import Checkbox from '../atoms/Checkbox';
 import ProgressBar from '../atoms/ProgressBar';
 
@@ -64,12 +64,7 @@ export default function SeasonCard({
       onEpisodeUpdatingChange(episode.id, true);
 
       await updateEpisodeEntry(episode)
-        .catch((err) => {
-          console.error(err);
-          toast.error("Échec de la modification de votre suivi d'épisode", {
-            description: err.message || "Une erreur inattendue s'est produite",
-          });
-        })
+        .catch((err) => notify.error('episode_entry_update', err))
         .finally(() => onEpisodeUpdatingChange(episode.id, false));
     }) ?? []);
   };
@@ -125,12 +120,7 @@ export default function SeasonCard({
               onUpdatingChange(true);
 
               updateSeasonEpisodesEntries(value)
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec de la modification de votre suivi d'épisodes", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                })
+                .catch((err) => notify.error('episodes_entry_update', err))
                 .finally(() => onUpdatingChange(false));
             }}
             loading={updating}

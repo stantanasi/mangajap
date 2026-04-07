@@ -1,7 +1,7 @@
 import { ComponentProps, useEffect, useState } from 'react';
-import { toast } from 'sonner';
 import { AnimeEntry, MangaEntry, User } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import notify from '../../../utils/notify';
 import LibraryScreen from '../LibraryScreen';
 
 export const useLibrary = (params: ComponentProps<typeof LibraryScreen>['route']['params']) => {
@@ -89,12 +89,7 @@ export const useLibrary = (params: ComponentProps<typeof LibraryScreen>['route']
 
     setIsLoading(true);
     prepare()
-      .catch((err) => {
-        console.error(err);
-        toast.error("Échec de la récupération des données", {
-          description: err.message || "Une erreur inattendue s'est produite",
-        });
-      })
+      .catch((err) => notify.error('library_load', err))
       .finally(() => setIsLoading(false));
   }, [params]);
 

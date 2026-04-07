@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Modal, Pressable, View } from 'react-native';
-import { toast } from 'sonner';
 import SearchBar from '../../../components/atoms/SearchBar';
 import PeopleCard from '../../../components/molecules/PeopleCard';
 import { People } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import notify from '../../../utils/notify';
 
 type Props = {
   onSelect: (people: People) => void;
   onRequestClose: () => void;
   visible: boolean;
-}
+};
 
 export default function SelectPeopleModal({ onSelect, onRequestClose, visible }: Props) {
   const dispatch = useAppDispatch();
@@ -62,12 +62,7 @@ export default function SelectPeopleModal({ onSelect, onRequestClose, visible }:
                   dispatch(People.redux.actions.setMany(peoples));
                   setPeopleIds(peoples.map((people) => people.id));
                 })
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec du chargement des résultats", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                });
+                .catch((err) => notify.error('search_people_load', err));
             }}
             delay={500}
             style={{

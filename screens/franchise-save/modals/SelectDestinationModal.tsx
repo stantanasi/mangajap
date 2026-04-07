@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Modal, Pressable, View } from 'react-native';
-import { toast } from 'sonner';
 import SearchBar from '../../../components/atoms/SearchBar';
 import TabBar from '../../../components/atoms/TabBar';
 import AnimeCard from '../../../components/molecules/AnimeCard';
 import MangaCard from '../../../components/molecules/MangaCard';
 import { Anime, Manga } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
+import notify from '../../../utils/notify';
 
 type Props = {
   onSelect: (destination: Anime | Manga) => void;
@@ -79,12 +79,7 @@ export default function SelectDestinationModal({ onSelect, onRequestClose, visib
                   setAnimeIds(animes.map((anime) => anime.id));
                   setMangaIds(mangas.map((manga) => manga.id));
                 })
-                .catch((err) => {
-                  console.error(err);
-                  toast.error("Échec du chargement des résultats", {
-                    description: err.message || "Une erreur inattendue s'est produite",
-                  });
-                });
+                .catch((err) => notify.error('search_load', err));
             }}
             delay={500}
             style={{
