@@ -13,6 +13,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      "./plugins/withDisableAndroidSigning.js"
+    ],
     "ios": {
       "supportsTablet": true
     },
