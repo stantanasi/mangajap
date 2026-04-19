@@ -11,9 +11,13 @@ export const usePeople = (params: ComponentProps<typeof PeopleScreen>['route']['
   const people = useAppSelector((state) => {
     return People.redux.selectors.selectById(state, params.id, {
       include: {
-        staff: {
+        'anime-staff': {
           include: {
             anime: true,
+          },
+        },
+        'manga-staff': {
+          include: {
             manga: true,
           },
         },
@@ -25,8 +29,10 @@ export const usePeople = (params: ComponentProps<typeof PeopleScreen>['route']['
     const prepare = async () => {
       const people = await People.findById(params.id)
         .include({
-          staff: {
+          'anime-staff': {
             anime: true,
+          },
+          'manga-staff': {
             manga: true,
           },
         });
