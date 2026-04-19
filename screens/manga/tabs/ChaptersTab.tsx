@@ -229,5 +229,7 @@ export default function ChaptersTab({ isLoading, manga, style }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
 });

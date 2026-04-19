@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import BaseHeader from '../../../components/molecules/Header';
+import Tabs from '../../../components/organisms/Tabs';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
@@ -174,14 +175,18 @@ export default function Header({
           ) : null}
         </View>
       ) : null}
+
+      <Tabs.Bar
+        style={{
+          marginTop: 16,
+        }}
+      />
     </BaseHeader>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingBottom: 16,
-  },
+  container: {},
   avatar: {
     width: 100,
     height: 100,

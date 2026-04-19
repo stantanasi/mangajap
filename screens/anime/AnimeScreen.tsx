@@ -1,9 +1,10 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
+import Tabs from '../../components/organisms/Tabs';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import AddAnimeButton from './components/AddAnimeButton';
@@ -21,7 +22,6 @@ export default function AnimeScreen({ route }: Props) {
   const { isOffline } = useApp();
   const { user } = useAuth();
   const { isLoading, anime } = useAnime(route.params);
-  const [selectedTab, setSelectedTab] = useState<'about' | 'episodes'>('about');
 
   useEffect(() => {
     if (!anime) return;
@@ -39,34 +39,28 @@ export default function AnimeScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header
-        isLoading={isLoading}
-        anime={anime}
-        tabs={[
-          { key: 'about', title: 'À propos' },
-          { key: 'episodes', title: 'Épisodes' },
-        ]}
-        selectedTab={selectedTab}
-        onTabSelect={(tab) => setSelectedTab(tab)}
-      />
+      <Tabs.Container
+        header={() => (
+          <Header
+            isLoading={isLoading}
+            anime={anime}
+          />
+        )}
+      >
+        <Tabs.Tab name="À propos">
+          <AboutTab
+            isLoading={isLoading}
+            anime={anime}
+          />
+        </Tabs.Tab>
 
-      <AboutTab
-        isLoading={isLoading}
-        anime={anime}
-        style={{
-          display: selectedTab === 'about' ? 'flex' : 'none',
-          flex: 1,
-        }}
-      />
-
-      <EpisodesTab
-        isLoading={isLoading}
-        anime={anime}
-        style={{
-          display: selectedTab === 'episodes' ? 'flex' : 'none',
-          flex: 1,
-        }}
-      />
+        <Tabs.Tab name="Épisodes">
+          <EpisodesTab
+            isLoading={isLoading}
+            anime={anime}
+          />
+        </Tabs.Tab>
+      </Tabs.Container>
 
       {!isOffline && !isLoading && user && !anime['anime-entry']?.isAdd ? (
         <AddAnimeButton

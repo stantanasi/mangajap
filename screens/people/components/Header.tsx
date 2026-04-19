@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Image, StyleSheet, Text } from 'react-native';
 import BaseHeader from '../../../components/molecules/Header';
+import Tabs from '../../../components/organisms/Tabs';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { People } from '../../../models';
@@ -35,6 +36,12 @@ export default function Header({ isLoading, people }: Props) {
       <Text style={styles.name}>
         {people.name}
       </Text>
+
+      <Tabs.Bar
+        style={{
+          marginTop: 16,
+        }}
+      />
     </BaseHeader>
   );
 }
@@ -42,7 +49,6 @@ export default function Header({ isLoading, people }: Props) {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
-    paddingBottom: 16,
   },
   image: {
     width: 180,
