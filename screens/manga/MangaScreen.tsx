@@ -1,9 +1,10 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
+import Tabs from '../../components/organisms/Tabs';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import AddMangaButton from './components/AddMangaButton';
@@ -21,7 +22,6 @@ export default function MangaScreen({ route }: Props) {
   const { isOffline } = useApp();
   const { user } = useAuth();
   const { isLoading, manga } = useManga(route.params);
-  const [selectedTab, setSelectedTab] = useState<'about' | 'chapters'>('about');
 
   useEffect(() => {
     if (!manga) return;
@@ -39,34 +39,28 @@ export default function MangaScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header
-        isLoading={isLoading}
-        manga={manga}
-        tabs={[
-          { key: 'about', title: 'À propos' },
-          { key: 'chapters', title: 'Chapitres' },
-        ]}
-        selectedTab={selectedTab}
-        onTabSelect={(tab) => setSelectedTab(tab)}
-      />
+      <Tabs.Container
+        header={() => (
+          <Header
+            isLoading={isLoading}
+            manga={manga}
+          />
+        )}
+      >
+        <Tabs.Tab name="À propos">
+          <AboutTab
+            isLoading={isLoading}
+            manga={manga}
+          />
+        </Tabs.Tab>
 
-      <AboutTab
-        isLoading={isLoading}
-        manga={manga}
-        style={{
-          display: selectedTab === 'about' ? 'flex' : 'none',
-          flex: 1,
-        }}
-      />
-
-      <ChaptersTab
-        isLoading={isLoading}
-        manga={manga}
-        style={{
-          display: selectedTab === 'chapters' ? 'flex' : 'none',
-          flex: 1,
-        }}
-      />
+        <Tabs.Tab name="Chapitres">
+          <ChaptersTab
+            isLoading={isLoading}
+            manga={manga}
+          />
+        </Tabs.Tab>
+      </Tabs.Container>
 
       {!isOffline && !isLoading && user && !manga['manga-entry']?.isAdd ? (
         <AddMangaButton

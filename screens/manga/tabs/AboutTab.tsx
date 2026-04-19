@@ -278,7 +278,9 @@ export default function AboutTab({ isLoading, manga, style }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
   poster: {
     width: 225,
     alignSelf: 'center',

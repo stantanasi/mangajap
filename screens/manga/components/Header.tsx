@@ -2,27 +2,21 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import ProgressBar from '../../../components/atoms/ProgressBar';
-import TabBar from '../../../components/atoms/TabBar';
 import BaseHeader from '../../../components/molecules/Header';
+import Tabs from '../../../components/organisms/Tabs';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Manga } from '../../../models';
 
-type Props<T extends string> = {
+type Props = {
   isLoading: boolean;
   manga: Manga;
-  tabs: React.ComponentProps<typeof TabBar<T>>['tabs'];
-  selectedTab: T;
-  onTabSelect: (tab: T) => void;
 };
 
-export default function Header<T extends string>({
+export default function Header({
   isLoading,
   manga,
-  tabs,
-  selectedTab,
-  onTabSelect,
-}: Props<T>) {
+}: Props) {
   const navigation = useNavigation();
   const { isOffline } = useApp();
   const { user } = useAuth();
@@ -42,11 +36,7 @@ export default function Header<T extends string>({
         progress={manga.progress}
       />
 
-      <TabBar
-        selected={selectedTab}
-        tabs={tabs}
-        onTabChange={(key) => onTabSelect(key)}
-      />
+      <Tabs.Bar />
     </BaseHeader>
   );
 }
