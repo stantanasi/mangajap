@@ -1,4 +1,4 @@
-name: Build & Deploy
+name: Deploy
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
-    name: Build & Deploy
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
 
     steps:
