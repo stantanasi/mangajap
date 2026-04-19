@@ -226,5 +226,7 @@ export default function EpisodesTab({ isLoading, anime, style }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
 });
