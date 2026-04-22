@@ -1,8 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import BaseHeader from '../../../components/molecules/Header';
-import Tabs from '../../../components/organisms/Tabs';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
@@ -162,6 +160,8 @@ export default function Header({
           ) : null}
         </View>
       ) : null}
+
+      <View style={{ height: 16 }} />
     </View>
   );
 }

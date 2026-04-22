@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FlatList, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AnimeCard from '../../../components/molecules/AnimeCard';
+import Tabs from '../../../components/organisms/Tabs';
 import { User } from '../../../models';
 
 type Props = {
@@ -15,7 +16,7 @@ export default function AnimeTab({ isLoading, user, style }: Props) {
   const navigation = useNavigation();
 
   return (
-    <View style={[styles.container, style]}>
+    <Tabs.ScrollView style={[styles.container, style]}>
       <Text
         style={{
           fontSize: 20,
@@ -75,6 +76,7 @@ export default function AnimeTab({ isLoading, user, style }: Props) {
         ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
         ListFooterComponent={() => <View style={{ width: 16 }} />}
+        style={{ flexGrow: 0 }}
       />
 
       <Pressable
@@ -121,6 +123,7 @@ export default function AnimeTab({ isLoading, user, style }: Props) {
         ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
         ListFooterComponent={() => <View style={{ width: 16 }} />}
+        style={{ flexGrow: 0 }}
       />
 
       {(user['anime-favorites']?.length ?? 0) > 0 ? (
@@ -169,10 +172,11 @@ export default function AnimeTab({ isLoading, user, style }: Props) {
             ItemSeparatorComponent={() => <View style={{ width: 6 }} />}
             ListHeaderComponent={() => <View style={{ width: 16 }} />}
             ListFooterComponent={() => <View style={{ width: 16 }} />}
+            style={{ flexGrow: 0 }}
           />
         </>
       ) : null}
-    </View>
+    </Tabs.ScrollView>
   );
 }
 

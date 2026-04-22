@@ -1,6 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
@@ -59,50 +59,42 @@ export default function ProfileScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{
-          paddingBottom: 16,
-        }}
+      <Tabs.Container
+        title={user.name}
+        canGoBack={!!route.params}
+        menuItems={user.id === authenticatedUser?.id ? [
+          {
+            icon: 'edit',
+            onPress: () => navigation.navigate('ProfileEdit', { id: user.id }),
+          },
+          {
+            icon: 'settings',
+            onPress: () => navigation.navigate('Settings'),
+          },
+        ] : []}
+        CollapsibleComponent={() => (
+          <Header
+            isLoading={isLoading}
+            route={route}
+            user={user}
+            followingUser={followingUser}
+            followedByUser={followedByUser}
+          />
+        )}
       >
-        <Tabs.Container
-          title={user.name}
-          canGoBack={!!route.params}
-          menuItems={user.id === authenticatedUser?.id ? [
-            {
-              icon: 'edit',
-              onPress: () => navigation.navigate('ProfileEdit', { id: user.id }),
-            },
-            {
-              icon: 'settings',
-              onPress: () => navigation.navigate('Settings'),
-            },
-          ] : []}
-          TabBarComponent={(props) => (<>
-            <Header
-              isLoading={isLoading}
-              route={route}
-              user={user}
-              followingUser={followingUser}
-              followedByUser={followedByUser}
-            />
-            <Tabs.Bar {...props} />
-          </>)}
-        >
-          <Tabs.Tab name="Anime">
-            <AnimeTab
-              isLoading={isLoading}
-              user={user}
-            />
-          </Tabs.Tab>
-
-          <Tabs.Tab name="Manga">
-            <MangaTab
-              isLoading={isLoading}
-              user={user}
-            />
-          </Tabs.Tab>
-        </Tabs.Container>
-      </ScrollView>
+        <Tabs.Tab name="Anime">
+          <AnimeTab
+            isLoading={isLoading}
+            user={user}
+          />
+        </Tabs.Tab>
+        <Tabs.Tab name="Manga">
+          <MangaTab
+            isLoading={isLoading}
+            user={user}
+          />
+        </Tabs.Tab>
+      </Tabs.Container>
 
       <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
