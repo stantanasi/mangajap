@@ -1,14 +1,14 @@
-import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import { Pressable, StyleProp, Text, View, ViewStyle } from 'react-native';
 
 const TabContext = createContext<{
-  tabs: string[];
-  selected: number;
-  setSelected: (index: number) => void;
+  tabs: { name: string; label: string; }[];
+  focusedTab: string;
+  onTabChange: (name: string) => void;
 }>({
   tabs: [],
-  selected: 0,
-  setSelected: () => { },
+  focusedTab: '',
+  onTabChange: () => { },
 });
 
 
@@ -18,36 +18,42 @@ const Container = ({ children, header, style }: {
   style?: StyleProp<ViewStyle>;
 }) => {
   const tabs = useMemo(() => {
-    if (Array.isArray(children)) {
-      return children.map((child) => child);
-    } else if (children) {
-      return [children];
-    } else {
-      return [];
-    }
+    const tabs = Array.isArray(children) ? children
+      : children ? [children]
+        : [];
+
+    return tabs.map((tab) => {
+      const props: React.ComponentProps<typeof Tab> = tab.props;
+      return {
+        name: props.name,
+        label: props.label ?? props.name,
+        children: tab,
+      };
+    });
   }, [children]);
-  const [selected, setSelected] = useState(0);
+
+  const [focusedTab, setFocusedTab] = useState(tabs[0]?.name);
 
   return (
     <TabContext.Provider
       value={{
-        tabs: tabs.map((tab) => tab.props.name),
-        selected: selected,
-        setSelected: setSelected,
+        tabs,
+        focusedTab,
+        onTabChange: setFocusedTab,
       }}
     >
       <View style={[{ flex: 1 }, style]}>
         {header ? header() : <Bar />}
 
-        {tabs.map((tab, index) => (
+        {tabs.map((tab) => (
           <View
-            key={tab.props.name}
+            key={tab.name}
             style={{
-              display: selected === index ? 'flex' : 'none',
+              display: tab.name === focusedTab ? 'flex' : 'none',
               flex: 1,
             }}
           >
-            {tab}
+            {tab.children}
           </View>
         ))}
       </View>
@@ -59,14 +65,18 @@ const Container = ({ children, header, style }: {
 const Bar = ({ style }: {
   style?: StyleProp<ViewStyle>;
 }) => {
-  const { tabs, selected, setSelected } = useContext(TabContext);
+  const { tabs, focusedTab, onTabChange } = useContext(TabContext);
 
   return (
-    <View style={[{ flexDirection: 'row' }, style]}>
-      {tabs.map((tab, index) => (
+    <View
+      style={[{
+        flexDirection: 'row',
+      }, style]}
+    >
+      {tabs.map((tab) => (
         <Pressable
-          key={tab}
-          onPress={() => setSelected(index)}
+          key={tab.name}
+          onPress={() => onTabChange(tab.name)}
           style={{
             alignItems: 'center',
             flex: 1,
@@ -74,20 +84,20 @@ const Bar = ({ style }: {
         >
           <Text
             style={{
-              color: selected === index ? '#000' : '#888',
+              color: tab.name === focusedTab ? '#000' : '#888',
               fontWeight: 'bold',
               padding: 10,
               textTransform: 'uppercase',
             }}
           >
-            {tab}
+            {tab.label}
           </Text>
 
           <View
             style={{
               width: '100%',
               height: 4,
-              backgroundColor: selected === index ? '#d40e0e' : '',
+              backgroundColor: tab.name === focusedTab ? '#d40e0e' : 'transparent',
             }}
           />
         </Pressable>
@@ -97,15 +107,11 @@ const Bar = ({ style }: {
 };
 
 
-const Tab = ({ children, name, style }: PropsWithChildren & {
+const Tab = ({ children }: React.PropsWithChildren & {
   name: string;
-  style?: StyleProp<ViewStyle>;
+  label?: string;
 }) => {
-  return (
-    <View style={[{ flex: 1 }, style]}>
-      {children}
-    </View>
-  );
+  return <>{children}</>;
 };
 
 
