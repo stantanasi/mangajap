@@ -1,6 +1,6 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
@@ -46,15 +46,14 @@ export default function PeopleScreen({ route }: Props) {
             onPress: () => navigation.navigate('PeopleUpdate', { peopleId: people.id }),
           },
         ] : []}
-        TabBarComponent={(props) => (<>
+        CollapsibleComponent={() => (
           <Header
             people={people}
           />
-          <Tabs.Bar {...props} />
-        </>)}
+        )}
       >
         <Tabs.Tab name="Anime">
-          <FlatList
+          <Tabs.FlatList
             data={people['anime-staff']?.map((staff) => {
               if (staff.anime) {
                 return staff.anime;
@@ -74,13 +73,14 @@ export default function PeopleScreen({ route }: Props) {
                 }}
               />
             )}
+            ListHeaderComponent={() => <View style={{ height: 16 }} />}
             ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
             ListFooterComponent={() => <View style={{ height: 16 }} />}
           />
         </Tabs.Tab>
 
         <Tabs.Tab name="Manga">
-          <FlatList
+          <Tabs.FlatList
             data={people['manga-staff']?.map((staff) => {
               if (staff.manga) {
                 return staff.manga;
@@ -100,6 +100,7 @@ export default function PeopleScreen({ route }: Props) {
                 }}
               />
             )}
+            ListHeaderComponent={() => <View style={{ height: 16 }} />}
             ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
             ListFooterComponent={() => <View style={{ height: 16 }} />}
           />
