@@ -15,7 +15,7 @@ const useContainerContext = () => {
 };
 
 
-const Container = ({
+function Container({
   children,
   title,
   canGoBack = true,
@@ -28,7 +28,7 @@ const Container = ({
   TopBarComponent?: React.ComponentType<React.ComponentProps<typeof TopBar>>;
   TabBarComponent?: React.ComponentType<React.ComponentProps<typeof Bar>>;
   style?: StyleProp<ViewStyle>;
-}) => {
+}) {
   const tabs = useMemo(() => {
     const tabs = Array.isArray(children) ? children
       : children ? [children]
@@ -84,12 +84,12 @@ const Container = ({
 };
 
 
-const Bar = ({ tabs, focusedTab, onTabChange, style }: {
+function Bar({ tabs, focusedTab, onTabChange, style }: {
   tabs: { name: string; label: string; }[];
   focusedTab: string;
   onTabChange: (name: string) => void;
   style?: StyleProp<ViewStyle>;
-}) => {
+}) {
   return (
     <View
       style={[{
@@ -130,10 +130,10 @@ const Bar = ({ tabs, focusedTab, onTabChange, style }: {
 };
 
 
-const Tab = ({ children }: React.PropsWithChildren & {
+function Tab({ children }: React.PropsWithChildren & {
   name: string;
   label?: string;
-}) => {
+}) {
   return <>{children}</>;
 };
 
