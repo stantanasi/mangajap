@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import Modal from '../../../components/atoms/Modal';
 import SearchBar from '../../../components/atoms/SearchBar';
 import AnimeCard from '../../../components/molecules/AnimeCard';
@@ -91,7 +91,7 @@ export default function SelectDestinationModal({ onSelect, onRequestClose, visib
               style={{ margin: 16 }}
             />
           ) : (
-            <FlatList
+            <Tabs.FlatList
               data={animes}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
@@ -123,7 +123,7 @@ export default function SelectDestinationModal({ onSelect, onRequestClose, visib
               style={{ margin: 16 }}
             />
           ) : (
-            <FlatList
+            <Tabs.FlatList
               data={mangas}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
