@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo, useState } from 'react';
-import { SectionList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import EpisodeCard from '../../../components/molecules/EpisodeCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import SeasonCard from '../../../components/molecules/SeasonCard';
+import Tabs from '../../../components/organisms/Tabs';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Anime, Episode, Season } from '../../../models';
@@ -60,7 +61,7 @@ export default function EpisodesTab({ isLoading, anime, style }: Props) {
 
   return (
     <View style={[styles.container, style]}>
-      <SectionList
+      <Tabs.SectionList
         sections={sections.map((section) => ({
           ...section,
           data: expandedSeasons[section.season.id] ? section.data : [],
