@@ -14,6 +14,16 @@ const useContainerContext = () => {
   return context;
 };
 
+interface ITabContext {
+  name: string;
+}
+const TabContext = createContext<ITabContext | undefined>(undefined);
+const useTabContext = () => {
+  const context = useContext(TabContext);
+  if (!context) throw new Error('useTabContext must be inside a Tabs.Tab');
+  return context;
+};
+
 
 function Container({
   children,
@@ -75,7 +85,13 @@ function Container({
               flex: 1,
             }}
           >
-            {tab.children}
+            <TabContext.Provider
+              value={{
+                name: tab.name,
+              }}
+            >
+              {tab.children}
+            </TabContext.Provider>
           </View>
         ))}
       </View>
