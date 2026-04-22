@@ -65,7 +65,19 @@ export default function ProfileScreen({ route }: Props) {
         }}
       >
         <Tabs.Container
-          header={() => (
+          title={user.name}
+          canGoBack={!!route.params}
+          menuItems={user.id === authenticatedUser?.id ? [
+            {
+              icon: 'edit',
+              onPress: () => navigation.navigate('ProfileEdit', { id: user.id }),
+            },
+            {
+              icon: 'settings',
+              onPress: () => navigation.navigate('Settings'),
+            },
+          ] : []}
+          TabBarComponent={(props) => (<>
             <Header
               isLoading={isLoading}
               route={route}
@@ -73,7 +85,8 @@ export default function ProfileScreen({ route }: Props) {
               followingUser={followingUser}
               followedByUser={followedByUser}
             />
-          )}
+            <Tabs.Bar {...props} />
+          </>)}
         >
           <Tabs.Tab name="Anime">
             <AnimeTab

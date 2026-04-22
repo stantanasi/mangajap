@@ -57,20 +57,7 @@ export default function Header({
   };
 
   return (
-    <BaseHeader
-      canGoBack={!!route.params}
-      menuItems={user.id === authenticatedUser?.id ? [
-        {
-          icon: 'edit',
-          onPress: () => navigation.navigate('ProfileEdit', { id: user.id }),
-        },
-        {
-          icon: 'settings',
-          onPress: () => navigation.navigate('Settings'),
-        },
-      ] : []}
-      style={[styles.container, style]}
-    >
+    <View style={[styles.container, style]}>
       <Image
         source={{ uri: user.avatar ?? undefined }}
         style={styles.avatar}
@@ -175,13 +162,7 @@ export default function Header({
           ) : null}
         </View>
       ) : null}
-
-      <Tabs.Bar
-        style={{
-          marginTop: 16,
-        }}
-      />
-    </BaseHeader>
+    </View>
   );
 }
 

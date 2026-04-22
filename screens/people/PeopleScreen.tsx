@@ -7,6 +7,8 @@ import AnimeCard from '../../components/molecules/AnimeCard';
 import MangaCard from '../../components/molecules/MangaCard';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
 import Tabs from '../../components/organisms/Tabs';
+import { useApp } from '../../contexts/AppContext';
+import { useAuth } from '../../contexts/AuthContext';
 import Header from './components/Header';
 import { usePeople } from './hooks/usePeople';
 
@@ -16,6 +18,8 @@ type Props = StaticScreenProps<{
 
 export default function PeopleScreen({ route }: Props) {
   const navigation = useNavigation();
+  const { isOffline } = useApp();
+  const { user } = useAuth();
   const { isLoading, people } = usePeople(route.params);
 
   useEffect(() => {
@@ -35,12 +39,19 @@ export default function PeopleScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Tabs.Container
-        header={() => (
+        title={people.name}
+        menuItems={!isOffline && !isLoading && user ? [
+          {
+            icon: 'edit',
+            onPress: () => navigation.navigate('PeopleUpdate', { peopleId: people.id }),
+          },
+        ] : []}
+        TabBarComponent={(props) => (<>
           <Header
-            isLoading={isLoading}
             people={people}
           />
-        )}
+          <Tabs.Bar {...props} />
+        </>)}
       >
         <Tabs.Tab name="Anime">
           <FlatList

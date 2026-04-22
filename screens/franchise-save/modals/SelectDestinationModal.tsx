@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import Modal from '../../../components/atoms/Modal';
 import SearchBar from '../../../components/atoms/SearchBar';
 import AnimeCard from '../../../components/molecules/AnimeCard';
@@ -33,54 +33,54 @@ export default function SelectDestinationModal({ onSelect, onRequestClose, visib
     setMangaIds([]);
   }, [visible]);
 
+  const TopBarComponent = useCallback(() => {
+    return (
+      <SearchBar
+        onChangeText={() => {
+          setAnimeIds([]);
+          setMangaIds([]);
+        }}
+        onSearch={(query) => {
+          setAnimeIds([]);
+          setMangaIds([]);
+
+          setIsLoading(true);
+          Promise.all([
+            Anime.find({ query: query }),
+            Manga.find({ query: query }),
+          ])
+            .then(([animes, mangas]) => {
+              dispatch(Anime.redux.actions.setMany(animes));
+              dispatch(Manga.redux.actions.setMany(mangas));
+
+              setAnimeIds(animes.map((anime) => anime.id));
+              setMangaIds(mangas.map((manga) => manga.id));
+            })
+            .catch((err) => notify.error('search_load', err))
+            .finally(() => setIsLoading(false));
+        }}
+        delay={500}
+        style={{
+          backgroundColor: undefined,
+          borderColor: '#ccc',
+          borderRadius: 4,
+          borderWidth: 1,
+          marginHorizontal: 16,
+          marginTop: 16,
+          paddingHorizontal: 10,
+        }}
+      />
+    );
+  }, []);
+
   return (
     <Modal
       onRequestClose={onRequestClose}
       visible={visible}
-      style={{ height: '90%' }}
+      style={styles.container}
     >
       <Tabs.Container
-        header={() => (
-          <View>
-            <SearchBar
-              onChangeText={() => {
-                setAnimeIds([]);
-                setMangaIds([]);
-              }}
-              onSearch={(query) => {
-                setAnimeIds([]);
-                setMangaIds([]);
-
-                setIsLoading(true);
-                Promise.all([
-                  Anime.find({ query: query }),
-                  Manga.find({ query: query }),
-                ])
-                  .then(([animes, mangas]) => {
-                    dispatch(Anime.redux.actions.setMany(animes));
-                    dispatch(Manga.redux.actions.setMany(mangas));
-
-                    setAnimeIds(animes.map((anime) => anime.id));
-                    setMangaIds(mangas.map((manga) => manga.id));
-                  })
-                  .catch((err) => notify.error('search_load', err))
-                  .finally(() => setIsLoading(false));
-              }}
-              delay={500}
-              style={{
-                backgroundColor: undefined,
-                borderColor: '#ccc',
-                borderRadius: 4,
-                borderWidth: 1,
-                marginHorizontal: 16,
-                marginTop: 16,
-                paddingHorizontal: 10,
-              }}
-            />
-
-            <Tabs.Bar />
-          </View>
-        )}
+        TopBarComponent={TopBarComponent}
       >
         <Tabs.Tab name="Anime">
           {isLoading ? (
@@ -149,3 +149,9 @@ export default function SelectDestinationModal({ onSelect, onRequestClose, visib
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    height: '90%',
+  },
+});

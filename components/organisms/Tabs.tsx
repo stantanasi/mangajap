@@ -1,20 +1,29 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useMemo, useState } from 'react';
 import { Pressable, StyleProp, Text, View, ViewStyle } from 'react-native';
+import TopBar from '../atoms/TopBar';
+import Header from '../molecules/Header';
 
 const TabContext = createContext<{
   tabs: { name: string; label: string; }[];
   focusedTab: string;
-  onTabChange: (name: string) => void;
 }>({
   tabs: [],
   focusedTab: '',
-  onTabChange: () => { },
 });
 
 
-const Container = ({ children, header, style }: {
+const Container = ({
+  children,
+  title,
+  canGoBack = true,
+  menuItems = [],
+  TopBarComponent = TopBar,
+  TabBarComponent = Bar,
+  style,
+}: React.ComponentProps<typeof TopBar> & {
   children?: React.ReactElement<typeof Tab>[] | React.ReactElement<typeof Tab>;
-  header?: () => React.ReactElement | null;
+  TopBarComponent?: React.ComponentType<React.ComponentProps<typeof TopBar>>;
+  TabBarComponent?: React.ComponentType<React.ComponentProps<typeof Bar>>;
   style?: StyleProp<ViewStyle>;
 }) => {
   const tabs = useMemo(() => {
@@ -39,11 +48,21 @@ const Container = ({ children, header, style }: {
       value={{
         tabs,
         focusedTab,
-        onTabChange: setFocusedTab,
       }}
     >
       <View style={[{ flex: 1 }, style]}>
-        {header ? header() : <Bar />}
+        <Header
+          title={title}
+          canGoBack={canGoBack}
+          menuItems={menuItems}
+          TopBarComponent={(props) => <TopBarComponent {...props} />}
+        >
+          <TabBarComponent
+            tabs={tabs}
+            focusedTab={focusedTab}
+            onTabChange={setFocusedTab}
+          />
+        </Header>
 
         {tabs.map((tab) => (
           <View
@@ -62,11 +81,12 @@ const Container = ({ children, header, style }: {
 };
 
 
-const Bar = ({ style }: {
+const Bar = ({ tabs, focusedTab, onTabChange, style }: {
+  tabs: { name: string; label: string; }[];
+  focusedTab: string;
+  onTabChange: (name: string) => void;
   style?: StyleProp<ViewStyle>;
 }) => {
-  const { tabs, focusedTab, onTabChange } = useContext(TabContext);
-
   return (
     <View
       style={[{
