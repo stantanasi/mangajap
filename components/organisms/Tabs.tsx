@@ -1,15 +1,18 @@
-import React, { createContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import { Pressable, StyleProp, Text, View, ViewStyle } from 'react-native';
 import TopBar from '../atoms/TopBar';
 import Header from '../molecules/Header';
 
-const TabContext = createContext<{
+interface IContainerContext {
   tabs: { name: string; label: string; }[];
   focusedTab: string;
-}>({
-  tabs: [],
-  focusedTab: '',
-});
+}
+const ContainerContext = createContext<IContainerContext | undefined>(undefined);
+const useContainerContext = () => {
+  const context = useContext(ContainerContext);
+  if (!context) throw new Error('useContainerContext must be inside a Tabs.Container');
+  return context;
+};
 
 
 const Container = ({
@@ -44,7 +47,7 @@ const Container = ({
   const [focusedTab, setFocusedTab] = useState(tabs[0]?.name);
 
   return (
-    <TabContext.Provider
+    <ContainerContext.Provider
       value={{
         tabs,
         focusedTab,
@@ -76,7 +79,7 @@ const Container = ({
           </View>
         ))}
       </View>
-    </TabContext.Provider>
+    </ContainerContext.Provider>
   );
 };
 
