@@ -2,13 +2,13 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ProgressBar from '../../components/atoms/ProgressBar';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
 import Tabs from '../../components/organisms/Tabs';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import AddMangaButton from './components/AddMangaButton';
-import Header from './components/Header';
 import { useManga } from './hooks/useManga';
 import AboutTab from './tabs/AboutTab';
 import ChaptersTab from './tabs/ChaptersTab';
@@ -40,12 +40,17 @@ export default function MangaScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Tabs.Container
-        header={() => (
-          <Header
-            isLoading={isLoading}
-            manga={manga}
-          />
-        )}
+        title={manga.title}
+        menuItems={!isOffline && !isLoading && user ? [
+          {
+            icon: 'edit',
+            onPress: () => navigation.navigate('MangaUpdate', { id: manga.id }),
+          },
+        ] : []}
+        TabBarComponent={(props) => (<>
+          <ProgressBar progress={manga.progress} />
+          <Tabs.Bar {...props} />
+        </>)}
       >
         <Tabs.Tab name="À propos">
           <AboutTab

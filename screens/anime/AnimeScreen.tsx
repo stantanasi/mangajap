@@ -2,13 +2,13 @@ import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ProgressBar from '../../components/atoms/ProgressBar';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
 import Tabs from '../../components/organisms/Tabs';
 import { useApp } from '../../contexts/AppContext';
 import { useAuth } from '../../contexts/AuthContext';
 import AddAnimeButton from './components/AddAnimeButton';
-import Header from './components/Header';
 import { useAnime } from './hooks/useAnime';
 import AboutTab from './tabs/AboutTab';
 import EpisodesTab from './tabs/EpisodesTab';
@@ -40,12 +40,17 @@ export default function AnimeScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Tabs.Container
-        header={() => (
-          <Header
-            isLoading={isLoading}
-            anime={anime}
-          />
-        )}
+        title={anime.title}
+        menuItems={!isOffline && !isLoading && user ? [
+          {
+            icon: 'edit',
+            onPress: () => navigation.navigate('AnimeUpdate', { id: anime.id }),
+          },
+        ] : []}
+        TabBarComponent={(props) => (<>
+          <ProgressBar progress={anime.progress} />
+          <Tabs.Bar {...props} />
+        </>)}
       >
         <Tabs.Tab name="À propos">
           <AboutTab

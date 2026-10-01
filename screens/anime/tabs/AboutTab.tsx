@@ -1,11 +1,12 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { FlatList, Pressable, ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { FlatList, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import AnimeCard from '../../../components/molecules/AnimeCard';
 import MangaCard from '../../../components/molecules/MangaCard';
 import PeopleCard from '../../../components/molecules/PeopleCard';
+import Tabs from '../../../components/organisms/Tabs';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Anime, Manga } from '../../../models';
@@ -25,12 +26,7 @@ export default function AboutTab({ isLoading, anime, style }: Props) {
   const [franchisesEditable, setFranchisesEditable] = useState(false);
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        paddingVertical: 16,
-      }}
-      style={[styles.container, style]}
-    >
+    <Tabs.ScrollView style={[styles.container, style]}>
       <AutoHeightImage
         source={{ uri: anime.poster ?? undefined }}
         style={styles.poster}
@@ -270,10 +266,11 @@ export default function AboutTab({ isLoading, anime, style }: Props) {
           </Pressable>
         ) : null}
         style={{
+          marginBottom: 16,
           marginTop: 12,
         }}
       />
-    </ScrollView>
+    </Tabs.ScrollView>
   );
 }
 
@@ -284,6 +281,7 @@ const styles = StyleSheet.create({
   poster: {
     width: 225,
     alignSelf: 'center',
+    marginTop: 16,
   },
   title: {
     fontSize: 24,

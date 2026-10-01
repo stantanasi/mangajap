@@ -1,33 +1,15 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { Image, StyleSheet, Text } from 'react-native';
-import BaseHeader from '../../../components/molecules/Header';
-import Tabs from '../../../components/organisms/Tabs';
-import { useApp } from '../../../contexts/AppContext';
-import { useAuth } from '../../../contexts/AuthContext';
+import { Image, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { People } from '../../../models';
 
 type Props = {
-  isLoading: boolean;
   people: People;
+  style?: StyleProp<ViewStyle>;
 };
 
-export default function Header({ isLoading, people }: Props) {
-  const navigation = useNavigation();
-  const { isOffline } = useApp();
-  const { user } = useAuth();
-
+export default function Header({ people, style }: Props) {
   return (
-    <BaseHeader
-      title={people.name}
-      menuItems={!isOffline && !isLoading && user ? [
-        {
-          icon: 'edit',
-          onPress: () => navigation.navigate('PeopleUpdate', { peopleId: people.id }),
-        },
-      ] : []}
-      style={styles.container}
-    >
+    <View style={[styles.container, style]}>
       <Image
         source={{ uri: people.portrait ?? undefined }}
         style={styles.image}
@@ -36,13 +18,7 @@ export default function Header({ isLoading, people }: Props) {
       <Text style={styles.name}>
         {people.name}
       </Text>
-
-      <Tabs.Bar
-        style={{
-          marginTop: 16,
-        }}
-      />
-    </BaseHeader>
+    </View>
   );
 }
 

@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo, useState } from 'react';
-import { SectionList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import ChapterCard from '../../../components/molecules/ChapterCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import VolumeCard from '../../../components/molecules/VolumeCard';
+import Tabs from '../../../components/organisms/Tabs';
 import { useApp } from '../../../contexts/AppContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Chapter, Manga, Volume } from '../../../models';
@@ -65,7 +66,7 @@ export default function ChaptersTab({ isLoading, manga, style }: Props) {
 
   return (
     <View style={[styles.container, style]}>
-      <SectionList
+      <Tabs.SectionList
         sections={sections.map((section) => {
           if (section.volume) {
             return {
