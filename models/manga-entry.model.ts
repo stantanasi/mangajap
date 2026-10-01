@@ -85,7 +85,9 @@ MangaEntry.register('manga-entries');
 export default MangaEntry;
 
 
-export const MangaEntryStatus = {
+export const MangaEntryStatus: Record<IMangaEntry['status'], string> & {
+  entries: () => [IMangaEntry['status'], string][];
+} = {
   reading: 'En cours de lecture',
   completed: 'Terminé',
   planned: 'Prévu',
@@ -97,6 +99,4 @@ export const MangaEntryStatus = {
       .filter(([key]) => key !== 'entries')
       .map(([key, value]) => ([key, value]) as [IMangaEntry['status'], string]);
   },
-} satisfies Record<IMangaEntry['status'], string> & {
-  entries: () => [IMangaEntry['status'], string][];
 };

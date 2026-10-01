@@ -149,7 +149,9 @@ Manga.register('manga');
 export default Manga;
 
 
-export const MangaType = {
+export const MangaType: Record<IManga['mangaType'], string> & {
+  entries: () => [IManga['mangaType'], string][];
+} = {
   bd: 'BD',
   comics: 'Comics',
   josei: 'Josei',
@@ -168,11 +170,11 @@ export const MangaType = {
       .filter(([key]) => key !== 'entries')
       .map(([key, value]) => ([key, value]) as [IManga['mangaType'], string]);
   },
-} satisfies Record<IManga['mangaType'], string> & {
-  entries: () => [IManga['mangaType'], string][];
 };
 
-export const MangaStatus = {
+export const MangaStatus: Record<IManga['status'], string> & {
+  entries: () => [IManga['status'], string][];
+} = {
   publishing: 'En cours',
   finished: 'Terminé',
 
@@ -181,6 +183,4 @@ export const MangaStatus = {
       .filter(([key]) => key !== 'entries')
       .map(([key, value]) => ([key, value]) as [IManga['status'], string]);
   },
-} satisfies Record<IManga['status'], string> & {
-  entries: () => [IManga['status'], string][];
 };

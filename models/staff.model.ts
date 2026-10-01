@@ -75,7 +75,9 @@ Staff.register('staff');
 export default Staff;
 
 
-export const StaffRole = {
+export const StaffRole: Record<IStaff['role'], string> & {
+  entries: () => [IStaff['role'], string][];
+} = {
   author: 'Scénariste',
   illustrator: 'Dessinateur',
   story_and_art: 'Créateur',
@@ -89,6 +91,4 @@ export const StaffRole = {
       .filter(([key]) => key !== 'entries')
       .map(([key, value]) => ([key, value]) as [IStaff['role'], string]);
   },
-} satisfies Record<IStaff['role'], string> & {
-  entries: () => [IStaff['role'], string][];
 };

@@ -119,7 +119,9 @@ User.register('users');
 export default User;
 
 
-export const UserGender = {
+export const UserGender: Record<NonNullable<IUser['gender']>, string> & {
+  entries: () => [NonNullable<IUser['gender']>, string][];
+} = {
   men: 'Homme',
   women: 'Femme',
   other: 'Autre',
@@ -129,6 +131,4 @@ export const UserGender = {
       .filter(([key]) => key !== 'entries')
       .map(([key, value]) => ([key, value]) as [NonNullable<IUser['gender']>, string]);
   },
-} satisfies Record<NonNullable<IUser['gender']>, string> & {
-  entries: () => [NonNullable<IUser['gender']>, string][];
 };

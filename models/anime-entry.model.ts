@@ -82,7 +82,9 @@ AnimeEntry.register('anime-entries');
 export default AnimeEntry;
 
 
-export const AnimeEntryStatus = {
+export const AnimeEntryStatus: Record<IAnimeEntry['status'], string> & {
+  entries: () => [IAnimeEntry['status'], string][];
+} = {
   watching: 'En cours de visionnage',
   completed: 'Terminé',
   planned: 'Prévu',
@@ -94,6 +96,4 @@ export const AnimeEntryStatus = {
       .filter(([key]) => key !== 'entries')
       .map(([key, value]) => ([key, value]) as [IAnimeEntry['status'], string]);
   },
-} satisfies Record<IAnimeEntry['status'], string> & {
-  entries: () => [IAnimeEntry['status'], string][];
 };

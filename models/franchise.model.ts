@@ -63,7 +63,9 @@ Franchise.register('franchises');
 export default Franchise;
 
 
-export const FranchiseRole = {
+export const FranchiseRole: Record<IFranchise['role'], string> & {
+  entries: () => [IFranchise['role'], string][];
+} = {
   adaptation: 'Adaptation',
   alternative_setting: 'Univers alternatif',
   alternative_version: 'Version alternative',
@@ -82,6 +84,4 @@ export const FranchiseRole = {
       .filter(([key]) => key !== 'entries')
       .map(([key, value]) => ([key, value]) as [IFranchise['role'], string]);
   },
-} satisfies Record<IFranchise['role'], string> & {
-  entries: () => [IFranchise['role'], string][];
 };
