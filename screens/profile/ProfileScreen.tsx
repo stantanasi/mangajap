@@ -60,7 +60,7 @@ export default function ProfileScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Tabs.Container
-        title={user.name}
+        title={user.pseudo}
         canGoBack={!!route.params}
         menuItems={user.id === authenticatedUser?.id ? [
           {
