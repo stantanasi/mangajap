@@ -47,6 +47,8 @@ const ERROR_MESSAGES = {
   volume_entry_update: "Échec de la modification de votre suivi de tome",
 
   image_upload: "Échec de l'importation de l'image",
+
+  user_delete: "Échec de la suppression du compte",
 };
 
 const notify = {
