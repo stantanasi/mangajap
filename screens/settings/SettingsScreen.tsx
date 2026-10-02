@@ -19,15 +19,12 @@ export default function SettingsScreen({ }: Props) {
 
   const sections: {
     title?: string;
-    data: ({
-      id: string;
-    } & React.ComponentProps<typeof SettingRow>)[];
+    data: React.ComponentProps<typeof SettingRow>[];
   }[] = [
       {
         title: 'Compte',
         data: [
           {
-            id: 'logout',
             label: 'Se déconnecter',
             icon: 'logout',
             danger: true,
@@ -41,8 +38,8 @@ export default function SettingsScreen({ }: Props) {
             },
           },
           {
-            id: 'delete-account',
-            label: 'Supprimer le compte',
+            label: 'Supprimer votre compte MangaJap',
+            subtitle: 'Vos données seront supprimées',
             icon: 'delete',
             danger: true,
             onPress: () => setShowDelete(true),
@@ -59,7 +56,7 @@ export default function SettingsScreen({ }: Props) {
 
       <SectionList
         sections={sections}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.label}
         renderSectionHeader={({ section }) => (
           <Text
             style={{
