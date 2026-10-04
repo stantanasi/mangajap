@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast } from './toast';
 
 const ERROR_MESSAGES = {
   auth_login: "Échec de la connexion",
