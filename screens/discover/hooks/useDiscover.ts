@@ -1,5 +1,5 @@
 import { ComponentProps, useEffect, useState } from 'react';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { Anime, Manga, People } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
@@ -7,7 +7,7 @@ import DiscoverScreen from '../DiscoverScreen';
 
 export const useDiscover = (params: ComponentProps<typeof DiscoverScreen>['route']['params']) => {
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
 
   const peoples = useAppSelector((state) => {

@@ -5,8 +5,8 @@ import EpisodeCard from '../../../components/molecules/EpisodeCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import SeasonCard from '../../../components/molecules/SeasonCard';
 import Tabs from '../../../components/organisms/Tabs';
-import { useApp } from '../../../contexts/AppContext';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAppContext } from '../../../contexts/AppContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { Anime, Episode, Season } from '../../../models';
 import EpisodeModal from '../modals/EpisodeModal';
 import MarkPreviousAsWatchedModal from '../modals/MarkPreviousAsWatchedModal';
@@ -20,8 +20,8 @@ type Props = {
 
 export default function EpisodesTab({ isLoading, anime, style }: Props) {
   const navigation = useNavigation();
-  const { isOffline } = useApp();
-  const { user } = useAuth();
+  const { isOffline } = useAppContext();
+  const { user } = useAuthContext();
   const [expandedSeasons, setExpandedSeasons] = useState<{ [seasonId: string]: boolean; }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean; }>({});
   const [selectedSeasonId, setSelectedSeasonId] = useState<string>();

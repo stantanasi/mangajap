@@ -11,7 +11,7 @@ import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import Header from '../../components/molecules/Header';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
-import { useApp } from '../../contexts/AppContext';
+import { useAppContext } from '../../contexts/AppContext';
 import { Chapter, Volume } from '../../models';
 import { IChapter } from '../../models/chapter.model';
 import { useAppDispatch } from '../../redux/store';
@@ -27,7 +27,7 @@ type Props = StaticScreenProps<{
 export default function ChapterSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isOffline } = useApp();
+  const { isOffline } = useAppContext();
   const { isLoading, chapter, volumes } = useChapterSave(route.params);
   const [form, setForm] = useState<Partial<Object<IChapter>> | undefined>(chapter?.toObject());
   const [isSaving, setIsSaving] = useState(false);

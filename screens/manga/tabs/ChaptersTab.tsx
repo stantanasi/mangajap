@@ -5,8 +5,8 @@ import ChapterCard from '../../../components/molecules/ChapterCard';
 import ExpandableFloatingActionButton from '../../../components/molecules/ExpandableFloatingActionButton';
 import VolumeCard from '../../../components/molecules/VolumeCard';
 import Tabs from '../../../components/organisms/Tabs';
-import { useApp } from '../../../contexts/AppContext';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAppContext } from '../../../contexts/AppContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { Chapter, Manga, Volume } from '../../../models';
 import ChapterModal from '../modals/ChapterModal';
 import MarkPreviousAsReadModal from '../modals/MarkPreviousAsReadModal';
@@ -20,8 +20,8 @@ type Props = {
 
 export default function ChaptersTab({ isLoading, manga, style }: Props) {
   const navigation = useNavigation();
-  const { isOffline } = useApp();
-  const { user } = useAuth();
+  const { isOffline } = useAppContext();
+  const { user } = useAuthContext();
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean; }>({});
   const [updating, setUpdating] = useState<{ [id: string]: boolean; }>({});
   const [selectedVolumeId, setSelectedVolumeId] = useState<string>();

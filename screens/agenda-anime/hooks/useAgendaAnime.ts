@@ -1,5 +1,5 @@
 import { ComponentProps, useEffect, useState } from 'react';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { AnimeEntry, User } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
@@ -7,7 +7,7 @@ import AgendaAnimeScreen from '../AgendaAnimeScreen';
 
 export const useAgendaAnime = (params: ComponentProps<typeof AgendaAnimeScreen>['route']['params']) => {
   const dispatch = useAppDispatch();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
 
   const animeLibrary = useAppSelector((state) => {

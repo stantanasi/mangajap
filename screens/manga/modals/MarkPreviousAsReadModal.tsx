@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Modal from '../../../components/atoms/Modal';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 import notify from '../../../utils/notify';
@@ -20,7 +20,7 @@ export default function MarkPreviousAsReadModal({
   visible,
 }: Props) {
   const dispatch = useAppDispatch();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   const markPreviousAsRead = async () => {
     if (!user) return;

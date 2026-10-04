@@ -1,12 +1,12 @@
 import { ComponentProps, useState } from 'react';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { Anime, Manga, People, User } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import SearchScreen from '../SearchScreen';
 
 export const useSearch = (params: ComponentProps<typeof SearchScreen>['route']['params']) => {
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuthContext();
   const [animeTab, setAnimeTab] = useState<{
     activeQuery: string;
     isLoading: boolean;

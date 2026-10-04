@@ -6,10 +6,7 @@ interface IAppContext {
   isOffline: boolean;
 }
 
-export const AppContext = createContext<IAppContext>({
-  isReady: false,
-  isOffline: true,
-});
+export const AppContext = createContext<IAppContext | undefined>(undefined);
 
 export default function AppProvider({ children }: PropsWithChildren) {
   const [isReady, setIsReady] = useState(false);
@@ -40,4 +37,8 @@ export default function AppProvider({ children }: PropsWithChildren) {
 }
 
 
-export const useApp = () => useContext(AppContext);
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (!context) throw new Error('useAppContext must be inside a AppProvider');
+  return context;
+};

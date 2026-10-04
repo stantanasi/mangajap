@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Modal from '../../../components/atoms/Modal';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { Episode, EpisodeEntry, Season, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 import notify from '../../../utils/notify';
@@ -20,7 +20,7 @@ export default function MarkPreviousAsWatchedModal({
   visible
 }: Props) {
   const dispatch = useAppDispatch();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   const markPreviousAsWatched = async () => {
     if (!user) return;

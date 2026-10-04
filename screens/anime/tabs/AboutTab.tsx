@@ -7,8 +7,8 @@ import AnimeCard from '../../../components/molecules/AnimeCard';
 import MangaCard from '../../../components/molecules/MangaCard';
 import PeopleCard from '../../../components/molecules/PeopleCard';
 import Tabs from '../../../components/organisms/Tabs';
-import { useApp } from '../../../contexts/AppContext';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAppContext } from '../../../contexts/AppContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { Anime, Manga } from '../../../models';
 import { AnimeType } from '../../../models/anime.model';
 
@@ -20,8 +20,8 @@ type Props = {
 
 export default function AboutTab({ isLoading, anime, style }: Props) {
   const navigation = useNavigation();
-  const { isOffline } = useApp();
-  const { user } = useAuth();
+  const { isOffline } = useAppContext();
+  const { user } = useAuthContext();
   const [staffEditable, setStaffEditable] = useState(false);
   const [franchisesEditable, setFranchisesEditable] = useState(false);
 

@@ -8,7 +8,7 @@ import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
 import Header from '../../components/molecules/Header';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
-import { useApp } from '../../contexts/AppContext';
+import { useAppContext } from '../../contexts/AppContext';
 import { Franchise } from '../../models';
 import { FranchiseRole, IFranchise } from '../../models/franchise.model';
 import { useAppDispatch } from '../../redux/store';
@@ -27,7 +27,7 @@ type Props = StaticScreenProps<{
 export default function FranchiseSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isOffline } = useApp();
+  const { isOffline } = useAppContext();
   const { isLoading, franchise } = useFranchiseSave(route.params);
   const [form, setForm] = useState<Partial<Object<IFranchise>> | undefined>(franchise?.toObject());
   const [isModalVisible, setIsModalVisible] = useState(false);

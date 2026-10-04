@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
 import Tabs from '../../components/organisms/Tabs';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuthContext } from '../../contexts/AuthContext';
 import Header from './components/Header';
 import { useProfile } from './hooks/useProfile';
 import LoginScreen from './screens/LoginScreen';
@@ -19,7 +19,7 @@ type Props = StaticScreenProps<{
 
 export default function ProfileScreen({ route }: Props) {
   const navigation = useNavigation();
-  const { user: authenticatedUser } = useAuth();
+  const { user: authenticatedUser } = useAuthContext();
   const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
   const { isLoading, user, followingUser, followedByUser } = useProfile(route.params);
 

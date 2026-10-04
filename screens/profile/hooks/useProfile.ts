@@ -1,5 +1,5 @@
 import { ComponentProps, useEffect, useState } from 'react';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
@@ -7,7 +7,7 @@ import ProfileScreen from '../ProfileScreen';
 
 export const useProfile = (params: ComponentProps<typeof ProfileScreen>['route']['params']) => {
   const dispatch = useAppDispatch();
-  const { user: authenticatedUser } = useAuth();
+  const { user: authenticatedUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
 
   const userId = params?.id ?? authenticatedUser?.id;

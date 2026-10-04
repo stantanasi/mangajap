@@ -8,16 +8,16 @@ import ExpandableFloatingActionButton from '../../components/molecules/Expandabl
 import MangaCard from '../../components/molecules/MangaCard';
 import PeopleCard from '../../components/molecules/PeopleCard';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
-import { useApp } from '../../contexts/AppContext';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAppContext } from '../../contexts/AppContext';
+import { useAuthContext } from '../../contexts/AuthContext';
 import { useDiscover } from './hooks/useDiscover';
 
 type Props = StaticScreenProps<undefined>;
 
 export default function DiscoverScreen({ route }: Props) {
   const navigation = useNavigation();
-  const { isOffline } = useApp();
-  const { user } = useAuth();
+  const { isOffline } = useAppContext();
+  const { user } = useAuthContext();
   const { isLoading, peoples, animes, mangas } = useDiscover(route.params);
 
   return (

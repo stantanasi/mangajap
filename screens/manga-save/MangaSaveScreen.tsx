@@ -10,7 +10,7 @@ import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import Header from '../../components/molecules/Header';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
-import { useApp } from '../../contexts/AppContext';
+import { useAppContext } from '../../contexts/AppContext';
 import { Manga } from '../../models';
 import { IManga, MangaStatus, MangaType } from '../../models/manga.model';
 import { useAppDispatch } from '../../redux/store';
@@ -24,7 +24,7 @@ type Props = StaticScreenProps<{
 export default function MangaSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isOffline } = useApp();
+  const { isOffline } = useAppContext();
   const { isLoading, manga, genres, themes } = useMangaSave(route.params);
   const [form, setForm] = useState<Partial<Object<IManga>> | undefined>(manga?.toObject());
   const [isSaving, setIsSaving] = useState(false);

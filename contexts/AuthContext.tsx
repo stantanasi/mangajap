@@ -17,14 +17,7 @@ interface IAuthContext {
   logout: () => Promise<void>;
 };
 
-export const AuthContext = createContext<IAuthContext>({
-  isReady: false,
-  isAuthenticated: false,
-  user: null,
-  register: async () => { },
-  login: async () => { },
-  logout: async () => { },
-});
+export const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 export default function AuthProvider({ children }: PropsWithChildren) {
   const dispatch = useAppDispatch();
@@ -91,4 +84,8 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 };
 
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuthContext = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error('useAuthContext must be inside a AuthProvider');
+  return context;
+};

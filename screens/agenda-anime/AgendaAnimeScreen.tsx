@@ -4,7 +4,7 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuthContext } from '../../contexts/AuthContext';
 import AnimeAgendaCard from './components/AnimeAgendaCard';
 import { useAgendaAnime } from './hooks/useAgendaAnime';
 
@@ -12,7 +12,7 @@ type Props = StaticScreenProps<undefined>;
 
 export default function AgendaAnimeScreen({ route }: Props) {
   const navigation = useNavigation();
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const { isLoading, animeLibrary } = useAgendaAnime(route.params);
 
   const animes = animeLibrary

@@ -8,7 +8,7 @@ import RefreshControl from '../../components/atoms/RefreshControl';
 import SelectInput from '../../components/atoms/SelectInput';
 import Header from '../../components/molecules/Header';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
-import { useApp } from '../../contexts/AppContext';
+import { useAppContext } from '../../contexts/AppContext';
 import { Staff } from '../../models';
 import { IStaff, StaffRole } from '../../models/staff.model';
 import { useAppDispatch } from '../../redux/store';
@@ -27,7 +27,7 @@ type Props = StaticScreenProps<{
 export default function StaffSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isOffline } = useApp();
+  const { isOffline } = useAppContext();
   const { isLoading, staff } = useStaffSave(route.params);
   const [form, setForm] = useState<Partial<Object<IStaff>> | undefined>(staff?.toObject());
   const [isModalVisible, setIsModalVisible] = useState(false);

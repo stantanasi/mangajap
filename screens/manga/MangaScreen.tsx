@@ -6,8 +6,8 @@ import ProgressBar from '../../components/atoms/ProgressBar';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
 import Tabs from '../../components/organisms/Tabs';
-import { useApp } from '../../contexts/AppContext';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAppContext } from '../../contexts/AppContext';
+import { useAuthContext } from '../../contexts/AuthContext';
 import AddMangaButton from './components/AddMangaButton';
 import { useManga } from './hooks/useManga';
 import AboutTab from './tabs/AboutTab';
@@ -19,8 +19,8 @@ type Props = StaticScreenProps<{
 
 export default function MangaScreen({ route }: Props) {
   const navigation = useNavigation();
-  const { isOffline } = useApp();
-  const { user } = useAuth();
+  const { isOffline } = useAppContext();
+  const { user } = useAuthContext();
   const { isLoading, manga } = useManga(route.params);
 
   useEffect(() => {

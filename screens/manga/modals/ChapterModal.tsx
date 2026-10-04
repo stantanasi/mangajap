@@ -6,8 +6,8 @@ import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import Checkbox from '../../../components/atoms/Checkbox';
 import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
-import { useApp } from '../../../contexts/AppContext';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAppContext } from '../../../contexts/AppContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { Chapter, ChapterEntry, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 import notify from '../../../utils/notify';
@@ -33,8 +33,8 @@ export default function ChapterModal({
 }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isOffline } = useApp();
-  const { user } = useAuth();
+  const { isOffline } = useAppContext();
+  const { user } = useAuthContext();
   const [readDatePickerVisible, setReadDatePickerVisible] = useState(false);
   const [isSavingReadDate, setIsSavingReadDate] = useState(false);
 

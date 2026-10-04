@@ -10,7 +10,7 @@ import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import Header from '../../components/molecules/Header';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
-import { useApp } from '../../contexts/AppContext';
+import { useAppContext } from '../../contexts/AppContext';
 import { Anime } from '../../models';
 import { AnimeStatus, AnimeType, IAnime } from '../../models/anime.model';
 import { useAppDispatch } from '../../redux/store';
@@ -24,7 +24,7 @@ type Props = StaticScreenProps<{
 export default function AnimeSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isOffline } = useApp();
+  const { isOffline } = useAppContext();
   const { isLoading, anime, genres, themes } = useAnimeSave(route.params);
   const [form, setForm] = useState<Partial<Object<IAnime>> | undefined>(anime?.toObject());
   const [isSaving, setIsSaving] = useState(false);

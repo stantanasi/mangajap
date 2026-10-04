@@ -1,8 +1,8 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { useApp } from '../../contexts/AppContext';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAppContext } from '../../contexts/AppContext';
+import { useAuthContext } from '../../contexts/AuthContext';
 import { Episode, EpisodeEntry, Season, User } from '../../models';
 import { useAppDispatch } from '../../redux/store';
 import notify from '../../utils/notify';
@@ -34,8 +34,8 @@ export default function SeasonCard({
   ...props
 }: Props) {
   const dispatch = useAppDispatch();
-  const { isOffline } = useApp();
-  const { user } = useAuth();
+  const { isOffline } = useAppContext();
+  const { user } = useAuthContext();
 
   const updateSeasonEpisodesEntries = async (add: boolean) => {
     if (!user) return;

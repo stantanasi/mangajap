@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import Header from '../../components/molecules/Header';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
-import { useApp } from '../../contexts/AppContext';
+import { useAppContext } from '../../contexts/AppContext';
 import { User } from '../../models';
 import { IUser } from '../../models/user.model';
 import { useAppDispatch } from '../../redux/store';
@@ -22,7 +22,7 @@ type Props = StaticScreenProps<{
 export default function ProfileEditScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isOffline } = useApp();
+  const { isOffline } = useAppContext();
   const { isLoading, user } = useProfileEdit(route.params);
   const [form, setForm] = useState<Partial<Object<IUser>> | undefined>(user?.toObject());
   const [isUpdating, setIsUpdating] = useState(false);

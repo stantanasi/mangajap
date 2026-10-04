@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { useApp } from '../../../contexts/AppContext';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAppContext } from '../../../contexts/AppContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 import notify from '../../../utils/notify';
@@ -26,8 +26,8 @@ export default function Header({
 }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isOffline } = useApp();
-  const { user: authenticatedUser } = useAuth();
+  const { isOffline } = useAppContext();
+  const { user: authenticatedUser } = useAuthContext();
   const [isFollowUpdating, setIsFollowUpdating] = useState(false);
 
   const updateFollow = async () => {

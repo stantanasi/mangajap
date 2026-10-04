@@ -4,7 +4,7 @@ import { SectionList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Alert from '../../components/atoms/Alert';
 import Header from '../../components/molecules/Header';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuthContext } from '../../contexts/AuthContext';
 import { User } from '../../models';
 import notify from '../../utils/notify';
 import SettingRow from './components/SettingRow';
@@ -13,7 +13,7 @@ type Props = StaticScreenProps<undefined>;
 
 export default function SettingsScreen({ }: Props) {
   const navigation = useNavigation();
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuthContext();
 
   const [showDelete, setShowDelete] = useState(false);
 

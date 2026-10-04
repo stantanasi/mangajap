@@ -10,7 +10,7 @@ import RefreshControl from '../../components/atoms/RefreshControl';
 import TextInput from '../../components/atoms/TextInput';
 import Header from '../../components/molecules/Header';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
-import { useApp } from '../../contexts/AppContext';
+import { useAppContext } from '../../contexts/AppContext';
 import { Volume } from '../../models';
 import { IVolume } from '../../models/volume.model';
 import { useAppDispatch } from '../../redux/store';
@@ -26,7 +26,7 @@ type Props = StaticScreenProps<{
 export default function VolumeSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isOffline } = useApp();
+  const { isOffline } = useAppContext();
   const { isLoading, volume } = useVolumeSave(route.params);
   const [form, setForm] = useState<Partial<Object<IVolume>> | undefined>(volume?.toObject());
   const [isSaving, setIsSaving] = useState(false);

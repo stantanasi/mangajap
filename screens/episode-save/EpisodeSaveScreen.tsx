@@ -11,7 +11,7 @@ import SelectInput from '../../components/atoms/SelectInput';
 import TextInput from '../../components/atoms/TextInput';
 import Header from '../../components/molecules/Header';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
-import { useApp } from '../../contexts/AppContext';
+import { useAppContext } from '../../contexts/AppContext';
 import { Episode, Season } from '../../models';
 import { IEpisode } from '../../models/episode.model';
 import { useAppDispatch } from '../../redux/store';
@@ -27,7 +27,7 @@ type Props = StaticScreenProps<{
 export default function EpisodeSaveScreen({ route }: Props) {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const { isOffline } = useApp();
+  const { isOffline } = useAppContext();
   const { isLoading, episode, seasons } = useEpisodeSave(route.params);
   const [form, setForm] = useState<Partial<Object<IEpisode>> | undefined>(episode?.toObject());
   const [isSaving, setIsSaving] = useState(false);

@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import notify from '../../../utils/notify';
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 
 export default function RegisterScreen({ onNavigateToLogin, style }: Props) {
   const navigation = useNavigation();
-  const { register } = useAuth();
+  const { register } = useAuthContext();
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
