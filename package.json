@@ -1,7 +1,7 @@
 {
   "name": "mangajap",
   "version": "3.0.2",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "homepage": "https://stantanasi.github.io/mangajap",
   "scripts": {
     "start": "expo start",
@@ -24,8 +24,10 @@
     "@stantanasi/jsonapi-client": "^1.2.8",
     "expo": "~55.0.31",
     "expo-checkbox": "~55.0.4",
+    "expo-constants": "~55.0.17",
     "expo-image-picker": "~55.0.24",
     "expo-linking": "~55.0.17",
+    "expo-router": "~55.0.18",
     "expo-splash-screen": "~55.0.25",
     "expo-status-bar": "~55.0.6",
     "firebase": "^12.11.0",
