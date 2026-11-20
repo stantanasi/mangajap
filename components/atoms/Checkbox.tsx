@@ -1,12 +1,12 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
-import { ActivityIndicator, StyleProp, StyleSheet, ViewStyle } from 'react-native';
+import { ActivityIndicator, StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 
 type Props = {
   value: boolean;
   onValueChange: (value: boolean) => void;
   loading?: boolean;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle & TextStyle>;
 };
 
 export default function Checkbox({
