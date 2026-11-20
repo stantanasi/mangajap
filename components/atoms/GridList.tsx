@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { FlatList, FlatListProps, ListRenderItem, ListRenderItemInfo, View } from 'react-native';
 
 type Props<ItemT = any> = Omit<FlatListProps<ItemT>, 'ItemSeparatorComponent' | 'columnWrapperStyle'> & {

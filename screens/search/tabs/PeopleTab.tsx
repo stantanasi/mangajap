@@ -1,5 +1,4 @@
 import { router } from 'expo-router';
-import React from 'react';
 import { ActivityIndicator, FlatList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import PeopleCard from '../../../components/molecules/PeopleCard';
 import LoadingScreen from '../../../components/organisms/LoadingScreen';

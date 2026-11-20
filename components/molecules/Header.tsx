@@ -1,10 +1,10 @@
-import React, { ComponentProps, PropsWithChildren } from 'react';
+import { ComponentProps, PropsWithChildren, ReactElement } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import TopBar from '../atoms/TopBar';
 
 type Props = PropsWithChildren & ComponentProps<typeof TopBar> & {
   style?: StyleProp<ViewStyle>;
-  TopBarComponent?: (props: ComponentProps<typeof TopBar>) => React.ReactElement;
+  TopBarComponent?: (props: ComponentProps<typeof TopBar>) => ReactElement;
 };
 
 export default function Header({

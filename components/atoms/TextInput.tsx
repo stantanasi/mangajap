@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { StyleProp, StyleSheet, Text, TextInputProps, TextInput as TextInputRN, View, ViewStyle } from 'react-native';
 import InputLabel from './InputLabel';
 

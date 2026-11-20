@@ -1,5 +1,6 @@
 import { Object } from '@stantanasi/jsonapi-client';
-import React, { useEffect, useState } from 'react';
+import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateInput from '../../components/atoms/DateInput';
@@ -16,7 +17,6 @@ import { IChapter } from '../../models/chapter.model';
 import { useAppDispatch } from '../../redux/store';
 import notify from '../../utils/notify';
 import { useChapterSave } from './hooks/useChapterSave';
-import { router } from 'expo-router';
 
 type Props = {
   mangaId: string;

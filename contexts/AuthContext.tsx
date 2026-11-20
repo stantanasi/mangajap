@@ -1,6 +1,6 @@
 import { connect } from '@stantanasi/jsonapi-client';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import { auth } from '../firebaseConfig';
 import { User } from '../models';
 import { useAppDispatch } from '../redux/store';

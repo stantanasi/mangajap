@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import Modal from '../../../components/atoms/Modal';
 import SearchBar from '../../../components/atoms/SearchBar';

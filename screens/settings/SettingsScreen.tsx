@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import { ComponentProps, useState } from 'react';
 import { SectionList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Alert from '../../components/atoms/Alert';
@@ -16,7 +16,7 @@ export default function SettingsScreen() {
 
   const sections: {
     title?: string;
-    data: React.ComponentProps<typeof SettingRow>[];
+    data: ComponentProps<typeof SettingRow>[];
   }[] = [
       {
         title: 'Compte',

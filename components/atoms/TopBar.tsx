@@ -1,13 +1,13 @@
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 import { router } from 'expo-router';
-import React from 'react';
+import { ComponentProps, ReactElement } from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 type Props = {
-  title?: string | React.ReactElement;
+  title?: string | ReactElement;
   canGoBack?: boolean;
   menuItems?: {
-    icon: React.ComponentProps<typeof MaterialIcons>['name'];
+    icon: ComponentProps<typeof MaterialIcons>['name'];
     onPress?: () => void;
   }[];
   style?: StyleProp<ViewStyle>;

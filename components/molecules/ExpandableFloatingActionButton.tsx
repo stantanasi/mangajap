@@ -1,11 +1,11 @@
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
-import React, { useState } from 'react';
+import { ComponentProps, useState } from 'react';
 import { Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import FloatingActionButton from '../atoms/FloatingActionButton';
 
 type Props = PressableProps & {
-  icon: React.ComponentProps<typeof MaterialIcons>['name'];
-  menuItems: React.ComponentProps<typeof FloatingActionButton>[];
+  icon: ComponentProps<typeof MaterialIcons>['name'];
+  menuItems: ComponentProps<typeof FloatingActionButton>[];
   style?: StyleProp<ViewStyle>;
 }
 

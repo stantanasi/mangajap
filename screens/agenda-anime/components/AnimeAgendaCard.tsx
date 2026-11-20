@@ -1,4 +1,3 @@
-import React from 'react';
 import { Image, Pressable, PressableProps, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import ProgressBar from '../../../components/atoms/ProgressBar';
 import { Anime } from '../../../models';

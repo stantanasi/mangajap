@@ -1,5 +1,4 @@
 import { launchImageLibraryAsync } from 'expo-image-picker';
-import React from 'react';
 import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import notify from '../../utils/notify';
 import AutoHeightImage from './AutoHeightImage';

@@ -1,5 +1,5 @@
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleProp, StyleSheet, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
 
 type Props = Omit<TextInputProps, 'style'> & {

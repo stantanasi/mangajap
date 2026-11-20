@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Modal, Pressable, View } from 'react-native';
 import SearchBar from '../../../components/atoms/SearchBar';
 import PeopleCard from '../../../components/molecules/PeopleCard';

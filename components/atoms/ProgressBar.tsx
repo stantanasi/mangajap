@@ -1,4 +1,3 @@
-import React from 'react';
 import { ColorValue, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 type Props = {

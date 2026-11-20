@@ -1,4 +1,3 @@
-import React from 'react';
 import { ActivityIndicator, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 

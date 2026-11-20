@@ -1,9 +1,9 @@
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
-import React from 'react';
+import { ComponentProps } from 'react';
 import { Pressable, PressableProps, StyleProp, StyleSheet, Text, ViewStyle } from 'react-native';
 
 type Props = PressableProps & {
-  icon: React.ComponentProps<typeof MaterialIcons>['name'];
+  icon: ComponentProps<typeof MaterialIcons>['name'];
   label?: string;
   size?: 'small' | 'large';
   style?: StyleProp<ViewStyle>;

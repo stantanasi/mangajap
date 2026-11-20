@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { ComponentProps, ComponentType, createContext, isValidElement, PropsWithChildren, ReactElement, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatListProps, LayoutChangeEvent, Pressable, SectionList as RNSectionList, ScrollViewProps, SectionListProps, StyleProp, Text, View, ViewStyle } from 'react-native';
 import Animated, { AnimatedRef, Extrapolation, interpolate, scrollTo, SharedValue, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { scheduleOnUI } from 'react-native-worklets';
@@ -8,7 +8,7 @@ import Header from '../molecules/Header';
 interface IContainerContext {
   tabs: { name: string; label: string; }[];
   focusedTab: string;
-  refs: React.RefObject<Record<string, AnimatedRef<Animated.ScrollView | Animated.FlatList | typeof AnimatedSectionList>>>;
+  refs: RefObject<Record<string, AnimatedRef<Animated.ScrollView | Animated.FlatList | typeof AnimatedSectionList>>>;
   setRef: <T extends Animated.ScrollView | Animated.FlatList | typeof AnimatedSectionList>(name: string, ref: AnimatedRef<T>) => void;
   containerHeight: number;
   headerHeight: number;
@@ -104,11 +104,11 @@ function Container({
   CollapsibleComponent,
   TabBarComponent = Bar,
   style,
-}: React.ComponentProps<typeof TopBar> & {
-  children?: React.ReactElement<typeof Tab>[] | React.ReactElement<typeof Tab>;
-  TopBarComponent?: React.ComponentType<React.ComponentProps<typeof TopBar>>;
-  CollapsibleComponent?: React.ComponentType<React.ComponentProps<typeof TopBar>>;
-  TabBarComponent?: React.ComponentType<React.ComponentProps<typeof Bar>>;
+}: ComponentProps<typeof TopBar> & {
+  children?: ReactElement<typeof Tab>[] | ReactElement<typeof Tab>;
+  TopBarComponent?: ComponentType<ComponentProps<typeof TopBar>>;
+  CollapsibleComponent?: ComponentType<ComponentProps<typeof TopBar>>;
+  TabBarComponent?: ComponentType<ComponentProps<typeof Bar>>;
   style?: StyleProp<ViewStyle>;
 }) {
   const tabs = useMemo(() => {
@@ -117,7 +117,7 @@ function Container({
         : [];
 
     return tabs.map((tab) => {
-      const props: React.ComponentProps<typeof Tab> = tab.props;
+      const props: ComponentProps<typeof Tab> = tab.props;
       return {
         name: props.name,
         label: props.label ?? props.name,
@@ -311,7 +311,7 @@ function Bar({ tabs, focusedTab, onTabChange, style }: {
 };
 
 
-function Tab({ children }: React.PropsWithChildren & {
+function Tab({ children }: PropsWithChildren & {
   name: string;
   label?: string;
 }) {
@@ -368,17 +368,17 @@ function FlatList<ItemT = any>({
   const renderListHeader = () => {
     if (!ListHeaderComponent) return null;
 
-    if (React.isValidElement(ListHeaderComponent)) {
+    if (isValidElement(ListHeaderComponent)) {
       return ListHeaderComponent;
     }
 
-    const HeaderComp = ListHeaderComponent as React.ComponentType;
+    const HeaderComp = ListHeaderComponent as ComponentType;
     return <HeaderComp />;
   };
 
   return (
     <Animated.FlatList
-      {...props as React.ComponentProps<typeof Animated.FlatList>}
+      {...props as ComponentProps<typeof Animated.FlatList>}
       ref={ref}
       onScroll={scrollHandler}
       scrollEventThrottle={1}
@@ -411,17 +411,17 @@ function SectionList<ItemT = any, SectionT = { [key: string]: any; }>({
   const renderListHeader = () => {
     if (!ListHeaderComponent) return null;
 
-    if (React.isValidElement(ListHeaderComponent)) {
+    if (isValidElement(ListHeaderComponent)) {
       return ListHeaderComponent;
     }
 
-    const HeaderComp = ListHeaderComponent as React.ComponentType;
+    const HeaderComp = ListHeaderComponent as ComponentType;
     return <HeaderComp />;
   };
 
   return (
     <AnimatedSectionList
-      {...props as React.ComponentProps<typeof AnimatedSectionList>}
+      {...props as ComponentProps<typeof AnimatedSectionList>}
       ref={ref}
       onScroll={scrollHandler}
       scrollEventThrottle={1}

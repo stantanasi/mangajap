@@ -1,5 +1,5 @@
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { useAuthContext } from '../../../contexts/AuthContext';
 import { Manga, MangaEntry, User } from '../../../models';

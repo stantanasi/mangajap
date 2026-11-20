@@ -1,5 +1,5 @@
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FlatList, Modal, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import InputLabel from './InputLabel';
 

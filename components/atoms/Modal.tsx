@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { Modal as ModalRN, Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 type Props = PropsWithChildren & {

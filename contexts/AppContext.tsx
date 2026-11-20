@@ -1,5 +1,5 @@
 import NetInfo from '@react-native-community/netinfo';
-import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 interface IAppContext {
   isReady: boolean;

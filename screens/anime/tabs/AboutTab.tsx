@@ -1,6 +1,6 @@
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { FlatList, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
 import AnimeCard from '../../../components/molecules/AnimeCard';
@@ -77,7 +77,7 @@ export default function AboutTab({ isLoading, anime, style }: Props) {
 
       <Text style={styles.genres}>
         {anime.genres?.map((genre, index, genres) => (
-          <React.Fragment key={genre.id}>
+          <Fragment key={genre.id}>
             <Text style={styles.genre}>
               {genre.name}
             </Text>
@@ -85,7 +85,7 @@ export default function AboutTab({ isLoading, anime, style }: Props) {
             {index < genres.length - 1 ? (
               <Text>, </Text>
             ) : null}
-          </React.Fragment>
+          </Fragment>
         ))}
       </Text>
 

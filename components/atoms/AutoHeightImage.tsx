@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, ImageProps, Platform } from 'react-native';
 
 export default function AutoHeightImage(props: ImageProps) {

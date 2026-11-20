@@ -1,6 +1,5 @@
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 import { router } from 'expo-router';
-import React from 'react';
 import { FlatList, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AnimeCard from '../../../components/molecules/AnimeCard';
 import Tabs from '../../../components/organisms/Tabs';
