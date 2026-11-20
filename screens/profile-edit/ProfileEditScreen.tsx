@@ -1,4 +1,4 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 import { Object } from '@stantanasi/jsonapi-client';
 import { launchImageLibraryAsync } from 'expo-image-picker';
 import { router } from 'expo-router';

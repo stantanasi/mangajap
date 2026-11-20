@@ -1,4 +1,4 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 import React from 'react';
 import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
@@ -24,11 +24,13 @@ export default function SettingRow({
       onPress={onPress}
       style={[styles.container, style]}
     >
-      <MaterialIcons
-        name={icon}
-        size={22}
-        color={danger ? '#ef4444' : styles.label.color}
-      />
+      {icon && (
+        <MaterialIcons
+          name={icon}
+          size={22}
+          color={danger ? '#ef4444' : styles.label.color}
+        />
+      )}
 
       <View style={{ flex: 1 }}>
         <Text style={[styles.label, danger && { color: '#ef4444' }]}>

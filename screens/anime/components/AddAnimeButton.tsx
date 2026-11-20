@@ -1,4 +1,4 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 import React, { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { useAuthContext } from '../../../contexts/AuthContext';
