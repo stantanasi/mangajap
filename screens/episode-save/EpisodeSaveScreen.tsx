@@ -50,11 +50,13 @@ export default function EpisodeSaveScreen(props: Props) {
 
     Episode.redux.sync(dispatch, episode, prev);
 
-   if (router.canGoBack()) {
-         router.back();
-       } else  {
-         router.replace('/');
-       }
+    if (router.canGoBack()) {
+      router.back();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    } else {
+      router.replace('/');
+    }
   };
 
   return (
@@ -156,10 +158,12 @@ export default function EpisodeSaveScreen(props: Props) {
         animationType="fade"
         onRequestClose={() => {
           if (router.canGoBack()) {
-                router.back();
-              } else  {
-                router.replace('/');
-              }
+            router.back();
+          } else if (typeof window !== 'undefined') {
+            window.history.back();
+          } else {
+            router.replace('/');
+          }
         }}
         transparent
         visible={isSaving}

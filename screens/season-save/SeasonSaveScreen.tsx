@@ -47,10 +47,12 @@ export default function SeasonSaveScreen(props: Props) {
     Season.redux.sync(dispatch, season);
 
     if (router.canGoBack()) {
-                router.back();
-              } else {
-                router.replace('/');
-              }
+      router.back();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    } else {
+      router.replace('/');
+    }
   };
 
   return (
@@ -128,10 +130,12 @@ export default function SeasonSaveScreen(props: Props) {
         animationType="fade"
         onRequestClose={() => {
           if (router.canGoBack()) {
-                      router.back();
-                    } else {
-                      router.replace('/');
-                    }
+            router.back();
+          } else if (typeof window !== 'undefined') {
+            window.history.back();
+          } else {
+            router.replace('/');
+          }
         }}
         transparent
         visible={isSaving}

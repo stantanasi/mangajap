@@ -48,10 +48,12 @@ export default function VolumeSaveScreen(props: Props) {
     Volume.redux.sync(dispatch, volume);
 
     if (router.canGoBack()) {
-                router.back();
-              } else {
-                router.replace('/');
-              }
+      router.back();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    } else {
+      router.replace('/');
+    }
   };
 
   return (
@@ -139,10 +141,12 @@ export default function VolumeSaveScreen(props: Props) {
         animationType="fade"
         onRequestClose={() => {
           if (router.canGoBack()) {
-                      router.back();
-                    } else {
-                      router.replace('/');
-                    }
+            router.back();
+          } else if (typeof window !== 'undefined') {
+            window.history.back();
+          } else {
+            router.replace('/');
+          }
         }}
         transparent
         visible={isSaving}

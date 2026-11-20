@@ -39,6 +39,8 @@ export default function ProfileEditScreen() {
     if (!user.isModified()) {
       if (router.canGoBack()) {
         router.back();
+      } else if (typeof window !== 'undefined') {
+        window.history.back();
       } else {
         router.replace('/');
       }
@@ -53,6 +55,8 @@ export default function ProfileEditScreen() {
 
     if (router.canGoBack()) {
       router.back();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
     } else {
       router.replace('/');
     }
@@ -179,6 +183,8 @@ export default function ProfileEditScreen() {
         onRequestClose={() => {
           if (router.canGoBack()) {
             router.back();
+          } else if (typeof window !== 'undefined') {
+            window.history.back();
           } else {
             router.replace('/');
           }

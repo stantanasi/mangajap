@@ -50,7 +50,9 @@ export default function FranchiseSaveScreen(props: Props) {
 
     if (router.canGoBack()) {
       router.back();
-    } else  {
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    } else {
       router.replace('/');
     }
   };
@@ -150,6 +152,8 @@ export default function FranchiseSaveScreen(props: Props) {
         onRequestClose={() => {
           if (router.canGoBack()) {
             router.back();
+          } else if (typeof window !== 'undefined') {
+            window.history.back();
           } else {
             router.replace('/');
           }

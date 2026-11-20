@@ -52,6 +52,8 @@ export default function ChapterSaveScreen(props: Props) {
 
     if (router.canGoBack()) {
       router.back();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
     } else {
       router.replace('/');
     }
@@ -157,6 +159,8 @@ export default function ChapterSaveScreen(props: Props) {
         onRequestClose={() => {
           if (router.canGoBack()) {
             router.back();
+          } else if (typeof window !== 'undefined') {
+            window.history.back();
           } else {
             router.replace('/');
           }

@@ -51,10 +51,12 @@ export default function StaffSaveScreen(props: Props) {
     Staff.redux.sync(dispatch, staff, prev);
 
     if (router.canGoBack()) {
-                router.back();
-              } else {
-                router.replace('/');
-              }
+      router.back();
+    } else if (typeof window !== 'undefined') {
+      window.history.back();
+    } else {
+      router.replace('/');
+    }
   };
 
   return (
@@ -151,10 +153,12 @@ export default function StaffSaveScreen(props: Props) {
         animationType="fade"
         onRequestClose={() => {
           if (router.canGoBack()) {
-                      router.back();
-                    } else {
-                      router.replace('/');
-                    }
+            router.back();
+          } else if (typeof window !== 'undefined') {
+            window.history.back();
+          } else {
+            router.replace('/');
+          }
         }}
         transparent
         visible={isSaving}
