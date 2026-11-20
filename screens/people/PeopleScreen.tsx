@@ -1,5 +1,5 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import { router } from 'expo-router';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
@@ -12,23 +12,14 @@ import { useAuthContext } from '../../contexts/AuthContext';
 import Header from './components/Header';
 import { usePeople } from './hooks/usePeople';
 
-type Props = StaticScreenProps<{
-  id: string;
-}>;
+type Props = {
+  peopleId: string;
+};
 
-export default function PeopleScreen({ route }: Props) {
-  const navigation = useNavigation();
+export default function PeopleScreen(props: Props) {
   const { isOffline } = useAppContext();
   const { user } = useAuthContext();
-  const { isLoading, people } = usePeople(route.params);
-
-  useEffect(() => {
-    if (!people) return;
-
-    navigation.setOptions({
-      title: `${people.name} - Personnalité | MangaJap`,
-    });
-  }, [people]);
+  const { isLoading, people } = usePeople(props);
 
   if (!people) {
     return (
@@ -43,7 +34,10 @@ export default function PeopleScreen({ route }: Props) {
         menuItems={!isOffline && !isLoading && user ? [
           {
             icon: 'edit',
-            onPress: () => navigation.navigate('PeopleUpdate', { peopleId: people.id }),
+            onPress: () => router.navigate({
+              pathname: '/people/[peopleId]/edit',
+              params: { peopleId: people.id },
+            }),
           },
         ] : []}
         CollapsibleComponent={() => (
@@ -65,7 +59,10 @@ export default function PeopleScreen({ route }: Props) {
               <AnimeCard
                 isLoading={isLoading}
                 anime={item}
-                onPress={() => navigation.navigate('Anime', { id: item.id })}
+                onPress={() => router.navigate({
+                  pathname: '/anime/[animeId]',
+                  params: { animeId: item.id },
+                })}
                 variant="horizontal"
                 showCheckbox={false}
                 style={{
@@ -92,7 +89,10 @@ export default function PeopleScreen({ route }: Props) {
               <MangaCard
                 isLoading={isLoading}
                 manga={item}
-                onPress={() => navigation.navigate('Manga', { id: item.id })}
+                onPress={() => router.navigate({
+                  pathname: '/manga/[mangaId]',
+                  params: { mangaId: item.id },
+                })}
                 variant="horizontal"
                 showCheckbox={false}
                 style={{

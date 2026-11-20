@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { StackActions, useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { FlatList, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
@@ -19,7 +19,6 @@ type Props = {
 };
 
 export default function AboutTab({ isLoading, manga, style }: Props) {
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
   const { user } = useAuthContext();
   const [staffEditable, setStaffEditable] = useState(false);
@@ -144,9 +143,15 @@ export default function AboutTab({ isLoading, manga, style }: Props) {
             onPress={() => {
               if (!staffEditable) {
                 if (!item.people) return;
-                navigation.navigate('People', { id: item.people.id });
+                router.navigate({
+                  pathname: '/people/[peopleId]',
+                  params: { peopleId: item.people.id },
+                });
               } else {
-                navigation.navigate('StaffUpdate', { staffId: item.id });
+                router.navigate({
+                  pathname: '/manga/[mangaId]/staff/[staffId]/edit',
+                  params: { mangaId: manga.id, staffId: item.id },
+                });
               }
             }}
           />
@@ -155,7 +160,10 @@ export default function AboutTab({ isLoading, manga, style }: Props) {
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
         ListFooterComponent={() => !isOffline && !isLoading && user ? (
           <Pressable
-            onPress={() => navigation.navigate('MangaStaffCreate', { mangaId: manga.id })}
+            onPress={() => router.navigate({
+              pathname: '/manga/[mangaId]/staff/create',
+              params: { mangaId: manga.id },
+            })}
             style={{
               width: 130,
               alignItems: 'center',
@@ -219,9 +227,15 @@ export default function AboutTab({ isLoading, manga, style }: Props) {
             onPress={() => {
               if (!franchisesEditable) {
                 if (!item.destination) return;
-                navigation.navigate('Anime', { id: item.destination.id });
+                router.navigate({
+                  pathname: '/anime/[animeId]',
+                  params: { animeId: item.destination.id },
+                });
               } else {
-                navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
+                router.navigate({
+                  pathname: '/manga/[mangaId]/franchise/[franchiseId]/edit',
+                  params: { mangaId: manga.id, franchiseId: item.id },
+                });
               }
             }}
             showCheckbox={false}
@@ -235,9 +249,15 @@ export default function AboutTab({ isLoading, manga, style }: Props) {
             onPress={() => {
               if (!franchisesEditable) {
                 if (!item.destination) return;
-                navigation.dispatch(StackActions.push('Manga', { id: item.destination.id }));
+                router.navigate({
+                  pathname: '/manga/[mangaId]',
+                  params: { mangaId: item.destination.id },
+                });
               } else {
-                navigation.navigate('FranchiseUpdate', { franchiseId: item.id });
+                router.navigate({
+                  pathname: '/manga/[mangaId]/franchise/[franchiseId]/edit',
+                  params: { mangaId: manga.id, franchiseId: item.id },
+                });
               }
             }}
             showCheckbox={false}
@@ -247,7 +267,10 @@ export default function AboutTab({ isLoading, manga, style }: Props) {
         ListHeaderComponent={() => <View style={{ width: 16 }} />}
         ListFooterComponent={() => !isOffline && !isLoading && user ? (
           <Pressable
-            onPress={() => navigation.navigate('MangaFranchiseCreate', { mangaId: manga.id })}
+            onPress={() => router.navigate({
+              pathname: '/manga/[mangaId]/franchise/create',
+              params: { mangaId: manga.id },
+            })}
             style={{
               width: 130,
               aspectRatio: 2 / 3,

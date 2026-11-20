@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import EpisodeCard from '../../../components/molecules/EpisodeCard';
@@ -19,7 +19,6 @@ type Props = {
 };
 
 export default function EpisodesTab({ isLoading, anime, style }: Props) {
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
   const { user } = useAuthContext();
   const [expandedSeasons, setExpandedSeasons] = useState<{ [seasonId: string]: boolean; }>({});
@@ -144,12 +143,18 @@ export default function EpisodesTab({ isLoading, anime, style }: Props) {
             {
               icon: 'library-add',
               label: 'Saison',
-              onPress: () => navigation.navigate('SeasonCreate', { animeId: anime.id }),
+              onPress: () => router.navigate({
+                pathname: '/anime/[animeId]/season/create',
+                params: { animeId: anime.id },
+              }),
             },
             {
               icon: 'library-add',
               label: 'Épisode',
-              onPress: () => navigation.navigate('EpisodeCreate', { animeId: anime.id }),
+              onPress: () => router.navigate({
+                pathname: '/anime/[animeId]/episode/create',
+                params: { animeId: anime.id },
+              }),
             },
           ]}
         />
@@ -158,6 +163,7 @@ export default function EpisodesTab({ isLoading, anime, style }: Props) {
       <SeasonModal
         isLoading={isLoading}
         season={anime.seasons?.find((season) => season.id === selectedSeasonId)}
+        anime={anime}
         onWatchedChange={(value) => {
           if (!value) return;
 
@@ -192,6 +198,7 @@ export default function EpisodesTab({ isLoading, anime, style }: Props) {
             }
           }
         })()}
+        anime={anime}
         onWatchedChange={(value) => {
           if (!value) return;
 

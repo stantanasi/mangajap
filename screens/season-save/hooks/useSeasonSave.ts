@@ -4,28 +4,31 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import SeasonSaveScreen from '../SeasonSaveScreen';
 
-export const useSeasonSave = (params: ComponentProps<typeof SeasonSaveScreen>['route']['params']) => {
+export const useSeasonSave = ({
+  animeId,
+  seasonId,
+}: ComponentProps<typeof SeasonSaveScreen>) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   const season = (() => {
-    if ('animeId' in params) {
+    if (!seasonId) {
       return useMemo(() => new Season({
-        anime: new Anime({ id: params.animeId }),
+        anime: new Anime({ id: animeId }),
         episodes: [],
-      }), [params]);
+      }), [animeId, seasonId]);
     }
 
     return useAppSelector((state) => {
-      return Season.redux.selectors.selectById(state, params.seasonId);
+      return Season.redux.selectors.selectById(state, seasonId!);
     });
   })();
 
   useEffect(() => {
     const prepare = async () => {
-      if (!('seasonId' in params)) return;
+      if (!seasonId) return;
 
-      const season = await Season.findById(params.seasonId);
+      const season = await Season.findById(seasonId);
 
       dispatch(Season.redux.actions.setOne(season));
     };
@@ -34,7 +37,7 @@ export const useSeasonSave = (params: ComponentProps<typeof SeasonSaveScreen>['r
     prepare()
       .catch((err) => notify.error('season_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [animeId, seasonId]);
 
   return { isLoading, season };
 };

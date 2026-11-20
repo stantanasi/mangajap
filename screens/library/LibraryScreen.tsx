@@ -1,4 +1,4 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,14 +11,13 @@ import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { Anime, AnimeEntry } from '../../models';
 import { useLibrary } from './hooks/useLibrary';
 
-type Props = StaticScreenProps<{
+type Props = {
   type: 'anime-library' | 'manga-library' | 'anime-favorites' | 'manga-favorites';
   userId: string;
-}>;
+};
 
-export default function LibraryScreen({ route }: Props) {
-  const navigation = useNavigation();
-  const { isLoading, library } = useLibrary(route.params);
+export default function LibraryScreen(props: Props) {
+  const { isLoading, library } = useLibrary(props);
 
   if (!library) {
     return (
@@ -29,10 +28,10 @@ export default function LibraryScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Header
-        title={route.params.type === 'anime-library' ? 'Anime'
-          : route.params.type === 'anime-favorites' ? 'Anime préférés'
-            : route.params.type === 'manga-library' ? 'Manga'
-              : route.params.type === 'manga-favorites' ? 'Manga préférés'
+        title={props.type === 'anime-library' ? 'Anime'
+          : props.type === 'anime-favorites' ? 'Anime préférés'
+            : props.type === 'manga-library' ? 'Manga'
+              : props.type === 'manga-favorites' ? 'Manga préférés'
                 : ''}
       />
 
@@ -55,7 +54,10 @@ export default function LibraryScreen({ route }: Props) {
             <AnimeCard
               isLoading={isLoading}
               anime={item}
-              onPress={() => navigation.navigate('Anime', { id: item.id })}
+              onPress={() => router.navigate({
+                pathname: '/anime/[animeId]',
+                params: { animeId: item.id },
+              })}
               showCheckbox={false}
               style={{ width: null }}
             />
@@ -63,7 +65,10 @@ export default function LibraryScreen({ route }: Props) {
             <MangaCard
               isLoading={isLoading}
               manga={item}
-              onPress={() => navigation.navigate('Manga', { id: item.id })}
+              onPress={() => router.navigate({
+                pathname: '/manga/[mangaId]',
+                params: { mangaId: item.id },
+              })}
               showCheckbox={false}
               style={{ width: null }}
             />

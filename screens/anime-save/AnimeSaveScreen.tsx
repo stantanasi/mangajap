@@ -1,6 +1,6 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
 import Checkbox from 'expo-checkbox';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,25 +17,16 @@ import { useAppDispatch } from '../../redux/store';
 import notify from '../../utils/notify';
 import { useAnimeSave } from './hooks/useAnimeSave';
 
-type Props = StaticScreenProps<{
-  id: string;
-} | undefined>;
+type Props = {
+  animeId?: string;
+};
 
-export default function AnimeSaveScreen({ route }: Props) {
+export default function AnimeSaveScreen(props: Props) {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
-  const { isLoading, anime, genres, themes } = useAnimeSave(route.params);
+  const { isLoading, anime, genres, themes } = useAnimeSave(props);
   const [form, setForm] = useState<Partial<Object<IAnime>> | undefined>(anime?.toObject());
   const [isSaving, setIsSaving] = useState(false);
-
-  useEffect(() => {
-    if (!anime || anime.isNew) return;
-
-    navigation.setOptions({
-      title: `Modifier - ${anime.title} - Anime | MangaJap`,
-    });
-  }, [anime]);
 
   useEffect(() => {
     if (anime?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
@@ -55,10 +46,10 @@ export default function AnimeSaveScreen({ route }: Props) {
 
     Anime.redux.sync(dispatch, anime);
 
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else if (typeof window !== 'undefined') {
-      window.history.back();
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/');
     }
   };
 
@@ -274,10 +265,10 @@ export default function AnimeSaveScreen({ route }: Props) {
       <Modal
         animationType="fade"
         onRequestClose={() => {
-          if (navigation.canGoBack()) {
-            navigation.goBack();
-          } else if (typeof window !== 'undefined') {
-            window.history.back();
+          if (router.canGoBack()) {
+            router.back();
+          } else {
+            router.replace('/');
           }
         }}
         transparent

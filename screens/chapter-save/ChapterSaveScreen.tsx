@@ -1,4 +1,3 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
@@ -17,18 +16,17 @@ import { IChapter } from '../../models/chapter.model';
 import { useAppDispatch } from '../../redux/store';
 import notify from '../../utils/notify';
 import { useChapterSave } from './hooks/useChapterSave';
+import { router } from 'expo-router';
 
-type Props = StaticScreenProps<{
+type Props = {
   mangaId: string;
-} | {
-  chapterId: string;
-}>;
+  chapterId?: string;
+};
 
-export default function ChapterSaveScreen({ route }: Props) {
+export default function ChapterSaveScreen(props: Props) {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
-  const { isLoading, chapter, volumes } = useChapterSave(route.params);
+  const { isLoading, chapter, volumes } = useChapterSave(props);
   const [form, setForm] = useState<Partial<Object<IChapter>> | undefined>(chapter?.toObject());
   const [isSaving, setIsSaving] = useState(false);
 
@@ -52,10 +50,10 @@ export default function ChapterSaveScreen({ route }: Props) {
 
     Chapter.redux.sync(dispatch, chapter, prev);
 
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else if (typeof window !== 'undefined') {
-      window.history.back();
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/');
     }
   };
 
@@ -157,10 +155,10 @@ export default function ChapterSaveScreen({ route }: Props) {
       <Modal
         animationType="fade"
         onRequestClose={() => {
-          if (navigation.canGoBack()) {
-            navigation.goBack();
-          } else if (typeof window !== 'undefined') {
-            window.history.back();
+          if (router.canGoBack()) {
+            router.back();
+          } else {
+            router.replace('/');
           }
         }}
         transparent

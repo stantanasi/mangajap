@@ -4,12 +4,14 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import PeopleScreen from '../PeopleScreen';
 
-export const usePeople = (params: ComponentProps<typeof PeopleScreen>['route']['params']) => {
+export const usePeople = ({
+  peopleId,
+}: ComponentProps<typeof PeopleScreen>) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   const people = useAppSelector((state) => {
-    return People.redux.selectors.selectById(state, params.id, {
+    return People.redux.selectors.selectById(state, peopleId, {
       include: {
         'anime-staff': {
           include: {
@@ -27,7 +29,7 @@ export const usePeople = (params: ComponentProps<typeof PeopleScreen>['route']['
 
   useEffect(() => {
     const prepare = async () => {
-      const people = await People.findById(params.id)
+      const people = await People.findById(peopleId)
         .include({
           'anime-staff': {
             anime: true,
@@ -44,7 +46,7 @@ export const usePeople = (params: ComponentProps<typeof PeopleScreen>['route']['
     prepare()
       .catch((err) => notify.error('people_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [peopleId]);
 
   return { isLoading, people };
 };

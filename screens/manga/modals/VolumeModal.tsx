@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
@@ -8,13 +8,14 @@ import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { useAppContext } from '../../../contexts/AppContext';
 import { useAuthContext } from '../../../contexts/AuthContext';
-import { Chapter, ChapterEntry, User, Volume, VolumeEntry } from '../../../models';
+import { Chapter, ChapterEntry, Manga, User, Volume, VolumeEntry } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 import notify from '../../../utils/notify';
 
 type Props = {
   isLoading: boolean;
   volume: Volume | undefined;
+  manga: Manga;
   onReadChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -26,6 +27,7 @@ type Props = {
 export default function VolumeModal({
   isLoading,
   volume,
+  manga,
   onReadChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
@@ -34,7 +36,6 @@ export default function VolumeModal({
   visible,
 }: Props) {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
   const { user } = useAuthContext();
   const [readDatePickerVisible, setReadDatePickerVisible] = useState(false);
@@ -149,7 +150,10 @@ export default function VolumeModal({
             color="#000"
             size={24}
             onPress={() => {
-              navigation.navigate('VolumeUpdate', { volumeId: volume.id });
+              router.navigate({
+                pathname: '/manga/[mangaId]/volume/[volumeId]/edit',
+                params: { mangaId: manga.id, volumeId: volume.id },
+              });
               onRequestClose();
             }}
             style={{

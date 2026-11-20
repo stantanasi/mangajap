@@ -1,4 +1,4 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,12 +8,9 @@ import { useAuthContext } from '../../contexts/AuthContext';
 import AnimeAgendaCard from './components/AnimeAgendaCard';
 import { useAgendaAnime } from './hooks/useAgendaAnime';
 
-type Props = StaticScreenProps<undefined>;
-
-export default function AgendaAnimeScreen({ route }: Props) {
-  const navigation = useNavigation();
+export default function AgendaAnimeScreen() {
   const { user } = useAuthContext();
-  const { isLoading, animeLibrary } = useAgendaAnime(route.params);
+  const { isLoading, animeLibrary } = useAgendaAnime();
 
   const animes = animeLibrary
     ?.map((entry) => entry.anime?.copy({
@@ -37,7 +34,7 @@ export default function AgendaAnimeScreen({ route }: Props) {
         </Text>
 
         <Text
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() => router.navigate('/profile')}
           style={{
             borderColor: '#000',
             borderRadius: 360,
@@ -70,7 +67,10 @@ export default function AgendaAnimeScreen({ route }: Props) {
         renderItem={({ item }) => (
           <AnimeAgendaCard
             anime={item}
-            onPress={() => navigation.navigate('Anime', { id: item.id })}
+            onPress={() => router.navigate({
+              pathname: '/anime/[animeId]',
+              params: { animeId: item.id },
+            })}
             style={{
               marginHorizontal: 16,
             }}

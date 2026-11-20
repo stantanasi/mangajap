@@ -5,13 +5,15 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import MangaScreen from '../MangaScreen';
 
-export const useManga = (params: ComponentProps<typeof MangaScreen>['route']['params']) => {
+export const useManga = ({
+  mangaId,
+}: ComponentProps<typeof MangaScreen>) => {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
 
   const manga = useAppSelector((state) => {
-    return Manga.redux.selectors.selectById(state, params.id, {
+    return Manga.redux.selectors.selectById(state, mangaId, {
       include: {
         genres: true,
         themes: true,
@@ -53,7 +55,7 @@ export const useManga = (params: ComponentProps<typeof MangaScreen>['route']['pa
 
   useEffect(() => {
     const prepare = async () => {
-      const manga = await Manga.findById(params.id)
+      const manga = await Manga.findById(mangaId)
         .include({
           genres: true,
           themes: true,
@@ -82,7 +84,7 @@ export const useManga = (params: ComponentProps<typeof MangaScreen>['route']['pa
     prepare()
       .catch((err) => notify.error('manga_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [mangaId]);
 
   return { isLoading, manga };
 };

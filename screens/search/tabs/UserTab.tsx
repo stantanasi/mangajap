@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { ActivityIndicator, FlatList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import UserCard from '../../../components/molecules/UserCard';
@@ -14,8 +14,6 @@ type Props = {
 };
 
 export default function UserTab({ isLoading, list, onLoadMore, hasMore, style }: Props) {
-  const navigation = useNavigation();
-
   if (isLoading) {
     return (
       <LoadingScreen style={[styles.container, style]} />
@@ -30,7 +28,10 @@ export default function UserTab({ isLoading, list, onLoadMore, hasMore, style }:
         renderItem={({ item }) => (
           <UserCard
             user={item}
-            onPress={() => navigation.navigate('Profile', { id: item.id })}
+            onPress={() => router.navigate({
+              pathname: '/profile/[userId]',
+              params: { userId: item.id }
+            })}
             style={{
               marginHorizontal: 16,
             }}

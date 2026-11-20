@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
@@ -8,13 +8,14 @@ import DateTimePicker from '../../../components/atoms/DateTimePicker';
 import Modal from '../../../components/atoms/Modal';
 import { useAppContext } from '../../../contexts/AppContext';
 import { useAuthContext } from '../../../contexts/AuthContext';
-import { Chapter, ChapterEntry, User } from '../../../models';
+import { Chapter, ChapterEntry, Manga, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 import notify from '../../../utils/notify';
 
 type Props = {
   isLoading: boolean;
   chapter: Chapter | undefined;
+  manga: Manga;
   onReadChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -25,6 +26,7 @@ type Props = {
 export default function ChapterModal({
   isLoading,
   chapter,
+  manga,
   onReadChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
@@ -32,7 +34,6 @@ export default function ChapterModal({
   visible,
 }: Props) {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
   const { user } = useAuthContext();
   const [readDatePickerVisible, setReadDatePickerVisible] = useState(false);
@@ -119,7 +120,10 @@ export default function ChapterModal({
             color="#000"
             size={24}
             onPress={() => {
-              navigation.navigate('ChapterUpdate', { chapterId: chapter.id });
+              router.navigate({
+                pathname: '/manga/[mangaId]/chapter/[chapterId]/edit',
+                params: { mangaId: manga.id, chapterId: chapter.id },
+              });
               onRequestClose();
             }}
             style={{

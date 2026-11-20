@@ -1,4 +1,4 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { SectionList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,10 +9,7 @@ import { User } from '../../models';
 import notify from '../../utils/notify';
 import SettingRow from './components/SettingRow';
 
-type Props = StaticScreenProps<undefined>;
-
-export default function SettingsScreen({ }: Props) {
-  const navigation = useNavigation();
+export default function SettingsScreen() {
   const { user, logout } = useAuthContext();
 
   const [showDelete, setShowDelete] = useState(false);
@@ -30,10 +27,10 @@ export default function SettingsScreen({ }: Props) {
             danger: true,
             onPress: () => {
               logout()
-                .then(() => navigation.reset({
-                  index: 0,
-                  routes: [{ name: 'Main' }],
-                }))
+                .then(() => {
+                  if (router.canDismiss()) router.dismissAll();
+                  router.replace('/');
+                })
                 .catch((err) => notify.error('auth_logout', err));
             },
           },
@@ -101,10 +98,10 @@ export default function SettingsScreen({ }: Props) {
               User.findById(user.id)
                 .then((user) => user.delete())
                 .then(() => logout())
-                .then(() => navigation.reset({
-                  index: 0,
-                  routes: [{ name: 'Main' }],
-                }))
+                .then(() => {
+                  if (router.canDismiss()) router.dismissAll();
+                  router.replace('/');
+                })
                 .catch((err) => notify.error('user_delete', err));
             },
           },

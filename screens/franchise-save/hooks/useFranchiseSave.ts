@@ -4,23 +4,25 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import FranchiseSaveScreen from '../FranchiseSaveScreen';
 
-export const useFranchiseSave = (params: ComponentProps<typeof FranchiseSaveScreen>['route']['params']) => {
+export const useFranchiseSave = ({
+  animeId,
+  mangaId,
+  franchiseId,
+}: ComponentProps<typeof FranchiseSaveScreen>) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   const franchise = (() => {
-    if ('animeId' in params) {
+    if (!franchiseId) {
       return useMemo(() => new Franchise({
-        source: new Anime({ id: params.animeId }),
-      }), [params]);
-    } else if ('mangaId' in params) {
-      return useMemo(() => new Franchise({
-        source: new Manga({ id: params.mangaId }),
-      }), [params]);
+        source: animeId ? new Anime({ id: animeId })
+          : mangaId ? new Manga({ id: mangaId })
+            : undefined,
+      }), [animeId, mangaId]);
     }
 
     return useAppSelector((state) => {
-      return Franchise.redux.selectors.selectById(state, params.franchiseId, {
+      return Franchise.redux.selectors.selectById(state, franchiseId, {
         include: {
           destination: true,
         },
@@ -30,9 +32,9 @@ export const useFranchiseSave = (params: ComponentProps<typeof FranchiseSaveScre
 
   useEffect(() => {
     const prepare = async () => {
-      if (!('franchiseId' in params)) return;
+      if (!franchiseId) return;
 
-      const franchise = await Franchise.findById(params.franchiseId)
+      const franchise = await Franchise.findById(franchiseId)
         .include({ destination: true });
 
       dispatch(Franchise.redux.actions.setOne(franchise));
@@ -42,7 +44,7 @@ export const useFranchiseSave = (params: ComponentProps<typeof FranchiseSaveScre
     prepare()
       .catch((err) => notify.error('franchise_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [animeId, mangaId, franchiseId]);
 
   return { isLoading, franchise };
 };

@@ -1,4 +1,4 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,25 +13,16 @@ import RegisterScreen from './screens/RegisterScreen';
 import AnimeTab from './tabs/AnimeTab';
 import MangaTab from './tabs/MangaTab';
 
-type Props = StaticScreenProps<{
-  id: string;
-} | undefined>;
+type Props = {
+  userId?: string;
+};
 
-export default function ProfileScreen({ route }: Props) {
-  const navigation = useNavigation();
+export default function ProfileScreen(props: Props) {
   const { user: authenticatedUser } = useAuthContext();
   const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
-  const { isLoading, user, followingUser, followedByUser } = useProfile(route.params);
+  const { isLoading, user, followingUser, followedByUser } = useProfile(props);
 
-  const userId = route.params?.id ?? authenticatedUser?.id;
-
-  useEffect(() => {
-    if (!user) return;
-
-    navigation.setOptions({
-      title: `${user.name} (@${user.pseudo}) - Profil | MangaJap`,
-    });
-  }, [user]);
+  const userId = props.userId ?? authenticatedUser?.id;
 
   if (!userId) {
     if (authScreen === 'login') {
@@ -61,21 +52,23 @@ export default function ProfileScreen({ route }: Props) {
     <SafeAreaView style={styles.container}>
       <Tabs.Container
         title={user.pseudo}
-        canGoBack={!!route.params}
+        canGoBack={!!props.userId}
         menuItems={user.id === authenticatedUser?.id ? [
           {
             icon: 'edit',
-            onPress: () => navigation.navigate('ProfileEdit', { id: user.id }),
+            onPress: () => router.navigate({
+              pathname: '/profile/edit',
+              params: { userId: user.id },
+            }),
           },
           {
             icon: 'settings',
-            onPress: () => navigation.navigate('Settings'),
+            onPress: () => router.navigate('/settings'),
           },
         ] : []}
         CollapsibleComponent={() => (
           <Header
             isLoading={isLoading}
-            route={route}
             user={user}
             followingUser={followingUser}
             followedByUser={followedByUser}

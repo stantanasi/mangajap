@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { ActivityIndicator, FlatList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import PeopleCard from '../../../components/molecules/PeopleCard';
@@ -14,8 +14,6 @@ type Props = {
 };
 
 export default function PeopleTab({ isLoading, list, onLoadMore, hasMore, style }: Props) {
-  const navigation = useNavigation();
-
   if (isLoading) {
     return (
       <LoadingScreen style={[styles.container, style]} />
@@ -30,7 +28,10 @@ export default function PeopleTab({ isLoading, list, onLoadMore, hasMore, style 
         renderItem={({ item }) => (
           <PeopleCard
             people={item}
-            onPress={() => navigation.navigate('People', { id: item.id })}
+            onPress={() => router.navigate({
+              pathname: '/people/[peopleId]',
+              params: { peopleId: item.id }
+            })}
             variant="horizontal"
             style={{
               marginHorizontal: 16,

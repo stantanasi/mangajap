@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { ActivityIndicator, FlatList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import MangaCard from '../../../components/molecules/MangaCard';
@@ -14,8 +14,6 @@ type Props = {
 };
 
 export default function MangaTab({ isLoading, list, onLoadMore, hasMore, style }: Props) {
-  const navigation = useNavigation();
-
   if (isLoading) {
     return (
       <LoadingScreen style={[styles.container, style]} />
@@ -31,7 +29,10 @@ export default function MangaTab({ isLoading, list, onLoadMore, hasMore, style }
           <MangaCard
             isLoading={isLoading}
             manga={item}
-            onPress={() => navigation.navigate('Manga', { id: item.id })}
+            onPress={() => router.navigate({
+              pathname: '/manga/[mangaId]',
+              params: { mangaId: item.id }
+            })}
             variant="horizontal"
             style={{
               marginHorizontal: 16,

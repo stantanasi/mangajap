@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
 import { launchImageLibraryAsync } from 'expo-image-picker';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,15 +15,10 @@ import { useAppDispatch } from '../../redux/store';
 import notify from '../../utils/notify';
 import { useProfileEdit } from './hooks/useProfileEdit';
 
-type Props = StaticScreenProps<{
-  id: string;
-}>;
-
-export default function ProfileEditScreen({ route }: Props) {
+export default function ProfileEditScreen() {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
-  const { isLoading, user } = useProfileEdit(route.params);
+  const { isLoading, user } = useProfileEdit();
   const [form, setForm] = useState<Partial<Object<IUser>> | undefined>(user?.toObject());
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -42,10 +37,10 @@ export default function ProfileEditScreen({ route }: Props) {
     user.assign(form);
 
     if (!user.isModified()) {
-      if (navigation.canGoBack()) {
-        navigation.goBack();
-      } else if (typeof window !== 'undefined') {
-        window.history.back();
+      if (router.canGoBack()) {
+        router.back();
+      } else {
+        router.replace('/');
       }
       setIsUpdating(false);
       return;
@@ -56,10 +51,10 @@ export default function ProfileEditScreen({ route }: Props) {
 
     User.redux.sync(dispatch, user);
 
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else if (typeof window !== 'undefined') {
-      window.history.back();
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/');
     }
   };
 
@@ -182,10 +177,10 @@ export default function ProfileEditScreen({ route }: Props) {
       <Modal
         animationType="fade"
         onRequestClose={() => {
-          if (navigation.canGoBack()) {
-            navigation.goBack();
-          } else if (typeof window !== 'undefined') {
-            window.history.back();
+          if (router.canGoBack()) {
+            router.back();
+          } else {
+            router.replace('/');
           }
         }}
         transparent
