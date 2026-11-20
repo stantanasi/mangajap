@@ -31,7 +31,6 @@ export default function EpisodeSaveScreen(props: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (episode?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(episode?.toObject());
   }, [episode]);
 

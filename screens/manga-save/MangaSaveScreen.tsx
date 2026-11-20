@@ -29,7 +29,6 @@ export default function MangaSaveScreen(props: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (manga?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(manga?.toObject());
   }, [manga]);
 

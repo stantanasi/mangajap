@@ -29,7 +29,6 @@ export default function AnimeSaveScreen(props: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (anime?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(anime?.toObject());
   }, [anime]);
 

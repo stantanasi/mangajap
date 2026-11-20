@@ -23,7 +23,6 @@ export default function ProfileEditScreen() {
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    if (user?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(user?.toObject());
   }, [user]);
 

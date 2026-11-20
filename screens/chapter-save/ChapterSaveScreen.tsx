@@ -31,7 +31,6 @@ export default function ChapterSaveScreen(props: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (chapter?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(chapter?.toObject());
   }, [chapter]);
 

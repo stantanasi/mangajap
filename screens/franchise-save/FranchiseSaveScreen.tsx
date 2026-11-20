@@ -31,7 +31,6 @@ export default function FranchiseSaveScreen(props: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (franchise?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(franchise?.toObject());
   }, [franchise]);
 

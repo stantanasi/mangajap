@@ -27,7 +27,6 @@ export default function PeopleSaveScreen(props: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (people?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(people?.toObject());
   }, [people]);
 

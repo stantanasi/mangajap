@@ -361,8 +361,10 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
           select: createSelector([
             (state: RootState) => state,
             (state: RootState) => state[name].entities,
-            (_state: RootState, params?: SelectorParams<DocType>) => params,
-          ], (state, entities, params) => {
+            (_state: RootState, params?: SelectorParams<DocType>) => params ? JSON.stringify(params) : undefined,
+          ], (state, entities, _params) => {
+            const params = _params ? JSON.parse(_params) as SelectorParams<DocType> : undefined;
+
             const docs = Object.values<typeof entities[keyof typeof entities]>(entities)
               .map((entity) => {
                 const id = entity!.id;
@@ -385,8 +387,10 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
             (state: RootState) => state,
             (state: RootState, id: string) => state[name].entities[id],
             (_state: RootState, id: string) => id,
-            (_state: RootState, _id: string, params?: SelectorParams<DocType>) => params,
-          ], (state, entity, id, params) => {
+            (_state: RootState, _id: string, params?: SelectorParams<DocType>) => params ? JSON.stringify(params) : undefined,
+          ], (state, entity, id, _params) => {
+            const params = _params ? JSON.parse(_params) as SelectorParams<DocType> : undefined;
+
             return fromEntity(
               name,
               model,
@@ -401,8 +405,10 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
             (state: RootState) => state,
             (state: RootState) => state[name].entities,
             (_state: RootState, ids: string[]) => ids,
-            (_state: RootState, _ids: string[], params?: SelectorParams<DocType>) => params,
-          ], (state, entities, ids, params) => {
+            (_state: RootState, _ids: string[], params?: SelectorParams<DocType>) => params ? JSON.stringify(params) : undefined,
+          ], (state, entities, ids, _params) => {
+            const params = _params ? JSON.parse(_params) as SelectorParams<DocType> : undefined;
+
             const docs = ids
               .map((id) => {
                 const entity = entities[id];
@@ -426,8 +432,10 @@ export const createReduxHelpers = <DocType, ModelType extends ModelConstructor<D
             (state: RootState) => state,
             (state: RootState, id: string, relationship: K) => state[name].relations[relationship]?.[id],
             (_state: RootState, _id: string, relationship: K) => relationship,
-            (_state: RootState, _id: string, _relationship: K, params?: SelectorParams<ExtractDocType<DocType[K]>>) => params,
-          ], (state, linkage, relationship, params): DocType[K] | undefined => {
+            (_state: RootState, _id: string, _relationship: K, params?: SelectorParams<ExtractDocType<DocType[K]>>) => params ? JSON.stringify(params) : undefined,
+          ], (state, linkage, relationship, _params): DocType[K] | undefined => {
+            const params = _params ? JSON.parse(_params) as SelectorParams<ExtractDocType<DocType[K]>> : undefined;
+
             if (Array.isArray(linkage)) {
               const docs = linkage
                 .map((identifier) => {

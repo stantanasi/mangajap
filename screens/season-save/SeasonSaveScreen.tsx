@@ -29,7 +29,6 @@ export default function SeasonSaveScreen(props: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (season?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(season?.toObject());
   }, [season]);
 

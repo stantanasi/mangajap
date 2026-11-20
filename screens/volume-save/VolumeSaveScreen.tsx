@@ -30,7 +30,6 @@ export default function VolumeSaveScreen(props: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (volume?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(volume?.toObject());
   }, [volume]);
 

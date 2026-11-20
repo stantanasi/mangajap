@@ -31,7 +31,6 @@ export default function StaffSaveScreen(props: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (staff?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
     setForm(staff?.toObject());
   }, [staff]);
 
