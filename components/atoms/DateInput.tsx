@@ -8,7 +8,7 @@ type Props = {
   value: Date | undefined;
   onValueChange: (value: Date | undefined) => void;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function DateInput({ label, value, onValueChange, style }: Props) {
   const [visiblePicker, setVisiblePicker] = useState(false);

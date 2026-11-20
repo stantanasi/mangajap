@@ -52,7 +52,7 @@ class EpisodeEntry extends model<IEpisodeEntry>(EpisodeEntrySchema) {
       if (episodeEntry.isDeleted) {
         dispatch(EpisodeEntry.redux.actions.removeOne(episodeEntry));
         dispatch(Episode.redux.actions.relations['episode-entry'].remove(episode.id, episodeEntry));
-        return
+        return;
       }
 
       dispatch(EpisodeEntry.redux.actions.saveOne(episodeEntry));

@@ -117,9 +117,9 @@ export default function AnimeTab({ isLoading, user, style }: Props) {
             isLoading={isLoading}
             anime={item}
             onPress={() => router.navigate({
-          pathname: '/anime/[animeId]',
-          params: { animeId: item.id },
-        })}
+              pathname: '/anime/[animeId]',
+              params: { animeId: item.id },
+            })}
             showCheckbox={false}
           />
         )}
@@ -133,9 +133,9 @@ export default function AnimeTab({ isLoading, user, style }: Props) {
         <>
           <Pressable
             onPress={() => router.navigate({
-          pathname: '/profile/[userId]/anime-favorites',
-          params: { userId: user.id },
-        })}
+              pathname: '/profile/[userId]/anime-favorites',
+              params: { userId: user.id },
+            })}
             style={{
               alignItems: 'center',
               flexDirection: 'row',
@@ -172,9 +172,9 @@ export default function AnimeTab({ isLoading, user, style }: Props) {
                 isLoading={isLoading}
                 anime={item}
                 onPress={() => router.navigate({
-          pathname: '/anime/[animeId]',
-          params: { animeId: item.id },
-        })}
+                  pathname: '/anime/[animeId]',
+                  params: { animeId: item.id },
+                })}
                 showCheckbox={false}
               />
             )}

@@ -8,7 +8,7 @@ type Props = {
   /** Background color of the progress bar container (default: #bbb) */
   backgroundColor?: ColorValue;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function ProgressBar({
   progress,

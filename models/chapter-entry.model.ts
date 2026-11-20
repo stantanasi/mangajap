@@ -52,7 +52,7 @@ class ChapterEntry extends model<IChapterEntry>(ChapterEntrySchema) {
       if (chapterEntry.isDeleted) {
         dispatch(ChapterEntry.redux.actions.removeOne(chapterEntry));
         dispatch(Chapter.redux.actions.relations['chapter-entry'].remove(chapter.id, chapterEntry));
-        return
+        return;
       }
 
       dispatch(ChapterEntry.redux.actions.saveOne(chapterEntry));

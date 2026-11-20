@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextProps } from 'react-native';
 
-type Props = TextProps
+type Props = TextProps;
 
 export default function InputLabel({ style, ...props }: Props) {
   return (

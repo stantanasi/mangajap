@@ -7,7 +7,7 @@ type Props = PressableProps & {
   label?: string;
   size?: 'small' | 'large';
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function FloatingActionButton({
   icon,

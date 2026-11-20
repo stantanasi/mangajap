@@ -6,7 +6,7 @@ type Props = TextInputProps & {
   label?: string;
   error?: string;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function TextInput({ label, error, style, ...props }: Props) {
   const [height, setHeight] = useState(0);

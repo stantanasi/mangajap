@@ -9,7 +9,7 @@ type Props = Omit<TextInputProps, 'value' | 'onChangeText'> & {
   decimal?: boolean;
   negative?: boolean;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function NumberInput({
   label,
@@ -41,14 +41,14 @@ export default function NumberInput({
             ? /^\d*\.?\d*$/
             : !decimal && negative
               ? /^-?\d*$/
-              : /^\d*$/
+              : /^\d*$/;
 
         if (regex.test(text)) {
-          setText(text)
+          setText(text);
 
-          const value = +text
+          const value = +text;
           if (!isNaN(value)) {
-            onValueChange(value)
+            onValueChange(value);
           }
         }
       }}

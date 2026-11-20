@@ -12,7 +12,7 @@ type Props = {
   onValueChange?: (value: Date) => void;
   onRequestClose: () => void;
   visible: boolean;
-}
+};
 
 export default function DateTimePicker({
   value,
@@ -308,7 +308,7 @@ export default function DateTimePicker({
 
         <Text
           onPress={() => {
-            if (!selectedDate) return
+            if (!selectedDate) return;
 
             const date = new Date(
               selectedDate.getFullYear(),

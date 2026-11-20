@@ -42,7 +42,7 @@ class Follow extends model<IFollow>(FollowSchema) {
         dispatch(Follow.redux.actions.removeOne(follow));
         dispatch(User.redux.actions.relations.following.remove(follower.id, follow));
         dispatch(User.redux.actions.relations.followers.remove(followed.id, follow));
-        return
+        return;
       }
 
       dispatch(Follow.redux.actions.saveOne(follow));

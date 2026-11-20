@@ -6,7 +6,7 @@ export default function AutoHeightImage(props: ImageProps) {
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
-    if (!props.source) return
+    if (!props.source) return;
 
     let uri = '';
     if (Array.isArray(props.source)) {

@@ -6,7 +6,7 @@ type Props = PropsWithChildren & {
   visible: boolean;
   position?: 'center' | 'flex-start' | 'flex-end';
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function Modal({
   children,

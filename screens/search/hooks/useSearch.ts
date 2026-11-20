@@ -1,8 +1,7 @@
-import { ComponentProps, useState } from 'react';
+import { useState } from 'react';
 import { useAuthContext } from '../../../contexts/AuthContext';
 import { Anime, Manga, People, User } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
-import SearchScreen from '../SearchScreen';
 
 export const useSearch = () => {
   const dispatch = useAppDispatch();

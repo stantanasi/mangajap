@@ -52,7 +52,7 @@ class VolumeEntry extends model<IVolumeEntry>(VolumeEntrySchema) {
       if (volumeEntry.isDeleted) {
         dispatch(VolumeEntry.redux.actions.removeOne(volumeEntry));
         dispatch(Volume.redux.actions.relations['volume-entry'].remove(volume.id, volumeEntry));
-        return
+        return;
       }
 
       dispatch(VolumeEntry.redux.actions.saveOne(volumeEntry));

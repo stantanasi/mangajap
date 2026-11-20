@@ -4,7 +4,7 @@ import { User } from '../../models';
 type Props = PressableProps & {
   user: User;
   style?: StyleProp<ViewStyle>;
-}
+};
 
 export default function UserCard({ user, style, ...props }: Props) {
   return (
