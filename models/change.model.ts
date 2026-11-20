@@ -1,4 +1,3 @@
-import { Theme } from '@react-navigation/native';
 import { model, Schema } from '@stantanasi/jsonapi-client';
 import { createReduxHelpers } from '../redux/helpers/createReduxHelpers';
 import Anime from './anime.model';
@@ -10,6 +9,7 @@ import Manga from './manga.model';
 import People from './people.model';
 import Season from './season.model';
 import Staff from './staff.model';
+import Theme from './theme.model';
 import User from './user.model';
 import Volume from './volume.model';
 
