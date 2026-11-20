@@ -1,14 +1,10 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { StackActions, StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-type Props = StaticScreenProps<undefined>;
-
-export default function NotFoundScreen({ route }: Props) {
-  const navigation = useNavigation();
-
+export default function NotFoundScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -69,7 +65,7 @@ export default function NotFoundScreen({ route }: Props) {
         </Text>
 
         <Pressable
-          onPress={() => navigation.dispatch(StackActions.replace('Main'))}
+          onPress={() => router.replace('/')}
           style={{
             width: '100%',
             alignItems: 'center',

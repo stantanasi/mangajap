@@ -4,26 +4,30 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import MangaSaveScreen from '../MangaSaveScreen';
 
-export const useMangaSave = (params: ComponentProps<typeof MangaSaveScreen>['route']['params']) => {
+export const useMangaSave = ({
+  mangaId,
+}: ComponentProps<typeof MangaSaveScreen>) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   const manga = (() => {
-    if (!params) {
-      return useMemo(() => new Manga({
-        genres: [],
-        themes: [],
-      }), [params]);
+    if (mangaId) {
+      return useAppSelector((state) => {
+        if (!mangaId) return;
+
+        return Manga.redux.selectors.selectById(state, mangaId, {
+          include: {
+            genres: true,
+            themes: true,
+          },
+        });
+      });
     }
 
-    return useAppSelector((state) => {
-      return Manga.redux.selectors.selectById(state, params.id, {
-        include: {
-          genres: true,
-          themes: true,
-        },
-      });
-    });
+    return useMemo(() => new Manga({
+      genres: [],
+      themes: [],
+    }), [mangaId]);
   })();
 
   const genres = useAppSelector((state) => {
@@ -36,8 +40,8 @@ export const useMangaSave = (params: ComponentProps<typeof MangaSaveScreen>['rou
 
   useEffect(() => {
     const prepare = async () => {
-      if (params) {
-        const manga = await Manga.findById(params.id)
+      if (mangaId) {
+        const manga = await Manga.findById(mangaId)
           .include({
             genres: true,
             themes: true,
@@ -67,7 +71,7 @@ export const useMangaSave = (params: ComponentProps<typeof MangaSaveScreen>['rou
     prepare()
       .catch((err) => notify.error('manga_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [mangaId]);
 
   return { isLoading, manga, genres, themes };
 };

@@ -1,4 +1,3 @@
-import { StaticScreenProps } from '@react-navigation/native';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,10 +10,8 @@ import MangaTab from './tabs/MangaTab';
 import PeopleTab from './tabs/PeopleTab';
 import UserTab from './tabs/UserTab';
 
-type Props = StaticScreenProps<undefined>;
-
-export default function SearchScreen({ route }: Props) {
-  const { animeTab, mangaTab, peopleTab, userTab } = useSearch(route.params);
+export default function SearchScreen() {
+  const { animeTab, mangaTab, peopleTab, userTab } = useSearch();
 
   const categories = [
     { label: 'Anime', value: 'anime' },

@@ -4,19 +4,22 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import ChapterSaveScreen from '../ChapterSaveScreen';
 
-export const useChapterSave = (params: ComponentProps<typeof ChapterSaveScreen>['route']['params']) => {
+export const useChapterSave = ({
+  mangaId,
+  chapterId,
+}: ComponentProps<typeof ChapterSaveScreen>) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   const chapter = (() => {
-    if ('mangaId' in params) {
+    if (!chapterId) {
       return useMemo(() => new Chapter({
-        manga: new Manga({ id: params.mangaId }),
-      }), [params]);
+        manga: new Manga({ id: mangaId }),
+      }), [mangaId]);
     }
 
     return useAppSelector((state) => {
-      return Chapter.redux.selectors.selectById(state, params.chapterId, {
+      return Chapter.redux.selectors.selectById(state, chapterId, {
         include: {
           manga: true,
           volume: true,
@@ -32,14 +35,14 @@ export const useChapterSave = (params: ComponentProps<typeof ChapterSaveScreen>[
 
   useEffect(() => {
     const prepare = async () => {
-      if ('mangaId' in params) {
-        const volumes = await Manga.findById(params.mangaId).get('volumes')
+      if (!chapterId) {
+        const volumes = await Manga.findById(mangaId).get('volumes')
           .limit(1000);
 
         dispatch(Volume.redux.actions.setMany(volumes));
-        dispatch(Manga.redux.actions.relations.volumes.addMany(params.mangaId, volumes));
+        dispatch(Manga.redux.actions.relations.volumes.addMany(mangaId, volumes));
       } else {
-        const chapter = await Chapter.findById(params.chapterId)
+        const chapter = await Chapter.findById(chapterId)
           .include({
             manga: {
               volumes: true,
@@ -56,7 +59,7 @@ export const useChapterSave = (params: ComponentProps<typeof ChapterSaveScreen>[
     prepare()
       .catch((err) => notify.error('chapter_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [mangaId, chapterId]);
 
   return { isLoading, chapter, volumes };
 };

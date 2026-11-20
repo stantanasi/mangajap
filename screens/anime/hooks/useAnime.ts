@@ -5,13 +5,15 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import AnimeScreen from '../AnimeScreen';
 
-export const useAnime = (params: ComponentProps<typeof AnimeScreen>['route']['params']) => {
+export const useAnime = ({
+  animeId,
+}: ComponentProps<typeof AnimeScreen>) => {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
 
   const anime = useAppSelector((state) => {
-    return Anime.redux.selectors.selectById(state, params.id, {
+    return Anime.redux.selectors.selectById(state, animeId, {
       include: {
         genres: true,
         themes: true,
@@ -47,7 +49,7 @@ export const useAnime = (params: ComponentProps<typeof AnimeScreen>['route']['pa
 
   useEffect(() => {
     const prepare = async () => {
-      const anime = await Anime.findById(params.id)
+      const anime = await Anime.findById(animeId)
         .include({
           genres: true,
           themes: true,
@@ -72,7 +74,7 @@ export const useAnime = (params: ComponentProps<typeof AnimeScreen>['route']['pa
     prepare()
       .catch((err) => notify.error('anime_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [animeId]);
 
   return { isLoading, anime };
 };

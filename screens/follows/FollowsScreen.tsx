@@ -1,4 +1,4 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,14 +8,13 @@ import UserCard from '../../components/molecules/UserCard';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
 import { useFollows } from './hooks/useFollows';
 
-type Props = StaticScreenProps<{
+type Props = {
   type: 'followers' | 'following';
   userId: string;
-}>;
+};
 
-export default function FollowsScreen({ route }: Props) {
-  const navigation = useNavigation();
-  const { isLoading, follows } = useFollows(route.params);
+export default function FollowsScreen(props: Props) {
+  const { isLoading, follows } = useFollows(props);
 
   if (!follows) {
     return (
@@ -26,8 +25,8 @@ export default function FollowsScreen({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <Header
-        title={route.params.type === 'followers' ? 'Abonnés'
-          : route.params.type === 'following' ? 'Abonnements'
+        title={props.type === 'followers' ? 'Abonnés'
+          : props.type === 'following' ? 'Abonnements'
             : ''}
       />
 
@@ -35,14 +34,17 @@ export default function FollowsScreen({ route }: Props) {
         data={follows}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => {
-          const user = route.params.type === 'followers'
+          const user = props.type === 'followers'
             ? item.follower
             : item.followed;
           if (!user) return null;
           return (
             <UserCard
               user={user}
-              onPress={() => navigation.navigate('Profile', { id: user.id })}
+              onPress={() => router.navigate({
+                pathname: '/profile/[userId]',
+                params: { userId: user.id },
+              })}
               style={{
                 marginHorizontal: 16,
               }}

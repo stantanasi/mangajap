@@ -1,11 +1,10 @@
-import { ComponentProps, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthContext } from '../../../contexts/AuthContext';
 import { MangaEntry, User } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
-import AgendaMangaScreen from '../AgendaMangaScreen';
 
-export const useAgendaManga = (params: ComponentProps<typeof AgendaMangaScreen>['route']['params']) => {
+export const useAgendaManga = () => {
   const dispatch = useAppDispatch();
   const { user } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);

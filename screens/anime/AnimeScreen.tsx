@@ -1,5 +1,5 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useEffect } from 'react';
+import { router } from 'expo-router';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProgressBar from '../../components/atoms/ProgressBar';
@@ -13,23 +13,14 @@ import { useAnime } from './hooks/useAnime';
 import AboutTab from './tabs/AboutTab';
 import EpisodesTab from './tabs/EpisodesTab';
 
-type Props = StaticScreenProps<{
-  id: string;
-}>;
+type Props = {
+  animeId: string;
+};
 
-export default function AnimeScreen({ route }: Props) {
-  const navigation = useNavigation();
+export default function AnimeScreen(props: Props) {
   const { isOffline } = useAppContext();
   const { user } = useAuthContext();
-  const { isLoading, anime } = useAnime(route.params);
-
-  useEffect(() => {
-    if (!anime) return;
-
-    navigation.setOptions({
-      title: `${anime.title} - Anime | MangaJap`,
-    });
-  }, [anime]);
+  const { isLoading, anime } = useAnime(props);
 
   if (!anime) {
     return (
@@ -44,7 +35,10 @@ export default function AnimeScreen({ route }: Props) {
         menuItems={!isOffline && !isLoading && user ? [
           {
             icon: 'edit',
-            onPress: () => navigation.navigate('AnimeUpdate', { id: anime.id }),
+            onPress: () => router.navigate({
+              pathname: '/anime/[animeId]/edit',
+              params: { animeId: anime.id },
+            }),
           },
         ] : []}
         TabBarComponent={(props) => (<>

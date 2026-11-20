@@ -5,12 +5,14 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import ProfileScreen from '../ProfileScreen';
 
-export const useProfile = (params: ComponentProps<typeof ProfileScreen>['route']['params']) => {
+export const useProfile = ({
+  ...params
+}: ComponentProps<typeof ProfileScreen>) => {
   const dispatch = useAppDispatch();
   const { user: authenticatedUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
 
-  const userId = params?.id ?? authenticatedUser?.id;
+  const userId = params?.userId ?? authenticatedUser?.id;
 
   const user = useAppSelector((state) => {
     if (!userId) {

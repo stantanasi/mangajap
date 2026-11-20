@@ -1,20 +1,25 @@
-import { ComponentProps, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuthContext } from '../../../contexts/AuthContext';
 import { User } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
-import ProfileEditScreen from '../ProfileEditScreen';
 
-export const useProfileEdit = (params: ComponentProps<typeof ProfileEditScreen>['route']['params']) => {
+export const useProfileEdit = () => {
   const dispatch = useAppDispatch();
+  const { user: authenticatedUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
 
   const user = useAppSelector((state) => {
-    return User.redux.selectors.selectById(state, params.id);
+    if (!authenticatedUser) return undefined;
+
+    return User.redux.selectors.selectById(state, authenticatedUser.id);
   });
 
   useEffect(() => {
     const prepare = async () => {
-      const user = await User.findById(params.id);
+      if (!authenticatedUser) return;
+
+      const user = await User.findById(authenticatedUser.id);
 
       dispatch(User.redux.actions.setOne(user));
     };
@@ -23,7 +28,7 @@ export const useProfileEdit = (params: ComponentProps<typeof ProfileEditScreen>[
     prepare()
       .catch((err) => notify.error('profile_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [authenticatedUser]);
 
   return { isLoading, user };
 };

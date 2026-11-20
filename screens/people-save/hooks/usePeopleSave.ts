@@ -4,25 +4,28 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import PeopleSaveScreen from '../PeopleSaveScreen';
 
-export const usePeopleSave = (params: ComponentProps<typeof PeopleSaveScreen>['route']['params']) => {
+export const usePeopleSave = ({
+  peopleId,
+}: ComponentProps<typeof PeopleSaveScreen>) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   const people = (() => {
-    if (!params) {
-      return useMemo(() => new People(), [params]);
+    if (!peopleId) {
+      return useMemo(() => new People(
+      ), [peopleId]);
     }
 
     return useAppSelector((state) => {
-      return People.redux.selectors.selectById(state, params.peopleId);
+      return People.redux.selectors.selectById(state, peopleId);
     });
   })();
 
   useEffect(() => {
     const prepare = async () => {
-      if (!params) return;
+      if (!peopleId) return;
 
-      const people = await People.findById(params.peopleId);
+      const people = await People.findById(peopleId);
 
       dispatch(People.redux.actions.setOne(people));
     };
@@ -31,7 +34,7 @@ export const usePeopleSave = (params: ComponentProps<typeof PeopleSaveScreen>['r
     prepare()
       .catch((err) => notify.error('people_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [peopleId]);
 
   return { isLoading, people };
 };

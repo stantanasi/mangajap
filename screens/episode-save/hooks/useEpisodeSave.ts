@@ -4,19 +4,22 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import EpisodeSaveScreen from '../EpisodeSaveScreen';
 
-export const useEpisodeSave = (params: ComponentProps<typeof EpisodeSaveScreen>['route']['params']) => {
+export const useEpisodeSave = ({
+  animeId,
+  episodeId,
+}: ComponentProps<typeof EpisodeSaveScreen>) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   const episode = (() => {
-    if ('animeId' in params) {
+    if (!episodeId) {
       return useMemo(() => new Episode({
-        anime: new Anime({ id: params.animeId }),
-      }), [params]);
+        anime: new Anime({ id: animeId }),
+      }), [animeId, episodeId]);
     }
 
     return useAppSelector((state) => {
-      return Episode.redux.selectors.selectById(state, params.episodeId, {
+      return Episode.redux.selectors.selectById(state, episodeId, {
         include: {
           anime: true,
           season: true,
@@ -32,14 +35,14 @@ export const useEpisodeSave = (params: ComponentProps<typeof EpisodeSaveScreen>[
 
   useEffect(() => {
     const prepare = async () => {
-      if ('animeId' in params) {
-        const seasons = await Anime.findById(params.animeId).get('seasons')
+      if (!episodeId) {
+        const seasons = await Anime.findById(animeId).get('seasons')
           .limit(1000);
 
         dispatch(Season.redux.actions.setMany(seasons));
-        dispatch(Anime.redux.actions.relations.seasons.addMany(params.animeId, seasons));
+        dispatch(Anime.redux.actions.relations.seasons.addMany(animeId, seasons));
       } else {
-        const episode = await Episode.findById(params.episodeId)
+        const episode = await Episode.findById(episodeId)
           .include({
             anime: {
               seasons: true,
@@ -55,7 +58,7 @@ export const useEpisodeSave = (params: ComponentProps<typeof EpisodeSaveScreen>[
     prepare()
       .catch((err) => notify.error('episode_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [animeId, episodeId]);
 
   return { isLoading, episode, seasons };
 };

@@ -1,5 +1,5 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,25 +15,16 @@ import { useAppDispatch } from '../../redux/store';
 import notify from '../../utils/notify';
 import { usePeopleSave } from './hooks/usePeopleSave';
 
-type Props = StaticScreenProps<{
-  peopleId: string;
-} | undefined>;
+type Props = {
+  peopleId?: string;
+};
 
-export default function PeopleSaveScreen({ route }: Props) {
+export default function PeopleSaveScreen(props: Props) {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
-  const { isLoading, people } = usePeopleSave(route.params);
+  const { isLoading, people } = usePeopleSave(props);
   const [form, setForm] = useState<Partial<Object<IPeople>> | undefined>(people?.toObject());
   const [isSaving, setIsSaving] = useState(false);
-
-  useEffect(() => {
-    if (!people || people.isNew) return;
-
-    navigation.setOptions({
-      title: `Modifier - ${people.name} - Personnalité | MangaJap`,
-    });
-  }, [people]);
 
   useEffect(() => {
     if (people?.updatedAt?.toISOString() === form?.updatedAt?.toISOString()) return;
@@ -53,10 +44,10 @@ export default function PeopleSaveScreen({ route }: Props) {
 
     People.redux.sync(dispatch, people);
 
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else if (typeof window !== 'undefined') {
-      window.history.back();
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/');
     }
   };
 
@@ -113,10 +104,10 @@ export default function PeopleSaveScreen({ route }: Props) {
       <Modal
         animationType="fade"
         onRequestClose={() => {
-          if (navigation.canGoBack()) {
-            navigation.goBack();
-          } else if (typeof window !== 'undefined') {
-            window.history.back();
+          if (router.canGoBack()) {
+            router.back();
+          } else {
+            router.replace('/');
           }
         }}
         transparent

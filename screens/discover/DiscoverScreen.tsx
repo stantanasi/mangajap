@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
@@ -12,18 +12,15 @@ import { useAppContext } from '../../contexts/AppContext';
 import { useAuthContext } from '../../contexts/AuthContext';
 import { useDiscover } from './hooks/useDiscover';
 
-type Props = StaticScreenProps<undefined>;
-
-export default function DiscoverScreen({ route }: Props) {
-  const navigation = useNavigation();
+export default function DiscoverScreen() {
   const { isOffline } = useAppContext();
   const { user } = useAuthContext();
-  const { isLoading, peoples, animes, mangas } = useDiscover(route.params);
+  const { isLoading, peoples, animes, mangas } = useDiscover();
 
   return (
     <SafeAreaView style={styles.container}>
       <Pressable
-        onPress={() => navigation.navigate('Search')}
+        onPress={() => router.navigate('/search')}
         style={styles.search}
       >
         <MaterialIcons
@@ -69,7 +66,10 @@ export default function DiscoverScreen({ route }: Props) {
             renderItem={({ item }) => (
               <PeopleCard
                 people={item}
-                onPress={() => navigation.navigate('People', { id: item.id })}
+                onPress={() => router.navigate({
+                  pathname: '/people/[peopleId]',
+                  params: { peopleId: item.id },
+                })}
               />
             )}
             ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
@@ -97,7 +97,10 @@ export default function DiscoverScreen({ route }: Props) {
               <AnimeCard
                 isLoading={isLoading}
                 anime={item}
-                onPress={() => navigation.navigate('Anime', { id: item.id })}
+                onPress={() => router.navigate({
+                  pathname: '/anime/[animeId]',
+                  params: { animeId: item.id },
+                })}
               />
             )}
             ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
@@ -125,7 +128,10 @@ export default function DiscoverScreen({ route }: Props) {
               <MangaCard
                 isLoading={isLoading}
                 manga={item}
-                onPress={() => navigation.navigate('Manga', { id: item.id })}
+                onPress={() => router.navigate({
+                  pathname: '/manga/[mangaId]',
+                  params: { mangaId: item.id },
+                })}
               />
             )}
             ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
@@ -142,17 +148,17 @@ export default function DiscoverScreen({ route }: Props) {
             {
               icon: 'tv',
               label: 'Animé',
-              onPress: () => navigation.navigate('AnimeCreate'),
+              onPress: () => router.navigate('/anime/create'),
             },
             {
               icon: 'menu-book',
               label: 'Manga',
-              onPress: () => navigation.navigate('MangaCreate'),
+              onPress: () => router.navigate('/manga/create'),
             },
             {
               icon: 'person',
               label: 'Personnalité',
-              onPress: () => navigation.navigate('PeopleCreate'),
+              onPress: () => router.navigate('/people/create'),
             },
           ]}
         />

@@ -1,4 +1,4 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,12 +8,9 @@ import { useAuthContext } from '../../contexts/AuthContext';
 import MangaAgendaCard from './components/MangaAgendaCard';
 import { useAgendaManga } from './hooks/useAgendaManga';
 
-type Props = StaticScreenProps<undefined>;
-
-export default function AgendaMangaScreen({ route }: Props) {
-  const navigation = useNavigation();
+export default function AgendaMangaScreen() {
   const { user } = useAuthContext();
-  const { isLoading, mangaLibrary } = useAgendaManga(route.params);
+  const { isLoading, mangaLibrary } = useAgendaManga();
 
   const mangas = mangaLibrary
     ?.map((entry) => entry.manga?.copy({
@@ -37,7 +34,7 @@ export default function AgendaMangaScreen({ route }: Props) {
         </Text>
 
         <Text
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() => router.navigate('/profile')}
           style={{
             borderColor: '#000',
             borderRadius: 360,
@@ -70,7 +67,10 @@ export default function AgendaMangaScreen({ route }: Props) {
         renderItem={({ item }) => (
           <MangaAgendaCard
             manga={item}
-            onPress={() => navigation.navigate('Manga', { id: item.id })}
+            onPress={() => router.navigate({
+              pathname: '/manga/[mangaId]',
+              params: { mangaId: item.id },
+            })}
             style={{
               marginHorizontal: 16,
             }}

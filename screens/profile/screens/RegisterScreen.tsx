@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,7 +12,6 @@ type Props = {
 };
 
 export default function RegisterScreen({ onNavigateToLogin, style }: Props) {
-  const navigation = useNavigation();
   const { register } = useAuthContext();
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
@@ -79,10 +78,10 @@ export default function RegisterScreen({ onNavigateToLogin, style }: Props) {
           setIsRegistering(true);
 
           register(pseudo, email, password)
-            .then(() => navigation.reset({
-              index: 0,
-              routes: [{ name: 'Main' }],
-            }))
+            .then(() => {
+              if (router.canDismiss()) router.dismissAll();
+              router.replace('/');
+            })
             .catch((err) => notify.error('auth_register', err))
             .finally(() => setIsRegistering(false));
         }}

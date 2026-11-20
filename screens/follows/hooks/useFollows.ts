@@ -4,13 +4,16 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import FollowsScreen from '../FollowsScreen';
 
-export const useFollows = (params: ComponentProps<typeof FollowsScreen>['route']['params']) => {
+export const useFollows = ({
+  type,
+  userId,
+}: ComponentProps<typeof FollowsScreen>) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   const follows = useAppSelector((state) => {
-    if (params.type === 'followers') {
-      return User.redux.selectors.selectRelation(state, params.userId, 'followers', {
+    if (type === 'followers') {
+      return User.redux.selectors.selectRelation(state, userId, 'followers', {
         include: {
           follower: true,
         },
@@ -18,8 +21,8 @@ export const useFollows = (params: ComponentProps<typeof FollowsScreen>['route']
           createdAt: 'desc',
         },
       });
-    } else if (params.type === 'following') {
-      return User.redux.selectors.selectRelation(state, params.userId, 'following', {
+    } else if (type === 'following') {
+      return User.redux.selectors.selectRelation(state, userId, 'following', {
         include: {
           followed: true,
         },
@@ -34,22 +37,22 @@ export const useFollows = (params: ComponentProps<typeof FollowsScreen>['route']
 
   useEffect(() => {
     const prepare = async () => {
-      if (params.type === 'followers') {
-        const followers = await User.findById(params.userId).get('followers')
+      if (type === 'followers') {
+        const followers = await User.findById(userId).get('followers')
           .include({ follower: true })
           .sort({ createdAt: 'desc' })
           .limit(1000);
 
         dispatch(Follow.redux.actions.setMany(followers));
-        dispatch(User.redux.actions.relations['followers'].addMany(params.userId, followers));
-      } else if (params.type === 'following') {
-        const following = await User.findById(params.userId).get('following')
+        dispatch(User.redux.actions.relations['followers'].addMany(userId, followers));
+      } else if (type === 'following') {
+        const following = await User.findById(userId).get('following')
           .include({ followed: true })
           .sort({ createdAt: 'desc' })
           .limit(1000);
 
         dispatch(Follow.redux.actions.setMany(following));
-        dispatch(User.redux.actions.relations['following'].addMany(params.userId, following));
+        dispatch(User.redux.actions.relations['following'].addMany(userId, following));
       }
     };
 
@@ -57,7 +60,7 @@ export const useFollows = (params: ComponentProps<typeof FollowsScreen>['route']
     prepare()
       .catch((err) => notify.error('follows_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [type, userId]);
 
   return { isLoading, follows };
 };

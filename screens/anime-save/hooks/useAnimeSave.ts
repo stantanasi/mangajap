@@ -4,20 +4,22 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import AnimeSaveScreen from '../AnimeSaveScreen';
 
-export const useAnimeSave = (params: ComponentProps<typeof AnimeSaveScreen>['route']['params']) => {
+export const useAnimeSave = ({
+  animeId,
+}: ComponentProps<typeof AnimeSaveScreen>) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   const anime = (() => {
-    if (!params) {
+    if (!animeId) {
       return useMemo(() => new Anime({
         genres: [],
         themes: [],
-      }), [params]);
+      }), [animeId]);
     }
 
     return useAppSelector((state) => {
-      return Anime.redux.selectors.selectById(state, params.id, {
+      return Anime.redux.selectors.selectById(state, animeId, {
         include: {
           genres: true,
           themes: true,
@@ -36,8 +38,8 @@ export const useAnimeSave = (params: ComponentProps<typeof AnimeSaveScreen>['rou
 
   useEffect(() => {
     const prepare = async () => {
-      if (params) {
-        const anime = await Anime.findById(params.id)
+      if (animeId) {
+        const anime = await Anime.findById(animeId)
           .include({
             genres: true,
             themes: true,
@@ -67,7 +69,7 @@ export const useAnimeSave = (params: ComponentProps<typeof AnimeSaveScreen>['rou
     prepare()
       .catch((err) => notify.error('anime_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [animeId]);
 
   return { isLoading, anime, genres, themes };
 };

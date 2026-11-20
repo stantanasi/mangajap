@@ -4,7 +4,7 @@ import { Anime, Manga, People, User } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import SearchScreen from '../SearchScreen';
 
-export const useSearch = (params: ComponentProps<typeof SearchScreen>['route']['params']) => {
+export const useSearch = () => {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useAuthContext();
   const [animeTab, setAnimeTab] = useState<{

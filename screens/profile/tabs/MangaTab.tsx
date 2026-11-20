@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { FlatList, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import MangaCard from '../../../components/molecules/MangaCard';
@@ -13,8 +13,6 @@ type Props = {
 };
 
 export default function AnimeTab({ isLoading, user, style }: Props) {
-  const navigation = useNavigation();
-
   return (
     <Tabs.ScrollView style={[styles.container, style]}>
       <Text
@@ -80,7 +78,10 @@ export default function AnimeTab({ isLoading, user, style }: Props) {
       />
 
       <Pressable
-        onPress={() => navigation.navigate('ProfileLibrary', { type: 'manga-library', userId: user.id })}
+        onPress={() => router.navigate({
+          pathname: '/profile/[userId]/manga-library',
+          params: { userId: user.id },
+        })}
         style={{
           alignItems: 'center',
           flexDirection: 'row',
@@ -116,7 +117,10 @@ export default function AnimeTab({ isLoading, user, style }: Props) {
           <MangaCard
             isLoading={isLoading}
             manga={item}
-            onPress={() => navigation.navigate('Manga', { id: item.id })}
+            onPress={() => router.navigate({
+              pathname: '/manga/[mangaId]',
+              params: { mangaId: item.id },
+            })}
             showCheckbox={false}
           />
         )}
@@ -129,7 +133,10 @@ export default function AnimeTab({ isLoading, user, style }: Props) {
       {(user['manga-favorites']?.length ?? 0) > 0 ? (
         <>
           <Pressable
-            onPress={() => navigation.navigate('ProfileLibrary', { type: 'manga-favorites', userId: user.id })}
+            onPress={() => router.navigate({
+              pathname: '/profile/[userId]/manga-favorites',
+              params: { userId: user.id },
+            })}
             style={{
               alignItems: 'center',
               flexDirection: 'row',
@@ -165,7 +172,10 @@ export default function AnimeTab({ isLoading, user, style }: Props) {
               <MangaCard
                 isLoading={isLoading}
                 manga={item}
-                onPress={() => navigation.navigate('Manga', { id: item.id })}
+                onPress={() => router.navigate({
+                  pathname: '/manga/[mangaId]',
+                  params: { mangaId: item.id },
+                })}
                 showCheckbox={false}
               />
             )}

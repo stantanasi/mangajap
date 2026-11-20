@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useAppContext } from '../../../contexts/AppContext';
@@ -6,9 +6,8 @@ import { useAuthContext } from '../../../contexts/AuthContext';
 import { Follow, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 import notify from '../../../utils/notify';
-import ProfileScreen from '../ProfileScreen';
 
-type Props = React.ComponentProps<typeof ProfileScreen> & {
+type Props = {
   isLoading: boolean;
   user: User;
   followingUser: Follow | null;
@@ -18,14 +17,12 @@ type Props = React.ComponentProps<typeof ProfileScreen> & {
 
 export default function Header({
   isLoading,
-  route,
   user,
   followingUser,
   followedByUser,
   style,
 }: Props) {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
   const { user: authenticatedUser } = useAuthContext();
   const [isFollowUpdating, setIsFollowUpdating] = useState(false);
@@ -75,7 +72,10 @@ export default function Header({
 
       <View style={styles.metas}>
         <Pressable
-          onPress={() => navigation.navigate('ProfileFollows', { type: 'followers', userId: user.id })}
+          onPress={() => router.navigate({
+            pathname: '/profile/[userId]/followers',
+            params: { userId: user.id },
+          })}
           style={styles.meta}
         >
           <Text style={styles.metaValue}>
@@ -89,7 +89,10 @@ export default function Header({
         <View style={styles.metaDivider} />
 
         <Pressable
-          onPress={() => navigation.navigate('ProfileFollows', { type: 'following', userId: user.id })}
+          onPress={() => router.navigate({
+            pathname: '/profile/[userId]/following',
+            params: { userId: user.id },
+          })}
           style={styles.meta}
         >
           <Text style={styles.metaValue}>

@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
@@ -19,8 +19,6 @@ export default function TopBar({
   menuItems = [],
   style,
 }: Props) {
-  const navigation = useNavigation();
-
   return (
     <View style={[styles.container, style]}>
       {canGoBack ? (
@@ -29,10 +27,10 @@ export default function TopBar({
           color="#000"
           size={24}
           onPress={() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else if (typeof window !== 'undefined') {
-              window.history.back();
+            if (router.canGoBack()) {
+              router.back();
+            } else {
+              router.replace('/');
             }
           }}
           style={styles.icon}

@@ -1,5 +1,5 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,17 +17,15 @@ import { useAppDispatch } from '../../redux/store';
 import notify from '../../utils/notify';
 import { useVolumeSave } from './hooks/useVolumeSave';
 
-type Props = StaticScreenProps<{
+type Props = {
   mangaId: string;
-} | {
-  volumeId: string;
-}>;
+  volumeId?: string;
+};
 
-export default function VolumeSaveScreen({ route }: Props) {
+export default function VolumeSaveScreen(props: Props) {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
-  const { isLoading, volume } = useVolumeSave(route.params);
+  const { isLoading, volume } = useVolumeSave(props);
   const [form, setForm] = useState<Partial<Object<IVolume>> | undefined>(volume?.toObject());
   const [isSaving, setIsSaving] = useState(false);
 
@@ -49,11 +47,11 @@ export default function VolumeSaveScreen({ route }: Props) {
 
     Volume.redux.sync(dispatch, volume);
 
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else if (typeof window !== 'undefined') {
-      window.history.back();
-    }
+    if (router.canGoBack()) {
+                router.back();
+              } else {
+                router.replace('/');
+              }
   };
 
   return (
@@ -140,11 +138,11 @@ export default function VolumeSaveScreen({ route }: Props) {
       <Modal
         animationType="fade"
         onRequestClose={() => {
-          if (navigation.canGoBack()) {
-            navigation.goBack();
-          } else if (typeof window !== 'undefined') {
-            window.history.back();
-          }
+          if (router.canGoBack()) {
+                      router.back();
+                    } else {
+                      router.replace('/');
+                    }
         }}
         transparent
         visible={isSaving}

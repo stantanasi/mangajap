@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { ActivityIndicator, FlatList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import AnimeCard from '../../../components/molecules/AnimeCard';
@@ -14,7 +14,6 @@ type Props = {
 };
 
 export default function AnimeTab({ isLoading, list, onLoadMore, hasMore, style }: Props) {
-  const navigation = useNavigation();
 
   if (isLoading) {
     return (
@@ -31,7 +30,10 @@ export default function AnimeTab({ isLoading, list, onLoadMore, hasMore, style }
           <AnimeCard
             isLoading={isLoading}
             anime={item}
-            onPress={() => navigation.navigate('Anime', { id: item.id })}
+            onPress={() => router.navigate({
+              pathname: '/anime/[animeId]',
+              params: { animeId: item.id },
+            })}
             variant="horizontal"
             style={{
               marginHorizontal: 16,

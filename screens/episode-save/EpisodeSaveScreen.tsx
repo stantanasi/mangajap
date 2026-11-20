@@ -1,5 +1,5 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Object } from '@stantanasi/jsonapi-client';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,17 +18,15 @@ import { useAppDispatch } from '../../redux/store';
 import notify from '../../utils/notify';
 import { useEpisodeSave } from './hooks/useEpisodeSave';
 
-type Props = StaticScreenProps<{
+type Props = {
   animeId: string;
-} | {
-  episodeId: string;
-}>;
+  episodeId?: string;
+};
 
-export default function EpisodeSaveScreen({ route }: Props) {
+export default function EpisodeSaveScreen(props: Props) {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
-  const { isLoading, episode, seasons } = useEpisodeSave(route.params);
+  const { isLoading, episode, seasons } = useEpisodeSave(props);
   const [form, setForm] = useState<Partial<Object<IEpisode>> | undefined>(episode?.toObject());
   const [isSaving, setIsSaving] = useState(false);
 
@@ -52,11 +50,11 @@ export default function EpisodeSaveScreen({ route }: Props) {
 
     Episode.redux.sync(dispatch, episode, prev);
 
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else if (typeof window !== 'undefined') {
-      window.history.back();
-    }
+   if (router.canGoBack()) {
+         router.back();
+       } else  {
+         router.replace('/');
+       }
   };
 
   return (
@@ -157,11 +155,11 @@ export default function EpisodeSaveScreen({ route }: Props) {
       <Modal
         animationType="fade"
         onRequestClose={() => {
-          if (navigation.canGoBack()) {
-            navigation.goBack();
-          } else if (typeof window !== 'undefined') {
-            window.history.back();
-          }
+          if (router.canGoBack()) {
+                router.back();
+              } else  {
+                router.replace('/');
+              }
         }}
         transparent
         visible={isSaving}

@@ -1,4 +1,4 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,23 +13,14 @@ import { useManga } from './hooks/useManga';
 import AboutTab from './tabs/AboutTab';
 import ChaptersTab from './tabs/ChaptersTab';
 
-type Props = StaticScreenProps<{
-  id: string;
-}>;
+type Props = {
+  mangaId: string;
+};
 
-export default function MangaScreen({ route }: Props) {
-  const navigation = useNavigation();
+export default function MangaScreen(props: Props) {
   const { isOffline } = useAppContext();
   const { user } = useAuthContext();
-  const { isLoading, manga } = useManga(route.params);
-
-  useEffect(() => {
-    if (!manga) return;
-
-    navigation.setOptions({
-      title: `${manga.title} - Manga | MangaJap`,
-    });
-  }, [manga]);
+  const { isLoading, manga } = useManga(props);
 
   if (!manga) {
     return (
@@ -44,7 +35,10 @@ export default function MangaScreen({ route }: Props) {
         menuItems={!isOffline && !isLoading && user ? [
           {
             icon: 'edit',
-            onPress: () => navigation.navigate('MangaUpdate', { id: manga.id }),
+            onPress: () => router.navigate({
+              pathname: '/manga/[mangaId]/edit',
+              params: { mangaId: manga.id },
+            }),
           },
         ] : []}
         TabBarComponent={(props) => (<>

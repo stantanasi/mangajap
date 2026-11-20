@@ -4,23 +4,24 @@ import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 import StaffSaveScreen from '../StaffSaveScreen';
 
-export const useStaffSave = (params: ComponentProps<typeof StaffSaveScreen>['route']['params']) => {
+export const useStaffSave = ({
+  animeId,
+  mangaId,
+  staffId,
+}: ComponentProps<typeof StaffSaveScreen>) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   const staff = (() => {
-    if ('animeId' in params) {
+    if (!staffId) {
       return useMemo(() => new Staff({
-        anime: new Anime({ id: params.animeId }),
-      }), [params]);
-    } else if ('mangaId' in params) {
-      return useMemo(() => new Staff({
-        manga: new Manga({ id: params.mangaId }),
-      }), [params]);
+        anime: animeId && new Anime({ id: animeId }),
+        manga: mangaId && new Manga({ id: mangaId }),
+      }), [animeId, mangaId]);
     }
 
     return useAppSelector((state) => {
-      return Staff.redux.selectors.selectById(state, params.staffId, {
+      return Staff.redux.selectors.selectById(state, staffId, {
         include: {
           people: true,
         },
@@ -30,9 +31,9 @@ export const useStaffSave = (params: ComponentProps<typeof StaffSaveScreen>['rou
 
   useEffect(() => {
     const prepare = async () => {
-      if (!('staffId' in params)) return;
+      if (!staffId) return;
 
-      const staff = await Staff.findById(params.staffId)
+      const staff = await Staff.findById(staffId)
         .include({ people: true });
 
       dispatch(Staff.redux.actions.setOne(staff));
@@ -42,7 +43,7 @@ export const useStaffSave = (params: ComponentProps<typeof StaffSaveScreen>['rou
     prepare()
       .catch((err) => notify.error('staff_load', err))
       .finally(() => setIsLoading(false));
-  }, [params]);
+  }, [animeId, mangaId, staffId]);
 
   return { isLoading, staff };
 };

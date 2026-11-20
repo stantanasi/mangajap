@@ -14,7 +14,8 @@
       "backgroundColor": "#ffffff"
     },
     "plugins": [
-      "./plugins/withDisableAndroidSigning.js"
+      "./plugins/withDisableAndroidSigning.js",
+      "expo-router"
     ],
     "ios": {
       "supportsTablet": true
@@ -36,7 +37,8 @@
       }
     },
     "experiments": {
-      "baseUrl": "/mangajap"
+      "baseUrl": "/mangajap",
+      "typedRoutes": true
     }
   }
 }

@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import AutoHeightImage from '../../../components/atoms/AutoHeightImage';
@@ -7,13 +7,14 @@ import Checkbox from '../../../components/atoms/Checkbox';
 import Modal from '../../../components/atoms/Modal';
 import { useAppContext } from '../../../contexts/AppContext';
 import { useAuthContext } from '../../../contexts/AuthContext';
-import { Episode, EpisodeEntry, Season, User } from '../../../models';
+import { Anime, Episode, EpisodeEntry, Season, User } from '../../../models';
 import { useAppDispatch } from '../../../redux/store';
 import notify from '../../../utils/notify';
 
 type Props = {
   isLoading: boolean;
   season: Season | undefined;
+  anime: Anime;
   onWatchedChange?: (value: boolean) => void;
   updating?: boolean;
   onUpdatingChange?: (value: boolean) => void;
@@ -25,6 +26,7 @@ type Props = {
 export default function SeasonModal({
   isLoading,
   season,
+  anime,
   onWatchedChange = () => { },
   updating = false,
   onUpdatingChange = () => { },
@@ -33,7 +35,6 @@ export default function SeasonModal({
   visible,
 }: Props) {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
   const { user } = useAuthContext();
 
@@ -120,7 +121,10 @@ export default function SeasonModal({
             color="#000"
             size={24}
             onPress={() => {
-              navigation.navigate('SeasonUpdate', { seasonId: season.id });
+              router.navigate({
+                pathname: '/anime/[animeId]/season/[seasonId]/edit',
+                params: { animeId: anime.id, seasonId: season.id },
+              });
               onRequestClose();
             }}
             style={{

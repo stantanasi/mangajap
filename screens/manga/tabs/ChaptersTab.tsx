@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import ChapterCard from '../../../components/molecules/ChapterCard';
@@ -19,7 +19,6 @@ type Props = {
 };
 
 export default function ChaptersTab({ isLoading, manga, style }: Props) {
-  const navigation = useNavigation();
   const { isOffline } = useAppContext();
   const { user } = useAuthContext();
   const [expandedVolumes, setExpandedVolumes] = useState<{ [volumeId: string]: boolean; }>({});
@@ -147,12 +146,18 @@ export default function ChaptersTab({ isLoading, manga, style }: Props) {
             {
               icon: 'library-add',
               label: 'Tome',
-              onPress: () => navigation.navigate('VolumeCreate', { mangaId: manga.id }),
+              onPress: () => router.navigate({
+                pathname: '/manga/[mangaId]/volume/create',
+                params: { mangaId: manga.id },
+              }),
             },
             {
               icon: 'library-add',
               label: 'Chapitre',
-              onPress: () => navigation.navigate('ChapterCreate', { mangaId: manga.id }),
+              onPress: () => router.navigate({
+                pathname: '/manga/[mangaId]/chapter/create',
+                params: { mangaId: manga.id },
+              }),
             },
           ]}
         />
@@ -161,6 +166,7 @@ export default function ChaptersTab({ isLoading, manga, style }: Props) {
       <VolumeModal
         isLoading={isLoading}
         volume={manga.volumes?.find((volume) => volume.id === selectedVolumeId)}
+        manga={manga}
         onReadChange={(value) => {
           if (!value) return;
 
@@ -197,6 +203,7 @@ export default function ChaptersTab({ isLoading, manga, style }: Props) {
 
           return manga.chapters?.find((chapter) => chapter.id === selectedChapterId);
         })()}
+        manga={manga}
         onReadChange={(value) => {
           if (!value) return;
 
