@@ -70,6 +70,20 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
+        name="search"
+        options={{
+          tabBarLabel: 'Rechercher',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons
+              name="search"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="profile"
         options={{
           tabBarLabel: 'Profil',
