@@ -1,8 +1,12 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchBar from '../../components/atoms/SearchBar';
+import ExpandableFloatingActionButton from '../../components/molecules/ExpandableFloatingActionButton';
 import Header from '../../components/molecules/Header';
+import { useAppContext } from '../../contexts/AppContext';
+import { useAuthContext } from '../../contexts/AuthContext';
 import notify from '../../utils/notify';
 import { useSearch } from './hooks/useSearch';
 import AnimeTab from './tabs/AnimeTab';
@@ -11,6 +15,8 @@ import PeopleTab from './tabs/PeopleTab';
 import UserTab from './tabs/UserTab';
 
 export default function SearchScreen() {
+  const { isOffline } = useAppContext();
+  const { user } = useAuthContext();
   const { animeTab, mangaTab, peopleTab, userTab } = useSearch();
 
   const categories = [
@@ -131,6 +137,30 @@ export default function SearchScreen() {
           flex: 1,
         }}
       />
+
+      {!isOffline && !animeTab.isLoading && !mangaTab.isLoading && !peopleTab.isLoading && !userTab.isLoading && user ? (
+        <ExpandableFloatingActionButton
+          icon="add"
+          menuItems={[
+            {
+              icon: 'tv',
+              label: 'Animé',
+              onPress: () => router.navigate('/anime/create'),
+            },
+            {
+              icon: 'menu-book',
+              label: 'Manga',
+              onPress: () => router.navigate('/manga/create'),
+            },
+            {
+              icon: 'person',
+              label: 'Personnalité',
+              onPress: () => router.navigate('/people/create'),
+            },
+          ]}
+        />
+      ) : null}
+
     </SafeAreaView>
   );
 }

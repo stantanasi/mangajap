@@ -3,17 +3,12 @@ import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import AnimeCard from '../../components/molecules/AnimeCard';
-import ExpandableFloatingActionButton from '../../components/molecules/ExpandableFloatingActionButton';
 import MangaCard from '../../components/molecules/MangaCard';
 import SectionHeader from '../../components/molecules/SectionHeader';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
-import { useAppContext } from '../../contexts/AppContext';
-import { useAuthContext } from '../../contexts/AuthContext';
 import { useDiscover } from './hooks/useDiscover';
 
 export default function DiscoverScreen() {
-  const { isOffline } = useAppContext();
-  const { user } = useAuthContext();
   const { isLoading, animes, mangas } = useDiscover();
 
   if (!animes || !mangas) {
@@ -88,29 +83,6 @@ export default function DiscoverScreen() {
           ListFooterComponent={() => <View style={{ width: 16 }} />}
         />
       </ScrollView>
-
-      {!isOffline && !isLoading && user ? (
-        <ExpandableFloatingActionButton
-          icon="add"
-          menuItems={[
-            {
-              icon: 'tv',
-              label: 'Animé',
-              onPress: () => router.navigate('/anime/create'),
-            },
-            {
-              icon: 'menu-book',
-              label: 'Manga',
-              onPress: () => router.navigate('/manga/create'),
-            },
-            {
-              icon: 'person',
-              label: 'Personnalité',
-              onPress: () => router.navigate('/people/create'),
-            },
-          ]}
-        />
-      ) : null}
 
       <RefreshControl refreshing={isLoading} />
     </SafeAreaView>
