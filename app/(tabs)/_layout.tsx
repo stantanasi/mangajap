@@ -14,6 +14,20 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
+        name="index"
+        options={{
+          tabBarLabel: 'Accueil',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons
+              name="home"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="agenda-anime"
         options={{
           tabBarLabel: 'Animé',
@@ -42,7 +56,7 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="index"
+        name="discover"
         options={{
           tabBarLabel: 'Découvrir',
           tabBarIcon: ({ color, size }) => (
