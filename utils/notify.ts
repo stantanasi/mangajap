@@ -5,6 +5,7 @@ const ERROR_MESSAGES = {
   auth_logout: "Échec de la déconnexion",
   auth_register: "Échec de l'inscription",
 
+  home_load: "Échec du chargement de l'accueil",
   agenda_anime_load: "Échec du chargement de l'agenda des animés",
   agenda_manga_load: "Échec du chargement de l'agenda des mangas",
   anime_load: "Échec du chargement de l'animé",
