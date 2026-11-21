@@ -14,37 +14,37 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="agenda-anime"
-        options={{
-          tabBarLabel: 'Animé',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons
-              name="tv"
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="agenda-manga"
-        options={{
-          tabBarLabel: 'Manga',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons
-              name="menu-book"
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
         name="index"
         options={{
+          tabBarLabel: 'Accueil',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons
+              name="home"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="discover"
+        options={{
           tabBarLabel: 'Découvrir',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons
+              name="local-fire-department"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="search"
+        options={{
+          tabBarLabel: 'Rechercher',
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons
               name="search"

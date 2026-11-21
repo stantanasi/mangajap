@@ -1,14 +1,14 @@
 import Head from 'expo-router/head';
-import DiscoverScreen from '../../screens/discover/DiscoverScreen';
+import HomeScreen from '../../screens/home/HomeScreen';
 
-export default function DiscoverPage() {
+export default function HomePage() {
   return (
     <>
       <Head>
-        <title>Découvrir | MangaJap</title>
+        <title>MangaJap</title>
       </Head>
 
-      <DiscoverScreen />
+      <HomeScreen />
     </>
   );
 }

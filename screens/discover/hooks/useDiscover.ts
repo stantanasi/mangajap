@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../../../contexts/AuthContext';
-import { Anime, Manga, People } from '../../../models';
+import { Anime, Manga } from '../../../models';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import notify from '../../../utils/notify';
 
@@ -9,22 +9,13 @@ export const useDiscover = () => {
   const { isAuthenticated } = useAuthContext();
   const [isLoading, setIsLoading] = useState(true);
 
-  const peoples = useAppSelector((state) => {
-    return People.redux.selectors.select(state, {
-      sort: {
-        createdAt: 'desc',
-      },
-      limit: 10,
-    });
-  });
-
   const animes = useAppSelector((state) => {
     return Anime.redux.selectors.select(state, {
       include: {
         'anime-entry': isAuthenticated,
       },
       sort: {
-        createdAt: 'desc',
+        popularity: 'desc',
       },
       limit: 10,
     });
@@ -36,7 +27,7 @@ export const useDiscover = () => {
         'manga-entry': isAuthenticated,
       },
       sort: {
-        createdAt: 'desc',
+        popularity: 'desc',
       },
       limit: 10,
     });
@@ -44,28 +35,23 @@ export const useDiscover = () => {
 
   useEffect(() => {
     const prepare = async () => {
-      const [peoples, animes, mangas] = await Promise.all([
-        People.find()
-          .sort({
-            createdAt: 'desc',
-          }),
+      const [animes, mangas] = await Promise.all([
         Anime.find()
           .include({
             'anime-entry': isAuthenticated,
           })
           .sort({
-            createdAt: 'desc',
+            popularity: 'desc',
           }),
         Manga.find()
           .include({
             'manga-entry': isAuthenticated,
           })
           .sort({
-            createdAt: 'desc',
+            popularity: 'desc',
           }),
       ]);
 
-      dispatch(People.redux.actions.setMany(peoples));
       dispatch(Anime.redux.actions.setMany(animes));
       dispatch(Manga.redux.actions.setMany(mangas));
     };
@@ -76,5 +62,5 @@ export const useDiscover = () => {
       .finally(() => setIsLoading(false));
   }, []);
 
-  return { isLoading, peoples, animes, mangas };
+  return { isLoading, animes, mangas };
 };
