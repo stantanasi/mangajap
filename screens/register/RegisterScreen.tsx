@@ -1,25 +1,21 @@
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleProp, StyleSheet, Text, TextInput, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuthContext } from '../../../contexts/AuthContext';
-import notify from '../../../utils/notify';
+import { useAuthContext } from '../../contexts/AuthContext';
+import notify from '../../utils/notify';
 
-type Props = {
-  onNavigateToRegister: () => void;
-  style?: StyleProp<ViewStyle>;
-};
-
-export default function LoginScreen({ onNavigateToRegister, style }: Props) {
-  const { login } = useAuthContext();
+export default function RegisterScreen() {
+  const { register } = useAuthContext();
+  const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
-  const [isLogging, setIsLogging] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   return (
-    <SafeAreaView style={[styles.container, style]}>
+    <SafeAreaView style={styles.container}>
       <Text
         style={{
           fontSize: 26,
@@ -27,10 +23,18 @@ export default function LoginScreen({ onNavigateToRegister, style }: Props) {
           marginBottom: 40,
         }}
       >
-        Connexion à MangaJap
+        Inscription à MangaJap
       </Text>
 
       <View style={{ gap: 10 }}>
+        <TextInput
+          value={pseudo}
+          onChangeText={(value) => setPseudo(value)}
+          placeholder="Pseudo"
+          placeholderTextColor="#666"
+          style={styles.input}
+        />
+
         <TextInput
           value={email}
           onChangeText={(value) => setEmail(value)}
@@ -64,17 +68,17 @@ export default function LoginScreen({ onNavigateToRegister, style }: Props) {
       </View>
 
       <Pressable
-        disabled={isLogging}
+        disabled={isRegistering}
         onPress={() => {
-          setIsLogging(true);
+          setIsRegistering(true);
 
-          login(email, password)
+          register(pseudo, email, password)
             .then(() => {
               if (router.canDismiss()) router.dismissAll();
               router.replace('/');
             })
-            .catch((err) => notify.error('auth_login', err))
-            .finally(() => setIsLogging(false));
+            .catch((err) => notify.error('auth_register', err))
+            .finally(() => setIsRegistering(false));
         }}
         style={styles.button}
       >
@@ -85,9 +89,9 @@ export default function LoginScreen({ onNavigateToRegister, style }: Props) {
             fontWeight: 'bold',
           }}
         >
-          Se connecter
+          Inscription
         </Text>
-        {isLogging && (
+        {isRegistering && (
           <ActivityIndicator
             animating
             color="#000"
@@ -96,14 +100,14 @@ export default function LoginScreen({ onNavigateToRegister, style }: Props) {
       </Pressable>
 
       <Text
-        onPress={() => onNavigateToRegister()}
+        onPress={() => router.replace('/(auth)/login')}
         style={{
           color: '#444',
           marginTop: 30,
           textAlign: 'center',
         }}
       >
-        Toujours pas inscrit ? Rejoignez-nous !
+        Déjà inscrit ? Connectez-nous !
       </Text>
     </SafeAreaView>
   );

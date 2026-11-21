@@ -1,6 +1,5 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RefreshControl from '../../components/atoms/RefreshControl';
 import LoadingScreen from '../../components/organisms/LoadingScreen';
@@ -8,8 +7,6 @@ import Tabs from '../../components/organisms/Tabs';
 import { useAuthContext } from '../../contexts/AuthContext';
 import Header from './components/Header';
 import { useProfile } from './hooks/useProfile';
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
 import AnimeTab from './tabs/AnimeTab';
 import MangaTab from './tabs/MangaTab';
 
@@ -19,27 +16,42 @@ type Props = {
 
 export default function ProfileScreen(props: Props) {
   const { user: authenticatedUser } = useAuthContext();
-  const [authScreen, setAuthScreen] = useState<'login' | 'register'>('login');
   const { isLoading, user, followingUser, followedByUser } = useProfile(props);
 
   const userId = props.userId ?? authenticatedUser?.id;
 
   if (!userId) {
-    if (authScreen === 'login') {
-      return (
-        <LoginScreen
-          onNavigateToRegister={() => setAuthScreen('register')}
-          style={styles.container}
-        />
-      );
-    } else {
-      return (
-        <RegisterScreen
-          onNavigateToLogin={() => setAuthScreen('login')}
-          style={styles.container}
-        />
-      );
-    }
+    return (
+      <SafeAreaView style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
+        <Text
+          style={{
+            fontSize: 26,
+            fontWeight: 'bold',
+            marginBottom: 40,
+            marginHorizontal: 16,
+          }}
+        >
+          Vous n'êtes pas connectés
+        </Text>
+
+        <Text
+          onPress={() => router.navigate('/(auth)/login')}
+          style={{
+            borderColor: '#000',
+            borderRadius: 360,
+            borderWidth: 2,
+            color: '#000',
+            fontSize: 16,
+            fontWeight: 'bold',
+            marginHorizontal: 16,
+            paddingHorizontal: 25,
+            paddingVertical: 15,
+          }}
+        >
+          Se connecter
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   if (!user || followingUser === undefined || followedByUser === undefined) {

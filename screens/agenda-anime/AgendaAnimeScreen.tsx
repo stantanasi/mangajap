@@ -33,7 +33,7 @@ export default function AgendaAnimeScreen() {
         </Text>
 
         <Text
-          onPress={() => router.navigate('/profile')}
+          onPress={() => router.navigate('/(auth)/login')}
           style={{
             borderColor: '#000',
             borderRadius: 360,
