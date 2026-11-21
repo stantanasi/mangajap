@@ -28,34 +28,6 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="agenda-anime"
-        options={{
-          tabBarLabel: 'Animé',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons
-              name="tv"
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="agenda-manga"
-        options={{
-          tabBarLabel: 'Manga',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons
-              name="menu-book"
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
         name="discover"
         options={{
           tabBarLabel: 'Découvrir',
