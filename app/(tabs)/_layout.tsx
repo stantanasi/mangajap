@@ -33,7 +33,7 @@ export default function TabsLayout() {
           tabBarLabel: 'Découvrir',
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons
-              name="search"
+              name="local-fire-department"
               size={size}
               color={color}
             />
